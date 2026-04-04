@@ -3,21 +3,24 @@
 #ifndef RENDERER_H
 #define RENDERER_H
 
-#include "TestCore.hpp"
+#include "Core.hpp"
 
-using namespace TestCore; 
+/// @brief An internal namespace. Using anything from within is not advised
+namespace internal {
+    /// @brief A rendering namespace to render the output from running tests
+    namespace Renderer {
+        class ITestRenderer {
+            public:
+                virtual ~ITestRenderer() = default;
+                virtual void render(Core::TestRun& result) = 0;
+        };
 
-namespace TestResultRenderer {
-    class ITestRenderer {
-        public:
-            virtual ~ITestRenderer() = default;
-            virtual void render(TestRunResult& result) = 0;
-    };
-
-    class ConsoleRenderer : public ITestRenderer {
-        public:
-            void render(TestRunResult& result) override;
-    };
+        class ConsoleRenderer : public ITestRenderer {
+            public:
+                void render(Core::TestRun& result) override;
+        };
+        
+    }
 }
 
 #endif

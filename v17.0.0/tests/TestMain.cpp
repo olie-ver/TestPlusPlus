@@ -1,27 +1,13 @@
-#include "TestCore.hpp"
+#include "Core.hpp"
 #include "Renderer.hpp"
-#include "Tests.hpp"
-#include "TestRunner.hpp"
-
-using namespace TestCore;
-using namespace TestRunner;
-using namespace TestResultRenderer;
-using namespace Tests;
-
-// TEST(hi, again) {
-//     EXPECT_TRUE(1 == 2);
-// }
-
-// D_TEST(hi) {
-//     EXPECT_TRUE(2 == 2);
-// }
+#include "Runner.hpp"
 
 int main() {
-    TestRunResult mockRun;
+    internal::Core::TestRun mockRun;
 
-    runAllRegisteredTests(mockRun);
+    internal::Runner::runAllRegisteredTests(mockRun);
 
-    ConsoleRenderer renderer;
+    internal::Renderer::ConsoleRenderer renderer;
 
     renderer.render(mockRun);
     return EXIT_SUCCESS;
