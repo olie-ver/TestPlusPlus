@@ -1,4 +1,4 @@
-#include "../src/Tests.hpp"
+#include <tester/Tests.hpp>
 
 TEST(awesome, hi) {
     EXPECT_TRUE(1 == 2);
@@ -19,3 +19,10 @@ TEST(awesome, hi3) {
 TEST(aweseom, hi) {
     EXPECT_EQ(5, 4);
 }
+
+TEST(we, we) {
+    std::vector<int> first;
+    std::vector<int> second;
+    EXPECT_NE(first, second);
+}
+

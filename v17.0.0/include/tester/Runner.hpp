@@ -35,19 +35,10 @@ namespace internal {
         extern Core::TestResult* CURRENT_TEST;
 
         /// @brief The registry containing all the tests to be run
-        extern std::map<const std::string, std::vector<Core::Test>> REGISTRY;
-
-        /// @brief Hashes a pair of strings
-        struct PairHash {
-            size_t operator()(const std::pair<std::string, std::string>& p) const {
-                size_t h1 = std::hash<std::string>{}(p.first);
-                size_t h2 = std::hash<std::string>{}(p.second);
-                return h1 ^ (h2 << 1); // simple but effective
-            }
-        };
+        std::map<std::string, std::vector<Core::Test>>& getRegistry();
 
         /// @brief A set ensuring no duplicate tests are registered
-        extern std::unordered_set<std::pair<std::string, std::string>, PairHash> ALL_TESTS;
+        std::unordered_set<std::pair<std::string, std::string>, Core::PairHash>& getAllTests();
 
         /// @brief Adds a test to the registry under a test suite
         /// @param suite_name The name of the test suite the test is a part of 

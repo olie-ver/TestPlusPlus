@@ -4,10 +4,12 @@
 #define EXPECT_H
 
 #include "Runner.hpp"
+#include "Helpers.hpp"
 
 #define EXPECT_TRUE(cond) internal::Expect::expectTrue((cond), #cond, __FILE__, __LINE__)
 #define EXPECT_FALSE(cond) internal::Expect::expectFalse((cond), #cond, __FILE__, __LINE__)
-#define EXPECT_EQ(a, b) internal::Expect::expectEqual((a), (b), #a, #b, __FILE__, __LINE__)
+#define EXPECT_EQ(a, b) internal::Expect::expectEqual((a), (b), __FILE__, __LINE__)
+#define EXPECT_NE(a, b) internal::Expect::expectNotEqual((a), (b), __FILE__, __LINE__)
 
 /// @brief An internal namespace. Using anything from within is not advised
 namespace internal {
@@ -36,14 +38,27 @@ namespace internal {
         }
 
         template <typename T, typename U>
-        inline void expectEqual(const T& a, const U& b, const char* a_str,
-                const char* b_str, const char* file, int line) 
+        inline void expectEqual(const T& a, const U& b, const char* file, int line) 
         {
             if (!(a == b)) {
-                std::string aStr = std::string(a_str);
-                std::string bStr = std::string(b_str);
+                std::string aStr = Helpers::toString(a);
+                std::string bStr = Helpers::toString(b);
                 Runner::CURRENT_TEST->failures.push_back({
                     "Expected: a == b \n      a = " + aStr + "\n      b = " + bStr,
+                    file,
+                    line
+                });
+            }
+        }
+
+        template <typename T, typename U>
+        inline void expectNotEqual(const T& a, const U& b, const char* file, int line) 
+        {
+            if (a == b) {
+                std::string aStr = Helpers::toString(a);
+                std::string bStr = Helpers::toString(b);
+                Runner::CURRENT_TEST->failures.push_back({
+                    "Expected: a != b \n      a = " + aStr + "\n      b = " + bStr,
                     file,
                     line
                 });

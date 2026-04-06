@@ -1,4 +1,4 @@
-#include "Runner.hpp"
+#include <tester/Runner.hpp>
 #include <chrono>
 #include <iostream>
 
@@ -6,12 +6,20 @@ namespace internal {
     namespace Runner {
         Core::TestResult* CURRENT_TEST;
 
-        std::map<const std::string, std::vector<Core::Test>> REGISTRY;
+        std::map<std::string, std::vector<Core::Test>>& getRegistry() {
+            static std::map<std::string, std::vector<Core::Test>> instance;
+            return instance;
+        }
 
-        std::unordered_set<std::pair<std::string, std::string>, PairHash> ALL_TESTS;
+        std::unordered_set<std::pair<std::string, std::string>, Core::PairHash>& getAllTests() {
+            static std::unordered_set<std::pair<std::string, std::string>, Core::PairHash> instance;
+            return instance;
+        }
 
         bool registerTest(const std::string& suite_name, const Core::Test& test) {
             const std::pair<std::string, std::string> to_register = std::make_pair(suite_name, test.name);
+
+            std::unordered_set<std::pair<std::string, std::string>, Core::PairHash>& ALL_TESTS = getAllTests();
 
             auto [it, inserted] = ALL_TESTS.insert(to_register);
             if (!inserted) {
@@ -20,14 +28,17 @@ namespace internal {
                 std::abort();
             }
 
+            std::map<std::string, std::vector<Core::Test>>& REGISTRY = getRegistry();
+
             ALL_TESTS.insert(to_register);
             REGISTRY[suite_name].push_back(test);
             return true;
         }
 
         void runAllRegisteredTests(Core::TestRun& run) {
-            REGISTRY.begin();
-            for (std::map<const std::string, std::vector<Core::Test>>::iterator it = REGISTRY.begin(); 
+            std::map<std::string, std::vector<Core::Test>>& REGISTRY = getRegistry();
+
+            for (std::map<std::string, std::vector<Core::Test>>::iterator it = REGISTRY.begin(); 
                 it != REGISTRY.end(); ++it) 
             {
                 const std::vector<Core::Test>&test = it->second;
