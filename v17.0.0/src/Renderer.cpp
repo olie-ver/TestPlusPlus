@@ -34,6 +34,7 @@ namespace internal {
                                 const Core::Failure& fail = result.failures[j];
                                 std::cout << std::string(4, ' ') << "at: " << fail.file << ":" << fail.line << std::endl;
                                 std::cout << std::string(4, ' ') << fail.message << std::endl;
+                                std::cout << std::endl;
                             }
                             testRun.failed++;
                             break;
@@ -43,7 +44,6 @@ namespace internal {
                             testRun.skipped++;
                             break;
                     }
-                    std::cout << std::endl;
                 }
             }
 
