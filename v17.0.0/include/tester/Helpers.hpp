@@ -6,6 +6,12 @@
 #include <string>
 #include <sstream>
 #include <iomanip>
+#include <typeinfo>
+
+#if defined(__clang__) || defined(__GNUG__)
+    #include <cxxabi.h>
+    #include <cstdlib>
+#endif
 
 namespace internal {
     namespace Helpers {
@@ -24,6 +30,21 @@ namespace internal {
         template <typename T>
         inline std::string toString(const T& value) {
             return toStringImpl(value, 0);
+        }
+
+        inline std::string demangle(const char* name) {
+            #if defined(__clang__) || defined(__GNUG__)
+                int status = 0;
+                char* demangled = abi::__cxa_demangle(name, nullptr, nullptr, &status);
+
+                std::string result = (status == 0 && demangled) ? demangled : name;
+
+                std::free(demangled);
+                return result;
+            #else
+                // Fallback (MSVC or unknown compiler)
+                return name;    
+            #endif
         }
     }
 }

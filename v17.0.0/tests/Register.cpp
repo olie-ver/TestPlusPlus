@@ -1,21 +1,15 @@
 #include <tester/Tests.hpp>
+#include <exception>
 
-D_TEST(3) {
-    EXPECT_NEAR(1.0, 2.0, 0.1, 0.1);
-    EXPECT_STR_EQ("cool", "not cool");
+int hi(int a, int b) {
+    a + b;
+    throw std::invalid_argument("idk dude");
 }
 
-D_TEST(4) {
-    EXPECT_STR_EQ("bye", "bye");
-    EXPECT_STR_NE("hi", "hi");
-}
+D_TEST(1) {
+    EXPECT_THROWS_AS(hi(1, 2), std::bad_alloc);
+    // EXPECT_DOES_NOT_THROW(hi(3, 4));
 
-D_TEST(5) {
-    const char first[] = "hihi";
-    const char second[] = "hihi";
-    const char* p_f = first;
-    const char* p_s = second;
-
-    EXPECT_STR_EQ(p_f, p_s);
-    EXPECT_STR_NE(p_f, p_s);
+    // EXPECT_THROWS([&] {});
+    // EXPECT_DOES_NOT_THROW([&] {throw std::invalid_argument("okay");});
 }

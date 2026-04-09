@@ -26,7 +26,7 @@ namespace internal {
         /// @param file the file the function was called from
         /// @param line the line the function was called on
         template <typename A, typename B, typename T1, typename T2>
-        void nearlyEqual(A a, B b, T1 abs_tol, T2 rel_tol, const char* file, int line) {
+        inline void nearlyEqual(A a, B b, T1 abs_tol, T2 rel_tol, const char* file, int line) {
             using T = std::common_type_t<A, B, T1, T2>;
             static_assert(std::is_floating_point<T>::value);
 
@@ -42,6 +42,42 @@ namespace internal {
                         + "\n      b = " + Helpers::toString(bb) 
                         + "\n      abs_tol = " + Helpers::toString(absTol)
                         + "\n      rel_tol = " + Helpers::toString(relTol),
+                    file,
+                    line
+                });
+            }
+        }
+
+        /// @brief Checks if something is NaN
+        /// @tparam T a floating point type
+        /// @param val the value
+        /// @param file the file the function is called from
+        /// @param line the line the function is called on
+        template <typename T>
+        inline void isNaN(T val, const char* file, int line) {
+            static_assert(std::is_floating_point<T>::value);
+
+            if (val != NAN) {
+                Runner::CURRENT_TEST->failures.push_back({
+                    std::string("Expected val to be NaN") + "\n      val = " + val,
+                    file,
+                    line
+                });
+            }
+        }
+
+        /// @brief Checks if something is not NaN
+        /// @tparam T a floating point type
+        /// @param val the value
+        /// @param file the file the function is called from
+        /// @param line the line the function is called on
+        template <typename T>
+        inline void isNotNaN(T val, const char* file, int line) {
+            static_assert(std::is_floating_point<T>::value);
+
+            if (val != NAN) {
+                Runner::CURRENT_TEST->failures.push_back({
+                    "Expected val to not be NaN + \n      val = NaN",
                     file,
                     line
                 });

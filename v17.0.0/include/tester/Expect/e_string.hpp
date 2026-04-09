@@ -36,16 +36,16 @@ namespace internal {
         /// @param line the line the function was called on
         inline void stringEqual(const char* first, const char* second, const char* file, int line) {
             std::string message = "Null pointer passed in:";
+            size_t initialLength = message.length();
+
             if (first == nullptr) {
                 message += "\n     a = nullptr";
             }
             if (second == nullptr) {
                 message += "\n     b = nullptr";
             }
-            std::cout << message.length() << std::endl;
 
-
-            if (message.length() != 23) {
+            if (message.length() != initialLength) {
                 Runner::CURRENT_TEST->failures.push_back({
                     message,
                     file,
@@ -81,15 +81,16 @@ namespace internal {
         /// @param line the line the function was called on
         inline void stringNotEqual(const char* first, const char* second, const char* file, int line) {
             std::string message = "Null pointer passed in:";
+            size_t initialLength = message.length();
+
             if (first == nullptr) {
                 message += "\n     a = nullptr";
             }
             if (second == nullptr) {
                 message += "\n     b = nullptr";
             }
-            std::cout << message.length() << std::endl;
 
-            if (message.length() != 23) {
+            if (message.length() != initialLength) {
                 Runner::CURRENT_TEST->failures.push_back({
                     message,
                     file,
