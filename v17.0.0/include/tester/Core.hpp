@@ -28,6 +28,14 @@ namespace internal {
             Skipped
         };
 
+        /// @brief Flags for renderer verbosity
+        enum class Verbosity {
+            All,
+            Minimum,
+            Verbose,
+            Default
+        };
+
         /// @brief A Test struct that contains information about a test
         struct Test {
             std::string name;

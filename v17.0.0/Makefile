@@ -55,4 +55,7 @@ clean:
 	rm -rf $(BUILD_DIR)
 
 run: all
-	./$(TARGET)
+	./$(TARGET) --default
+
+test: all
+	./$(TARGET) --minimum

@@ -17,7 +17,15 @@ namespace internal {
 
         class ConsoleRenderer : public ITestRenderer {
             public:
+                ConsoleRenderer(Core::Verbosity verbosity = Core::Verbosity::Default) : verb(verbosity) {};
                 void render(Core::TestRun& result) override;
+
+            private:
+                Core::Verbosity verb;
+                void renderAll(Core::TestRun& result);
+                void renderMinimum(Core::TestRun& result);
+                void renderVerbose(Core::TestRun& result);
+                void renderDefault(Core::TestRun& result);
         };
         
     }
