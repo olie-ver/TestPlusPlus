@@ -1,15 +1,15 @@
 #include <tester/Tests.hpp>
 #include <exception>
+#include <iostream>
+#include <vector>
+#include <unordered_map>
 
-int hi(int a, int b) {
-    a + b;
-    throw std::invalid_argument("idk dude");
-}
+// D_TEST(0) {
+    // std::vector<int> first = {0, 1, 2, 3, 4, 5};
+    // std::vector<int> second = {0, 1, 2, 3, 3, 5};
 
-D_TEST(1) {
-    EXPECT_THROWS_AS(hi(1, 2), std::bad_alloc);
-    // EXPECT_DOES_NOT_THROW(hi(3, 4));
+    // std::unordered_map<std::string, int> first = {{"hi", 1}, {"hi2", 2}, {"hi3", 3}};
+    // std::unordered_map<std::string, int> second = {{"hi", 2}, {"hi2", 2}, {"hi3", 3}};
 
-    // EXPECT_THROWS([&] {});
-    // EXPECT_DOES_NOT_THROW([&] {throw std::invalid_argument("okay");});
-}
+    // EXPECT_EQ_ORDERED(first ,second);
+// }

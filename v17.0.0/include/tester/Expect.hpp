@@ -9,6 +9,7 @@
 #include "Expect/e_null.hpp"
 #include "Expect/e_string.hpp"
 #include "Expect/e_throws.hpp"
+#include "Expect/e_iterable.hpp"
 
 /// @brief An internal namespace. Using anything from within is not advised
 namespace internal {

@@ -6,11 +6,17 @@
 #include "../Runner.hpp"
 #include "../Helpers.hpp"
 #include <string>
-
 #include <exception>
 
-#define EXPECT_THROWS(func) internal::Expect::throws([&]() {(func);}, #func, __FILE__, __LINE__)
-#define EXPECT_THROWS_AS(func, ex) internal::Expect::throws<ex>([&]() {(func);}, #func, __FILE__, __LINE__)
+#define EXPECT_THROWS_1_ARGS(func) internal::Expect::throws([&]() {(func);}, #func, __FILE__, __LINE__)
+#define EXPECT_THROWS_2_ARGS(func, ex) internal::Expect::throws<ex>([&]() {(func);}, #func, __FILE__, __LINE__)
+
+#define GET_3RD_ARG(arg1, arg2, arg3, ...) arg3
+
+#define EXPECT_THROWS_MACRO_CHOOSER(...) \
+    GET_3RD_ARG(__VA_ARGS__, EXPECT_THROWS_2_ARGS, EXPECT_THROWS_1_ARGS)
+
+#define EXPECT_THROWS(...) EXPECT_THROWS_MACRO_CHOOSER(__VA_ARGS__)(__VA_ARGS__)
 #define EXPECT_DOES_NOT_THROW(func) internal::Expect::doesNotThrow([&](){(func);}, #func, __FILE__, __LINE__)
 
 namespace internal {

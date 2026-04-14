@@ -4,8 +4,10 @@
 #define E_STR_H
 
 #include "../Runner.hpp"
+#include "../Helpers.hpp"
 #include <string>
 #include <iostream>
+#include <algorithm>
 
 #define EXPECT_STR_EQ(a, b) internal::Expect::stringEqual((a), (b), __FILE__, __LINE__)
 #define EXPECT_STR_NE(a, b) internal::Expect::stringNotEqual((a), (b), __FILE__, __LINE__)
@@ -54,7 +56,49 @@ namespace internal {
                 return;
             }
 
-            stringEqual(std::string(first), std::string(second), file, line);
+            if (strcmp(first, second)) {
+                Runner::CURRENT_TEST->failures.push_back({
+                    std::string("Expected a == b")
+                    + "\n    a = \"" + first + '\"'
+                    + "\n    b = \"" + second + '\"',
+                    file,
+                    line
+                });
+            }
+        }
+
+        /// @brief Checks if two strings are equal
+        /// @tparam N the length of the first string
+        /// @tparam M the length of the second string
+        /// @param a the first string
+        /// @param b the second string
+        /// @param file the file the function was called from
+        /// @param line the line the function was called on
+        template <size_t N, size_t M>
+        inline void stringEqual(const char (&a)[N], const char (&b)[M], const char* file, int line) {
+            if (N != M) {
+                Runner::CURRENT_TEST->failures.push_back({
+                    std::string("Mismatched char[] lengths:")
+                    + "\n    length of a = " + Helpers::toString(N)
+                    + "\n    length of b = " + Helpers::toString(M),
+                    file,
+                    line
+                });
+                return;
+            }
+
+            for (size_t i = 0; i < N; i++) {
+                if (a[i] != b[i]) {
+                    Runner::CURRENT_TEST->failures.push_back({
+                        std::string("Expected a == b")
+                        + "\n    a = \"" + a + '\"'
+                        + "\n    b = \"" + b + '\"',
+                        file,
+                        line
+                    });
+                    return;
+                }
+            }
         }
 
         /// @brief Checks if two strings are not equal
@@ -99,7 +143,44 @@ namespace internal {
                 return;
             }
 
-            stringNotEqual(std::string(first), std::string(second), file, line);
+            if (!strcmp(first, second)) {
+                Runner::CURRENT_TEST->failures.push_back({
+                    std::string("Expected a != b")
+                    + "\n    a = \"" + first + '\"'
+                    + "\n    b = \"" + second + '\"',
+                    file,
+                    line
+                });
+            }
+        }
+
+        /// @brief Checks if two strings are not equal
+        /// @tparam N the length of the first string
+        /// @tparam M the length of the second string
+        /// @param a the first string
+        /// @param b the second string
+        /// @param file the file the function was called from
+        /// @param line the line the function was called on
+        template <size_t N, size_t M>
+        inline void stringNotEqual(const char (&a)[N], const char (&b)[M], const char* file, int line) {
+            if (N != M) {
+                return;
+            }
+
+            bool same = true;
+            for (size_t i = 0; i < N; i++) {
+                same &= a[i] == b[i];
+            }
+
+            if (same) {
+                Runner::CURRENT_TEST->failures.push_back({
+                    std::string("Expected a != b")
+                    + "\n    a = \"" + a + '\"'
+                    + "\n    b = \"" + b + '\"',
+                    file,
+                    line
+                });
+            }
         }
     }
 }

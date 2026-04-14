@@ -9,8 +9,13 @@
 #include <algorithm>
 #include <string>
 
+//Now that I can do variadic macros, I can change expectNear to use multiple functions all wrapped in one macro
+//  ie. no longer does it need 4 arguments, I can have it relative or absolute
 #define EXPECT_NEAR(first, second, abs_tol, rel_tol) \
     internal::Expect::nearlyEqual((first), (second), (abs_tol), (rel_tol), __FILE__, __LINE__)
+
+#define EXPECT_NAN(number) internal::Expect::isNaN((number), __FILE__, __LINE__)
+#define EXPECT_NOT_NAN(number) internal::Expect::isNotNan((number), __FILE__, __LINE__)
 
 namespace internal {
     namespace Expect {

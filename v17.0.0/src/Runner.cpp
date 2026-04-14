@@ -52,7 +52,7 @@ namespace internal {
         }
 
         Core::TestResult runTest(const std::string& suite_name, const Core::Test& test) {
-            std::cout << "Running test: " << suite_name << " " << test.name << std::endl;
+            // std::cout << "Running test: " << suite_name << " " << test.name << std::endl;
             Core::TestResult result;
             result.suiteName = suite_name;
             result.testName = test.name;
