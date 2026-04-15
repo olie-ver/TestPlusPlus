@@ -8,4 +8,4 @@ At the moment I will be writing and compiling with C++ 17, as seen with the v17.
 However, I may eventually write and compile with a later version of C++ as a way of maintenance
 and keeping it modern.
 
-If you're feeling gutsy, you should use it in your projects and tell me what you think. Otherwise, just take a look around.
+If you're feeling gutsy, you should use it in your projects and tell me what you think. Otherwise, just take a look around. Be sure to read the Documentation.md file in the v17.0.0 folder if you are thinking of using in your projects before downloading.
