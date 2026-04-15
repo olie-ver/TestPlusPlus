@@ -4,6 +4,41 @@ A C++ Unit Tester for C++17 written by Oliver Lie.
 ### License/Conditions of Usage
 You may consider this code open-source to be downloaded, modified, and released for others under the condition that any other subsidiary code will keep these same conditions. This includes keeping the software free of charge.
 
+## Table Of Contents
+1. [Adding To Your Projects](#adding-to-your-projects) <br>
+1.1. [Compiling And Linking](#compiling-and-linking)
+<br>
+1.2. [Include Inside Your Project](#include-inside-your-project)
+<br>
+1.3. [CLI Usage](#cli-usage)
+2. [Testing](#testing)
+<br>
+2.1. [Registering Tests](#registering-tests)
+<br>
+2.2. [Different Types Of Tests](#different-types-of-tests)
+<br>
+3. [Expects](#expects)
+<br>
+4. [Boolean Tests (Expects)](#boolean-tests-expects)
+<br>
+4.1. [EXPECT_TRUE()](#expect_true)
+<br>
+4.2. [EXPECT_FALSE()](#expect_false)
+5. [Comparison Tests (Expects)](#comparison-tests-expects)
+<br>
+5.1. [EXPECT_EQ()](#expect_eq)
+<br>
+5.2. [EXPECT_NE()](#expect_ne)
+<br>
+5.3. [EXPECT_LT()](#expect_lt)
+<br>
+5.4. [EXPECT_LE()](#expect_le)
+<br>
+5.5. [EXPECT_GT()](#expect_gt)
+<br>
+5.6. [EXPECT_GE()](#expect_ge)
+6. [Float Tests (Expects)](#float-tests-expects)
+
 ## Adding To Your Projects
 
 ### Compiling And Linking

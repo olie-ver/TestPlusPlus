@@ -16,6 +16,7 @@
 #define EXPECT_THROWS_MACRO_CHOOSER(...) \
     GET_3RD_ARG(__VA_ARGS__, EXPECT_THROWS_2_ARGS, EXPECT_THROWS_1_ARGS)
 
+//The actual tests
 #define EXPECT_THROWS(...) EXPECT_THROWS_MACRO_CHOOSER(__VA_ARGS__)(__VA_ARGS__)
 #define EXPECT_DOES_NOT_THROW(func) internal::Expect::doesNotThrow([&](){(func);}, #func, __FILE__, __LINE__)
 
