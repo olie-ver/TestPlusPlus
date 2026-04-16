@@ -5,7 +5,6 @@ A C++ Unit Tester for C++17 written by Oliver Lie. As a beta build/release, I ma
 You may consider this code open-source to be downloaded, modified, and released for others under the condition that any other subsidiary code will keep these same conditions. This includes keeping the software free of charge.
 
 ## Table Of Contents
-## Table Of Contents
 
 1. [Adding To Your Projects](#adding-to-your-projects)
     1. [Compiling And Linking](#compiling-and-linking)
@@ -329,7 +328,7 @@ All string tests take in two parameters, which are "strings." Unlike the [float 
 `EXPECT_STR_EQ()` takes in two parameters of the types defined [above](#string-tests-expects), and checks if they are equal. The test passes iff they are equal, and fails otherwise.
 
 ### EXPECT_STR_NE()
-`EXPECT_STR_NE()` takes in two parameters of the types defined [above](#string-tests-expects), and checks if they are equal. The test passes iff they are not equal, and fails otherwise.
+`EXPECT_STR_NE()` takes in two parameters of the types defined [above](#string-tests-expects), and checks if they are not equal. The test passes iff they are not equal, and fails otherwise.
 
 ## Throws Tests (Expects)
 All Throws tests work best for debugging and printing with std::exception. This does not mean that you can't pass in an arbitrary type, it just means that there is no guarantee that the type can be printed. 
