@@ -55,7 +55,7 @@ namespace internal {
             T absTol = static_cast<T>(abs_tol);
             T relTol = static_cast<T>(rel_tol);
 
-            if (std::abs(aa - bb) > std::max(absTol, relTol * std::max(std::abs(aa), std::abs(bb)))) {
+            if (std::abs(aa - bb) > std::max(std::abs(absTol), std::abs(relTol) * std::max(std::abs(aa), std::abs(bb)))) {
                 Runner::CURRENT_TEST->failures.push_back({
                     std::string("Expected |a - b| <= max(abs_tol, rel_tol * max(|a|, |b|))") 
                         + "\n      a = " + Helpers::toString(aa) 
@@ -116,7 +116,7 @@ namespace internal {
             T bb = static_cast<T>(b);
             T relTol = static_cast<T>(rel_tol);
 
-            if (std::abs(aa - bb) > relTol * std::max(std::abs(aa), std::abs(bb))) {
+            if (std::abs(aa - bb) > std::abs(relTol) * std::max(std::abs(aa), std::abs(bb))) {
                 Runner::CURRENT_TEST->failures.push_back({
                     std::string("Expected |a - b| <= rel_tol * max(|a|, |b|)") 
                         + "\n      a = " + Helpers::toString(aa) 
