@@ -1,11 +1,12 @@
 # C++ Unit Tester V17.0.0 (Beta)
-A C++ Unit Tester for C++17 written by Oliver Lie.
+A C++ Unit Tester for C++17 written by Oliver Lie. As a beta build/release, I make no guarantees that future versions will work the same, and implementations could change until the first working release.
 
 ### License/Conditions of Usage
 You may consider this code open-source to be downloaded, modified, and released for others under the condition that any other subsidiary code will keep these same conditions. This includes keeping the software free of charge.
 
 ## Table Of Contents
-1. [Adding To Your Projects](#adding-to-your-projects) <br>
+1. [Adding To Your Projects](#adding-to-your-projects) 
+<br>
 1.1. [Compiling And Linking](#compiling-and-linking)
 <br>
 1.2. [Include Inside Your Project](#include-inside-your-project)
@@ -21,31 +22,31 @@ You may consider this code open-source to be downloaded, modified, and released 
 <br>
 4. [Boolean Tests (Expects)](#boolean-tests-expects)
 <br>
-4.1. [EXPECT_TRUE()](#expect_true)
+4.1. [Expect True](#expect_true)
 <br>
-4.2. [EXPECT_FALSE()](#expect_false)
+4.2. [Expect False](#expect_false)
 5. [Comparison Tests (Expects)](#comparison-tests-expects)
 <br>
-5.1. [EXPECT_EQ()](#expect_eq)
+5.1. [Expect Equal](#expect_eq)
 <br>
-5.2. [EXPECT_NE()](#expect_ne)
+5.2. [Expect Not Equal](#expect_ne)
 <br>
-5.3. [EXPECT_LT()](#expect_lt)
+5.3. [Expect Less Than](#expect_lt)
 <br>
-5.4. [EXPECT_LE()](#expect_le)
+5.4. [Expect Less Than Or Equal](#expect_le)
 <br>
-5.5. [EXPECT_GT()](#expect_gt)
+5.5. [Expect Greater Than](#expect_gt)
 <br>
-5.6. [EXPECT_GE()](#expect_ge)
+5.6. [Expect Greater Than Or Equal](#expect_ge)
 6. [Float Tests (Expects)](#float-tests-expects)
 
 ## Adding To Your Projects
 
 ### Compiling And Linking
 In order to add to your projects, you need the libtester.a library file. As a static library, it will need to be linked to in the compilation phase. A minimum working directory to compile and link the library is as follows: <br> 
-Root <br> 
-&emsp;/include <br>
-&emsp;&emsp;/tester <br> 
+Root/ <br> 
+&emsp;include/ <br>
+&emsp;&emsp;tester/ <br> 
 &emsp;libtester.a <br> 
 &emsp;Main.cpp <br> 
 With this, the compile command would be: <br> 
@@ -294,5 +295,20 @@ D_TEST(example) {
 ```
 
 ## Float Tests (Expects)
+All Float tests that take multiple parameters are capable of being used with mixed floating point types. Ie, it is valid to pass in a `float` and a `double` or some other combination of mixed floating point types. When this happens, each parameter will be cast to be the common type amongst the parameters. 
 
-### 
+### EXPECT_REL_NEAR()
+`EXPECT_REL_NEAR()` takes in three floating point values: two values and a relative tolerance. It then checks if `|first - second| <= |relativeTolerance| * max(first, second)`, verbally, it checks that the absolute value of the difference between the two values is less than or equal to the product of the relative tolerance and the larger of the two values. It passes iff the above condition is true and fails otherwise.
+
+### EXPECT_ABS_NEAR()
+`EXPECT_ABS_NEAR()` takes in three floating point values: two values and an absolute tolerance. It then checks if `|first - second| <= |absoluteTolerance|`. Verbally, if checks if the absolute value of the difference is less than or equal to the absolute value of the absolute tolerance. It passes iff this is true and fails otherwise.
+
+### EXPECT_NEAR()
+`EXPECT_NEAR()` takes in three or four floating values: two values, an absolute tolerance, and an optional parameter for a relative tolerance. In the case of a relative tolerance being missing, it will fall back onto checking absolute nearness [See Above](#expect_abs_near). 
+In the case that all four parameters are provided, it checks if `|first - second| <= max(|absoluteTolerance|, |relativeTolerance| * max(|first|, |second|))`. In other words, it computes the absolute difference of the first and second value and checks that it's less than or equal to the larger of the absolute values of the absolute and relative thresholds. Iff the above condition is satisfied, it passes, and fails otherwise. 
+
+### IS_NAN()
+`IS_NAN()` takes in a value and checks that it is equivalent to `NaN`. It passes if the passed in value is `NaN` and fails otherwise.
+
+### IS_NOT_NAN()
+`IS_NOT_NAN()` takes in a value and checks that it is not equivalent to `NaN`. It passes if the passed in value is not `NaN` and fails otherwise.
