@@ -17,7 +17,7 @@ namespace internal {
             size_t operator()(const std::pair<std::string, std::string>& p) const {
                 size_t h1 = std::hash<std::string>{}(p.first);
                 size_t h2 = std::hash<std::string>{}(p.second);
-                return h1 ^ (h2 << 1); // simple but effective
+                return h1 ^ (h2 << 1);
             }
         };
 
