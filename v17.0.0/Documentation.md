@@ -145,7 +145,7 @@ TEST(another_suite_name, not_unique_name) {
 ```
 
 ### Different Types of Tests
-There are two different types of tests as of now: Asserts and Expects. Each kind of test have an Assert and an Expect counterpart. Asserts will terminate the program immediately upon failure, excluding logging and output, and Expects will record the failure but continue running until all tests have been completed or an Asserts fails. 
+There is only one type of test type available: Expect. Expects will run your tests and will log passing/failing/skipping with messages. Upon failure for tests, Expects will not terminate the program and will run to fruition
 
 ## Expects
 Expects are tests that will evaluate the expression(s) being passed in and record any failures. Failures will not result in termination of the program, in other words, if you define tests using only Expects, it will run each test no matter how many failures occur. At the end of the test run, every passing/failure will be recorded.
