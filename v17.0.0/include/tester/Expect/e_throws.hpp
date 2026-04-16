@@ -8,8 +8,10 @@
 #include <string>
 #include <exception>
 
-#define EXPECT_THROWS_1_ARGS(func) internal::Expect::throws([&]() {(func);}, #func, __FILE__, __LINE__)
-#define EXPECT_THROWS_2_ARGS(func, ex) internal::Expect::throws<ex>([&]() {(func);}, #func, __FILE__, __LINE__)
+//Needs to handle anything throwing, not just std::exceptions
+
+#define EXPECT_THROWS_1_ARGS(func) internal::Expect::throws([&]() {(func());}, #func, __FILE__, __LINE__)
+#define EXPECT_THROWS_2_ARGS(func, ex) internal::Expect::throws<ex>([&]() {(func());}, #func, __FILE__, __LINE__)
 
 #define GET_3RD_ARG(arg1, arg2, arg3, ...) arg3
 
@@ -18,7 +20,7 @@
 
 //The actual tests
 #define EXPECT_THROWS(...) EXPECT_THROWS_MACRO_CHOOSER(__VA_ARGS__)(__VA_ARGS__)
-#define EXPECT_DOES_NOT_THROW(func) internal::Expect::doesNotThrow([&](){(func);}, #func, __FILE__, __LINE__)
+#define EXPECT_DOES_NOT_THROW(func) internal::Expect::doesNotThrow([&](){(func());}, #func, __FILE__, __LINE__)
 
 namespace internal {
     namespace Expect {
@@ -33,9 +35,13 @@ namespace internal {
                         file,
                         line
                     });
-                } catch (const std::exception& ex) {
+                }
+                catch (const std::exception& ex) {
 
-                }     
+                }  
+                catch (...) {
+                    
+                }   
             } else {
                 try {
                     func();
@@ -47,7 +53,7 @@ namespace internal {
                     });
                 } catch (const Expected& ex) {
 
-                } catch (const std::exception& ex) {
+                } catch (...) {
                     std::string actualType = "unknown";
                     std::string expectedType = Helpers::demangle(typeid(Expected).name());
 
@@ -81,6 +87,14 @@ namespace internal {
                     std::string("Expected function \"") + funcName 
                     + std::string("\" to not throw an exception, but it did\n") 
                     + std::string("    Error message: \"") + ex.what() + "\"",
+                    file,
+                    line
+                });
+            } catch (...) {
+                Runner::CURRENT_TEST->failures.push_back({
+                    std::string("Expected function \"") + funcName 
+                    + std::string("\" to not throw an exception, but it did\n") 
+                    + std::string("    Exception type: unknown"),
                     file,
                     line
                 });

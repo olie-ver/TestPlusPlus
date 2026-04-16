@@ -77,9 +77,9 @@ namespace internal {
         /// @param abs_tol the absolute tolerance
         /// @param file the file the function was called from
         /// @param line the line the function was called on
-        template <typename A, typename B, typename T>
-        inline void absolutelyEqual(A a, B b, T abs_tol, const char* file, int line) {
-            using T = std::common_type_t<A, B, T1, T2>;
+        template <typename A, typename B, typename T1>
+        inline void absolutelyEqual(A a, B b, T1 abs_tol, const char* file, int line) {
+            using T = std::common_type_t<A, B, T1>;
             static_assert(std::is_floating_point<T>::value);
             
             T aa = static_cast<T>(a);
@@ -107,9 +107,9 @@ namespace internal {
         /// @param rel_tol the relative tolerance
         /// @param file the file the function was called from
         /// @param line the line the function was called on
-        template <typename A, typename B, typename T>
-        inline void relativelyEqual(A a, B b, T rel_tol, const char* file, int line) {
-            using T = std::common_type_t<A, B, T1, T2>;
+        template <typename A, typename B, typename T1>
+        inline void relativelyEqual(A a, B b, T1 rel_tol, const char* file, int line) {
+            using T = std::common_type_t<A, B, T1>;
             static_assert(std::is_floating_point<T>::value);
 
             T aa = static_cast<T>(a);
