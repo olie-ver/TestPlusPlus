@@ -5,40 +5,41 @@ A C++ Unit Tester for C++17 written by Oliver Lie. As a beta build/release, I ma
 You may consider this code open-source to be downloaded, modified, and released for others under the condition that any other subsidiary code will keep these same conditions. This includes keeping the software free of charge.
 
 ## Table Of Contents
-1. [Adding To Your Projects](#adding-to-your-projects) 
-<br>
-1.1. [Compiling And Linking](#compiling-and-linking)
-<br>
-1.2. [Include Inside Your Project](#include-inside-your-project)
-<br>
-1.3. [CLI Usage](#cli-usage)
+## Table Of Contents
+
+1. [Adding To Your Projects](#adding-to-your-projects)
+    1. [Compiling And Linking](#compiling-and-linking)
+    2. [Include Inside Your Project](#include-inside-your-project)
+    3. [CLI Usage](#cli-usage)
 2. [Testing](#testing)
-<br>
-2.1. [Registering Tests](#registering-tests)
-<br>
-2.2. [Different Types Of Tests](#different-types-of-tests)
-<br>
+    1. [Registering Tests](#registering-tests)
+    2. [Different Types Of Tests](#different-types-of-tests)
 3. [Expects](#expects)
-<br>
 4. [Boolean Tests (Expects)](#boolean-tests-expects)
-<br>
-4.1. [Expect True](#expect_true)
-<br>
-4.2. [Expect False](#expect_false)
+    1. [Expect True](#expect_true)
+    2. [Expect False](#expect_false)
 5. [Comparison Tests (Expects)](#comparison-tests-expects)
-<br>
-5.1. [Expect Equal](#expect_eq)
-<br>
-5.2. [Expect Not Equal](#expect_ne)
-<br>
-5.3. [Expect Less Than](#expect_lt)
-<br>
-5.4. [Expect Less Than Or Equal](#expect_le)
-<br>
-5.5. [Expect Greater Than](#expect_gt)
-<br>
-5.6. [Expect Greater Than Or Equal](#expect_ge)
+    1. [Expect Equal](#expect_eq)
+    2. [Expect Not Equal](#expect_ne)
+    3. [Expect Less Than](#expect_lt)
+    4. [Expect Less Than Or Equal](#expect_le)
+    5. [Expect Greater Than](#expect_gt)
+    6. [Expect Greater Than Or Equal](#expect_ge)
 6. [Float Tests (Expects)](#float-tests-expects)
+    1. [Expect Relatively Near](#expect_rel_near)
+    2. [Expect Absolutely Near](#expect_abs_near)
+    3. [Expect Near](#expect_near)
+    4. [Is NaN](#expect_nan)
+    5. [Is Not NaN](#expect_not_nan)
+7. [Null Tests (Expects)](#null-tests-expects)
+    1. [Expect Null](#expect_null)
+    2. [Expect Not Null](#expect_not_null)
+8. [String Tests (Expects)](#string-tests-expects)
+    1. [Expect String Equals](#expect_str_eq)
+    2. [Expect String Not Equals](#expect_str_ne)
+9. [Throws Tests (Expects)](#throws-tests-expects)
+    1. [Expect Throws](#expect_throws)
+    2. [Expect Does Not Throw](#expect_does_not_throw)
 
 ## Adding To Your Projects
 
@@ -304,11 +305,37 @@ All Float tests that take multiple parameters are capable of being used with mix
 `EXPECT_ABS_NEAR()` takes in three floating point values: two values and an absolute tolerance. It then checks if `|first - second| <= |absoluteTolerance|`. Verbally, if checks if the absolute value of the difference is less than or equal to the absolute value of the absolute tolerance. It passes iff this is true and fails otherwise.
 
 ### EXPECT_NEAR()
-`EXPECT_NEAR()` takes in three or four floating values: two values, an absolute tolerance, and an optional parameter for a relative tolerance. In the case of a relative tolerance being missing, it will fall back onto checking absolute nearness [See Above](#expect_abs_near). 
+`EXPECT_NEAR()` takes in three or four floating values: two values, an absolute tolerance, and an optional parameter for a relative tolerance. In the case of a relative tolerance being missing, it will fall back onto checking absolute nearness [see above](#expect_abs_near). 
 In the case that all four parameters are provided, it checks if `|first - second| <= max(|absoluteTolerance|, |relativeTolerance| * max(|first|, |second|))`. In other words, it computes the absolute difference of the first and second value and checks that it's less than or equal to the larger of the absolute values of the absolute and relative thresholds. Iff the above condition is satisfied, it passes, and fails otherwise. 
 
-### IS_NAN()
-`IS_NAN()` takes in a value and checks that it is equivalent to `NaN`. It passes if the passed in value is `NaN` and fails otherwise.
+### EXPECT_NAN()
+`EXPECT_NAN()` takes in a value and checks that it is equivalent to `NaN`. It passes if the passed in value is `NaN` and fails otherwise.
 
-### IS_NOT_NAN()
-`IS_NOT_NAN()` takes in a value and checks that it is not equivalent to `NaN`. It passes if the passed in value is not `NaN` and fails otherwise.
+### EXPECT_NOT_NAN()
+`EXPECT_NOT_NAN()` takes in a value and checks that it is not equivalent to `NaN`. It passes if the passed in value is not `NaN` and fails otherwise.
+
+## Null Tests (Expects)
+
+### EXPECT_NULL()
+`EXPECT_NULL()` takes in a single value and checks if the passed in value is `nullptr`. It will pass iff it is and will fail otherwise.
+
+### EXPECT_NOT_NULL()
+`EXPECT_NOT_NULL()` takes in a single value and checks if the passed in value is `nullptr`. It will pass iff it is not and will fail otherwise.
+
+## String Tests (Expects)
+All string tests take in two parameters, which are "strings." Unlike the [float tests](#float-tests-expects), both parameters must be the same type. The allowed types to be passed in are: `std::string`, `char*`, and `char[]`. As of now, initializer lists of `char` and `char[]` are not allowed to be passed in.
+
+### EXPECT_STR_EQ()
+`EXPECT_STR_EQ()` takes in two parameters of the types defined [above](#string-tests-expects), and checks if they are equal. The test passes iff they are equal, and fails otherwise.
+
+### EXPECT_STR_NE()
+`EXPECT_STR_NE()` takes in two parameters of the types defined [above](#string-tests-expects), and checks if they are equal. The test passes iff they are not equal, and fails otherwise.
+
+## Throws Tests (Expects)
+All Throws tests work best for debugging and printing with std::exception. This does not mean that you can't pass in an arbitrary type, it just means that there is no guarantee that the type can be printed. 
+
+### EXPECT_THROWS()
+`EXPECT_THROWS()` takes up to two arguments: a function, and an optional type that should be thrown. In the case that only a function is passed into the the macro, the test passes iff it throws at all and fails otherwise. In the case that you pass in the type of what should be thrown, the test passes iff that exact type is thrown and fails otherwise.
+
+### EXPECT_DOES_NOT_THROW()
+`EXPECT_DOES_NOT_THROW()` takes in only one argument, the function that should be called. It passes iff it does not throw any exception.
