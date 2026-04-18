@@ -60,18 +60,27 @@ namespace internal {
             CURRENT_TEST = &result;
 
             std::chrono::steady_clock::time_point start_time = std::chrono::steady_clock::now();
+        
+            try {
+                test.test();
+                std::chrono::steady_clock::time_point end_time = std::chrono::steady_clock::now();
 
-            test.test();
+                result.durationMs = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time).count();
 
-            std::chrono::steady_clock::time_point end_time = std::chrono::steady_clock::now();
+                if (!result.failures.empty()) {
+                    result.status = Core::TestStatus::Failed;
+                }
 
-            result.durationMs = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time).count();
+                return result;
+            } catch (const Core::AssertionFailure&) {
+                std::chrono::steady_clock::time_point end_time = std::chrono::steady_clock::now();
 
-            if (!result.failures.empty()) {
+                result.durationMs = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time).count();
+
                 result.status = Core::TestStatus::Failed;
-            }
 
-            return result;
+                return result;
+            }
         }
     }
 }

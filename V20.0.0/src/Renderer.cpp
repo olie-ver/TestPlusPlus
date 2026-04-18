@@ -6,6 +6,7 @@ namespace internal {
     namespace Renderer {
         void ConsoleRenderer::render(Core::TestRun& testRun) {
             std::cout << "Running " << testRun.total << " tests..." << std::endl;
+ 
             std::cout << std::endl;
 
             switch (verb) {
