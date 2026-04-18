@@ -71,6 +71,13 @@ namespace internal {
 
             double totalMs = 0.0;
         };
+
+        //An assertion failure struct
+        struct AssertionFailure : public std::exception {
+            const char* what() const noexcept override {
+                return "Assertion failed";
+            }
+        };
     }
 }
 
