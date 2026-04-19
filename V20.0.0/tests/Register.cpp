@@ -1,8 +1,6 @@
 #include <tester/Tests.hpp>
 
 D_TEST(0) {
-    char* ptr = nullptr;
-    char*& thing = ptr;
-
-    EXPECT_NOT_NULL(thing);
+    // EXPECT_STR_EQ({'a', 'b', 'c'}, {'a', 'b', 'c'});
+    // internal::Expects::expectStringEquals({'a', 'b', 'c'}, {'a', 'b', 'c'}, __FILE__, __LINE__);
 }
