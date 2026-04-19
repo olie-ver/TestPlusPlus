@@ -17,6 +17,19 @@ You may consider this code open-source to be downloaded, modified, and released 
     2. [Assert False](#assert_false)
     3. [Expect True](#expect_true)
     4. [Expect False](#expect_false)
+4. [Comparison Tests](#comparison-tests)
+    1. [Assert Equals](#assert_eq)
+    2. [Assert Not Equals](#assert_ne)
+    3. [Assert Less Than](#assert_lt)
+    4. [Assert Less Than or Equals](#assert_le)
+    5. [Assert Greater Than](#assert_gt)
+    6. [Assert Greater Than or Equals](#assert_ge)
+    7. [Expect Equals](#expect_eq)
+    8. [Expect Not Equals](#expect_ne)
+    9. [Expect Less Than](#expect_lt)
+    10. [Expect Less Than or Equals](#expect_le)
+    11. [Expect Greater Than](#expect_gt)
+    12. [Expect Greater Than or Equals](#expect_ge)
 
 ## Adding To Your Projects
 
@@ -139,7 +152,7 @@ Boolean tests are used to check the truthiness of a value/condition.
 ```
 #include <tester/Tests.hpp>
 
-D_TEST(example) {
+D_TEST(assert_true) {
     ASSERT_TRUE(true); //passes
     ASSERT_TRUE(5 != 10); //passes
     ASSERT_TRUE(1 == 2); //fails
@@ -153,7 +166,7 @@ D_TEST(example) {
 ```
 #include <tester/Tests.hpp>
 
-D_TEST(example) {
+D_TEST(assert_false) {
     ASSERT_FALSE(false); //passes
     ASSERT_FALSE(5 == 10); //passes
     ASSERT_FALSE(1 != 2); //fails
@@ -167,7 +180,7 @@ D_TEST(example) {
 ```
 #include <tester/Tests.hpp>
 
-D_TEST(example) {
+D_TEST(expect_true) {
     EXPECT_TRUE(true); //passes
     EXPECT_TRUE(5 != 10); //passes
     EXPECT_TRUE(1 == 2); //fails
@@ -181,10 +194,186 @@ D_TEST(example) {
 ```
 #include <tester/Tests.hpp>
 
-D_TEST(example) {
+D_TEST(expect_false) {
     EXPECT_FALSE(false); //passes
     EXPECT_FALSE(5 == 10); //passes
     EXPECT_FALSE(1 != 2); //fails
     EXPECT_FALSE("cool", "nice"); //runs and passes
+}
+```
+
+## Comparison Tests
+Comparison tests are used to compare the relation between two different values. 
+
+1. [Assert Equals](#assert_eq)
+2. [Assert Not Equals](#assert_ne)
+3. [Assert Less Than](#assert_lt)
+4. [Assert Less Than or Equals](#assert_le)
+5. [Assert Greater Than](#assert_gt)
+6. [Assert Greater Than or Equals](#assert_ge)
+7. [Expect Equals](#expect_eq)
+8. [Expect Not Equals](#expect_ne)
+9. [Expect Less Than](#expect_lt)
+10. [Expect Less Than or Equals](#expect_le)
+11. [Expect Greater Than](#expect_gt)
+12. [Expect Greater Than or Equals](#expect_ge)
+
+### ASSERT_EQ()
+`ASSERT_EQ(a, b)` takes in two parameters, `a` and `b`, and compares as defined by the `==` operator. It passes iff `a == b` is `true` and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+
+```
+#include <tester/Tests.hpp>
+#include <vector>
+
+D_TEST(assert_equals) {
+    ASSERT_EQ(5, 5); //passes
+    std::vector<int> numbers = {1, 2, 3};
+    std::vector<int>& ref = numbers;
+    ASSERT_EQ(ref, numbers); //passes
+    ASSERT_EQ(numbers, ref);
+}
+```
+
+### ASSERT_NE()
+`ASSERT_NE(a, b)` takes in two parameters, `a` and `b`, and compares as defined by the `!=` operator. If the `!=` operator is not defined between the two parameters, it will fall back on using `==` for comparison. In the case that `!=` is defined on `a` and `b`, the test will pass iff `a != b` is `true` and fails otherwise. In the case that `!=` is not defined on `a` and `b`, the test will pass iff `!(a == b)` is `true` and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+
+```
+#include <tester/Tests.hpp>
+#include <vector>
+
+D_TEST(assert_not_equals) {
+    ASSERT_NE(10, 5); //passes
+    std::vector<int> numbers = {1, 2, 3};
+    std::vector<int>& ref = numbers;
+    ASSERT_NE(ref, numbers); //fails
+    ASSERT_NE(numbers, ref); //doesn't run
+}
+```
+
+### ASSERT_LT()
+`ASSERT_LT(a, b)` takes in two parameters, `a` and `b`, and compares as defined by the `<` operator. It passes iff `a < b` is `true` and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+
+```
+#include <tester/Tests.hpp>
+
+D_TEST(assert_less_than) {
+    ASSERT_LT(-1, 5); //passes
+    ASSERT_LT(-5.00, 0); //passes
+}
+```
+
+### ASSERT_LE()
+`ASSERT_LE(a, b)` takes in two parameters, `a` and `b`, and compares as defined by the `<=` operator. It passes iff `a <= b` is `true` and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+
+```
+#include <tester/Tests.hpp>
+
+D_TEST(assert_less_than_equals) {
+    ASSERT_LE(-1, 5); //passes
+    ASSERT_LE(5, 5); //passes
+    ASSERT_LE(1, 0); //fails
+}
+```
+
+### ASSERT_GT()
+`ASSERT_GT(a, b)` takes in two parameters, `a` and `b`, and compares as defined by the `>` operator. It passes iff `a > b` is `true` and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+
+```
+#include <tester/Tests.hpp>
+
+D_TEST(assert_greater_than) {
+    ASSERT_GT(0x105, 5); //passes
+    ASSERT_GT(-5.00, 0); //fails
+}
+```
+
+### ASSERT_GE()
+`ASSERT_GE(a, b)` takes in two parameters, `a` and `b`, and compares as defined by the `>=` operator. It passes iff `a >= b` is `true` and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+
+```
+#include <tester/Tests.hpp>
+
+D_TEST(assert_greater_than_equals) {
+    ASSERT_GE(0x105, 5); //passes
+    ASSERT_GE(0x105, 0x104); //passes
+}
+```
+
+### EXPECT_EQ()
+`EXPECT_EQ(a, b)` takes in two parameters, `a` and `b`, and compares as defined by the `==` operator. It passes iff `a == b` is `true` and fails otherwise.
+
+```
+#include <tester/Tests.hpp>
+#include <vector>
+
+D_TEST(assert_equals) {
+    EXPECT_EQ(5, 5); //passes
+    std::vector<int> numbers = {1, 2, 3};
+    std::vector<int>& ref = numbers;
+    EXPECT_EQ(ref, numbers); //passes
+    EXPECT_EQ(numbers, ref);
+}
+```
+
+### EXPECT_NE()
+`EXPECT_NE(a, b)` takes in two parameters, `a` and `b`, and compares as defined by the `!=` operator. If the `!=` operator is not defined between the two parameters, it will fall back on using `==` for comparison. In the case that `!=` is defined on `a` and `b`, the test will pass iff `a != b` is `true` and fails otherwise. In the case that `!=` is not defined on `a` and `b`, the test will pass iff `!(a == b)` is `true` and fails otherwise.
+
+```
+#include <tester/Tests.hpp>
+#include <vector>
+
+D_TEST(assert_not_equals) {
+    EXPECT_NE(10, 5); //passes
+    std::vector<int> numbers = {1, 2, 3};
+    std::vector<int>& ref = numbers;
+    EXPECT_NE(ref, numbers); //fails
+    EXPECT_NE(numbers, ref); //runs and fails
+}
+```
+
+### EXPECT_LT()
+`EXPECT_LT(a, b)` takes in two parameters, `a` and `b`, and compares as defined by the `<` operator. It passes iff `a < b` is `true` and fails otherwise.
+
+```
+#include <tester/Tests.hpp>
+
+D_TEST(assert_less_than) {
+    EXPECT_LT(-1, 5); //passes
+    EXPECT_LT(-5.00, 0); //passes
+}
+```
+
+### EXPECT_LE()
+`EXPECT_LE(a, b)` takes in two parameters, `a` and `b`, and compares as defined by the `<=` operator. It passes iff `a <= b` is `true` and fails otherwise.
+```
+#include <tester/Tests.hpp>
+
+D_TEST(assert_less_than_equals) {
+    EXPECT_LE(-1, 5); //passes
+    EXPECT_LE(5, 5); //passes
+    EXPECT_LE(1, 0); //fails
+}
+```
+
+### EXPECT_GT()
+`EXPECT_GT(a, b)` takes in two parameters, `a` and `b`, and compares as defined by the `>` operator. It passes iff `a > b` is `true` and fails otherwise.
+
+```
+#include <tester/Tests.hpp>
+
+D_TEST(assert_greater_than) {
+    EXPECT_GT(0x105, 5); //passes
+    EXPECT_GT(-5.00, 0); //fails
+}
+```
+
+### EXPECT_GE()
+`EXPECT_GE(a, b)` takes in two parameters, `a` and `b`, and compares as defined by the `<=` operator. It passes iff `a <= b` is `true` and fails otherwise.
+```
+#include <tester/Tests.hpp>
+
+D_TEST(assert_greater_than_equals) {
+    EXPECT_GE(0x105, 5); //passes
+    EXPECT_GE(0x105, 0x104); //passes
 }
 ```
