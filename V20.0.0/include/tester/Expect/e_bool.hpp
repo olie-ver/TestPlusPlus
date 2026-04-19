@@ -5,11 +5,11 @@
 
 #include "../Runner.hpp"
 
-#define EXPECT_TRUE(cond) internal::Expect::expectTrue((cond), #cond, __FILE__, __LINE__)
-#define EXPECT_FALSE(cond) internal::Expect::expectFalse((cond), #cond, __FILE__, __LINE__)
+#define EXPECT_TRUE(cond) internal::Expects::expectTrue((cond), #cond, __FILE__, __LINE__)
+#define EXPECT_FALSE(cond) internal::Expects::expectFalse((cond), #cond, __FILE__, __LINE__)
 
 namespace internal {
-    namespace Expect {
+    namespace Expects {
         /// @brief An Expects test for expecting a true value
         /// @param cond a condition
         /// @param expr the condition as an expression

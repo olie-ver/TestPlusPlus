@@ -6,7 +6,7 @@
 #include "Expect/e_bool.hpp"
 #include "Expect/e_cmp.hpp"
 // #include "Expect/e_flt.hpp"
-// #include "Expect/e_null.hpp"
+#include "Expect/e_null.hpp"
 // #include "Expect/e_string.hpp"
 // #include "Expect/e_throws.hpp"
 // #include "Expect/e_iterable.hpp"

@@ -11,7 +11,7 @@
 #define EXPECT_NE(a, b) internal::Expects::expectNotEquals((a), (b), __FILE__, __LINE__)
 
 namespace internal {
-    namespace Compare {
+    namespace Expects {
         /// @brief An Expects test for expecting two values to be equal
         /// @tparam A a generic type
         /// @tparam B a generic type

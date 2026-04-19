@@ -30,6 +30,11 @@ You may consider this code open-source to be downloaded, modified, and released 
     10. [Expect Less Than or Equals](#expect_le)
     11. [Expect Greater Than](#expect_gt)
     12. [Expect Greater Than or Equals](#expect_ge)
+5. [Null Tests](#null-tests)
+    1. [Assert Null](#assert_null)
+    2. [Assert Not Null](#assert_not_null)
+    3. [Expect Null](#expect_null)
+    4. [Expect Not Null](#expect_not_null)
 
 ## Adding To Your Projects
 
@@ -375,5 +380,66 @@ D_TEST(assert_greater_than) {
 D_TEST(assert_greater_than_equals) {
     EXPECT_GE(0x105, 5); //passes
     EXPECT_GE(0x105, 0x104); //passes
+}
+```
+
+## Null Tests
+Null tests are used to check if a value is equal to the `nullptr` or not. Since it checks solely for the `nullptr`, passing in the macro `NULL` is not a valid parameter type for any of the test. 
+
+1. [Assert Null](#assert_null)
+2. [Assert Not Null](#assert_not_null)
+3. [Expect Null](#expect_null)
+4. [Expect Not Null](#expect_not_null)
+
+### ASSERT_NULL()
+`ASSERT_NULL(val)` takes in a single parameter `val` and asserts that it's the nullptr. This test passes iff `val == nullptr` and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+
+```
+#include <tester/Tests.hpp>
+
+D_TEST(assert_null) {
+    ASSERT_NULL(nullptr) //passes
+    ASSERT_NULL(NULL) //doesn't even compile
+}
+```
+
+### ASSERT_NOT_NULL()
+`ASSERT_NOT_NULL(val)` takes in a single parameter `val` and asserts that it's not the nullptr. This test passes iff `val != nullptr` and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+
+```
+#include <tester/Tests.hpp>
+
+D_TEST(assert_null) {
+    ASSERT_NOT_NULL("hello") //passes
+    ASSERT_NOT_NULL(nullptr) //fails
+    ASSERT_NOT_NULL(NULL) //doesn't even compile
+}
+```
+
+### EXPECT_NULL()
+`EXPECT_NULL(val)` takes in a single parameter `val` and checks that it's the nullptr. This test passes iff `val == nullptr` and fails otherwise.
+
+```
+#include <tester/Tests.hpp>
+
+D_TEST(assert_null) {
+    void* ptr = nullptr;
+    void*& ref = ptr;
+    EXPECT_NULL(ref) //passes
+    EXPECT_NULL(NULL) //doesn't even compile
+}
+```
+
+### EXPECT_NOT_NULL()
+`EXPECT_NOT_NULL(val)` takes in a single parameter `val` and checks that it's not the nullptr. This test passes iff `val != nullptr` and fails otherwise.
+
+```
+#include <tester/Tests.hpp>
+
+D_TEST(assert_null) {
+    void* ptr = nullptr;
+    void*& ref = ptr;
+    EXPECT_NOT_NULL(ref) //fails
+    EXPECT_NOT_NULL(NULL) //doesn't even compile
 }
 ```

@@ -31,9 +31,9 @@ namespace internal {
                     file,
                     line
                 });
-            }
 
-            throw Core::AssertionFailure;
+                throw Core::AssertionFailure();
+            }
         }
 
         /// @brief An Asserts test for asserting two values to be not equal
@@ -56,7 +56,7 @@ namespace internal {
                         line
                     });
 
-                    throw Core::AssertionFailure;
+                    throw Core::AssertionFailure();
                 }
             } else {
                 if (a == b) {
@@ -68,7 +68,7 @@ namespace internal {
                         line
                     });
 
-                    throw Core::AssertionFailure;
+                    throw Core::AssertionFailure();
                 }
             }
         }
@@ -91,8 +91,8 @@ namespace internal {
                     file,
                     line
                 });
-                
-                throw Core::AssertionFailure;
+
+                throw Core::AssertionFailure();
             }
         }
 
@@ -115,7 +115,7 @@ namespace internal {
                     line
                 });
 
-                throw Core::AssertionFailure;
+                throw Core::AssertionFailure();
             }
         }
 
@@ -137,6 +137,8 @@ namespace internal {
                     file,
                     line
                 });
+
+                throw Core::AssertionFailure();
             }
         }
 
@@ -159,6 +161,8 @@ namespace internal {
                     file,
                     line
                 });
+
+                throw Core::AssertionFailure();
             }
         }
     }

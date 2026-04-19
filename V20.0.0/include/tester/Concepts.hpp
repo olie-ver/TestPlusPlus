@@ -43,11 +43,11 @@ namespace internal {
             { a >= b } -> std::convertible_to<bool>;
         };
 
-        //A concept for types with <=> (spaceship operator) defined
-        // template <typename A, typename B>
-        // concept HasSS = requires(A a, B b) {
-        //     { a <=> b } -> std::convertible_to<>;
-        // };
+        //A concept for types that can be nullable
+        template <typename A>
+        concept Nullable = requires(A a) {
+            std::convertible_to<decltype(a == nullptr), bool>;
+        };
     }
 }
 

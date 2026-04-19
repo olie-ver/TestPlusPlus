@@ -1,10 +1,8 @@
 #include <tester/Tests.hpp>
 
 D_TEST(0) {
-    EXPECT_TRUE(false);
-    ASSERT_TRUE(false);
+    char* ptr = nullptr;
+    char*& thing = ptr;
 
-    int a = 5;
-    int b = 4;
-    // std::weak_ordering c = a <=> b;
+    EXPECT_NOT_NULL(thing);
 }
