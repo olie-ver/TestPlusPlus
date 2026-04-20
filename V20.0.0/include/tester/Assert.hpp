@@ -8,6 +8,8 @@
 #include "Assert/a_bool.hpp"
 #include "Assert/a_cmp.hpp"
 
+#include "Assert/a_null.hpp"
+
 /// @brief An internal namespace. Using anything from within is not advised
 namespace internal {
     /// @brief A tests namespace containing different tests for asserting

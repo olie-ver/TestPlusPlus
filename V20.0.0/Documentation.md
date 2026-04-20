@@ -17,6 +17,24 @@ You may consider this code open-source to be downloaded, modified, and released 
     2. [Assert False](#assert_false)
     3. [Expect True](#expect_true)
     4. [Expect False](#expect_false)
+4. [Comparison Tests](#comparison-tests)
+    1. [Assert Equals](#assert_eq)
+    2. [Assert Not Equals](#assert_ne)
+    3. [Assert Less Than](#assert_lt)
+    4. [Assert Less Than or Equals](#assert_le)
+    5. [Assert Greater Than](#assert_gt)
+    6. [Assert Greater Than or Equals](#assert_ge)
+    7. [Expect Equals](#expect_eq)
+    8. [Expect Not Equals](#expect_ne)
+    9. [Expect Less Than](#expect_lt)
+    10. [Expect Less Than or Equals](#expect_le)
+    11. [Expect Greater Than](#expect_gt)
+    12. [Expect Greater Than or Equals](#expect_ge)
+5. [Null Tests](#null-tests)
+    1. [Assert Null](#assert_null)
+    2. [Assert Not Null](#assert_not_null)
+    3. [Expect Null](#expect_null)
+    4. [Expect Not Null](#expect_not_null)
 
 ## Adding To Your Projects
 
@@ -139,7 +157,7 @@ Boolean tests are used to check the truthiness of a value/condition.
 ```
 #include <tester/Tests.hpp>
 
-D_TEST(example) {
+D_TEST(assert_true) {
     ASSERT_TRUE(true); //passes
     ASSERT_TRUE(5 != 10); //passes
     ASSERT_TRUE(1 == 2); //fails
@@ -153,7 +171,7 @@ D_TEST(example) {
 ```
 #include <tester/Tests.hpp>
 
-D_TEST(example) {
+D_TEST(assert_false) {
     ASSERT_FALSE(false); //passes
     ASSERT_FALSE(5 == 10); //passes
     ASSERT_FALSE(1 != 2); //fails
@@ -167,7 +185,7 @@ D_TEST(example) {
 ```
 #include <tester/Tests.hpp>
 
-D_TEST(example) {
+D_TEST(expect_true) {
     EXPECT_TRUE(true); //passes
     EXPECT_TRUE(5 != 10); //passes
     EXPECT_TRUE(1 == 2); //fails
@@ -181,10 +199,332 @@ D_TEST(example) {
 ```
 #include <tester/Tests.hpp>
 
-D_TEST(example) {
+D_TEST(expect_false) {
     EXPECT_FALSE(false); //passes
     EXPECT_FALSE(5 == 10); //passes
     EXPECT_FALSE(1 != 2); //fails
     EXPECT_FALSE("cool", "nice"); //runs and passes
 }
 ```
+
+## Comparison Tests
+Comparison tests are used to compare the relation between two different values. 
+
+1. [Assert Equals](#assert_eq)
+2. [Assert Not Equals](#assert_ne)
+3. [Assert Less Than](#assert_lt)
+4. [Assert Less Than or Equals](#assert_le)
+5. [Assert Greater Than](#assert_gt)
+6. [Assert Greater Than or Equals](#assert_ge)
+7. [Expect Equals](#expect_eq)
+8. [Expect Not Equals](#expect_ne)
+9. [Expect Less Than](#expect_lt)
+10. [Expect Less Than or Equals](#expect_le)
+11. [Expect Greater Than](#expect_gt)
+12. [Expect Greater Than or Equals](#expect_ge)
+
+### ASSERT_EQ()
+`ASSERT_EQ(a, b)` takes in two parameters, `a` and `b`, and compares as defined by the `==` operator. It passes iff `a == b` is `true` and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+
+```
+#include <tester/Tests.hpp>
+#include <vector>
+
+D_TEST(assert_equals) {
+    ASSERT_EQ(5, 5); //passes
+    std::vector<int> numbers = {1, 2, 3};
+    std::vector<int>& ref = numbers;
+    ASSERT_EQ(ref, numbers); //passes
+    ASSERT_EQ(numbers, ref);
+}
+```
+
+### ASSERT_NE()
+`ASSERT_NE(a, b)` takes in two parameters, `a` and `b`, and compares as defined by the `!=` operator. If the `!=` operator is not defined between the two parameters, it will fall back on using `==` for comparison. In the case that `!=` is defined on `a` and `b`, the test will pass iff `a != b` is `true` and fails otherwise. In the case that `!=` is not defined on `a` and `b`, the test will pass iff `!(a == b)` is `true` and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+
+```
+#include <tester/Tests.hpp>
+#include <vector>
+
+D_TEST(assert_not_equals) {
+    ASSERT_NE(10, 5); //passes
+    std::vector<int> numbers = {1, 2, 3};
+    std::vector<int>& ref = numbers;
+    ASSERT_NE(ref, numbers); //fails
+    ASSERT_NE(numbers, ref); //doesn't run
+}
+```
+
+### ASSERT_LT()
+`ASSERT_LT(a, b)` takes in two parameters, `a` and `b`, and compares as defined by the `<` operator. It passes iff `a < b` is `true` and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+
+```
+#include <tester/Tests.hpp>
+
+D_TEST(assert_less_than) {
+    ASSERT_LT(-1, 5); //passes
+    ASSERT_LT(-5.00, 0); //passes
+}
+```
+
+### ASSERT_LE()
+`ASSERT_LE(a, b)` takes in two parameters, `a` and `b`, and compares as defined by the `<=` operator. It passes iff `a <= b` is `true` and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+
+```
+#include <tester/Tests.hpp>
+
+D_TEST(assert_less_than_equals) {
+    ASSERT_LE(-1, 5); //passes
+    ASSERT_LE(5, 5); //passes
+    ASSERT_LE(1, 0); //fails
+}
+```
+
+### ASSERT_GT()
+`ASSERT_GT(a, b)` takes in two parameters, `a` and `b`, and compares as defined by the `>` operator. It passes iff `a > b` is `true` and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+
+```
+#include <tester/Tests.hpp>
+
+D_TEST(assert_greater_than) {
+    ASSERT_GT(0x105, 5); //passes
+    ASSERT_GT(-5.00, 0); //fails
+}
+```
+
+### ASSERT_GE()
+`ASSERT_GE(a, b)` takes in two parameters, `a` and `b`, and compares as defined by the `>=` operator. It passes iff `a >= b` is `true` and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+
+```
+#include <tester/Tests.hpp>
+
+D_TEST(assert_greater_than_equals) {
+    ASSERT_GE(0x105, 5); //passes
+    ASSERT_GE(0x105, 0x104); //passes
+}
+```
+
+### EXPECT_EQ()
+`EXPECT_EQ(a, b)` takes in two parameters, `a` and `b`, and compares as defined by the `==` operator. It passes iff `a == b` is `true` and fails otherwise.
+
+```
+#include <tester/Tests.hpp>
+#include <vector>
+
+D_TEST(assert_equals) {
+    EXPECT_EQ(5, 5); //passes
+    std::vector<int> numbers = {1, 2, 3};
+    std::vector<int>& ref = numbers;
+    EXPECT_EQ(ref, numbers); //passes
+    EXPECT_EQ(numbers, ref);
+}
+```
+
+### EXPECT_NE()
+`EXPECT_NE(a, b)` takes in two parameters, `a` and `b`, and compares as defined by the `!=` operator. If the `!=` operator is not defined between the two parameters, it will fall back on using `==` for comparison. In the case that `!=` is defined on `a` and `b`, the test will pass iff `a != b` is `true` and fails otherwise. In the case that `!=` is not defined on `a` and `b`, the test will pass iff `!(a == b)` is `true` and fails otherwise.
+
+```
+#include <tester/Tests.hpp>
+#include <vector>
+
+D_TEST(assert_not_equals) {
+    EXPECT_NE(10, 5); //passes
+    std::vector<int> numbers = {1, 2, 3};
+    std::vector<int>& ref = numbers;
+    EXPECT_NE(ref, numbers); //fails
+    EXPECT_NE(numbers, ref); //runs and fails
+}
+```
+
+### EXPECT_LT()
+`EXPECT_LT(a, b)` takes in two parameters, `a` and `b`, and compares as defined by the `<` operator. It passes iff `a < b` is `true` and fails otherwise.
+
+```
+#include <tester/Tests.hpp>
+
+D_TEST(assert_less_than) {
+    EXPECT_LT(-1, 5); //passes
+    EXPECT_LT(-5.00, 0); //passes
+}
+```
+
+### EXPECT_LE()
+`EXPECT_LE(a, b)` takes in two parameters, `a` and `b`, and compares as defined by the `<=` operator. It passes iff `a <= b` is `true` and fails otherwise.
+```
+#include <tester/Tests.hpp>
+
+D_TEST(assert_less_than_equals) {
+    EXPECT_LE(-1, 5); //passes
+    EXPECT_LE(5, 5); //passes
+    EXPECT_LE(1, 0); //fails
+}
+```
+
+### EXPECT_GT()
+`EXPECT_GT(a, b)` takes in two parameters, `a` and `b`, and compares as defined by the `>` operator. It passes iff `a > b` is `true` and fails otherwise.
+
+```
+#include <tester/Tests.hpp>
+
+D_TEST(assert_greater_than) {
+    EXPECT_GT(0x105, 5); //passes
+    EXPECT_GT(-5.00, 0); //fails
+}
+```
+
+### EXPECT_GE()
+`EXPECT_GE(a, b)` takes in two parameters, `a` and `b`, and compares as defined by the `<=` operator. It passes iff `a <= b` is `true` and fails otherwise.
+```
+#include <tester/Tests.hpp>
+
+D_TEST(assert_greater_than_equals) {
+    EXPECT_GE(0x105, 5); //passes
+    EXPECT_GE(0x105, 0x104); //passes
+}
+```
+
+## Null Tests
+Null tests are used to check if a value is equal to the `nullptr` or not. Since it checks solely for the `nullptr`, passing in the macro `NULL` is not a valid parameter type for any of the test. 
+
+1. [Assert Null](#assert_null)
+2. [Assert Not Null](#assert_not_null)
+3. [Expect Null](#expect_null)
+4. [Expect Not Null](#expect_not_null)
+
+### ASSERT_NULL()
+`ASSERT_NULL(val)` takes in a single parameter `val` and asserts that it's the nullptr. This test passes iff `val == nullptr` and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+
+```
+#include <tester/Tests.hpp>
+
+D_TEST(assert_null) {
+    ASSERT_NULL(nullptr) //passes
+    ASSERT_NULL(NULL) //doesn't even compile
+}
+```
+
+### ASSERT_NOT_NULL()
+`ASSERT_NOT_NULL(val)` takes in a single parameter `val` and asserts that it's not the nullptr. This test passes iff `val != nullptr` and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+
+```
+#include <tester/Tests.hpp>
+
+D_TEST(assert_null) {
+    ASSERT_NOT_NULL("hello") //passes
+    ASSERT_NOT_NULL(nullptr) //fails
+    ASSERT_NOT_NULL(NULL) //doesn't even compile
+}
+```
+
+### EXPECT_NULL()
+`EXPECT_NULL(val)` takes in a single parameter `val` and checks that it's the nullptr. This test passes iff `val == nullptr` and fails otherwise.
+
+```
+#include <tester/Tests.hpp>
+
+D_TEST(assert_null) {
+    void* ptr = nullptr;
+    void*& ref = ptr;
+    EXPECT_NULL(ref) //passes
+    EXPECT_NULL(NULL) //doesn't even compile
+}
+```
+
+### EXPECT_NOT_NULL()
+`EXPECT_NOT_NULL(val)` takes in a single parameter `val` and checks that it's not the nullptr. This test passes iff `val != nullptr` and fails otherwise.
+
+```
+#include <tester/Tests.hpp>
+
+D_TEST(assert_null) {
+    void* ptr = nullptr;
+    void*& ref = ptr;
+    EXPECT_NOT_NULL(ref) //fails
+    EXPECT_NOT_NULL(NULL) //doesn't even compile
+}
+```
+
+## String Tests
+Strings tests are used for checking the (in)equality of strings and whether or not they're empty. Null strings should be checked with using the [null tests](#null-tests). The string tests are defined on `std::string`, `char*`, and `char[]`. Different overloads are used on depending on which parameter type you pass in. Note that for the `char[]`, passing in arrays of different lengths is not enough to disqualify equality as one could pass in two arrays of the "same string" but one padded with extra null-terminator characters `'\0'`. The tests will only look at everything that comes before the first null-terminator character, if any.
+
+1. [Expect String Equals](#expect_str_eq)
+
+### EXPECT_STR_EQ()
+`EXPECT_STR_EQ(a, b)` takes in two arguments, both are strings. There are three types of strings that can be passed in: `std::string`, `const char*`, and `char[]`. Both arguments must be of the same type. Depending on which type is passed in, a different overload, and therefore different method of determining equality will be used. 
+
+`std::string`:
+In the case where both `a` and `b` are of type `std::string`, their equality is evaluated based on the `==` operator.
+
+```
+#include <tester/Tests.hpp>
+#include <string>
+
+TEST(expect_str_eq, std_strings) {
+    std::string a = "hello";
+    std::string b = "hello";
+
+    EXPECT_STR_EQ(a, b); //passes
+    
+    std::string c = "hello\0";
+    
+    EXPECT_STR_EQ(a, c); //passes
+    EXPECT_STR_EQ(b, c); //passes
+
+    std::string d = "goodbye";
+    EXPECT_STR_EQ(c, d); //fails
+}
+```
+
+`const char*`:
+In the case where both `a` and `b` are of type `const char*`, their equality is evaluated based on the `strcmp()` function. Passing in two null `const char*` pointers will be considered equal, and will pass.
+
+```
+#include <tester/Tests.hpp>
+
+TEST(expect_str_eq, char_ptr) {
+    const char* a = "hello";
+    const char* b = "hello";
+
+    EXPECT_STR_EQ(a, b); //passes
+
+    const char* c = "hello\0";
+
+    EXPECT_STR_EQ(a, c); //passes
+    EXPECT_STR_EQ(b, c); //passes
+
+    const char* d = "goodbye";
+    EXPECT_STR_EQ(c, d); //fails
+}
+```
+
+`char[]`:
+In the case where both `a` and `b` are of type `char[]`, their equality is evaluated based on the contents of each `char[]`. It is not enough for the lengths of the arrays to be different to disqualify equality as one could pass in two arrays of the "same string" but one padded with extra null-terminator characters `'\0'`.
+
+```
+#include <tester/Tests.hpp>
+
+TEST(expect_str_eq, char_arr) {
+    char a[] = {'h', 'e', 'l', 'l', 'o'};
+    char b[] = "hello"; //automatically has the null terminator character appended to it
+
+    EXPECT_STR_EQ(a, b); //passes
+
+    char c[] = "hello\0wazzup"; //definitely different looking from a[] and b[]
+    EXPECT_STR_EQ(a, c); //passes because everything before c[]'s terminator character is the same as a[]'s contents
+
+    char d[] = "hello there";
+    EXPECT_STR_EQ(a, d); //fails because the length of d[] is different than the length of a[]
+}
+```
+
+### EXPECT_STR_NE()
+`EXPECT_STR_NE(a, b)` takes in two arguments, both are strings. There are three types of strings that can be passed in: `std::string`, `const char*`, and `char[]`. Both arguments must be of the same type. Depending on which type is passed in, a different overload, and therefore different method of determining equality will be used. 
+
+`std::string`:
+In the case where both `a` and `b` are of type `std::string`, their equality is evaluated based on the `!=` operator.
+
+`const char*`:
+In the case where both `a` and `b` are of type `const char*`, their equality is evaluated based on the `strcmp()` function. Passing in two null `const char*` pointers will be considered equal, and will fail.
+
+`char[]`:
+In the case where both `a` and `b` are of type `char[]`, their equality is evaluated based on the contents of each `char[]`. It is not enough for the lengths of the arrays to be different to disqualify inequality.
