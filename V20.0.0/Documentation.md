@@ -443,3 +443,88 @@ D_TEST(assert_null) {
     EXPECT_NOT_NULL(NULL) //doesn't even compile
 }
 ```
+
+## String Tests
+Strings tests are used for checking the (in)equality of strings and whether or not they're empty. Null strings should be checked with using the [null tests](#null-tests). The string tests are defined on `std::string`, `char*`, and `char[]`. Different overloads are used on depending on which parameter type you pass in. Note that for the `char[]`, passing in arrays of different lengths is not enough to disqualify equality as one could pass in two arrays of the "same string" but one padded with extra null-terminator characters `'\0'`. The tests will only look at everything that comes before the first null-terminator character, if any.
+
+1. [Expect String Equals](#expect_str_eq)
+
+### EXPECT_STR_EQ()
+`EXPECT_STR_EQ(a, b)` takes in two arguments, both are strings. There are three types of strings that can be passed in: `std::string`, `const char*`, and `char[]`. Both arguments must be of the same type. Depending on which type is passed in, a different overload, and therefore different method of determining equality will be used. 
+
+`std::string`:
+In the case where both `a` and `b` are of type `std::string`, their equality is evaluated based on the `==` operator.
+
+```
+#include <tester/Tests.hpp>
+#include <string>
+
+TEST(expect_str_eq, std_strings) {
+    std::string a = "hello";
+    std::string b = "hello";
+
+    EXPECT_STR_EQ(a, b); //passes
+    
+    std::string c = "hello\0";
+    
+    EXPECT_STR_EQ(a, c); //passes
+    EXPECT_STR_EQ(b, c); //passes
+
+    std::string d = "goodbye";
+    EXPECT_STR_EQ(c, d); //fails
+}
+```
+
+`const char*`:
+In the case where both `a` and `b` are of type `const char*`, their equality is evaluated based on the `strcmp()` function. Passing in two null `const char*` pointers will be considered equal, and will pass.
+
+```
+#include <tester/Tests.hpp>
+
+TEST(expect_str_eq, char_ptr) {
+    const char* a = "hello";
+    const char* b = "hello";
+
+    EXPECT_STR_EQ(a, b); //passes
+
+    const char* c = "hello\0";
+
+    EXPECT_STR_EQ(a, c); //passes
+    EXPECT_STR_EQ(b, c); //passes
+
+    const char* d = "goodbye";
+    EXPECT_STR_EQ(c, d); //fails
+}
+```
+
+`char[]`:
+In the case where both `a` and `b` are of type `char[]`, their equality is evaluated based on the contents of each `char[]`. It is not enough for the lengths of the arrays to be different to disqualify equality as one could pass in two arrays of the "same string" but one padded with extra null-terminator characters `'\0'`.
+
+```
+#include <tester/Tests.hpp>
+
+TEST(expect_str_eq, char_arr) {
+    char a[] = {'h', 'e', 'l', 'l', 'o'};
+    char b[] = "hello"; //automatically has the null terminator character appended to it
+
+    EXPECT_STR_EQ(a, b); //passes
+
+    char c[] = "hello\0wazzup"; //definitely different looking from a[] and b[]
+    EXPECT_STR_EQ(a, c); //passes because everything before c[]'s terminator character is the same as a[]'s contents
+
+    char d[] = "hello there";
+    EXPECT_STR_EQ(a, d); //fails because the length of d[] is different than the length of a[]
+}
+```
+
+### EXPECT_STR_NE()
+`EXPECT_STR_NE(a, b)` takes in two arguments, both are strings. There are three types of strings that can be passed in: `std::string`, `const char*`, and `char[]`. Both arguments must be of the same type. Depending on which type is passed in, a different overload, and therefore different method of determining equality will be used. 
+
+`std::string`:
+In the case where both `a` and `b` are of type `std::string`, their equality is evaluated based on the `!=` operator.
+
+`const char*`:
+In the case where both `a` and `b` are of type `const char*`, their equality is evaluated based on the `strcmp()` function. Passing in two null `const char*` pointers will be considered equal, and will fail.
+
+`char[]`:
+In the case where both `a` and `b` are of type `char[]`, their equality is evaluated based on the contents of each `char[]`. It is not enough for the lengths of the arrays to be different to disqualify inequality.
