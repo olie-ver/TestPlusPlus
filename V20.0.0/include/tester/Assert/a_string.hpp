@@ -1,27 +1,27 @@
 #pragma once
 
-#ifndef E_STR_H
-#define E_STR_H
+#ifndef A_STR_H
+#define A_STR_H
 
+#include "../Core.hpp"
 #include "../Runner.hpp"
 #include "../Helpers.hpp"
 #include <algorithm>
 #include <string>
 
-//each one needs to ensure that passing in a nullptr doesn't break anything
-#define EXPECT_STR_EQ(first, second) internal::Expects::expectStringEquals((first), (second), __FILE__, __LINE__)
-#define EXPECT_STR_NE(first, second) internal::Expects::expectStringNotEquals((first), (second), __FILE__, __LINE__)
-#define EXPECT_STR_EMT(first) internal::Expects::expectStringEmpty((first), __FILE__, __LINE__)
-#define EXPECT_STR_NEMT(first) internal::Expects::expectStringNotEmpty((first), __FILE__, __LINE__)
+#define EXPECT_STR_EQ(first, second) internal::Assert::assertStringEquals((first), (second), __FILE__, __LINE__)
+#define EXPECT_STR_NE(first, second) internal::Assert::assertStringNotEquals((first), (second), __FILE__, __LINE__)
+#define EXPECT_STR_EMT(first) internal::Assert::assertStringEmpty((first), __FILE__, __LINE__)
+#define EXPECT_STR_NEMT(first) internal::Assert::assertStringNotEmpty((first), __FILE__, __LINE__)
 
 namespace internal {
-    namespace Expects {
-        /// @brief An Expects test that checks if two strings are equal
+    namespace Assert {
+        /// @brief An Assert test that asserts if two strings are equal
         /// @param first the first string
         /// @param second the second string
         /// @param file the file the function was called from
         /// @param line the line the function was called on
-        inline void expectStringEquals(const std::string& first, const std::string& second, 
+        inline void assertStringEquals(const std::string& first, const std::string& second, 
             const char* file, const int line) 
         {
             if (first != second) {
@@ -32,15 +32,17 @@ namespace internal {
                     file,
                     line
                 });
+
+                throw Core::AssertionFailure();
             }
         }
 
-        /// @brief An Expects test that checks if two strings are equal
+        /// @brief An Assert test that asserts if two strings are equal
         /// @param first the first string
         /// @param second the second string
         /// @param file the file the function was called from
         /// @param line the line the function was called on
-        inline void expectStringEquals(const char* first, const char* second, 
+        inline void assertStringEquals(const char* first, const char* second, 
             const char* file, const int line) 
         {
             std::string error = "Null pointer passed in:";
@@ -69,7 +71,7 @@ namespace internal {
                     file,
                     line
                 });
-                return;
+                throw Core::AssertionFailure();
             }
 
             if (strcmp(first, second)) {
@@ -80,10 +82,12 @@ namespace internal {
                     file,
                     line
                 });
+
+                throw Core::AssertionFailure();
             }
         }
 
-        /// @brief An Expects test that checks if two strings are equal
+        /// @brief An Assert test that asserts if two strings are equal
         /// @tparam N the length of the first string
         /// @tparam M the length of the second string
         /// @param first the first string
@@ -91,7 +95,7 @@ namespace internal {
         /// @param file the file the function was called from
         /// @param line the line the function was called on
         template <size_t N, size_t M>
-        inline void expectStringEquals(const char(&first)[N], const char(&second)[M], 
+        inline void assertStringEquals(const char(&first)[N], const char(&second)[M], 
             const char* file, const int line) 
         {
             //create displayable copies of the parameters
@@ -114,7 +118,8 @@ namespace internal {
                         file,
                         line
                     });
-                    return;
+                    
+                    throw Core::AssertionFailure();
                 } else { //both are equal
                     if (first[i] == '\0') { //both have terminated
                         return;
@@ -134,6 +139,8 @@ namespace internal {
                         file,
                         line
                     });
+
+                    throw Core::AssertionFailure();
                 } else if (up_bound == M && second[low_bound] != '\0') {
                     Runner::CURRENT_TEST->failures.push_back({
                         std::string("Mismatched char[] lengths:")
@@ -142,16 +149,18 @@ namespace internal {
                         file,
                         line
                     });
+
+                    throw Core::AssertionFailure();
                 }
             }
         }
 
-        /// @brief An Expects test that checks if two strings are not equal
+        /// @brief An Assert test that asserts if two strings are not equal
         /// @param first the first string
         /// @param second the second string
         /// @param file the file the function was called from
         /// @param line the line the function was called on
-        inline void expectStringNotEquals(const std::string& first, 
+        inline void assertStringNotEquals(const std::string& first, 
             const std::string& second, 
             const char* file, 
             const int line) 
@@ -164,15 +173,17 @@ namespace internal {
                     file,
                     line
                 });
+
+                throw Core::AssertionFailure();
             }
         }
 
-        /// @brief An Expects test that checks if two strings are not equal
+        /// @brief An Assert test that asserts if two strings are not equal
         /// @param first the first string
         /// @param second the second string
         /// @param file the file the function was called from
         /// @param line the line the function was called on
-        inline void expectStringNotEquals(
+        inline void assertStringNotEquals(
             const char* first, 
             const char* second, 
             const char* file,
@@ -189,7 +200,8 @@ namespace internal {
                     file,
                     line
                 });
-                return;
+                
+                throw Core::AssertionFailure();
             }
 
             if (!strcmp(first, second)) {
@@ -200,10 +212,12 @@ namespace internal {
                     file,
                     line
                 });
+
+                throw Core::AssertionFailure();
             }
         }
 
-        /// @brief An Expects test that checks if two strings are not equal
+        /// @brief An Assert test that asserts if two strings are not equal
         /// @tparam N the length of the first string
         /// @tparam M the length of the second string
         /// @param first the first string
@@ -239,7 +253,7 @@ namespace internal {
                     file,
                     line
                 });
-                return;
+                throw Core::AssertionFailure();
             }
 
             //the lengths aren't equal, but they've still been equal, so now need to check if the larger one
@@ -254,6 +268,8 @@ namespace internal {
                     file,
                     line
                 });
+
+                throw Core::AssertionFailure();
             } else if (low_bound == M && first[low_bound] == '\0') {
                 Runner::CURRENT_TEST->failures.push_back({
                     std::string("Expected a != b")
@@ -262,35 +278,40 @@ namespace internal {
                     file,
                     line
                 });
+
+                throw Core::AssertionFailure();
             }
         }
 
-        /// @brief An Expects test that tests if a string is empty
+        /// @brief An Assert test that tests if a string is empty
         /// @param first the string
         /// @param file the file the function was called from
         /// @param line the line the function was called on
-        inline void expectStringEmpty(std::string& first, const char* file, const int line) {
+        inline void assertStringEmpty(std::string& first, const char* file, const int line) {
             if (!first.empty()) {
                 Runner::CURRENT_TEST->failures.push_back({
                     "Expected string to be empty, but wasn't: first = " + first,
                     file,
                     line
                 }); 
+
+                throw Core::AssertionFailure();
             }
         }
 
-        /// @brief An Expects test that tests if a string is empty
+        /// @brief An Assert test that tests if a string is empty
         /// @param first the string
         /// @param file the file the function was called from
         /// @param line the line the function was called on
-        inline void expectStringEmpty(const char* first, const char* file, const int line) {
+        inline void assertStringEmpty(const char* first, const char* file, const int line) {
             if (first == nullptr) {
                 Runner::CURRENT_TEST->failures.push_back({
                     "nullptr passed in",
                     file,
                     line
                 });
-                return;
+
+                throw Core::AssertionFailure();
             }
 
             if (first[0] != '\0') {
@@ -299,16 +320,18 @@ namespace internal {
                     file,
                     line
                 }); 
+
+                throw Core::AssertionFailure();
             }
         }
 
-        /// @brief An Expects test that tests if a string is empty
+        /// @brief An Assert test that tests if a string is empty
         /// @tparam N the size of the array
         /// @param first the string
         /// @param file the file the function was called from
         /// @param line the line the function was called on
         template <size_t N>
-        inline void expectStringEmpty(const char(&first)[N], const char* file, const int line) {
+        inline void assertStringEmpty(const char(&first)[N], const char* file, const int line) {
             char a[N + 1];
             std::copy(std::begin(first), std::end(first), std::begin(a));
             a[N] = '\0';
@@ -318,10 +341,12 @@ namespace internal {
                     file,
                     line
                 }); 
+                
+                throw Core::AssertionFailure();
             }
         }
 
-        /// @brief An Expects test that tests if a string is not empty
+        /// @brief An Assert test that tests if a string is not empty
         /// @param first the string
         /// @param file the file the function was called from
         /// @param line the line the function was called on
@@ -332,10 +357,12 @@ namespace internal {
                     file,
                     line
                 }); 
+
+                throw Core::AssertionFailure();
             }
         }
 
-        /// @brief An Expects test that tests if a string is not empty
+        /// @brief An Assert test that tests if a string is not empty
         /// @param first the string
         /// @param file the file the function was called from
         /// @param line the line the function was called on
@@ -346,7 +373,8 @@ namespace internal {
                     file,
                     line
                 });
-                return;
+
+                throw Core::AssertionFailure();
             }
 
             if (first[0] == '\0') {
@@ -355,22 +383,26 @@ namespace internal {
                     file,
                     line
                 }); 
+
+                throw Core::AssertionFailure();
             }
         }
 
-        /// @brief An Expects test that tests if a string is not empty
+        /// @brief An Assert test that tests if a string is not empty
         /// @tparam N the size of the array
         /// @param first the string
         /// @param file the file the function was called from
         /// @param line the line the function was called on
         template <size_t N>
-        inline void expectStringNotEmpty(const char(&first)[N], const char* file, const int line) {
+        inline void assertStringNotEmpty(const char(&first)[N], const char* file, const int line) {
             if (first[0] == '\0') {
                 Runner::CURRENT_TEST->failures.push_back({
                     std::string("Expected string to not be empty, but was"),
                     file,
                     line
                 }); 
+
+                throw Core::AssertionFailure();
             }
         }
     }
