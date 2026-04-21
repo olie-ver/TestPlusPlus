@@ -4,5 +4,5 @@
 
 
 D_TEST(0) {
-    EXPECT_STR_EMT(nullptr);
+    EXPECT_STR_NEMT("");
 }

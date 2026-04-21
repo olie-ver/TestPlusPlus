@@ -35,6 +35,8 @@ You may consider this code open-source to be downloaded, modified, and released 
     2. [Assert Not Null](#assert_not_null)
     3. [Expect Null](#expect_null)
     4. [Expect Not Null](#expect_not_null)
+6. [String Tests](#string-tests)
+
 
 ## Adding To Your Projects
 
@@ -447,22 +449,291 @@ D_TEST(assert_null) {
 ## String Tests
 Strings tests are used for checking the (in)equality of strings and whether or not they're empty. Null strings should be checked with using the [null tests](#null-tests). The string tests are defined on `std::string`, `char*`, and `char[]`. Different overloads are used on depending on which parameter type you pass in. Note that for the `char[]`, passing in arrays of different lengths is not enough to disqualify equality as one could pass in two arrays of the "same string" but one padded with extra null-terminator characters `'\0'`. The tests will only look at everything that comes before the first null-terminator character, if any.
 
-1. [Expect String Equals](#expect_str_eq)
+
+1. [Assert String Equals](#assert_str_eq)
     1. [std::string](#stdstring)
     2. [const char*](#const-char)
     3. [char[]](#char)
-2. [Expect String Not Equals](#expect_str_ne)
+2. [Assert String Not Equals](#assert_str_ne)
     1. [std::string](#stdstring-1)
     2. [const char*](#const-char-1)
     3. [char[]](#char-1)
-3. [Expect String Empty](#expect_str_emt)
+3. [Assert String Empty](#assert_str_emt)
     1. [std::string](#stdstring-2)
     2. [const char*](#const-char-2)
     3. [char[]](#char-2)
-4. [Expect String Not Empty](#expect_str_nemt)
+4. [Assert String Not Empty](#assert_str_nemt)
     1. [std::string](#stdstring-3)
     2. [const char*](#const-char-3)
     3. [char[]](#char-3)
+5. [Expect String Equals](#expect_str_eq)
+    1. [std::string](#stdstring-4)
+    2. [const char*](#const-char-4)
+    3. [char[]](#char-4)
+6. [Expect String Not Equals](#expect_str_ne)
+    1. [std::string](#stdstring-5)
+    2. [const char*](#const-char-5)
+    3. [char[]](#char-5)
+7. [Expect String Empty](#expect_str_emt)
+    1. [std::string](#stdstring-6)
+    2. [const char*](#const-char-6)
+    3. [char[]](#char-6)
+8. [Expect String Not Empty](#expect_str_nemt)
+    1. [std::string](#stdstring-7)
+    2. [const char*](#const-char-7)
+    3. [char[]](#char-7)
+
+### ASSERT_STR_EQ()
+`ASSERT_STR_EQ(a, b)` takes in two arguments, both are strings. There are three types of strings that can be passed in: `std::string`, `const char*`, and `char[]`. Both arguments must be of the same type. Depending on which type is passed in, a different overload, and therefore different method of determining equality will be used. Upon failure it will terminate testing for the test suite it was called in.
+
+#### `std::string`:
+In the case where both `a` and `b` are of type `std::string`, their equality is evaluated based on the `==` operator.
+
+```
+#include <tester/Tests.hpp>
+#include <string>
+
+TEST(assert_str_eq, std_strings) {
+    std::string a = "hello";
+    std::string b = "hello";
+
+    ASSERT_STR_EQ(a, b); //passes
+    
+    std::string c = "hello\0";
+    
+    ASSERT_STR_EQ(a, c); //passes
+    ASSERT_STR_EQ(b, c); //passes
+
+    std::string d = "goodbye";
+    ASSERT_STR_EQ(c, d); //fails
+}
+```
+
+#### `const char*`:
+In the case where both `a` and `b` are of type `const char*`, their equality is evaluated based on the `strcmp()` function. Passing in two null `const char*` pointers will be considered equal, and will pass.
+
+```
+#include <tester/Tests.hpp>
+
+TEST(assert_str_eq, char_ptr) {
+    const char* a = "hello";
+    const char* b = "hello";
+
+    ASSERT_STR_EQ(a, b); //passes
+
+    const char* c = "hello\0";
+
+    ASSERT_STR_EQ(a, c); //passes
+    ASSERT_STR_EQ(b, c); //passes
+
+    const char* d = "goodbye";
+    ASSERT_STR_EQ(c, d); //fails
+}
+```
+
+#### `char[]`:
+In the case where both `a` and `b` are of type `char[]`, their equality is evaluated based on the contents of each `char[]`. It is not enough for the lengths of the arrays to be different to disqualify equality as one could pass in two arrays of the "same string" but one padded with extra null-terminator characters `'\0'`.
+
+```
+#include <tester/Tests.hpp>
+
+TEST(assert_str_eq, char_arr) {
+    char a[] = {'h', 'e', 'l', 'l', 'o'};
+    char b[] = "hello"; //automatically has the null terminator character appended to it
+
+    ASSERT_STR_EQ(a, b); //passes
+
+    char c[] = "hello\0wazzup"; //definitely different looking from a[] and b[]
+    ASSERT_STR_EQ(a, c); //passes because everything before c[]'s terminator character is the same as a[]'s contents
+
+    char d[] = "hello there";
+    ASSERT_STR_EQ(a, d); //fails because the length of d[] is different than the length of a[]
+}
+```
+
+### ASSERT_STR_NE()
+`ASSERT_STR_NE(a, b)` takes in two arguments, both are strings. There are three types of strings that can be passed in: `std::string`, `const char*`, and `char[]`. Both arguments must be of the same type. Depending on which type is passed in, a different overload, and therefore different method of determining equality will be used. Upon failure it will terminate testing for the test suite it was called in.
+
+#### `std::string`:
+In the case where both `a` and `b` are of type `std::string`, their equality is evaluated based on the `!=` operator.
+
+```
+#include <tester/Tests.hpp>
+#include <string>
+
+TEST(assert_str_ne, std_strings) {
+    std::string a = "hello";
+    std::string b = "hello!";
+
+    ASSERT_STR_NE(a, b); //passes
+    
+    std::string c = "hi";
+    
+    ASSERT_STR_NE(a, c); //passes
+    ASSERT_STR_NE(b, c); //passes
+
+    std::string d = "hello\0";
+    ASSERT_STR_NE(a, d); //fails
+}
+```
+
+#### `const char*`:
+In the case where both `a` and `b` are of type `const char*`, their equality is evaluated based on the `strcmp()` function. Passing in two null `const char*` pointers will be considered equal, and will fail.
+
+```
+#include <tester/Tests.hpp>
+
+TEST(assert_str_ne, char_ptr) {
+    const char* a = "hello";
+    const char* b = "hello";
+
+    ASSERT_STR_NE(a, b); //fails
+
+    const char* c = "hello\0";
+
+    ASSERT_STR_NE(a, c); //doesn't run, but would fail
+    ASSERT_STR_NE(b, c); //doesn't run, but would fail
+
+    const char* d = "goodbye";
+    ASSERT_STR_NE(c, d); //doesn't run, but would pass
+}
+```
+
+#### `char[]`:
+In the case where both `a` and `b` are of type `char[]`, their equality is evaluated based on the contents of each `char[]`. It is not enough for the lengths of the arrays to be different to disqualify inequality.
+
+```
+#include <tester/Tests.hpp>
+
+TEST(assert_str_ne, char_arr) {
+    char a[] = {'h', 'e', 'l', 'l', 'o'};
+    char b[] = "hello"; //automatically has the null terminator character appended to it
+
+    ASSERT_STR_NE(a, b); //fails
+
+    char c[] = "hello\0wazzup"; //definitely different looking from a[] and b[]
+    ASSERT_STR_NE(a, c);    //doesn't run, but if it did, it fails because everything 
+                            //before c[]'s terminator character is the same as a[]'s contents
+
+    char d[] = "hello there";
+    ASSERT_STR_NE(a, d);    //doesn't run, but if it did, it passes because the 
+                            //length of d[] is different than the length of a[]
+}
+```
+
+### ASSERT_STR_EMT()
+`ASSERT_STR_EMT(a)` takes in one parameter, being a string. There are three types of strings that can be passed in: `std::string`, `const char*`, and `char[]`. This test checks that the passed in string is empty. String emptiness is determined by the type of parameter being passed in. Upon failure it will terminate testing for the test suite it was called in.
+
+#### `std::string`:
+For `std::string`, emptiness is determined by the `empty()` method.
+
+```
+#include <tester/Tests.hpp>
+
+TEST(assert_str_emt, std_string) {
+    std::string a = "";
+    ASSERT_STR_EMT(a); //passes
+
+    std::string b = "hi";
+    ASSERT_STR_EMT(b); //fails
+
+    std::string c = nullptr;
+    ASSERT_STR_EMT(c); //doesn't run but would have a segmentation fault. You have been warned.
+}
+```
+
+#### `const char*`:
+For `const char*`, emptiness is determined by whether or not the first character is the null terminator character `'\0'`.
+
+```
+#include <tester/Tests.hpp>
+
+TEST(assert_str_emt, char_ptr) {
+    const char* a = "";
+    ASSERT_STR_EMT(a); //passes
+
+    const char* b = "hi";
+    ASSERT_STR_EMT(b); //fails
+
+    const char* c = nullptr;
+    ASSERT_STR_EMT(c); //doesn't run, but would fail
+}
+```
+
+#### `char[]`:
+For `char[]`, emptiness is determined by whether whether or not the first character in the array is the null terminator character `'0'`.
+
+```
+#include <tester/Tests.hpp>
+
+TEST(assert_str_emt, char_arr) {
+    char a[] = "";
+    ASSERT_STR_EMT(a); //passes
+
+    const char b[] = "hi";
+    ASSERT_STR_EMT(b); //fails
+
+    const char c[] = nullptr;
+    ASSERT_STR_EMT(c); //doesn't run, but there would be a segmentation fault. You have been warned.
+}
+```
+
+### ASSERT_STR_NEMT()
+`ASSERT_STR_NEMT(a)` takes in one parameter, being a string. There are three types of strings that can be passed in: `std::string`, `const char*`, and `char[]`. String non-emptiness is determined by the type of parameter being passed in. Upon failure it will terminate testing for the test suite it was called in.
+
+#### `std::string`:
+For `std::string`, non-emptiness is determined by the `empty()` method.
+
+```
+#include <tester/Tests.hpp>
+
+TEST(assert_str_nemt, std_string) {
+    std::string a = "";
+    ASSERT_STR_NEMT(a); //fails
+
+    std::string b = "hi";
+    ASSERT_STR_NEMT(b); //doesn't run, but would pass
+
+    std::string c = nullptr;
+    ASSERT_STR_NEMT(c); //doesn't run, but would segmentation fault. You have been warned.
+}
+```
+
+#### `const char*`:
+For `const char*`, non-emptiness is determined by whether or not the first character is the null terminator character `'\0'`.
+
+```
+#include <tester/Tests.hpp>
+
+TEST(expect_str_nemt, char_ptr) {
+    const char* a = "";
+    ASSERT_STR_NEMT(a); //fails
+
+    const char* b = "hi";
+    ASSERT_STR_NEMT(b); //doesn't run, but would pass
+
+    const char* c = nullptr;
+    ASSERT_STR_NEMT(c); //doesn't run, but would fail
+}
+```
+
+#### `char[]`:
+For `char[]`, non-emptiness is determined by whether whether or not the first character in the array is the null terminator character `'0'`.
+
+```
+#include <tester/Tests.hpp>
+
+TEST(assert_str_nemt, char_arr) {
+    char a[] = "";
+    ASSERT_STR_NEMT(a); //fails
+
+    const char b[] = "hi";
+    ASSERT_STR_NEMT(b); //doesn't run, but would pass
+
+    const char c[] = nullptr;
+    ASSERT_STR_NEMT(c); //doesn't run, but would segmentation fault. You have been warned.
+}
+```
 
 ### EXPECT_STR_EQ()
 `EXPECT_STR_EQ(a, b)` takes in two arguments, both are strings. There are three types of strings that can be passed in: `std::string`, `const char*`, and `char[]`. Both arguments must be of the same type. Depending on which type is passed in, a different overload, and therefore different method of determining equality will be used. 
@@ -702,7 +973,7 @@ For `char[]`, non-emptiness is determined by whether whether or not the first ch
 ```
 #include <tester/Tests.hpp>
 
-TEST(expect_str_emt, char_arr) {
+TEST(expect_str_nemt, char_arr) {
     char a[] = "";
     EXPECT_STR_NEMT(a); //fails
 
