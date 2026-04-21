@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <string>
 
+//each one needs to ensure that passing in a nullptr doesn't break anything
 #define EXPECT_STR_EQ(first, second) internal::Expects::expectStringEquals((first), (second), __FILE__, __LINE__)
 #define EXPECT_STR_NE(first, second) internal::Expects::expectStringNotEquals((first), (second), __FILE__, __LINE__)
 #define EXPECT_STR_EMT(first) internal::Expects::expectStringEmpty((first), __FILE__, __LINE__)
@@ -14,9 +15,6 @@
 
 namespace internal {
     namespace Expects {
-        //I need tests for string equals, string not equals, string empty, string not empty
-        //need defined for std::string, char*, and char[]
-
         /// @brief An Expects test that checks if two strings are equal
         /// @param first the first string
         /// @param second the second string
@@ -169,21 +167,8 @@ namespace internal {
             const char* file,
             const int line) 
         {
-            std::string error = "Null pointer passed in:";
-            size_t initial_length = error.size();
-
-            bool first_null = false;
-            bool second_null = false;
-
-            if (first == nullptr) {
-                error += "\n     first = nullptr";
-                first_null = true;
-            }
-
-            if (second == nullptr) {
-                error += "\n     second = nullptr";
-                second_null = true;
-            }
+            bool first_null = (first == nullptr);
+            bool second_null = (second == nullptr);
 
             if (first_null ^ second_null) {
                 Runner::CURRENT_TEST->failures.push_back({
@@ -220,7 +205,6 @@ namespace internal {
             b[M] = '\0';
 
             size_t low_bound = std::min(N, M);
-            size_t up_bound = std::max(N, M);
 
             for (size_t i = 0; i < low_bound; i++) {
                 if (first[i] != second[i]) {
@@ -280,6 +264,7 @@ namespace internal {
                     file,
                     line
                 });
+                return;
             }
 
             if (first[0] != '\0') {
@@ -322,6 +307,7 @@ namespace internal {
                     file,
                     line
                 });
+                return;
             }
 
             if (first[0] == '\0') {
