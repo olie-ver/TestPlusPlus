@@ -1,8 +1,9 @@
 #include <tester/Tests.hpp>
-#include <string>
-#include <iostream>
 
+void dumbFunc(int a, int b) {
+    throw (a + b);
+}
 
-D_TEST(0) {
-    EXPECT_STR_NEMT("");
+TEST(expect_throws, no_exception_type) {
+    EXPECT_THROWS(dumbFunc(5, 10), float);
 }

@@ -36,7 +36,43 @@ You may consider this code open-source to be downloaded, modified, and released 
     3. [Expect Null](#expect_null)
     4. [Expect Not Null](#expect_not_null)
 6. [String Tests](#string-tests)
-
+    1. [Assert String Equals](#assert_str_eq)
+        1. [std::string](#stdstring)
+        2. [const char*](#const-char)
+        3. [char[]](#char)
+    2. [Assert String Not Equals](#assert_str_ne)
+        1. [std::string](#stdstring-1)
+        2. [const char*](#const-char-1)
+        3. [char[]](#char-1)
+    3. [Assert String Empty](#assert_str_emt)
+        1. [std::string](#stdstring-2)
+        2. [const char*](#const-char-2)
+        3. [char[]](#char-2)
+    4. [Assert String Not Empty](#assert_str_nemt)
+        1. [std::string](#stdstring-3)
+        2. [const char*](#const-char-3)
+        3. [char[]](#char-3)
+    5. [Expect String Equals](#expect_str_eq)
+        1. [std::string](#stdstring-4)
+        2. [const char*](#const-char-4)
+        3. [char[]](#char-4)
+    6. [Expect String Not Equals](#expect_str_ne)
+        1. [std::string](#stdstring-5)
+        2. [const char*](#const-char-5)
+        3. [char[]](#char-5)
+    7. [Expect String Empty](#expect_str_emt)
+        1. [std::string](#stdstring-6)
+        2. [const char*](#const-char-6)
+        3. [char[]](#char-6)
+    8. [Expect String Not Empty](#expect_str_nemt)
+        1. [std::string](#stdstring-7)
+        2. [const char*](#const-char-7)
+        3. [char[]](#char-7)
+7. [Throws Tests](#throws-tests)
+    1. [Assert Throws](#assert_throws)
+    2. [Assert Does Not Throw](#assert_does_not_throw)
+    3. [Expect Throws](#expect_throws)
+    4. [Expect Does Not Throw](#expect_does_not_throw)
 
 ## Adding To Your Projects
 
@@ -982,5 +1018,105 @@ TEST(expect_str_nemt, char_arr) {
 
     const char c[] = nullptr;
     EXPECT_STR_NEMT(c); //segmentation fault. You have been warned.
+}
+```
+
+## Throws Tests
+Throws tests are used to check whether or not a function throws or does not throw an error. You are able to pass in anonymous functions, as well as functions that require parameters. Since functions can take parameters or none, you must pass in the function with `()` at the end of the function name.
+
+1. [Assert Throws](#assert_throws)
+2. [Assert Does Not Throw](#assert_does_not_throw)
+3. [Expect Throws](#expect_throws)
+4. [Expect Does Not Throw](#expect_does_not_throw)
+
+### ASSERT_THROWS()
+`ASSERT_THROWS(func, ex)` takes in up to two parameters: a function and optionally a type of exception that should be thrown. In the case that `ex` is not provided, it will pass iff `func` throws anything. In the case that `ex` is provided, it will pass iff `func` throws the same exception type as `ex`. Upon failure it will terminate testing for the test suite it was called in.
+
+```
+#include <tester/Tests.hpp>
+
+void dumbFunc() {
+    throws 42;
+}
+
+void anotherFunc() { }
+
+TEST(assert_throws, no_exception_type) {
+    ASSERT_THROWS(dumbFunc); //passes
+
+    ASSERT_THROWS(anotherFunc); //fails because it doesn't throw anything
+}
+```
+
+```
+#include <tester/Tests.hpp>
+
+void dumbFunc() {
+    throw 42;
+}
+
+TEST(assert_throws, with_exception_type) {
+    ASSERT_THROWS(dumbFunc, int); //passes
+    
+    ASSERT_THROWS(dumbFunc, std::invalid_argument); //fails because it doesn't throw the specified type
+}
+```
+
+### ASSERT_DOES_NOT_THROW()
+`ASSERT_DOES_NOT_THROW(func)` takes in one parameter, which is just a function. It passes iff `func` does not throw anything. Upon failure it will terminate testing for the test suite it was called in.
+
+```
+#include <tester/Tests.hpp>
+
+D_TEST(assert_does_not_throw) {
+    ASSERT_DOES_NOT_THROW([&]() { }); //passes
+    ASSERT_DOES_NOT_THROW([&]() { throw 42; }); //fails
+}
+```
+
+### EXPECT_THROWS()
+`EXPECT_THROWS(func, ex)` takes in up to two parameters: a function and optionally a type of exception that should be thrown. In the case that `ex` is not provided, it will pass iff `func` throws anything. In the case that `ex` is provided, it will pass iff `func` throws the same exception type as `ex`. 
+
+```
+#include <tester/Tests.hpp>
+
+void dumbFunc(int a, int b) {
+    throw (a + b);
+}
+
+void anotherFunc() { }
+
+TEST(expect_throws, no_exception_type) {
+    EXPECT_THROWS(dumbFunc(40, 2)); //passes
+    EXPECT_THROWS(anotherFunc()); //fails
+}
+```
+
+```
+#include <tester/Tests.hpp>
+
+void dumbFunc(int a, int b) {
+    throw (a + b);
+}
+
+TEST(expect_throws, with_exception_type) {
+    EXPECT_THROWS(dumbFunc(40, 2), float); //fails because it throws an int
+    EXPECT_THROWS(dumbFunc(40, 2), int); //passes
+}
+```
+
+### EXPECT_DOES_NOT_THROW()
+`EXPECT_DOES_NOT_THROW(func)` takes in one parameter, which is just a function. It passes iff `func` does not throw anything. Upon failure it will terminate testing for the test suite it was called in.
+
+```
+#include <tester/Tests.hpp>
+
+void dumbFunc(int a, int b) {
+    throw (a + b);
+}
+
+D_TEST(expect_does_not_throw) {
+    EXPECT_DOES_NOT_THROW(dumbFunc(40, 2)); //fails
+    EXPECT_DOES_NOT_THROW([&]() { }); //passes
 }
 ```
