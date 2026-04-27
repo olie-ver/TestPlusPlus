@@ -73,6 +73,17 @@ You may consider this code open-source to be downloaded, modified, and released 
     2. [Assert Does Not Throw](#assert_does_not_throw)
     3. [Expect Throws](#expect_throws)
     4. [Expect Does Not Throw](#expect_does_not_throw)
+8. [Float Tests](#float-tests)
+    1. [Assert Near](#assert_near)
+    2. [Assert Relatively Near](#assert_rel_near)
+    3. [Assert Absolutely Near](#assert_abs_near)
+    4. [Assert NaN](#assert_nan)
+    5. [Assert Not NaN](#assert_not_nan)
+    6. [Expect Near](#expect_near)
+    7. [Expect Relatively Near](#expect_rel_near)
+    8. [Expect Absolutely Near](#expect_abs_near)
+    9. [Expect NaN](#expect_nan)
+    10. [Expect Not NaN](#expect_not_nan)
 
 ## Adding To Your Projects
 
@@ -1118,5 +1129,203 @@ void dumbFunc(int a, int b) {
 D_TEST(expect_does_not_throw) {
     EXPECT_DOES_NOT_THROW(dumbFunc(40, 2)); //fails
     EXPECT_DOES_NOT_THROW([&]() { }); //passes
+}
+```
+
+## Float Tests
+Float tests are used to check something about a float, generally absolute/relative tolerance. These can also be used to check for `NaN`. Each test can take in any combination of floating point types. Ie, for tests that take in multiple floating point values, it's possible to mix the type parameters (eg. pass in a `float` and `double`). In this case, they are cast to the common floating point type and these commonly cast versions are used in the tests.
+
+1. [Assert Near](#assert_near)
+2. [Assert Absolutely Near](#assert_abs_near)
+3. [Assert Relatively Near](#assert_rel_near)
+4. [Assert NaN](#assert_nan)
+5. [Assert Not NaN](#assert_not_nan)
+6. [Expect Near](#expect_near)
+7. [Expect Absolutely Near](#expect_abs_near)
+8. [Expect Relatively Near](#expect_rel_near)
+9. [Expect NaN](#expect_nan)
+10. [Expect Not NaN](#expect_not_nan)
+
+### ASSERT_NEAR()
+`ASSERT_NEAR(a, b, abs_tol, rel_tol)` takes in up to four arguments. `a` and `b` are two floating point values of any two floating point types. `abs_tol` is the absolute tolerance that should be between `a` and `b`. `rel_tol` is an optional parameter that defines how relatively near `a` and `b` should be.
+
+In the case that `rel_tol` is not provided, this test becomes the same as [Assert Absolutely Near](#assert_abs_near). 
+
+In the case that `rel_tol` is provided, this test passes iff `|a - b| <= max(|abs_tol|, |rel_tol| * max(|a|, |b|))`. That is, the absolute difference of `a` and `b` must be smaller than the larger of the absolute value of `abs_tol` and the product of the absolute value of `rel_tol` and the larger of `|a|` and `|b|`. Upon failure it will terminate testing for the test suite it was called in.
+
+```
+#include <tester/Tests.hpp>
+
+TEST(assert_near, three_param) {
+    float a = 5.0;
+    double b = 6.0;
+    long double abs_tol = 0.01;
+
+    ASSERT_NEAR(a, b, abs_tol); //fails
+}
+
+TEST(assert_near, four_param) {
+    float a = 5.0;
+    double b = 6.0;
+    long double abs_tol = 0.01;
+    long double rel_tol_pass = 0.5;
+    long double rel_tol_fail = 0.05;
+
+    ASSERT_NEAR(a, b, abs_tol, rel_tol_pass); //passes
+    ASSERT_NEAR(a, b, abs_tol, rel_tol_fail); //fails
+}
+```
+
+### ASSERT_ABS_NEAR()
+`ASSERT_ABS_NEAR(a, b, abs_tol)` takes in three arguments. `a` and `b` are two floating point values of an two floating point types. `abs_tol` defines the maximum difference `a` and `b` can be from each other. This test passes iff `|a - b| <= |abs_tol|`. That is, the absolute difference of `a` and `b` must be smaller than the absolute value of `abs_tol`. Upon failure it will terminate testing for the test suite it was called in.
+
+```
+#include <tester/Tests.hpp>
+
+D_TEST(assert_abs_near) {
+    float a = 5.0;
+    double b = 6.0;
+    long double abs_tol = 2.0;
+
+    ASSERT_ABS_NEAR(a, b, abs_tol); //passes
+
+    long double abs_tol_two = 0.5;
+    ASSERT_ABS_NEAR(a, b, abs_tol_two); //fails because |a - b| > 0.5
+}
+```
+
+### ASSERT_REL_NEAR()
+`ASSERT_REL_NEAR(a, b, rel_tol)` takes in three arguments. `a` and `b` are two floating point values of an two floating point types. `rel_tol` defines how relatively near `a` and `b` should be. This test passes iff `|a - b| <= |rel_tol| * max(|a|, |b|)`. That is, the absolute difference of `a` and `b` must be smaller than the product of `rel_tol` and the larger of `|a|` and `|b|`. Upon failure it will terminate testing for the test suite it was called in.
+
+```
+#include <tester/Tests.hpp>
+
+D_TEST(assert_rel_near) {
+    float a = 5.0;
+    double b = 6.0;
+    long double rel_tol = 0.5;
+
+    ASSERT_REL_NEAR(a, b, rel_tol); //passes
+
+    long double rel_tol_two = 0.1;
+    ASSERT_REL_NEAR(a, b, rel_tol_two); //fails because 0.1 * 0.6 = 0.06 < |a - b|
+}
+```
+
+### ASSERT_NAN()
+`ASSERT_NAN(a)` takes in one parameter, `a`, which is a floating point value. It passes iff `a` is equivalent to `NAN` and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+
+```
+#include <tester/Tests.hpp>
+
+D_TEST(assert_nan) {
+    float a = 5.0;
+
+    ASSERT_NAN(a); //fails
+}
+```
+
+### ASSERT_NOT_NAN()
+`ASSERT_NOT_NAN(a)` takes in one parameter, `a`, which is a floating point value. It passes iff `a` is not equivalent to `NAN` and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+
+```
+#include <tester/Tests.hpp>
+
+D_TEST(assert_nan) {
+    float a = 5.0;
+
+    ASSERT_NOT_NAN(a); //passes
+}
+```
+
+### EXPECT_NEAR()
+`EXPECT_NEAR(a, b, abs_tol, rel_tol)` takes in up to four arguments. `a` and `b` are two floating point values of any two floating point types. `abs_tol` is the absolute tolerance that should be between `a` and `b`. `rel_tol` is an optional parameter that defines how relatively near `a` and `b` should be.
+
+In the case that `rel_tol` is not provided, this test becomes the same as [Expect Absolutely Near](#expect_abs_near). 
+
+In the case that `rel_tol` is provided, this test passes iff `|a - b| <= max(|abs_tol|, |rel_tol| * max(|a|, |b|))`. That is, the absolute difference of `a` and `b` must be smaller than the larger of the absolute value of `abs_tol` and the product of the absolute value of `rel_tol` and the larger of `|a|` and `|b|`.
+
+```
+#include <tester/Tests.hpp>
+
+TEST(expect_near, three_param) {
+    float a = 5.0;
+    double b = 6.0;
+    long double abs_tol = 0.01;
+
+    EXPECT_NEAR(a, b, abs_tol); //fails
+}
+
+TEST(expect_near, four_param) {
+    float a = 5.0;
+    double b = 6.0;
+    long double abs_tol = 0.01;
+    long double rel_tol_pass = 0.5;
+    long double rel_tol_fail = 0.05;
+
+    EXPECT_NEAR(a, b, abs_tol, rel_tol_pass); //passes
+    EXPECT_NEAR(a, b, abs_tol, rel_tol_fail); //fails
+}
+```
+
+### EXPECT_ABS_NEAR()
+`EXPECT_ABS_NEAR(a, b, abs_tol)` takes in three arguments. `a` and `b` are two floating point values of an two floating point types. `abs_tol` defines the maximum difference `a` and `b` can be from each other. This test passes iff `|a - b| <= |abs_tol|`. That is, the absolute difference of `a` and `b` must be smaller than the absolute value of `abs_tol`.
+
+```
+#include <tester/Tests.hpp>
+
+D_TEST(expect_abs_near) {
+    float a = 5.0;
+    double b = 6.0;
+    long double abs_tol = 2.0;
+
+    EXPECT_ABS_NEAR(a, b, abs_tol); //passes
+
+    long double abs_tol_two = 0.5;
+    EXPECT_ABS_NEAR(a, b, abs_tol_two); //fails because |a - b| > 0.5
+}
+```
+
+### EXPECT_REL_NEAR()
+`EXPECT_REL_NEAR(a, b, rel_tol)` takes in three arguments. `a` and `b` are two floating point values of an two floating point types. `rel_tol` defines how relatively near `a` and `b` should be. This test passes iff `|a - b| <= |rel_tol| * max(|a|, |b|)`. That is, the absolute difference of `a` and `b` must be smaller than the product of `rel_tol` and the larger of `|a|` and `|b|`.
+
+```
+#include <tester/Tests.hpp>
+
+D_TEST(expect_rel_near) {
+    float a = 5.0;
+    double b = 6.0;
+    long double rel_tol = 0.5;
+
+    EXPECT_REL_NEAR(a, b, rel_tol); //passes
+
+    long double rel_tol_two = 0.1;
+    EXPECT_REL_NEAR(a, b, rel_tol_two); //fails because 0.1 * 0.6 = 0.06 < |a - b|
+}
+```
+
+### EXPECT_NAN()
+`EXPECT_NAN(a)` takes in one parameter, `a`, which is a floating point value. It passes iff `a` is equivalent to `NAN` and fails otherwise.
+
+```
+#include <tester/Tests.hpp>
+
+D_TEST(expect_nan) {
+    float a = 5.0;
+
+    EXPECT_NAN(a); //fails
+}
+```
+
+### EXPECT_NOT_NAN()
+`ASSERT_NOT_NAN(a)` takes in one parameter, `a`, which is a floating point value. It passes iff `a` is not equivalent to `NAN` and fails otherwise.
+
+```
+#include <tester/Tests.hpp>
+
+D_TEST(expect_nan) {
+    float a = 5.0;
+
+    EXPECT_NOT_NAN(a); //passes
 }
 ```

@@ -7,7 +7,7 @@
 
 #include "Assert/a_bool.hpp"
 #include "Assert/a_cmp.hpp"
-
+#include "Assert/a_flt.hpp"
 #include "Assert/a_null.hpp"
 #include "Assert/a_throws.hpp"
 

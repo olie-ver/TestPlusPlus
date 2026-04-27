@@ -48,6 +48,13 @@ namespace internal {
         concept Nullable = requires(A a) {
             std::convertible_to<decltype(a == nullptr), bool>;
         };
+
+
+        //A concept for a common floating point type
+        template <typename A, typename B, typename C, typename D>
+        concept CommonFloat = requires() {
+            std::is_floating_point<std::common_type<A, B, C, D>>::value;
+        };
     }
 }
 
