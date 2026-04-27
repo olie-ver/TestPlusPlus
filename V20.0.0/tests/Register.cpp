@@ -1,9 +1,14 @@
 #include <tester/Tests.hpp>
 
-void dumbFunc(int a, int b) {
-    throw (a + b);
-}
+#include <tester/Tests.hpp>
 
-TEST(expect_throws, no_exception_type) {
-    EXPECT_THROWS(dumbFunc(5, 10), float);
+D_TEST(assert_rel_near) {
+    float a = 5.0;
+    double b = 6.0;
+    long double rel_tol = 0.5;
+
+    ASSERT_REL_NEAR(a, b, rel_tol); //passes
+
+    long double rel_tol_two = 0.1;
+    ASSERT_REL_NEAR(a, b, rel_tol_two); //passes
 }
