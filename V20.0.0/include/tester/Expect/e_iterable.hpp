@@ -15,6 +15,8 @@
 #define EXPECT_UNORDERED_EQ(first, second) \
     internal::Expects::expectUnorderedEquals((first), (second), __FILE__, __LINE__)
 
+
+//Future tests to add: ordered NE, unordered NE, same set (has same elements, regardless of counts), not same set
 namespace internal {
     namespace Expects {
         template <typename A, typename B>

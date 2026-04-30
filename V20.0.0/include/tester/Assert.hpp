@@ -10,6 +10,7 @@
 #include "Assert/a_flt.hpp"
 #include "Assert/a_itr.hpp"
 #include "Assert/a_null.hpp"
+#include "Assert/a_test.hpp"
 #include "Assert/a_throws.hpp"
 
 /// @brief An internal namespace. Using anything from within is not advised

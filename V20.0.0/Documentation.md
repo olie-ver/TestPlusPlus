@@ -85,6 +85,11 @@ You may consider this code open-source to be downloaded, modified, and released 
     9. [Expect NaN](#expect_nan)
     10. [Expect Not NaN](#expect_not_nan)
 9. [Iterable Tests](#iterable-tests)
+    1. [Assert Ordered Equals](#assert_ordered_eq)
+    2. [Assert Unordered Equals](#assert_unordered_eq)
+    3. [Expect Ordered Equals](#expect_ordered_eq)
+    4. [Expect Unordered Equals](#expect_unordered_eq)
+10. [Test Tests](#test-tests)
 
 ## Adding To Your Projects
 
@@ -1490,5 +1495,80 @@ D_TEST(expect_ordered_eq) {
     int j[] = {1, 1, 2, 3};
     int k[] = {1, 2, 3, 3};
     EXPECT_UNORDERED_EQ(j, k); //fails because there is a mismatch in counts on 1 and 3
+}
+```
+
+## Test Tests
+Test tests are used to see if a test will pass/fail. Ie, these are tests to ensure that tests are working. It is very important that you do not pass in random functions
+
+### ASSERT_PASSES()
+`ASSERT_PASSES(test)` takes in one parameter, which is a test. It passes iff the passed in test passes, and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+
+```
+#include <tester/Tests.hpp>
+
+void gonnaBreakThings() { }
+
+//this is a simple example, but it gets the point across
+D_TEST(assert_passes) {
+    ASSERT_PASSES(EXPECT_TRUE(true)); //passes
+    ASSERT_PASSES(EXPECT_TRUE(false)); //fails
+    ASSERT_PASSES(gonnaBreakThings()); //don't do this, but it would pass 
+
+    //fails, but the nested ASSERT_TRUE failing DOES NOT terminate testing for the rest of the suite
+    ASSERT_PASSES(ASSERT_TRUE(false)); 
+}
+```
+
+### ASSERT_FAILS()
+`EXPECT_FAILS(test)` takes in one parameter, which is a test. It passes iff the passed in test fails, and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+
+```
+#include <tester/Tests.hpp>
+
+void gonnaBreakThings() { }
+
+//this is a simple example, but it gets the point across
+D_TEST(assert_fails) {
+    ASSERT_FAILS(EXPECT_TRUE(true)); //fails
+    ASSERT_FAILS(EXPECT_TRUE(false)); //would pass
+    ASSERT_FAILS(gonnaBreakThings()); //don't do this, but it would fail
+    ASSERT_FAILS(ASSERT_TRUE(true)); //fails
+}
+```
+
+### EXPECT_PASSES()
+`EXPECT_PASSES(test)` takes in one parameter, which is a test. It passes iff the passed in test passes, and fails otherwise.
+
+```
+#include <tester/Tests.hpp>
+
+void gonnaBreakThings() { }
+
+//this is a simple example, but it gets the point across
+D_TEST(expect_passes) {
+    EXPECT_PASSES(EXPECT_TRUE(true)); //passes
+    EXPECT_PASSES(EXPECT_TRUE(false)); //fails
+    EXPECT_PASSES(gonnaBreakThings()); //don't do this, but it would pass 
+
+    //fails, but ASSERT_TRUE failing DOES NOT terminate testing for the rest of the suite
+    EXPECT_PASSES(ASSERT_TRUE(false)); 
+}
+```
+
+### EXPECT_FAILS()
+`EXPECT_FAILS(test)` takes in one parameter, which is a test. It passes iff the passed in test fails, and fails otherwise.
+
+```
+#include <tester/Tests.hpp>
+
+void gonnaBreakThings() { }
+
+//this is a simple example, but it gets the point across
+D_TEST(expect_fails) {
+    EXPECT_FAILS(EXPECT_TRUE(true)); //fails
+    EXPECT_FAILS(EXPECT_TRUE(false)); //passes
+    EXPECT_FAILS(gonnaBreakThings()); //don't do this, but it would fail
+    EXPECT_FAILS(ASSERT_TRUE(true)); 
 }
 ```
