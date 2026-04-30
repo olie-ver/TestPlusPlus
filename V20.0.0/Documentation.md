@@ -1332,10 +1332,82 @@ D_TEST(expect_nan) {
 ```
 
 ## Iterable Tests
-Iterable tests are used for iterable containers, such as arrays, maps, sets, etc. They require whatever type within the container to have `==` defined. Items in the passed in containers don't necessarily need to be the same type.
+Iterable tests are used for iterable containers, such as arrays, maps, sets, etc. They require that whatever types are within the containers to have `==` defined. Items in the passed in containers don't necessarily need to be the same type.
+
+In order to be an iterable container, the passed in container needs to satisfy the `std::ranges::range` concept.
 
 ### EXPECT_ORDERED_EQ
-`EXPECT_ORDERED_EQ(first, second)` takes in two arguments: two iterable containers. 
+`EXPECT_ORDERED_EQ(first, second)` takes in two arguments: two iterable containers. The two containers do not necessarily have to be the same type. However, you are responsible for passing in the correct container types into the function. Ie, passing in unordered containers such as `unordered_map` and `unordered_set` are not guaranteed to work properly. This test passes iff every element in each container are `==` at the same index, and fails otherwise. This test will also automatically fail when given two containers with different item counts.
+
+```
+#include <tester/Tests.hpp>
+#include <vector>
+#include <set>
+#include <unordered_set>
+
+D_TEST(expect_ordered_eq) {
+    int a[] = {1, 2, 3, 4, 5};
+    int b[] = {1, 2, 3, 4, 5};
+
+    EXPECT_ORDERED_EQ(a, b); //passes
+
+    int c[] = {5, 4, 3, 2, 1};
+
+    EXPECT_ORDERED_EQ(a, c); // fails
+
+    std::vector<int> d = {8, 6, 7, 5, 3, 0, 9};
+    int e[] = {8, 6, 7, 5, 3, 0, 9};
+
+    EXPECT_ORDERED_EQ(d, e); //passes
+
+    std::set<std::vector<int>> f = {{1, 2, 3}, {4, 5, 6}};
+    std::set<std::vector<int>> g = {{1, 2, 3}, {4, 5, 6}};
+
+    EXPECT_ORDERED_EQ(f, g); //passes
+
+    std::unordered_set<int> h = {1, 2, 3, 4, 5, 6};
+    std::unordered_set<int> i = {1, 2, 3, 4, 5, 6};
+
+    EXPECT_ORDERED_EQ(h, i); //undefined behavior, but most likely to fail
+}
+```
 
 ### EXPECT_UNORDERED_EQ
-`EXPECT_UNORDERED_EQ(first, second)` takes in two arguments: two iterable containers. 
+`EXPECT_UNORDERED_EQ(first, second)` takes in two arguments: two iterable containers. The two containers do not necessarily have to be the same type. This test can take in any kind of container, ordered or unordered, in fact, when this test is used on ordered containers, its behavior is the same as `EXPECT_ORDERED_EQ()`. This test passes iff both containers have the same elements (as defined by `==`) and the same count of each element, regardless of indexing, and fails otherwise. This test will also automatically fail when given two containers with different item counts.
+
+```
+#include <tester/Tests.hpp>
+#include <vector>
+#include <set>
+#include <unordered_set>
+
+D_TEST(expect_ordered_eq) {
+    int a[] = {1, 2, 3, 4, 5};
+    int b[] = {1, 2, 3, 4, 5};
+
+    EXPECT_UNORDERED_EQ(a, b); //passes
+
+    int c[] = {5, 4, 3, 2, 1};
+
+    EXPECT_UNORDERED_EQ(a, c); // passes
+
+    std::vector<int> d = {8, 6, 7, 5, 3, 0, 9};
+    int e[] = {8, 6, 7, 5, 3, 0, 9};
+
+    EXPECT_UNORDERED_EQ(d, e); //passes
+
+    std::set<std::vector<int>> f = {{1, 2, 3}, {4, 5, 6}};
+    std::set<std::vector<int>> g = {{1, 2, 3}, {4, 5, 6}};
+
+    EXPECT_UNORDERED_EQ(f, g); //passes
+
+    std::unordered_set<int> h = {1, 2, 3, 4, 5, 6};
+    std::unordered_set<int> i = {1, 2, 3, 4, 5, 6};
+
+    EXPECT_UNORDERED_EQ(h, i); //passes, unlike EXPECT_ORDERED_EQ()
+
+    int j[] = {1, 1, 2, 3};
+    int k[] = {1, 2, 3, 3};
+    EXPECT_UNORDERED_EQ(j, k); //fails because there is a mismatch in counts on 1 and 3
+}
+```
