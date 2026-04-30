@@ -4,6 +4,7 @@
 #define CONCEPTS_H
 
 #include <concepts>
+#include <ranges>
 
 namespace internal {
     namespace Concepts {
@@ -54,6 +55,21 @@ namespace internal {
         template <typename A, typename B, typename C, typename D>
         concept CommonFloat = requires() {
             std::is_floating_point<std::common_type<A, B, C, D>>::value;
+        };
+
+        //A concept for types that are iterable and the types of what they contain are comparable by ==
+        template <typename A, typename B>
+        concept IterableAndComparable = requires()
+        {
+            std::ranges::range<A>;
+            std::ranges::range<B>;
+            HasEQ<std::ranges::range_value_t<A>, std::ranges::range_value_t<B>>;
+        };
+
+        //A concept for types that are hashable
+        template <typename A>
+        concept Hashable = requires(A& a) {
+            { std::hash<A>{}(a) } -> std::convertible_to<size_t>;
         };
     }
 }

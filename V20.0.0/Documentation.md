@@ -84,6 +84,7 @@ You may consider this code open-source to be downloaded, modified, and released 
     8. [Expect Absolutely Near](#expect_abs_near)
     9. [Expect NaN](#expect_nan)
     10. [Expect Not NaN](#expect_not_nan)
+9. [Iterable Tests](#iterable-tests)
 
 ## Adding To Your Projects
 
@@ -1329,3 +1330,12 @@ D_TEST(expect_nan) {
     EXPECT_NOT_NAN(a); //passes
 }
 ```
+
+## Iterable Tests
+Iterable tests are used for iterable containers, such as arrays, maps, sets, etc. They require whatever type within the container to have `==` defined. Items in the passed in containers don't necessarily need to be the same type.
+
+### EXPECT_ORDERED_EQ
+`EXPECT_ORDERED_EQ(first, second)` takes in two arguments: two iterable containers. 
+
+### EXPECT_UNORDERED_EQ
+`EXPECT_UNORDERED_EQ(first, second)` takes in two arguments: two iterable containers. 
