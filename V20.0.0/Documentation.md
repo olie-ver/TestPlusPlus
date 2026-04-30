@@ -90,6 +90,10 @@ You may consider this code open-source to be downloaded, modified, and released 
     3. [Expect Ordered Equals](#expect_ordered_eq)
     4. [Expect Unordered Equals](#expect_unordered_eq)
 10. [Test Tests](#test-tests)
+    1. [Assert Passes](#assert_passes)
+    2. [Assert Fails](#assert_fails)
+    3. [Expect Passes](#expect_passes)
+    4. [Expect Fails](#expect_fails)
 
 ## Adding To Your Projects
 
@@ -1499,7 +1503,12 @@ D_TEST(expect_ordered_eq) {
 ```
 
 ## Test Tests
-Test tests are used to see if a test will pass/fail. Ie, these are tests to ensure that tests are working. It is very important that you do not pass in random functions
+Test tests are used to see if a test will pass/fail. Ie, these are tests to ensure that tests are working. It is very important that you do not pass in random functions.
+
+1. [Assert Passes](#assert_passes)
+2. [Assert Fails](#assert_fails)
+3. [Expect Passes](#expect_passes)
+4. [Expect Fails](#expect_fails)
 
 ### ASSERT_PASSES()
 `ASSERT_PASSES(test)` takes in one parameter, which is a test. It passes iff the passed in test passes, and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
