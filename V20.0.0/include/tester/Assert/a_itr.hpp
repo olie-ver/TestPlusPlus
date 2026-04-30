@@ -1,8 +1,9 @@
 #pragma once
 
-#ifndef E_ITER_H
-#define E_ITER_H
+#ifndef A_ITR_H
+#define A_ITR_H
 
+#include "../Core.hpp"
 #include "../Concepts.hpp"
 #include "../Helpers.hpp"
 #include "../Runner.hpp"
@@ -10,16 +11,16 @@
 #include <unordered_map>
 #include <ranges>
 
-#define EXPECT_ORDERED_EQ(first, second) \
-    internal::Expects::expectOrderedEquals((first), (second), __FILE__, __LINE__)
-#define EXPECT_UNORDERED_EQ(first, second) \
-    internal::Expects::expectUnorderedEquals((first), (second), __FILE__, __LINE__)
+#define ASSERT_ORDERED_EQ(first, second) \
+    internal::Assert::assertOrderedEquals((first), (second), __FILE__, __LINE__)
+#define ASSERT_UNORDERED_EQ(first, second) \
+    internal::Assert::assertUnorderedEquals((first), (second), __FILE__, __LINE__)
 
 namespace internal {
-    namespace Expects {
+    namespace Assert {
         template <typename A, typename B>
         requires Concepts::IterableAndComparable<A, B>
-        inline void expectOrderedEquals(const A& first, const B& second, 
+        inline void assertOrderedEquals(const A& first, const B& second, 
             const char* file, const int line)
         {
             namespace ranges = std::ranges;
@@ -40,16 +41,19 @@ namespace internal {
                     file,
                     line
                 });
-                return;
+                throw Core::AssertionFailure();
             }
 
             size_t index = 0;
+
+            bool failed = false;
 
             for (; a_itr != a_end; ++a_itr, ++b_itr, ++index) {
                 auto&& a_val = *a_itr;
                 auto&& b_val = *b_itr;
 
                 if (!(a_val == b_val)) {
+                    failed = true;
                     std::string idx = Helpers::toString(index);
                     Runner::CURRENT_TEST->failures.push_back({
                         std::string("Mismatch at index = ") + idx
@@ -60,6 +64,10 @@ namespace internal {
                     });
                 }
             }
+
+            if (failed) {
+                throw Core::AssertionFailure();
+            }
         }
 
         template <typename A, typename B>
@@ -67,7 +75,7 @@ namespace internal {
             && Concepts::Hashable<std::ranges::range_value_t<A>>
             && Concepts::Hashable<std::ranges::range_value_t<B>>
             && Concepts::HasEQ<std::ranges::range_value_t<A>, std::ranges::range_value_t<B>>
-        inline void expectUnorderedEqualsHashable(const A& first, const B& second,
+        inline void assertUnorderedEqualsHashable(const A& first, const B& second,
             const char* file, const int line) 
         {
             using a_val = std::ranges::range_value_t<A>;
@@ -89,7 +97,7 @@ namespace internal {
                         file,
                         line
                     });
-                    return;
+                    throw Core::AssertionFailure();
                 } else {
                     counts[*b_itr]--;
                 }
@@ -102,7 +110,7 @@ namespace internal {
                         file,
                         line
                     });
-                    return;
+                    throw Core::AssertionFailure();
                 }
             }
         }
@@ -111,7 +119,7 @@ namespace internal {
         requires Concepts::IterableAndComparable<A, B> 
             && Concepts::HasLT<std::ranges::range_value_t<A>, std::ranges::range_value_t<B>>
             && Concepts::HasEQ<std::ranges::range_value_t<A>, std::ranges::range_value_t<B>>
-        inline void expectUnorderedEqualsLessThan(const A& first, const B& second,
+        inline void assertUnorderedEqualsLessThan(const A& first, const B& second,
             const char* file, const int line) 
         {
             using a_val = std::ranges::range_value_t<A>;
@@ -132,7 +140,7 @@ namespace internal {
                         file,
                         line
                     });
-                    return;
+                    throw Core::AssertionFailure();
                 }
             }
         }
@@ -140,7 +148,7 @@ namespace internal {
         template <typename A, typename B>
         requires Concepts::IterableAndComparable<A, B>
             && Concepts::HasEQ<std::ranges::range_value_t<A>, std::ranges::range_value_t<B>>
-        inline void expectUnorderedEqualsGeneral(const A& first, const B& second,
+        inline void assertUnorderedEqualsGeneral(const A& first, const B& second,
             const char* file, const int line) 
         {
             //since this function is being called, first and second have the same size
@@ -171,7 +179,7 @@ namespace internal {
                         file,
                         line
                     });
-                    return;
+                    throw Core::AssertionFailure();
                 }
             }
 
@@ -182,14 +190,14 @@ namespace internal {
                         file,
                         line
                     });
-                    return;
+                    throw Core::AssertionFailure();
                 }
             }
         }
 
         template <typename A, typename B>
         requires Concepts::IterableAndComparable<A, B>
-        inline void expectUnorderedEquals(const A& first, const B& second,
+        inline void assertUnorderedEquals(const A& first, const B& second,
             const char* file, const int line) 
         {
             size_t size_a = std::ranges::size(first);
@@ -203,7 +211,7 @@ namespace internal {
                     file,
                     line
                 });
-                return;
+                throw Core::AssertionFailure();
             }
 
             using a_val = std::ranges::range_value_t<A>;
@@ -212,13 +220,13 @@ namespace internal {
             if constexpr (Concepts::Hashable<a_val> && Concepts::Hashable<b_val> 
                 && Concepts::HasEQ<a_val, b_val>)
             {
-                expectUnorderedEqualsHashable(first, second, file, line);
+                assertUnorderedEqualsHashable(first, second, file, line);
             } else if constexpr (Concepts::HasLT<a_val, b_val>) 
             {
-                expectUnorderedEqualsLessThan(first, second, file, line);
+                assertUnorderedEqualsLessThan(first, second, file, line);
             } else 
             {
-                expectUnorderedEqualsGeneral(first, second, file, line);
+                assertUnorderedEqualsGeneral(first, second, file, line);
             }
         }
     }
