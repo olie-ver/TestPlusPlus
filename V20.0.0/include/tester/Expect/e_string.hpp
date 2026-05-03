@@ -373,6 +373,201 @@ namespace internal {
                 }); 
             }
         }
+
+        /// @brief An Expects test for if a string contains another string
+        /// @param first the "super" string
+        /// @param substr the substring
+        /// @param file the file this function was called from
+        /// @param line the line this function was called on
+        inline void expectStringContains(const std::string& first, const std::string& substr,
+            const char* file, const int line)
+        {
+            if (first.find(substr) == std::string::npos) {
+                Runner::CURRENT_TEST->failures.push_back({
+                    std::string("Expected string: " + first + " to contain " + substr + " but it didn't"),
+                    file,
+                    line
+                }); 
+            }
+        }
+
+        /// @brief An Expects test for if a string contains another string
+        /// @param first the "super" string
+        /// @param substr the substring
+        /// @param file the file this function was called from
+        /// @param line the line this function was called on
+        inline void expectStringContains(const char* first, const char* substr, 
+            const char* file, const int line)
+        {
+            bool first_null = first == nullptr;
+            bool substr_null = substr == nullptr;
+
+            if (first_null ^ substr_null) {
+                Runner::CURRENT_TEST->failures.push_back({
+                    std::string("Mismatched nullptrs")
+                    + "\n    a = nullptr: " + Helpers::toString(first_null)
+                    + "\n    b = nullptr:" + Helpers::toString(substr_null),
+                    file,
+                    line
+                });
+                return;
+            }
+
+            expectStringContains(std::string(first), std::string(substr), file, line);
+        }
+
+        /// @brief An Expects test for if a string contains another string
+        /// @param first the "super" string
+        /// @param substr the substring
+        /// @param file the file this function was called from
+        /// @param line the line this function was called on
+        template <size_t N, size_t M>
+        inline void expectStringContains(const char(&first)[N], const char(&substr)[M], 
+            const char* file, const int line)
+        {
+            if (N < M) {
+                Runner::CURRENT_TEST->failures.push_back({
+                    "Substring longer than string to check",
+                    file,
+                    line
+                });
+                return;
+            }
+
+            expectStringContains(std::string(first), std::string(substr), file, line);
+        }
+
+        /// @brief An Expects test for if a string starts with another string
+        /// @param first the "super" string
+        /// @param substr the substring
+        /// @param file the file this function was called from
+        /// @param line the line this function was called on
+        inline void expectStringStartsWith(const std::string& first, const std::string& substr, 
+            const char* file, const int line)
+        {
+            if (!first.starts_with(substr)) {
+                Runner::CURRENT_TEST->failures.push_back({
+                    std::string("Expected " + first + " to start with " + substr + " but it didn't"),
+                    file,
+                    line
+                });
+                return;
+            }
+        }
+
+        /// @brief An Expects test for if a string starts with another string
+        /// @param first the "super" string
+        /// @param substr the substring
+        /// @param file the file this function was called from
+        /// @param line the line this function was called on
+        inline void expectStringStartsWith(const char* first, const char* substr, 
+            const char* file, const int line)
+        {
+            if (first == nullptr) {
+                Runner::CURRENT_TEST->failures.push_back({
+                    "First string is nullptr",
+                    file,
+                    line
+                });
+                return;
+            } else if (substr == nullptr) {
+                Runner::CURRENT_TEST->failures.push_back({
+                    "Substring is nullptr",
+                    file,
+                    line
+                });
+                return;
+            }
+
+            expectStringStartsWith(std::string(first), std::string(substr), file, line);
+        }
+
+        /// @brief An Expects test for if a string starts with another string
+        /// @param first the "super" string
+        /// @param substr the substring
+        /// @param file the file this function was called from
+        /// @param line the line this function was called on
+        template <size_t N, size_t M>
+        inline void expectStringStartsWith(const char(&first)[N], const char(&substr)[M],
+            const char* file, const int line)
+        {
+            if (N < M) {
+                Runner::CURRENT_TEST->failures.push_back({
+                    "Substring longer than string to check",
+                    file,
+                    line
+                });
+                return;
+            }
+
+            expectStringStartsWith(std::string(first), std::string(second), file, line);
+        }
+
+        /// @brief An Expects test for if a string ends with another string
+        /// @param first the "super" string
+        /// @param substr the substring
+        /// @param file the file this function was called from
+        /// @param line the line this function was called on
+        inline void expectStringEndsWith(const std::string& first, const std::string& substr, 
+            const char* file, const int line)
+        {
+            if (!first.ends_with(substr)) {
+                Runner::CURRENT_TEST->failures.push_back({
+                    std::string("Expected " + first + " to start with " + substr + " but it didn't"),
+                    file,
+                    line
+                });
+                return;
+            }
+        }
+
+        /// @brief An Expects test for if a string ends with another string
+        /// @param first the "super" string
+        /// @param substr the substring
+        /// @param file the file this function was called from
+        /// @param line the line this function was called on
+        inline void expectStringEndsWith(const char* first, const char* substr, 
+            const char* file, const int line)
+        {
+            if (first == nullptr) {
+                Runner::CURRENT_TEST->failures.push_back({
+                    "First string is nullptr",
+                    file,
+                    line
+                });
+                return;
+            } else if (substr == nullptr) {
+                Runner::CURRENT_TEST->failures.push_back({
+                    "Substring is nullptr",
+                    file,
+                    line
+                });
+                return;
+            }
+
+            expectStringEndsWith(std::string(first), std::string(substr), file, line);
+        }
+        
+        /// @brief An Expects test for if a string ends with another string
+        /// @param first the "super" string
+        /// @param substr the substring
+        /// @param file the file this function was called from
+        /// @param line the line this function was called on
+        template <size_t N, size_t M>
+        inline void expectStringEndsWith(const char(&first)[N], const char(&substr)[M],
+            const char* file, const int line)
+        {
+            if (N < M) {
+                Runner::CURRENT_TEST->failures.push_back({
+                    "Substring longer than string to check",
+                    file,
+                    line
+                });
+                return;
+            }
+
+            expectStringEndsWith(std::string(first), std::string(second), file, line);
+        }
     }
 }
 

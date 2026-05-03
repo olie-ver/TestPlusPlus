@@ -1042,6 +1042,189 @@ TEST(expect_str_nemt, char_arr) {
 }
 ```
 
+### EXPECT_STR_CONTAINS()
+`EXPECT_STR_CONTAINS(string, substr)` takes in two arguments, both being strings. There are three types of strings that can be passed in: `std::string`, `const char*`, and `char[]`. String contains is dependent on what kind of parameter is passed in.
+
+#### `std::string`:
+For `std::string`, string contains is determined by the `find()` method. This test passes iff `string.find(substr)` does not return `std::string::npos` and fails otherwise.
+
+```
+#include <tester/Tests.hpp>
+#include <string>
+
+TEST(expect_str_contains, string) {
+    std::string a = "hello";
+    std::string b = "o";
+
+    EXPECT_STR_CONTAINS(a, b); //passes
+    EXPECT_STR_CONTAINS(b, a); //fails
+    EXPECT_STR_CONTAINS(a, a); //passes
+}
+```
+
+#### `const char*`:
+For `const char*`, string contains first checks if either `char*` is the `nullptr`. If only one of them are, this test fails. Note that this means that passing in two `nullptr` parameters will result in a passing test case. If this is not the case, both `string` and `substr` are converted to `std::string` and then tested on using the above test case. 
+
+```
+#include <tester/Tests.hpp>
+
+TEST(expect_str_contains, char_ptr) {
+    const char* a = "hello";
+    const char* b = "o";
+
+    EXPECT_STR_CONTAINS(a, b); //passes
+    EXPECT_STR_CONTAINS(b, a); //fails
+    EXPECT_STR_CONTAINS(a, a); //passes
+    
+    const char* c = nullptr;
+
+    EXPECT_STR_CONTAINS(a, c); //fails
+    EXPECT_STR_CONTAINS(c, a); //fails
+
+    const char* d = nullptr;
+
+    EXPECT_STR_CONTAINS(c, d); //passes
+}
+```
+
+#### `char[]`:
+For `const char[]`, string contains first checks if the length of `string` is less than the length of `substr`. If it is, this test fails. If this is not the case, both `string` and `substr` are converted to `std::string` and then tested on using the above test case. 
+
+```
+#include <tester/Tests.hpp>
+
+TEST(expect_str_contains, char_arr) {
+    char a[] = "hello";
+    char b[] = "o";
+
+    EXPECT_STR_CONTAINS(a, b); //passes
+    EXPECT_STR_CONTAINS(b, a); //fails
+    EXPECT_STR_CONTAINS(a, a); //passes
+}
+```
+
+### EXPECT_STR_STARTS_WITH()
+`EXPECT_STR_STARTS_WITH(string, substr)` takes in two arguments, both being strings. There are three types of strings that can be passed in: `std::string`, `const char*`, and `char[]`. String starts-with is dependent on what kind of parameter is passed in.
+
+#### `std::string`:
+For `std::string`, string contains is determined by the `starts_with()` method. This test passes iff `string.starts_with(substr)` does not return `false` and fails otherwise.
+
+```
+#include <tester/Tests.hpp>
+#include <string>
+
+TEST(expect_str_starts_with, string) {
+    std::string a = "hello";
+    std::string b = "he";
+
+    EXPECT_STR_STARTS_WITH(a, b); //passes
+    EXPECT_STR_STARTS_WITH(b, a); //fails
+    EXPECT_STR_STARTS_WITH(a, a); //passes
+}
+```
+
+#### `const char*`:
+For `const char*`, string contains first checks if either `char*` is the `nullptr`. If only one of them are, this test fails. Note that this means that passing in two `nullptr` parameters will result in a passing test case. If this is not the case, both `string` and `substr` are converted to `std::string` and then tested on using the above test case. 
+
+```
+#include <tester/Tests.hpp>
+
+TEST(expect_str_starts_with, char_ptr) {
+    const char* a = "hello";
+    const char* b = "he";
+
+    EXPECT_STR_STARTS_WITH(a, b); //passes
+    EXPECT_STR_STARTS_WITH(b, a); //fails
+    EXPECT_STR_STARTS_WITH(a, a); //passes
+
+    const char* c = nullptr;
+
+    EXPECT_STR_STARTS_WITH(a, c); //fails
+    EXPECT_STR_STARTS_WITH(c, a); //fails
+
+    const char* d = nullptr;
+
+    EXPECT_STR_STARTS_WITH(c, d); //passes
+}
+```
+
+#### `char[]`:
+For `const char[]`, string contains first checks if the length of `string` is less than the length of `substr`. If it is, this test fails. If this is not the case, both `string` and `substr` are converted to `std::string` and then tested on using the above test case. 
+
+```
+#include <tester/Tests.hpp>
+
+TEST(expect_str_starts_with, char_arr) {
+    char a[] = "hello";
+    char b[] = "he";
+
+    EXPECT_STR_STARTS_WITH(a, b); //passes
+    EXPECT_STR_STARTS_WITH(b, a); //fails
+    EXPECT_STR_STARTS_WITH(a, a); //passes
+}
+```
+
+### EXPECT_STR_ENDS_WITH()
+`EXPECT_STR_ENDS_WITH(string, substr)` takes in two arguments, both being strings. There are three types of strings that can be passed in: `std::string`, `const char*`, and `char[]`. String starts-with is dependent on what kind of parameter is passed in.
+
+#### `std::string`:
+For `std::string`, string contains is determined by the `starts_with()` method. This test passes iff `string.ends_with(substr)` does not return `false` and fails otherwise.
+
+```
+#include <tester/Tests.hpp>
+#include <string>
+
+TEST(expect_str_ends_with, string) {
+    std::string a = "hello";
+    std::string b = "lo";
+
+    EXPECT_STR_ENDS_WITH(a, b); //passes
+    EXPECT_STR_ENDS_WITH(b, a); //fails
+    EXPECT_STR_ENDS_WITH(a, a); //passes
+}
+```
+
+#### `const char*`:
+For `const char*`, string contains first checks if either `char*` is the `nullptr`. If only one of them are, this test fails. Note that this means that passing in two `nullptr` parameters will result in a passing test case. If this is not the case, both `string` and `substr` are converted to `std::string` and then tested on using the above test case. 
+
+```
+#include <tester/Tests.hpp>
+
+TEST(expect_str_ends_with, char_ptr) {
+    const char* a = "hello";
+    const char* b = "he";
+
+    EXPECT_STR_ENDS_WITH(a, b); //passes
+    EXPECT_STR_ENDS_WITH(b, a); //fails
+    EXPECT_STR_ENDS_WITH(a, a); //passes
+
+    const char* c = nullptr;
+
+    EXPECT_STR_ENDS_WITH(a, c); //fails
+    EXPECT_STR_ENDS_WITH(c, a); //fails
+
+    const char* d = nullptr;
+
+    EXPECT_STR_ENDS_WITH(c, d); //passes
+}
+```
+
+#### `char[]`:
+For `const char[]`, string contains first checks if the length of `string` is less than the length of `substr`. If it is, this test fails. If this is not the case, both `string` and `substr` are converted to `std::string` and then tested on using the above test case. 
+
+```
+#include <tester/Tests.hpp>
+
+TEST(expect_str_ends_with, char_arr) {
+    char a[] = "hello";
+    char b[] = "he";
+
+    EXPECT_STR_ENDS_WITH(a, b); //passes
+    EXPECT_STR_ENDS_WITH(b, a); //fails
+    EXPECT_STR_ENDS_WITH(a, a); //passes
+}
+```
+
 ## Throws Tests
 Throws tests are used to check whether or not a function throws or does not throw an error. You are able to pass in anonymous functions, as well as functions that require parameters. Since functions can take parameters or none, you must pass in the function with `()` at the end of the function name.
 
