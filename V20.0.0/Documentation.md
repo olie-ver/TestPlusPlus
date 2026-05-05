@@ -52,22 +52,46 @@ You may consider this code open-source to be downloaded, modified, and released 
         1. [std::string](#stdstring-3)
         2. [const char*](#const-char-3)
         3. [char[]](#char-3)
-    5. [Expect String Equals](#expect_str_eq)
+    5. [Assert String Contains](#assert_str_contains)
         1. [std::string](#stdstring-4)
         2. [const char*](#const-char-4)
         3. [char[]](#char-4)
-    6. [Expect String Not Equals](#expect_str_ne)
+    6. [Assert String Starts With](#assert_str_starts_with)
         1. [std::string](#stdstring-5)
         2. [const char*](#const-char-5)
         3. [char[]](#char-5)
-    7. [Expect String Empty](#expect_str_emt)
+    7. [Assert String Ends With](#assert_str_ends_with)
         1. [std::string](#stdstring-6)
         2. [const char*](#const-char-6)
         3. [char[]](#char-6)
-    8. [Expect String Not Empty](#expect_str_nemt)
+    8. [Expect String Equals](#expect_str_eq)
         1. [std::string](#stdstring-7)
         2. [const char*](#const-char-7)
         3. [char[]](#char-7)
+    9. [Expect String Not Equals](#expect_str_ne)
+        1. [std::string](#stdstring-8)
+        2. [const char*](#const-char-8)
+        3. [char[]](#char-8)
+    10. [Expect String Empty](#expect_str_emt)
+        1. [std::string](#stdstring-9)
+        2. [const char*](#const-char-9)
+        3. [char[]](#char-9)
+    11. [Expect String Not Empty](#expect_str_nemt)
+        1. [std::string](#stdstring-10)
+        2. [const char*](#const-char-10)
+        3. [char[]](#char-10)
+    12. [Expect String Contains](#expect_str_contains)
+        1. [std::string](#stdstring-11)
+        2. [const char*](#const-char-11)
+        3. [char[]](#char-11)
+    13. [Expect String Starts With](#expect_str_starts_with)
+        1. [std::string](#stdstring-12)
+        2. [const char*](#const-char-12)
+        3. [char[]](#char-12)
+    14. [Expect String Ends With](#expect_str_ends_with)
+        1. [std::string](#stdstring-13)
+        2. [const char*](#const-char-13)
+        3. [char[]](#char-13)
 7. [Throws Tests](#throws-tests)
     1. [Assert Throws](#assert_throws)
     2. [Assert Does Not Throw](#assert_does_not_throw)
@@ -523,22 +547,46 @@ Strings tests are used for checking the (in)equality of strings and whether or n
     1. [std::string](#stdstring-3)
     2. [const char*](#const-char-3)
     3. [char[]](#char-3)
-5. [Expect String Equals](#expect_str_eq)
+5. [Assert String Contains](#assert_str_contains)
     1. [std::string](#stdstring-4)
     2. [const char*](#const-char-4)
     3. [char[]](#char-4)
-6. [Expect String Not Equals](#expect_str_ne)
+6. [Assert String Starts With](#assert_str_starts_with)
     1. [std::string](#stdstring-5)
     2. [const char*](#const-char-5)
     3. [char[]](#char-5)
-7. [Expect String Empty](#expect_str_emt)
+7. [Assert String Ends With](#assert_str_ends_with)
     1. [std::string](#stdstring-6)
     2. [const char*](#const-char-6)
     3. [char[]](#char-6)
-8. [Expect String Not Empty](#expect_str_nemt)
+8. [Expect String Equals](#expect_str_eq)
     1. [std::string](#stdstring-7)
     2. [const char*](#const-char-7)
     3. [char[]](#char-7)
+9. [Expect String Not Equals](#expect_str_ne)
+    1. [std::string](#stdstring-8)
+    2. [const char*](#const-char-8)
+    3. [char[]](#char-8)
+10. [Expect String Empty](#expect_str_emt)
+    1. [std::string](#stdstring-9)
+    2. [const char*](#const-char-9)
+    3. [char[]](#char-9)
+11. [Expect String Not Empty](#expect_str_nemt)
+    1. [std::string](#stdstring-10)
+    2. [const char*](#const-char-10)
+    3. [char[]](#char-10)
+12. [Expect String Contains](#expect_str_contains)
+    1. [std::string](#stdstring-11)
+    2. [const char*](#const-char-11)
+    3. [char[]](#char-11)
+13. [Expect String Starts With](#expect_str_starts_with)
+    1. [std::string](#stdstring-12)
+    2. [const char*](#const-char-12)
+    3. [char[]](#char-12)
+14. [Expect String Ends With](#expect_str_ends_with)
+    1. [std::string](#stdstring-13)
+    2. [const char*](#const-char-13)
+    3. [char[]](#char-13)
 
 ### ASSERT_STR_EQ()
 `ASSERT_STR_EQ(a, b)` takes in two arguments, both are strings. There are three types of strings that can be passed in: `std::string`, `const char*`, and `char[]`. Both arguments must be of the same type. Depending on which type is passed in, a different overload, and therefore different method of determining equality will be used. Upon failure it will terminate testing for the test suite it was called in.
@@ -789,6 +837,189 @@ TEST(assert_str_nemt, char_arr) {
 
     const char c[] = nullptr;
     ASSERT_STR_NEMT(c); //doesn't run, but would segmentation fault. You have been warned.
+}
+```
+
+### ASSERT_STR_CONTAINS()
+`ASSERT_STR_CONTAINS(string, substr)` takes in two arguments, both being strings. There are three types of strings that can be passed in: `std::string`, `const char*`, and `char[]`. String contains is dependent on what kind of parameter is passed in. Upon failure it will terminate testing for the test suite it was called in.
+
+#### `std::string`:
+For `std::string`, string contains is determined by the `find()` method. This test passes iff `string.find(substr)` does not return `std::string::npos` and fails otherwise.
+
+```
+#include <tester/Tests.hpp>
+#include <string>
+
+TEST(assert_str_contains, string) {
+    std::string a = "hello";
+    std::string b = "o";
+
+    ASSERT_STR_CONTAINS(a, b); //passes
+    ASSERT_STR_CONTAINS(b, a); //fails
+    ASSERT_STR_CONTAINS(a, a); //would pass
+}
+```
+
+#### `const char*`:
+For `const char*`, string contains first checks if either `char*` is the `nullptr`. If only one of them are, this test fails. Note that this means that passing in two `nullptr` parameters will result in a passing test case. If this is not the case, both `string` and `substr` are converted to `std::string` and then tested on using the above test case. 
+
+```
+#include <tester/Tests.hpp>
+
+TEST(assert_str_contains, char_ptr) {
+    const char* a = "hello";
+    const char* b = "o";
+
+    ASSERT_STR_CONTAINS(a, b); //passes
+    ASSERT_STR_CONTAINS(b, a); //fails
+    ASSERT_STR_CONTAINS(a, a); //passes
+    
+    const char* c = nullptr;
+
+    ASSERT_STR_CONTAINS(a, c); //fails
+    ASSERT_STR_CONTAINS(c, a); //fails
+
+    const char* d = nullptr;
+
+    ASSERT_STR_CONTAINS(c, d); //passes
+}
+```
+
+#### `char[]`:
+For `const char[]`, string contains first checks if the length of `string` is less than the length of `substr`. If it is, this test fails. If this is not the case, both `string` and `substr` are converted to `std::string` and then tested on using the above test case. 
+
+```
+#include <tester/Tests.hpp>
+
+TEST(assert_str_contains, char_arr) {
+    char a[] = "hello";
+    char b[] = "o";
+
+    ASSERT_STR_CONTAINS(a, b); //passes
+    ASSERT_STR_CONTAINS(b, a); //fails
+    ASSERT_STR_CONTAINS(a, a); //passes
+}
+```
+
+### ASSERT_STR_STARTS_WITH()
+`ASSERT_STR_STARTS_WITH(string, substr)` takes in two arguments, both being strings. There are three types of strings that can be passed in: `std::string`, `const char*`, and `char[]`. String starts-with is dependent on what kind of parameter is passed in. Upon failure it will terminate testing for the test suite it was called in.
+
+#### `std::string`:
+For `std::string`, string contains is determined by the `starts_with()` method. This test passes iff `string.starts_with(substr)` does not return `false` and fails otherwise.
+
+```
+#include <tester/Tests.hpp>
+#include <string>
+
+TEST(assert_str_starts_with, string) {
+    std::string a = "hello";
+    std::string b = "he";
+
+    ASSERT_STR_STARTS_WITH(a, b); //passes
+    ASSERT_STR_STARTS_WITH(b, a); //fails
+    ASSERT_STR_STARTS_WITH(a, a); //passes
+}
+```
+
+#### `const char*`:
+For `const char*`, string contains first checks if either `char*` is the `nullptr`. If only one of them are, this test fails. Note that this means that passing in two `nullptr` parameters will result in a passing test case. If this is not the case, both `string` and `substr` are converted to `std::string` and then tested on using the above test case. 
+
+```
+#include <tester/Tests.hpp>
+
+TEST(assert_str_starts_with, char_ptr) {
+    const char* a = "hello";
+    const char* b = "he";
+
+    ASSERT_STR_STARTS_WITH(a, b); //passes
+    ASSERT_STR_STARTS_WITH(b, a); //fails
+    ASSERT_STR_STARTS_WITH(a, a); //passes
+
+    const char* c = nullptr;
+
+    ASSERT_STR_STARTS_WITH(a, c); //fails
+    ASSERT_STR_STARTS_WITH(c, a); //fails
+
+    const char* d = nullptr;
+
+    ASSERT_STR_STARTS_WITH(c, d); //passes
+}
+```
+
+#### `char[]`:
+For `const char[]`, string contains first checks if the length of `string` is less than the length of `substr`. If it is, this test fails. If this is not the case, both `string` and `substr` are converted to `std::string` and then tested on using the above test case. 
+
+```
+#include <tester/Tests.hpp>
+
+TEST(assert_str_starts_with, char_arr) {
+    char a[] = "hello";
+    char b[] = "he";
+
+    ASSERT_STR_STARTS_WITH(a, b); //passes
+    ASSERT_STR_STARTS_WITH(b, a); //fails
+    ASSERT_STR_STARTS_WITH(a, a); //passes
+}
+```
+
+### ASSERT_STR_ENDS_WITH()
+`ASSERT_STR_ENDS_WITH(string, substr)` takes in two arguments, both being strings. There are three types of strings that can be passed in: `std::string`, `const char*`, and `char[]`. String starts-with is dependent on what kind of parameter is passed in. Upon failure it will terminate testing for the test suite it was called in.
+
+#### `std::string`:
+For `std::string`, string contains is determined by the `starts_with()` method. This test passes iff `string.ends_with(substr)` does not return `false` and fails otherwise.
+
+```
+#include <tester/Tests.hpp>
+#include <string>
+
+TEST(assert_str_ends_with, string) {
+    std::string a = "hello";
+    std::string b = "lo";
+
+    ASSERT_STR_ENDS_WITH(a, b); //passes
+    ASSERT_STR_ENDS_WITH(b, a); //fails
+    ASSERT_STR_ENDS_WITH(a, a); //passes
+}
+```
+
+#### `const char*`:
+For `const char*`, string contains first checks if either `char*` is the `nullptr`. If only one of them are, this test fails. Note that this means that passing in two `nullptr` parameters will result in a passing test case. If this is not the case, both `string` and `substr` are converted to `std::string` and then tested on using the above test case. 
+
+```
+#include <tester/Tests.hpp>
+
+TEST(assert_str_ends_with, char_ptr) {
+    const char* a = "hello";
+    const char* b = "he";
+
+    ASSERT_STR_ENDS_WITH(a, b); //passes
+    ASSERT_STR_ENDS_WITH(b, a); //fails
+    ASSERT_STR_ENDS_WITH(a, a); //passes
+
+    const char* c = nullptr;
+
+    ASSERT_STR_ENDS_WITH(a, c); //fails
+    ASSERT_STR_ENDS_WITH(c, a); //fails
+
+    const char* d = nullptr;
+
+    ASSERT_STR_ENDS_WITH(c, d); //passes
+}
+```
+
+#### `char[]`:
+For `const char[]`, string contains first checks if the length of `string` is less than the length of `substr`. If it is, this test fails. If this is not the case, both `string` and `substr` are converted to `std::string` and then tested on using the above test case. 
+
+```
+#include <tester/Tests.hpp>
+
+TEST(assert_str_ends_with, char_arr) {
+    char a[] = "hello";
+    char b[] = "he";
+
+    ASSERT_STR_ENDS_WITH(a, b); //passes
+    ASSERT_STR_ENDS_WITH(b, a); //fails
+    ASSERT_STR_ENDS_WITH(a, a); //passes
 }
 ```
 
@@ -1686,7 +1917,7 @@ D_TEST(expect_ordered_eq) {
 ```
 
 ## Test Tests
-Test tests are used to see if a test will pass/fail. Ie, these are tests to ensure that tests are working. It is very important that you do not pass in random functions.
+Test tests are used to see if a test will pass/fail. Ie, these are tests to ensure that tests are working. It is very important that you do not pass in random functions. These tests also have the capability of defining new tests, in a sense. For instance, there is no `STRING_DOES_NOT_CONTAIN()` test, however, you could combine `ASSERT_STRING_CONTAINS()` with `ASSERT_FAILS()` to create one that would have a similar functionality to what an `ASSERT_STRING_DOES_NOT_CONTAIN()` test would have.
 
 1. [Assert Passes](#assert_passes)
 2. [Assert Fails](#assert_fails)

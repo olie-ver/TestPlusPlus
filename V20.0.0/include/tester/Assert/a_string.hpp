@@ -9,10 +9,14 @@
 #include <algorithm>
 #include <string>
 
-#define EXPECT_STR_EQ(first, second) internal::Assert::assertStringEquals((first), (second), __FILE__, __LINE__)
-#define EXPECT_STR_NE(first, second) internal::Assert::assertStringNotEquals((first), (second), __FILE__, __LINE__)
-#define EXPECT_STR_EMT(first) internal::Assert::assertStringEmpty((first), __FILE__, __LINE__)
-#define EXPECT_STR_NEMT(first) internal::Assert::assertStringNotEmpty((first), __FILE__, __LINE__)
+#define ASSERT_STR_EQ(first, second) internal::Assert::assertStringEquals((first), (second), __FILE__, __LINE__)
+#define ASSERT_STR_NE(first, second) internal::Assert::assertStringNotEquals((first), (second), __FILE__, __LINE__)
+#define ASSERT_STR_EMT(first) internal::Assert::assertStringEmpty((first), __FILE__, __LINE__)
+#define ASSERT_STR_NEMT(first) internal::Assert::assertStringNotEmpty((first), __FILE__, __LINE__)
+#define ASSERT_STR_CONTAINS(first, substr) internal::Assert::expectStringContains((first), (substr), __FILE__, __LINE__)
+#define ASSERT_STR_STARTS_WITH(first, substr) internal::Assert::expectStringStartsWith((first), (substr), __FILE__, __LINE__)
+#define ASSERT_STR_ENDS_WITH(first, substr) internal::Assert::expectStringEndsWith((first), (substr), __FILE__, __LINE__)
+
 
 namespace internal {
     namespace Assert {
@@ -225,7 +229,7 @@ namespace internal {
         /// @param file the file the function was called from
         /// @param line the line the function was called on
         template <size_t N, size_t M>
-        inline void expectStringNotEquals(const char(&first)[N], const char(&second)[M], 
+        inline void assertStringNotEquals(const char(&first)[N], const char(&second)[M], 
             const char* file, const int line) 
         {
             //create displayable copies of the parameters
@@ -350,7 +354,7 @@ namespace internal {
         /// @param first the string
         /// @param file the file the function was called from
         /// @param line the line the function was called on
-        inline void expectStringNotEmpty(std::string& first, const char* file, const int line) {
+        inline void assertStringNotEmpty(std::string& first, const char* file, const int line) {
             if (first.empty()) {
                 Runner::CURRENT_TEST->failures.push_back({
                     "Expected string to not be empty, but was",
@@ -366,7 +370,7 @@ namespace internal {
         /// @param first the string
         /// @param file the file the function was called from
         /// @param line the line the function was called on
-        inline void expectStringNotEmpty(const char* first, const char* file, const int line) {
+        inline void assertStringNotEmpty(const char* first, const char* file, const int line) {
             if (first == nullptr) {
                 Runner::CURRENT_TEST->failures.push_back({
                     "nullptr passed in",
@@ -404,6 +408,203 @@ namespace internal {
 
                 throw Core::AssertionFailure();
             }
+        }
+
+        /// @brief An Assert test for if a string contains another string
+        /// @param first the "super" string
+        /// @param substr the substring
+        /// @param file the file this function was called from
+        /// @param line the line this function was called on
+        inline void assertStringContains(const std::string& first, const std::string& substr,
+            const char* file, const int line)
+        {
+            if (first.find(substr) == std::string::npos) {
+                Runner::CURRENT_TEST->failures.push_back({
+                    std::string("Expected string: " + first + " to contain " + substr + " but it didn't"),
+                    file,
+                    line
+                }); 
+
+                throw Core::AssertionFailure();
+            }
+        }
+
+        /// @brief An Assert test for if a string contains another string
+        /// @param first the "super" string
+        /// @param substr the substring
+        /// @param file the file this function was called from
+        /// @param line the line this function was called on
+        inline void assertStringContains(const char* first, const char* substr, 
+            const char* file, const int line)
+        {
+            bool first_null = first == nullptr;
+            bool substr_null = substr == nullptr;
+
+            if (first_null ^ substr_null) {
+                Runner::CURRENT_TEST->failures.push_back({
+                    std::string("Mismatched nullptrs")
+                    + "\n    a = nullptr: " + Helpers::toString(first_null)
+                    + "\n    b = nullptr:" + Helpers::toString(substr_null),
+                    file,
+                    line
+                });
+                throw Core::AssertionFailure();
+            }
+
+            assertStringContains(std::string(first), std::string(substr), file, line);
+        }
+
+        /// @brief an Assert test for if a string contains another string
+        /// @param first the "super" string
+        /// @param substr the substring
+        /// @param file the file this function was called from
+        /// @param line the line this function was called on
+        template <size_t N, size_t M>
+        inline void assertStringContains(const char(&first)[N], const char(&substr)[M], 
+            const char* file, const int line)
+        {
+            if (N < M) {
+                Runner::CURRENT_TEST->failures.push_back({
+                    "Substring longer than string to check",
+                    file,
+                    line
+                });
+                throw Core::AssertionFailure();
+            }
+
+            assertStringContains(std::string(first), std::string(substr), file, line);
+        }
+
+        /// @brief An Assert test for if a string starts with another string
+        /// @param first the "super" string
+        /// @param substr the substring
+        /// @param file the file this function was called from
+        /// @param line the line this function was called on
+        inline void assertStringStartsWith(const std::string& first, const std::string& substr, 
+            const char* file, const int line)
+        {
+            if (!first.starts_with(substr)) {
+                Runner::CURRENT_TEST->failures.push_back({
+                    std::string("Expected " + first + " to start with " + substr + " but it didn't"),
+                    file,
+                    line
+                });
+                throw Core::AssertionFailure();
+            }
+        }
+
+        /// @brief An Assert test for if a string starts with another string
+        /// @param first the "super" string
+        /// @param substr the substring
+        /// @param file the file this function was called from
+        /// @param line the line this function was called on
+        inline void assertStringStartsWith(const char* first, const char* substr, 
+            const char* file, const int line)
+        {
+            if (first == nullptr) {
+                Runner::CURRENT_TEST->failures.push_back({
+                    "First string is nullptr",
+                    file,
+                    line
+                });
+                throw Core::AssertionFailure();
+            } else if (substr == nullptr) {
+                Runner::CURRENT_TEST->failures.push_back({
+                    "Substring is nullptr",
+                    file,
+                    line
+                });
+                throw Core::AssertionFailure();
+            }
+
+            assertStringStartsWith(std::string(first), std::string(substr), file, line);
+        }
+
+        /// @brief An Assert test for if a string starts with another string
+        /// @param first the "super" string
+        /// @param substr the substring
+        /// @param file the file this function was called from
+        /// @param line the line this function was called on
+        template <size_t N, size_t M>
+        inline void assertStringStartsWith(const char(&first)[N], const char(&substr)[M],
+            const char* file, const int line)
+        {
+            if (N < M) {
+                Runner::CURRENT_TEST->failures.push_back({
+                    "Substring longer than string to check",
+                    file,
+                    line
+                });
+                throw Core::AssertionFailure();
+            }
+
+            assertStringStartsWith(std::string(first), std::string(second), file, line);
+        }
+
+        /// @brief An Assert test for if a string ends with another string
+        /// @param first the "super" string
+        /// @param substr the substring
+        /// @param file the file this function was called from
+        /// @param line the line this function was called on
+        inline void assertStringEndsWith(const std::string& first, const std::string& substr, 
+            const char* file, const int line)
+        {
+            if (!first.ends_with(substr)) {
+                Runner::CURRENT_TEST->failures.push_back({
+                    std::string("Expected " + first + " to start with " + substr + " but it didn't"),
+                    file,
+                    line
+                });
+                throw Core::AssertionFailure();
+            }
+        }
+
+        /// @brief An Assert test for if a string ends with another string
+        /// @param first the "super" string
+        /// @param substr the substring
+        /// @param file the file this function was called from
+        /// @param line the line this function was called on
+        inline void assertStringEndsWith(const char* first, const char* substr, 
+            const char* file, const int line)
+        {
+            if (first == nullptr) {
+                Runner::CURRENT_TEST->failures.push_back({
+                    "First string is nullptr",
+                    file,
+                    line
+                });
+                throw Core::AssertionFailure();
+            } else if (substr == nullptr) {
+                Runner::CURRENT_TEST->failures.push_back({
+                    "Substring is nullptr",
+                    file,
+                    line
+                });
+                throw Core::AssertionFailure();
+            }
+
+            assertStringEndsWith(std::string(first), std::string(substr), file, line);
+        }
+        
+        /// @brief An Assert test for if a string ends with another string
+        /// @param first the "super" string
+        /// @param substr the substring
+        /// @param file the file this function was called from
+        /// @param line the line this function was called on
+        template <size_t N, size_t M>
+        inline void assertStringEndsWith(const char(&first)[N], const char(&substr)[M],
+            const char* file, const int line)
+        {
+            if (N < M) {
+                Runner::CURRENT_TEST->failures.push_back({
+                    "Substring longer than string to check",
+                    file,
+                    line
+                });
+                throw Core::AssertionFailure();
+            }
+
+            assertStringEndsWith(std::string(first), std::string(second), file, line);
         }
     }
 }
