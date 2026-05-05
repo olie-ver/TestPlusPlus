@@ -8,11 +8,13 @@
 #include <algorithm>
 #include <string>
 
-//each one needs to ensure that passing in a nullptr doesn't break anything
 #define EXPECT_STR_EQ(first, second) internal::Expects::expectStringEquals((first), (second), __FILE__, __LINE__)
 #define EXPECT_STR_NE(first, second) internal::Expects::expectStringNotEquals((first), (second), __FILE__, __LINE__)
 #define EXPECT_STR_EMT(first) internal::Expects::expectStringEmpty((first), __FILE__, __LINE__)
 #define EXPECT_STR_NEMT(first) internal::Expects::expectStringNotEmpty((first), __FILE__, __LINE__)
+#define EXPECT_STR_CONTAINS(first, substr) internal::Expects::expectStringContains((first), (substr), __FILE__, __LINE__)
+#define EXPECT_STR_STARTS_WITH(first, substr) internal::Expects::expectStringStartsWith((first), (substr), __FILE__, __LINE__)
+#define EXPECT_STR_ENDS_WITH(first, substr) internal::Expects::expectStringEndsWith((first), (substr), __FILE__, __LINE__)
 
 namespace internal {
     namespace Expects {
