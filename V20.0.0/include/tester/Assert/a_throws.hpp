@@ -20,6 +20,8 @@
 //The actual tests
 #define ASSERT_THROWS(...) ASSERT_THROWS_MACRO_CHOOSER(__VA_ARGS__)(__VA_ARGS__)
 #define ASSERT_DOES_NOT_THROW(func) internal::Assert::assertDoesNotThrow([&](){(func);}, #func, __FILE__, __LINE__)
+#define ASSERT_THROWS_MSG(func, message) \
+    internal::Assert::assertThrowsWithMessage([&](){(func);}, #func, (message), __FILE__, __LINE__)
 
 namespace internal {
     namespace Assert {
@@ -86,6 +88,56 @@ namespace internal {
 
                     throw Core::AssertionFailure();
                 }
+            }
+        }
+
+        /// @brief An Assert test for throwing an error with a message
+        /// @tparam Func the function type
+        /// @param func the function being tested
+        /// @param funcName the name of the function
+        /// @param message the message it should throw with
+        /// @param file the file this function was called from
+        /// @param line the line this function was called on
+        template <typename Func>
+        inline void assertThrowsWithMessage(Func&& func, const char* funcName, 
+            const std::string& message, const char* file, const int line)
+        {
+            try {
+                func();
+                Runner::CURRENT_TEST->failures.push_back({
+                    std::string("Expected " + funcName + " to throw an error, but it didn't"),
+                    file, 
+                    line
+                });
+                throw Core::AssertionFailure();
+            } catch (const std::exception& ex) {
+                std::string what(ex.what());
+                if (message != what) {
+                    Runner::CURRENT_TEST->failures.push_back({
+                        std::string("Expected " + funcName + " to throw an error with message: " 
+                            +  message + ", but it threw with message: " + what),
+                        file, 
+                        line
+                    });
+                    throw Core::AssertionFailure();
+                }
+            } catch (std::string what) {
+                if (message != what) {
+                    Runner::CURRENT_TEST->failures.push_back({
+                        std::string("Expected " + funcName + " to throw an error with message: " 
+                            +  message + ", but it threw with message: " + what),
+                        file, 
+                        line
+                    });
+                    throw Core::AssertionFailure();
+                }
+            } catch (...) {
+                Runner::CURRENT_TEST->failures.push_back({
+                    std::string(funcName + " threw an unknown exception type"),
+                    file, 
+                    line
+                });
+                throw Core::AssertionFailure();
             }
         }
 
