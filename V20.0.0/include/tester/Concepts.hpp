@@ -71,6 +71,12 @@ namespace internal {
         concept Hashable = requires(A& a) {
             { std::hash<A>{}(a) } -> std::convertible_to<size_t>;
         };
+
+        //A concept for types that have a size
+        template <typename A>
+        concept Sizeable = requires(A& a) {
+            { a.size() } ->  std::convertible_to<size_t>;
+        };
     }
 }
 

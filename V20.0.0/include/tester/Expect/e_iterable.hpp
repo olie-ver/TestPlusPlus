@@ -15,6 +15,10 @@
 #define EXPECT_UNORDERED_EQ(first, second) \
     internal::Expects::expectUnorderedEquals((first), (second), __FILE__, __LINE__)
 
+#define EXPECT_EMPTY(container) internal::Expects::expectEmpty((container), __FILE__, __LINE__)
+#define EXPECT_NEMPTY(container) internal::Expects::expectNotEmpty((container), __FILE__, __LINE__)
+#define EXPECT_SIZE(container, size) internal::Expects::expectSize((container), (size), __FILE__, __LINE__)
+
 
 //Future tests to add: ordered NE, unordered NE, same set (has same elements, regardless of counts), not same set
 namespace internal {
@@ -221,6 +225,61 @@ namespace internal {
             } else 
             {
                 expectUnorderedEqualsGeneral(first, second, file, line);
+            }
+        }
+
+
+        /// @brief An Expects test to check if a container is empty
+        /// @tparam T a container that has the .size() method
+        /// @param container the container
+        /// @param file the file the function was called from
+        /// @param line the line the function was called on
+        template <typename T>
+        requires Concepts::Sizeable<T>
+        inline void expectEmpty(T& container, const char* file, const int line) {
+            if (container.size() != 0) {
+                Runner::CURRENT_TEST->failures.push_back({
+                    std::string("Expected container size to be 0, but wasn't. \n" 
+                        + "     size = " + container.size()),
+                    file,
+                    line
+                });
+            }
+        }
+
+        /// @brief An Expects test to check if a container is empty
+        /// @tparam T a container that has the .size() method
+        /// @param container the container
+        /// @param file the file the function was called from
+        /// @param line the line the function was called on
+        template <typename T>
+        requires Concepts::Sizeable<T>
+        inline void expectNotEmpty(T& container, const char* file, const int line) {
+            if (container.size() == 0) {
+                Runner::CURRENT_TEST->failures.push_back({
+                    std::string("Expected container size to be positive, but wasn't. \n      size = 0"),
+                    file,
+                    line
+                });
+            }
+        }
+
+        /// @brief An Expects test to check if a container is has a certain size
+        /// @tparam T a container that has the .size() method
+        /// @param container the container
+        /// @param file the file the function was called from
+        /// @param line the line the function was called on
+        template <typename T>
+        requires Concepts::Sizeable<T>
+        inline void expectSize(T& container, const size_t size, const char* file, const int line) {
+            if (container.size() != size) {
+                Runner::CURRENT_TEST->failures.push_back({
+                    std::string("Expected container size to be " 
+                        + size ", but wasn't. \n      size = " 
+                        + container.size()),
+                    file,
+                    line
+                });
             }
         }
     }
