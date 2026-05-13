@@ -4,8 +4,12 @@ because even though I know how to use someone else's library, I don't want to in
 every file in every project. I know I could probably just compile someone else's 
 into a static library and call it a day, but I want the learning experience as well. 
 
+5/13/26
+Implemented from the list of tests to be implemented:
+11. Throws with message
+
 5/2/26
-Implemented from the from the previous entry:
+Implemented from the previous entry:
 9. String contains
 10. String starts/ends with
 

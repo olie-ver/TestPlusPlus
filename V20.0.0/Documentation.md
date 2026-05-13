@@ -1509,6 +1509,33 @@ D_TEST(assert_does_not_throw) {
 }
 ```
 
+### ASSERT_THROWS_MSG()
+`ASSERT_THROWS_MSG(func, message)` takes in two parameters: a function and a message that should be thrown. It passes iff the function throws an error and the message of the thrown error is equal to the `message` parameter. Upon failure it will terminate testing for the test suite it was called in. Since C++ allows you to throw any type, this test will pass if you throw an `std::string` that is equal to the `message` parameter. Ie, you don't need to necessarily throw an `std::exception` with a `what()` that equals `message`.
+
+```
+#include <tester/Tests.hpp>
+#include <exceptional>
+#include <string>
+
+void dumbFunc() {
+    throw 42;
+}
+
+void throwsException() {
+    throw std::invalid_argument("This is a bad argument");
+}
+
+void throwString() {
+    throw std::string("hi");
+}
+
+D_TEST(assert_throws_with_message) {
+    ASSERT_THROWS_MSG(dumbFunc, "hi"); //fails
+    ASSERT_THROWS_MSG(throwsException(), "This is a bad argument"); //passes
+    ASSERT_THROWS_MSG(throwString, "hi"); //passes
+}
+```
+
 ### EXPECT_THROWS()
 `EXPECT_THROWS(func, ex)` takes in up to two parameters: a function and optionally a type of exception that should be thrown. In the case that `ex` is not provided, it will pass iff `func` throws anything. In the case that `ex` is provided, it will pass iff `func` throws the same exception type as `ex`. 
 
@@ -1553,6 +1580,34 @@ void dumbFunc(int a, int b) {
 D_TEST(expect_does_not_throw) {
     EXPECT_DOES_NOT_THROW(dumbFunc(40, 2)); //fails
     EXPECT_DOES_NOT_THROW([&]() { }); //passes
+}
+```
+
+### EXPECT_THROWS_MSG()
+`EXPECT_THROWS_MSG(func, message)` takes in two parameters: a function and a message that should be thrown. It passes iff the function throws an error and the message of the thrown error is equal to the `message` parameter. Since C++ allows you to throw any type, this test will pass if you throw an `std::string` that is equal to the `message` parameter. Ie, you don't need to necessarily throw an `std::exception` with a `what()` that equals `message`.
+
+
+```
+#include <tester/Tests.hpp>
+#include <exceptional>
+#include <string>
+
+void dumbFunc() {
+    throw 42;
+}
+
+void throwsException() {
+    throw std::invalid_argument("This is a bad argument");
+}
+
+void throwString() {
+    throw std::string("hi");
+}
+
+D_TEST(expect_throws_with_message) {
+    EXPECT_THROWS_MSG(dumbFunc, "hi"); //fails
+    EXPECT_THROWS_MSG(throwsException(), "This is a bad argument"); //passes
+    EXPECT_THROWS_MSG(throwString, "hi"); //passes
 }
 ```
 
