@@ -18,7 +18,9 @@
 #define EXPECT_EMPTY(container) internal::Expects::expectEmpty((container), __FILE__, __LINE__)
 #define EXPECT_NEMPTY(container) internal::Expects::expectNotEmpty((container), __FILE__, __LINE__)
 #define EXPECT_SIZE(container, size) internal::Expects::expectSize((container), (size), __FILE__, __LINE__)
-
+#define EXPECT_CONTAINS(container, value) internal::Expects::expectContains((container), (value), __FILE__, __LINE__)
+#define EXPECT_DOES_NOT_CONTAIN(container, value) \
+    internal::Expects::expectDoesNotContain((container), (value), __FILE__, __LINE__)
 
 //Future tests to add: ordered NE, unordered NE, same set (has same elements, regardless of counts), not same set
 namespace internal {
@@ -236,7 +238,7 @@ namespace internal {
         /// @param line the line the function was called on
         template <typename T>
         requires Concepts::Sizeable<T>
-        inline void expectEmpty(T& container, const char* file, const int line) {
+        inline void expectEmpty(const T& container, const char* file, const int line) {
             if (container.size() != 0) {
                 Runner::CURRENT_TEST->failures.push_back({
                     std::string("Expected container size to be 0, but wasn't. \n" 
@@ -254,7 +256,7 @@ namespace internal {
         /// @param line the line the function was called on
         template <typename T>
         requires Concepts::Sizeable<T>
-        inline void expectNotEmpty(T& container, const char* file, const int line) {
+        inline void expectNotEmpty(const T& container, const char* file, const int line) {
             if (container.size() == 0) {
                 Runner::CURRENT_TEST->failures.push_back({
                     std::string("Expected container size to be positive, but wasn't. \n      size = 0"),
@@ -271,12 +273,56 @@ namespace internal {
         /// @param line the line the function was called on
         template <typename T>
         requires Concepts::Sizeable<T>
-        inline void expectSize(T& container, const size_t size, const char* file, const int line) {
+        inline void expectSize(const T& container, const size_t size, const char* file, const int line) {
             if (container.size() != size) {
                 Runner::CURRENT_TEST->failures.push_back({
                     std::string("Expected container size to be " 
                         + size ", but wasn't. \n      size = " 
                         + container.size()),
+                    file,
+                    line
+                });
+            }
+        }
+
+        /// @brief An Expects test for seeing if a container contains a value
+        /// @tparam T a ranges container
+        /// @tparam U the value to be found
+        /// @param container a container that fulfills the ranges concept
+        /// @param find the value to be found
+        /// @param file the file the function was called from
+        /// @param line the line the function was called on
+        template <typename T, typename U>
+        requires std::ranges::range<T>
+        inline void expectContains(const T& container, const U& find, const char* file, const int line) {
+            static_assert(std::is_same<std::ranges::range_value_t<T>, U>);
+            auto it = std::find(std::ranges::begin(container), std::ranges::end(container), find);
+
+            if (it == std::ranges::end(container)) {
+                Runner::CURRENT_TEST->failures.push_back({
+                    std::string("The container did not contain the expected value: " + Helpers::ToString(find)),
+                    file,
+                    line
+                });
+            }
+        }
+
+        /// @brief An Expects test for seeing if a container does not contain a value
+        /// @tparam T a ranges container
+        /// @tparam U the value to be found
+        /// @param container a container that fulfills the ranges concept
+        /// @param find the value to be found
+        /// @param file the file the function was called from
+        /// @param line the line the function was called on
+        template <typename T, typename U>
+        requires std::ranges::range<T>
+        inline void expectDoesNotContain(const T& container, const U& find, const char* file, const int line) {
+            static_assert(std::is_same<std::ranges::range_value_t<T>, U>);
+            auto it = std::find(std::ranges::begin(container), std::ranges::end(container), find);
+
+            if (it != std::ranges::end(container)) {
+                Runner::CURRENT_TEST->failures.push_back({
+                    std::string("The container did contained the value: " + Helpers::ToString(find)),
                     file,
                     line
                 });

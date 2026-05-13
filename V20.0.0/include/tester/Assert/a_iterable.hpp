@@ -19,6 +19,9 @@
 #define ASSERT_EMPTY(container) internal::Assert::assertEmpty((container), __FILE__, __LINE__)
 #define ASSERT_NEMPTY(container) internal::Assert::assertNotEmpty((container), __FILE__, __LINE__)
 #define ASSERT_SIZE(container, size) internal::Assert::assertSize((container), (size), __FILE__, __LINE__)
+#define ASSERT_CONTAINS(container, value) internal::Assert::assertContains((container), (value), __FILE__, __LINE__)
+#define ASSERT_DOES_NOT_CONTAIN(container, value) \
+    internal::Assert::assertDoesNotContain((container), (value), __FILE__, __LINE__)
 
 namespace internal {
     namespace Assert {
@@ -241,7 +244,7 @@ namespace internal {
         /// @param line the line the function was called on
         template <typename T>
         requires Concepts::Sizeable<T>
-        inline void assertEmpty(T& container, const char* file, const int line) {
+        inline void assertEmpty(const T& container, const char* file, const int line) {
             if (container.size() != 0) {
                 Runner::CURRENT_TEST->failures.push_back({
                     std::string("Expected container size to be 0, but wasn't. \n" 
@@ -261,7 +264,7 @@ namespace internal {
         /// @param line the line the function was called on
         template <typename T>
         requires Concepts::Sizeable<T>
-        inline void assertNotEmpty(T& container, const char* file, const int line) {
+        inline void assertNotEmpty(const T& container, const char* file, const int line) {
             if (container.size() == 0) {
                 Runner::CURRENT_TEST->failures.push_back({
                     std::string("Expected container size to be positive, but wasn't. \n      size = 0"),
@@ -280,7 +283,7 @@ namespace internal {
         /// @param line the line the function was called on
         template <typename T>
         requires Concepts::Sizeable<T>
-        inline void assertSize(T& container, const size_t size, const char* file, const int line) {
+        inline void assertSize(const T& container, const size_t size, const char* file, const int line) {
             if (container.size() != size) {
                 Runner::CURRENT_TEST->failures.push_back({
                     std::string("Expected container size to be " 
@@ -289,6 +292,54 @@ namespace internal {
                     file,
                     line
                 });
+            }
+        }
+
+        /// @brief An Assert test for seeing if a container contains a value
+        /// @tparam T a ranges container
+        /// @tparam U the value to be found
+        /// @param container a container that fulfills the ranges concept
+        /// @param find the value to be found
+        /// @param file the file the function was called from
+        /// @param line the line the function was called on
+        template <typename T, typename U>
+        requires std::ranges::range<T>
+        inline void assertContains(const T& container, const U& find, const char* file, const int line) {
+            static_assert(std::is_same<std::ranges::range_value_t<T>, U>);
+            auto it = std::find(std::ranges::begin(container), std::ranges::end(container), find);
+
+            if (it == std::ranges::end(container)) {
+                Runner::CURRENT_TEST->failures.push_back({
+                    std::string("The container did not contain the expected value: " + Helpers::ToString(find)),
+                    file,
+                    line
+                });
+
+                throw Core::AssertionFailure();
+            }
+        }
+
+        /// @brief An Assert test for seeing if a container does not contain a value
+        /// @tparam T a ranges container
+        /// @tparam U the value to be found
+        /// @param container a container that fulfills the ranges concept
+        /// @param find the value to be found
+        /// @param file the file the function was called from
+        /// @param line the line the function was called on
+        template <typename T, typename U>
+        requires std::ranges::range<T>
+        inline void assertDoesNotContain(const T& container, const U& find, const char* file, const int line) {
+            static_assert(std::is_same<std::ranges::range_value_t<T>, U>);
+            auto it = std::find(std::ranges::begin(container), std::ranges::end(container), find);
+
+            if (it != std::ranges::end(container)) {
+                Runner::CURRENT_TEST->failures.push_back({
+                    std::string("The container did contained the value: " + Helpers::ToString(find)),
+                    file,
+                    line
+                });
+
+                throw Core::AssertionFailure();
             }
         }
     }

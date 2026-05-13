@@ -6,6 +6,7 @@ into a static library and call it a day, but I want the learning experience as w
 
 5/13/26
 Implemented from the list of tests to be implemented:
+5. Contains/Does not contain
 6. Container size, container empty/not empty
 8. Float infinity/negative infinity
 11. Throws with message
