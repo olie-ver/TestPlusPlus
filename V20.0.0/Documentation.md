@@ -2090,7 +2090,45 @@ D_TEST(assert_size) {
 }
 ```
 
-### EXPECT_ORDERED_EQ
+### ASSERT_CONTAINS()
+`ASSERT_CONTAINS(container, value)` takes in two parameters, a `ranges` container and a value to search for. It passes iff `container` contains `value` and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+
+```
+#include <tester/Tests.hpp>
+#include <vector>
+#include <set>
+
+D_TEST(assert_contains) {
+    std::vector<int> a = {1, 2, 3, 4, 5};
+    ASSERT_CONTAINS(a, 5); //passes
+
+    std::set<int> b = {};
+    ASSERT_CONTAINS(b, 11); //fails
+
+    ASSERT_CONTAINS(a, -1); //fails
+}
+```
+
+### ASSERT_DOES_NOT_CONTAIN()
+`ASSERT_DOES_NOT_CONTAIN(container, value)` takes in two parameters, a `ranges` container and a value to search for. It passes iff `container` does not contain `value` and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+
+```
+#include <tester/Tests.hpp>
+#include <vector>
+#include <set>
+
+D_TEST(assert_does_not_contain) {
+    std::vector<int> a = {1, 2, 3, 4, 5};
+    ASSERT_DOES_NOT_CONTAIN(a, 5); //fails
+
+    std::set<int> b = {};
+    ASSERT_DOES_NOT_CONTAIN(b, 11); //passes
+
+    ASSERT_DOES_NOT_CONTAIN(a, -1); //passes
+}
+```
+
+### EXPECT_ORDERED_EQ()
 `EXPECT_ORDERED_EQ(first, second)` takes in two arguments: two iterable containers. The two containers do not necessarily have to be the same type. However, you are responsible for passing in the correct container types into the function. Ie, passing in unordered containers such as `unordered_map` and `unordered_set` are not guaranteed to work properly. This test passes iff every element in each container are `==` at the same index, and fails otherwise. This test will also automatically fail when given two containers with different item counts.
 
 ```
@@ -2126,7 +2164,7 @@ D_TEST(expect_ordered_eq) {
 }
 ```
 
-### EXPECT_UNORDERED_EQ
+### EXPECT_UNORDERED_EQ()
 `EXPECT_UNORDERED_EQ(first, second)` takes in two arguments: two iterable containers. The two containers do not necessarily have to be the same type. This test can take in any kind of container, ordered or unordered, in fact, when this test is used on ordered containers, its behavior is the same as `EXPECT_ORDERED_EQ()`. This test passes iff both containers have the same elements (as defined by `==`) and the same count of each element, regardless of indexing, and fails otherwise. This test will also automatically fail when given two containers with different item counts.
 
 ```
@@ -2216,6 +2254,44 @@ D_TEST(expect_size) {
     EXPECT_SIZE(b, 0); //passes
 
     EXPECT_SIZE(b, 5); //fails
+}
+```
+
+### EXPECT_CONTAINS()
+`EXPECT_CONTAINS(container, value)` takes in two parameters, a `ranges` container and a value to search for. It passes iff `container` contains `value` and fails otherwise. 
+
+```
+#include <tester/Tests.hpp>
+#include <vector>
+#include <set>
+
+D_TEST(expect_contains) {
+    std::vector<int> a = {1, 2, 3, 4, 5};
+    EXPECT_CONTAINS(a, 5); //passes
+
+    std::set<int> b = {};
+    EXPECT_CONTAINS(b, 11); //fails
+
+    EXPECT_CONTAINS(a, -1); //fails
+}
+```
+
+### EXPECT_DOES_NOT_CONTAIN()
+`EXPECT_DOES_NOT_CONTAIN(container, value)` takes in two parameters, a `ranges` container and a value to search for. It passes iff `container` does not contain `value` and fails otherwise.
+
+```
+#include <tester/Tests.hpp>
+#include <vector>
+#include <set>
+
+D_TEST(expect_does_not_contain) {
+    std::vector<int> a = {1, 2, 3, 4, 5};
+    EXPECT_DOES_NOT_CONTAIN(a, 5); //fails
+
+    std::set<int> b = {};
+    EXPECT_DOES_NOT_CONTAIN(b, 11); //passes
+
+    EXPECT_DOES_NOT_CONTAIN(a, -1); //passes
 }
 ```
 
