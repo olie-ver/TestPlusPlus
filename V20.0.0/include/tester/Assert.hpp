@@ -3,13 +3,12 @@
 #ifndef ASSERT_H
 #define ASSERT_H
 
-#include <exception>
-
 #include "Assert/a_bool.hpp"
 #include "Assert/a_cmp.hpp"
 #include "Assert/a_flt.hpp"
-#include "Assert/a_itr.hpp"
+#include "Assert/a_iterable.hpp"
 #include "Assert/a_null.hpp"
+#include "Assert/a_string.hpp"
 #include "Assert/a_test.hpp"
 #include "Assert/a_throws.hpp"
 

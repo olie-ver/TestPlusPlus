@@ -2037,6 +2037,59 @@ D_TEST(assert_ordered_eq) {
 }
 ```
 
+### ASSERT_EMPTY()
+`ASSERT_EMPTY(container)` takes in one parameter, a container with the `size()` method. It passes iff `container.size() == 0` and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+
+```
+#include <tester/Tests.hpp>
+#include <vector>
+#include <set>
+
+D_TEST(assert_empty) {
+    std::vector<int> a = {1, 2, 3, 4, 5};
+    ASSERT_EMPTY(a); //fails
+
+    std::set<int> b = {};
+    ASSERT_EMPTY(b); //passes
+}
+```
+
+### ASSERT_NEMPTY()
+`ASSERT_NEMPTY(container)` takes in one parameter. takes in one parameter, a container with the `size()` method. It passes iff `container.size() != 0` and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+
+```
+#include <tester/Tests.hpp>
+#include <vector>
+#include <set>
+
+D_TEST(assert_nempty) {
+    std::vector<int> a = {1, 2, 3, 4, 5};
+    ASSERT_NEMPTY(a); //passes
+
+    std::set<int> b = {};
+    ASSERT_NEMPTY(b); //fails
+}
+```
+
+### ASSERT_SIZE()
+`ASSERT_SIZE(container, size)` takes in two parameters, takes in one parameter, a container with the `size()` method and a `size_t`. It passes iff `container.size() == size` and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+
+```
+#include <tester/Tests.hpp>
+#include <vector>
+#include <set>
+
+D_TEST(assert_size) {
+    std::vector<int> a = {1, 2, 3, 4, 5};
+    ASSERT_SIZE(a, 5); //passes
+
+    std::set<int> b = {};
+    ASSERT_SIZE(b, 0); //passes
+
+    ASSERT_SIZE(b, 5); //fails
+}
+```
+
 ### EXPECT_ORDERED_EQ
 `EXPECT_ORDERED_EQ(first, second)` takes in two arguments: two iterable containers. The two containers do not necessarily have to be the same type. However, you are responsible for passing in the correct container types into the function. Ie, passing in unordered containers such as `unordered_map` and `unordered_set` are not guaranteed to work properly. This test passes iff every element in each container are `==` at the same index, and fails otherwise. This test will also automatically fail when given two containers with different item counts.
 
@@ -2110,6 +2163,59 @@ D_TEST(expect_ordered_eq) {
     int j[] = {1, 1, 2, 3};
     int k[] = {1, 2, 3, 3};
     EXPECT_UNORDERED_EQ(j, k); //fails because there is a mismatch in counts on 1 and 3
+}
+```
+
+### EXPECT_EMPTY()
+`EXPECT_EMPTY(container)` takes in one parameter, a container with the `size()` method. It passes iff `container.size() == 0` and fails otherwise.
+
+```
+#include <tester/Tests.hpp>
+#include <vector>
+#include <set>
+
+D_TEST(expect_empty) {
+    std::vector<int> a = {1, 2, 3, 4, 5};
+    EXPECT_EMPTY(a); //fails
+
+    std::set<int> b = {};
+    EXPECT_EMPTY(b); //passes
+}
+```
+
+### EXPECT_NEMPTY()
+`EXPECT_NEMPTY(container)` takes in one parameter. takes in one parameter, a container with the `size()` method. It passes iff `container.size() != 0` and fails otherwise.
+
+```
+#include <tester/Tests.hpp>
+#include <vector>
+#include <set>
+
+D_TEST(expect_nempty) {
+    std::vector<int> a = {1, 2, 3, 4, 5};
+    EXPECT_NEMPTY(a); //passes
+
+    std::set<int> b = {};
+    EXPECT_NEMPTY(b); //fails
+}
+```
+
+### EXPECT_SIZE()
+`EXPECT_SIZE(container, size)` takes in two parameters, takes in one parameter, a container with the `size()` method and a `size_t`. It passes iff `container.size() == size` and fails otherwise. 
+
+```
+#include <tester/Tests.hpp>
+#include <vector>
+#include <set>
+
+D_TEST(expect_size) {
+    std::vector<int> a = {1, 2, 3, 4, 5};
+    EXPECT_SIZE(a, 5); //passes
+
+    std::set<int> b = {};
+    EXPECT_SIZE(b, 0); //passes
+
+    EXPECT_SIZE(b, 5); //fails
 }
 ```
 
