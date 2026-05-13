@@ -93,21 +93,29 @@ You may consider this code open-source to be downloaded, modified, and released 
         2. [const char*](#const-char-13)
         3. [char[]](#char-13)
 7. [Throws Tests](#throws-tests)
-    1. [Assert Throws](#assert_throws)
+   1. [Assert Throws](#assert_throws)
     2. [Assert Does Not Throw](#assert_does_not_throw)
-    3. [Expect Throws](#expect_throws)
-    4. [Expect Does Not Throw](#expect_does_not_throw)
+    3. [Assert Throws With Message](#assert_throws_msg)
+    4. [Expect Throws](#expect_throws)
+    5. [Expect Does Not Throw](#expect_does_not_throw)
+    6. [Expect Throws With Message](#expect_throws_msg)
 8. [Float Tests](#float-tests)
     1. [Assert Near](#assert_near)
-    2. [Assert Relatively Near](#assert_rel_near)
-    3. [Assert Absolutely Near](#assert_abs_near)
+    2. [Assert Absolutely Near](#assert_abs_near)
+    3. [Assert Relatively Near](#assert_rel_near)
     4. [Assert NaN](#assert_nan)
     5. [Assert Not NaN](#assert_not_nan)
-    6. [Expect Near](#expect_near)
-    7. [Expect Relatively Near](#expect_rel_near)
-    8. [Expect Absolutely Near](#expect_abs_near)
-    9. [Expect NaN](#expect_nan)
-    10. [Expect Not NaN](#expect_not_nan)
+    6. [Assert Infinity](#assert_inf)
+    7. [Assert Positive Infinity](#assert_pos_inf)
+    8. [Assert Negative Infinity](#assert_neg_inf)
+    9. [Expect Near](#expect_near)
+    10. [Expect Absolutely Near](#expect_abs_near)
+    11. [Expect Relatively Near](#expect_rel_near)
+    12. [Expect NaN](#expect_nan)
+    13. [Expect Not NaN](#expect_not_nan)
+    14. [Expect Infinity](#expect_inf)
+    15. [Expect Positive Infinity](#expect_pos_inf)
+    16. [Expect Negative Infinity](#expect_neg_inf)`
 9. [Iterable Tests](#iterable-tests)
     1. [Assert Ordered Equals](#assert_ordered_eq)
     2. [Assert Unordered Equals](#assert_unordered_eq)
@@ -1461,8 +1469,10 @@ Throws tests are used to check whether or not a function throws or does not thro
 
 1. [Assert Throws](#assert_throws)
 2. [Assert Does Not Throw](#assert_does_not_throw)
-3. [Expect Throws](#expect_throws)
-4. [Expect Does Not Throw](#expect_does_not_throw)
+3. [Assert Throws With Message](#assert_throws_msg)
+4. [Expect Throws](#expect_throws)
+5. [Expect Does Not Throw](#expect_does_not_throw)
+6. [Expect Throws With Message](#expect_throws_msg)
 
 ### ASSERT_THROWS()
 `ASSERT_THROWS(func, ex)` takes in up to two parameters: a function and optionally a type of exception that should be thrown. In the case that `ex` is not provided, it will pass iff `func` throws anything. In the case that `ex` is provided, it will pass iff `func` throws the same exception type as `ex`. Upon failure it will terminate testing for the test suite it was called in.
@@ -1619,11 +1629,17 @@ Float tests are used to check something about a float, generally absolute/relati
 3. [Assert Relatively Near](#assert_rel_near)
 4. [Assert NaN](#assert_nan)
 5. [Assert Not NaN](#assert_not_nan)
-6. [Expect Near](#expect_near)
-7. [Expect Absolutely Near](#expect_abs_near)
-8. [Expect Relatively Near](#expect_rel_near)
-9. [Expect NaN](#expect_nan)
-10. [Expect Not NaN](#expect_not_nan)
+6. [Assert Infinity](#assert_inf)
+7. [Assert Positive Infinity](#assert_pos_inf)
+8. [Assert Negative Infinity](#assert_neg_inf)
+9. [Expect Near](#expect_near)
+10. [Expect Absolutely Near](#expect_abs_near)
+11. [Expect Relatively Near](#expect_rel_near)
+12. [Expect NaN](#expect_nan)
+13. [Expect Not NaN](#expect_not_nan)
+14. [Expect Infinity](#expect_inf)
+15. [Expect Positive Infinity](#expect_pos_inf)
+16. [Expect Negative Infinity](#expect_neg_inf)
 
 ### ASSERT_NEAR()
 `ASSERT_NEAR(a, b, abs_tol, rel_tol)` takes in up to four arguments. `a` and `b` are two floating point values of any two floating point types. `abs_tol` is the absolute tolerance that should be between `a` and `b`. `rel_tol` is an optional parameter that defines how relatively near `a` and `b` should be.
@@ -1717,6 +1733,69 @@ D_TEST(assert_nan) {
 }
 ```
 
+### ASSERT_INF()
+`ASSERT_INF(number)` takes in one parameter, a floating point value. If passes iff `number` is positive infinity or negative infinity and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+
+```
+#include <tester/Tests.hpp>
+
+D_TEST(assert_int) {
+    float a = 5.0;
+
+    ASSERT_INF(a); //fails
+
+    double b = std::numeric_limits<double>::infinity();
+
+    ASSERT_INF(b); //passes
+
+    float c = -std::numeric_limits<double>::infinity();
+
+    ASSERT_INF(c); //passes
+}
+```
+
+### ASSERT_POS_INF()
+`ASSERT_POS_INF(number)` takes in one parameter, a floating point value. If passes iff `number` is positive infinity and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+
+```
+#include <tester/Tests.hpp>
+
+D_TEST(assert_pos_int) {
+    float a = 5.0;
+
+    ASSERT_POS_INF(a); //fails
+
+    double b = std::numeric_limits<double>::infinity();
+
+    ASSERT_POS_INF(b); //passes
+
+    float c = -std::numeric_limits<double>::infinity();
+
+    ASSERT_POS_INF(c); //fails
+}
+```
+
+### ASSERT_NEG_INF()
+`ASSERT_NEG_INF(number)` takes in one parameter, a floating point value. If passes iff `number` is negative infinity and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+
+```
+#include <tester/Tests.hpp>
+
+D_TEST(assert_neg_int) {
+    float a = 5.0;
+
+    ASSERT_NEG_INF(a); //fails
+
+    double b = std::numeric_limits<double>::infinity();
+
+    ASSERT_NEG_INF(b); //fails
+
+    float c = -std::numeric_limits<double>::infinity();
+
+    ASSERT_NEG_INF(c); //passes
+}
+```
+
 ### EXPECT_NEAR()
 `EXPECT_NEAR(a, b, abs_tol, rel_tol)` takes in up to four arguments. `a` and `b` are two floating point values of any two floating point types. `abs_tol` is the absolute tolerance that should be between `a` and `b`. `rel_tol` is an optional parameter that defines how relatively near `a` and `b` should be.
 
@@ -1806,6 +1885,69 @@ D_TEST(expect_nan) {
     float a = 5.0;
 
     EXPECT_NOT_NAN(a); //passes
+}
+```
+
+### EXPECT_INF()
+`EXPECT_INF(number)` takes in one parameter, a floating point value. If passes iff `number` is positive infinity or negative infinity and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+
+```
+#include <tester/Tests.hpp>
+
+D_TEST(expect_int) {
+    float a = 5.0;
+
+    EXPECT_INF(a); //fails
+
+    double b = std::numeric_limits<double>::infinity();
+
+    EXPECT_INF(b); //passes
+
+    float c = -std::numeric_limits<double>::infinity();
+
+    EXPECT_INF(c); //passes
+}
+```
+
+### EXPECT_POS_INF()
+`EXPECT_POS_INF(number)` takes in one parameter, a floating point value. If passes iff `number` is positive infinity and fails otherwise.
+
+```
+#include <tester/Tests.hpp>
+
+D_TEST(expect_pos_int) {
+    float a = 5.0;
+
+    EXPECT_POS_INF(a); //fails
+
+    double b = std::numeric_limits<double>::infinity();
+
+    EXPECT_POS_INF(b); //passes
+
+    float c = -std::numeric_limits<double>::infinity();
+
+    EXPECT_POS_INF(c); //fails
+}
+```
+
+### EXPECT_NEG_INF()
+`EXPECT_NEG_INF(number)` takes in one parameter, a floating point value. If passes iff `number` is negative infinity and fails otherwise.
+
+```
+#include <tester/Tests.hpp>
+
+D_TEST(expect_neg_int) {
+    float a = 5.0;
+
+    EXPECT_NEG_INF(a); //fails
+
+    double b = std::numeric_limits<double>::infinity();
+
+    EXPECT_NEG_INF(b); //fails
+
+    float c = -std::numeric_limits<double>::infinity();
+
+    EXPECT_NEG_INF(c); //passes
 }
 ```
 

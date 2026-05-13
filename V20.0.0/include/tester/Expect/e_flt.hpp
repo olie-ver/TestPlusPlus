@@ -29,6 +29,10 @@
 #define EXPECT_NAN(number) internal::Expects::isNaN((number), __FILE__, __LINE__)
 #define EXPECT_NOT_NAN(number) internal::Expects::isNotNan((number), __FILE__, __LINE__)
 
+#define EXPECT_INF(number) internal::Expects::isInf((number), __FILE__, __LINE__)
+#define EXPECT_POS_INF(number) internal::Expects::isPosInf((number), __FILE__, __LINE__)
+#define EXPECT_NEG_INF(number) internal::Expects::isNegInf((number), __FILE__, __LINE__)
+
 namespace internal {
     namespace Expects {
         /// @brief Checks if two floating point values are "close enough" to each other
@@ -150,11 +154,72 @@ namespace internal {
         template <typename T>
         requires(std::is_floating_point<T>::value)
         inline void isNotNaN(T val, const char* file, int line) {
-            static_assert(std::is_floating_point<T>::value);
-
             if (val != NAN) {
                 Runner::CURRENT_TEST->failures.push_back({
-                    "Expected val to not be NaN + \n      val = NaN",
+                    "Expected val to not be NaN \n      val = NaN",
+                    file,
+                    line
+                });
+            }
+        }
+
+        /// @brief An Expects test for checking if a floating point value is infinity/negative infinity
+        /// @tparam T a floating point type
+        /// @param val the value
+        /// @param file the file the function was called from
+        /// @param line the line the function was called on
+        template <typename T>
+        requires(std::is_floating_point<T>::value)
+        inline void isInf(T val, const char* file, const int line) {
+            if (!std::isinf(val)) {
+                Runner::CURRENT_TEST->failures.push_back({
+                    std::string("Expected val to be inf \n      val = " + val),
+                    file,
+                    line
+                });
+            }
+        }
+
+        /// @brief An Expects test for checking if a floating point value is positive infinity
+        /// @tparam T a floating point type
+        /// @param val the value
+        /// @param file the file the function was called from
+        /// @param line the line the function was called on
+        template <typename T>
+        requires(std::is_floating_point<T>::value)
+        inline void isPosInf(T val, const char* file, const int line) {
+            if (!std::isinf(val)) {
+                Runner::CURRENT_TEST->failures.push_back({
+                    std::string("Expected val to be positive infinity but it wasn't \n      val = " + val),
+                    file,
+                    line
+                });
+            } else if (std::isinf(val) && val < 0.0) {
+                Runner::CURRENT_TEST->failures.push_back({
+                    std::string("Expected val to be positive infinity, but it wasn't \n      val = " + val),
+                    file,
+                    line
+                });
+            }
+        }
+
+        /// @brief An Expects test for checking if a floating point value is negative infinity
+        /// @tparam T a floating point type
+        /// @param val the value
+        /// @param file the file the function was called from
+        /// @param line the line the function was called on
+        template <typename T>
+        requires(std::is_floating_point<T>::value)
+        inline void isNegInf(T val, const char* file, const int line) {
+            if (!std::isinf(val)) {
+                Runner::CURRENT_TEST->failures.push_back({
+                    std::string("Expected val to be negative infinity but it wasn't \n      val = " + val),
+                    file,
+                    line
+                });
+            } else if (std::isinf(val) && val > 0.0) {
+                Runner::CURRENT_TEST->failures.push_back({
+                    std::string("Expected val to be negative infinity, but it wasn't \n      val = " + val),
                     file,
                     line
                 });
