@@ -126,6 +126,7 @@ You may consider this code open-source to be downloaded, modified, and released 
     2. [Assert Fails](#assert_fails)
     3. [Expect Passes](#expect_passes)
     4. [Expect Fails](#expect_fails)
+11. [Set Tests](#set-tests)
 
 ## Adding To Your Projects
 
@@ -2532,5 +2533,258 @@ D_TEST(expect_fails) {
     EXPECT_FAILS(EXPECT_TRUE(false)); //passes
     EXPECT_FAILS(gonnaBreakThings()); //don't do this, but it would fail
     EXPECT_FAILS(ASSERT_TRUE(true)); 
+}
+```
+
+## Set Tests
+Set tests are used on containers that satisfy the `ranges` concept. They can be used on containers other than `set` and `unordered_set`. The name "set" just means that we perform set operations on containers as if they were mathematical sets.
+
+### ASSERT_SET_EQ()
+`ASSERT_SET_EQ(first, second)` takes in two parameters, two containers that satisfy the `ranges` concept. This test passes iff `first` and `second` contain the same elements, REGARDLESS of counts, and fails otherwise. Note that this indifference of counts is a big criterion that separates this test from `ASSERT_UNORDERED_EQ()`. Upon failure it will terminate testing for the test suite it was called in.
+
+```
+#include <tester/Tests.hpp>
+#include <vector>
+#include <unordered_set>
+
+//this is a simple example, but it gets the point across
+D_TEST(assert_set_eq) {
+    std::vector<int> a = {1, 2, 2, 3, 4};
+    std::vector<int> b = {1, 2, 3, 4};
+
+    ASSERT_SET_EQ(a, b); //passes
+
+    std::unordered_set<int> c = {1, 2, 3, 4};
+
+    ASSERT_SET_EQ(a, c); //passes
+
+    std::unordered_set<int> d = {1, 2, 3};
+    ASSERT_SET_EQ(b, d); //fails
+}
+```
+
+### ASSERT_SET_NE()
+`ASSERT_SET_NE(first, second)` takes in two parameters, two containers that satisfy the `ranges` concept. This test passes iff `first` and `second` has at least one differing element, REGARDLESS of counts, and fails otherwise. Note that this indifference of counts is a big criterion that separates this test from `ASSERT_UNORDERED_NE()`. Upon failure it will terminate testing for the test suite it was called in.
+
+```
+#include <tester/Tests.hpp>
+#include <vector>
+#include <unordered_set>
+
+//this is a simple example, but it gets the point across
+D_TEST(assert_set_ne) {
+    std::vector<int> a = {1, 2, 2, 3, 4};
+    std::vector<int> b = {1, 2, 3, 4};
+
+    ASSERT_SET_NE(a, b); //fails
+
+    std::unordered_set<int> c = {1, 2, 3, 4};
+
+    ASSERT_SET_NE(a, c); //fails
+
+    std::unordered_set<int> d = {1, 2, 3};
+    ASSERT_SET_NE(b, d); //passes
+}
+```
+
+### ASSERT_SUBSET()
+`ASSERT_SUBSET(first, second)` takes in two parameters, two containers that satisfy the `ranges` concept. This test passes iff every element in `first` appears in `second` REGARDLESS of counts, and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+
+```
+#include <tester/Tests.hpp>
+#include <vector>
+#include <unordered_set>
+
+D_TEST(assert_subset) {
+    std::vector<int> a = {1, 2, 2, 3, 4};
+    std::vector<int> b = {1, 2, 3, 4};
+
+    ASSERT_SUBSET(a, b); //passes
+
+    std::unordered_set<int> c = {1, 2, 3, 4};
+
+    ASSERT_SUBSET(a, c); //passes
+
+    std::unordered_set<int> d = {1, 2, 3};
+    ASSERT_SUBSET(b, d); //fails
+}
+```
+
+### ASSERT_SUPERSET()
+`ASSERT_SUPERSET(first, second)` takes in two parameters, two containers that satisfy the `ranges` concept. This test passes iff every element in `second` appears in `first` REGARDLESS of counts, and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+
+```
+#include <tester/Tests.hpp>
+#include <vector>
+#include <unordered_set>
+
+D_TEST(assert_superset) {
+    std::vector<int> a = {1, 2, 2, 3, 4};
+    std::vector<int> b = {1, 2, 3, 4};
+
+    ASSERT_SUPERSET(a, b); //passes
+
+    std::unordered_set<int> c = {1, 2, 3, 4};
+
+    ASSERT_SUPERSET(a, c); //passes
+
+    std::unordered_set<int> d = {1, 2, 3};
+    ASSERT_SUPERSET(b, d); //passes
+
+    std::vector<int> e = {5};
+    ASSERT_SUPER_SET(c, e); //fails
+}
+```
+
+### ASSERT_STRICT_SUBSET()
+`ASSERT_STRICT_SUBSET(first, second)` takes in two parameters, two containers that satisfy the `ranges` concept. This test passes iff every element in `first` appears in `second`, and there is at least one element in `second` that does not appear in `first`, REGARDLESS of counts, and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+
+```
+#include <tester/Tests.hpp>
+#include <vector>
+#include <unordered_set>
+
+D_TEST(assert_strict_subset) {
+    std::vector<int> a = {1, 2, 2, 3, 4};
+    std::vector<int> b = {1, 2, 3, 4};
+
+    ASSERT_STRICT_SUBSET(a, b); //fails
+    ASSERT_STRICT_SUBSET(b, a); //fails
+
+    std::unordered_set<int> c = {1, 2, 3, 4};
+
+    ASSERT_STRICT_SUBSET(a, c); //fails
+
+    std::unordered_set<int> d = {1, 2, 3};
+    ASSERT_STRICT_SUBSET(b, d); //fails
+    ASSERT_STRICT_SUBSET(d, b); //passes
+
+    std::vector<int> e = {5};
+    ASSERT_STRICT_SUBSET(c, e); //fails
+}
+```
+
+### EXPECT_SET_EQ()
+`EXPECT_SET_EQ(first, second)` takes in two parameters, two containers that satisfy the `ranges` concept. This test passes iff `first` and `second` contain the same elements, REGARDLESS of counts, and fails otherwise. Note that this indifference of counts is a big criterion that separates this test from `EXPECT_UNORDERED_EQ()`.
+
+```
+#include <tester/Tests.hpp>
+#include <vector>
+#include <unordered_set>
+
+//this is a simple example, but it gets the point across
+D_TEST(expect_set_eq) {
+    std::vector<int> a = {1, 2, 2, 3, 4};
+    std::vector<int> b = {1, 2, 3, 4};
+
+    EXPECT_SET_EQ(a, b); //passes
+
+    std::unordered_set<int> c = {1, 2, 3, 4};
+
+    EXPECT_SET_EQ(a, c); //passes
+
+    std::unordered_set<int> d = {1, 2, 3};
+    EXPECT_SET_EQ(b, d); //fails
+}
+```
+
+### ASSERT_SET_NE()
+`EXPECT_SET_NE(first, second)` takes in two parameters, two containers that satisfy the `ranges` concept. This test passes iff `first` and `second` has at least one differing element, REGARDLESS of counts, and fails otherwise. Note that this indifference of counts is a big criterion that separates this test from `EXPECT_UNORDERED_NE()`.
+
+```
+#include <tester/Tests.hpp>
+#include <vector>
+#include <unordered_set>
+
+//this is a simple example, but it gets the point across
+D_TEST(expect_set_ne) {
+    std::vector<int> a = {1, 2, 2, 3, 4};
+    std::vector<int> b = {1, 2, 3, 4};
+
+    EXPECT_SET_NE(a, b); //fails
+
+    std::unordered_set<int> c = {1, 2, 3, 4};
+
+    EXPECT_SET_NE(a, c); //fails
+
+    std::unordered_set<int> d = {1, 2, 3};
+    EXPECT_SET_NE(b, d); //passes
+}
+```
+
+### EXPECT_SUBSET()
+`EXPECT_SUBSET(first, second)` takes in two parameters, two containers that satisfy the `ranges` concept. This test passes iff every element in `first` appears in `second` REGARDLESS of counts, and fails otherwise.
+
+```
+#include <tester/Tests.hpp>
+#include <vector>
+#include <unordered_set>
+
+D_TEST(expect_subset) {
+    std::vector<int> a = {1, 2, 2, 3, 4};
+    std::vector<int> b = {1, 2, 3, 4};
+
+    EXPECT_SUBSET(a, b); //passes
+
+    std::unordered_set<int> c = {1, 2, 3, 4};
+
+    EXPECT_SUBSET(a, c); //passes
+
+    std::unordered_set<int> d = {1, 2, 3};
+    EXPECT_SUBSET(b, d); //fails
+}
+```
+
+### EXPECT_SUPERSET()
+`EXPECT_SUPERSET(first, second)` takes in two parameters, two containers that satisfy the `ranges` concept. This test passes iff every element in `second` appears in `first` REGARDLESS of counts, and fails otherwise. 
+
+```
+#include <tester/Tests.hpp>
+#include <vector>
+#include <unordered_set>
+
+D_TEST(expect_superset) {
+    std::vector<int> a = {1, 2, 2, 3, 4};
+    std::vector<int> b = {1, 2, 3, 4};
+
+    EXPECT_SUPERSET(a, b); //passes
+
+    std::unordered_set<int> c = {1, 2, 3, 4};
+
+    EXPECT_SUPERSET(a, c); //passes
+
+    std::unordered_set<int> d = {1, 2, 3};
+    EXPECT_SUPERSET(b, d); //passes
+
+    std::vector<int> e = {5};
+    EXPECT_SUPER_SET(c, e); //fails
+}
+```
+
+### EXPECT_STRICT_SUBSET()
+`EXPECT_STRICT_SUBSET(first, second)` takes in two parameters, two containers that satisfy the `ranges` concept. This test passes iff every element in `first` appears in `second`, and there is at least one element in `second` that does not appear in `first`, REGARDLESS of counts, and fails otherwise.
+
+```
+#include <tester/Tests.hpp>
+#include <vector>
+#include <unordered_set>
+
+D_TEST(expect_strict_subset) {
+    std::vector<int> a = {1, 2, 2, 3, 4};
+    std::vector<int> b = {1, 2, 3, 4};
+
+    EXPECT_STRICT_SUBSET(a, b); //fails
+    EXPECT_STRICT_SUBSET(b, a); //fails
+
+    std::unordered_set<int> c = {1, 2, 3, 4};
+
+    EXPECT_STRICT_SUBSET(a, c); //fails
+
+    std::unordered_set<int> d = {1, 2, 3};
+    EXPECT_STRICT_SUBSET(b, d); //fails
+    EXPECT_STRICT_SUBSET(d, b); //passes
+
+    std::vector<int> e = {5};
+    EXPECT_STRICT_SUBSET(c, e); //fails
 }
 ```
