@@ -2006,7 +2006,7 @@ D_TEST(assert_ordered_eq) {
 #include <set>
 #include <unordered_set>
 
-D_TEST(assert_ordered_eq) {
+D_TEST(assert_unordered_eq) {
     int a[] = {1, 2, 3, 4, 5};
     int b[] = {1, 2, 3, 4, 5};
 
@@ -2034,6 +2034,86 @@ D_TEST(assert_ordered_eq) {
     int j[] = {1, 1, 2, 3};
     int k[] = {1, 2, 3, 3};
     ASSERT_UNORDERED_EQ(j, k); //fails because there is a mismatch in counts on 1 and 3
+}
+```
+
+### ASSERT_ORDERED_NE()
+`ASSERT_ORDERED_NE(first, second)` takes in two parameters: two iterable containers that satisfy the `ranges` concept whose elements are capable of being compared by the `==` operator. It passes iff `first` and `second` have at least one element that do not pass a comparison by the `==` operator and fails otherwise. This function should only be called on containers that have some deterministic method of ordering its elements, ie, passing in `unordered` containers yields undefined behavior. Upon failure it will terminate testing for the test suite it was called in.
+
+```
+#include <tester/Tests.hpp>
+#include <vector>
+#include <set>
+#include <unordered_set>
+
+D_TEST(assert_ordered_ne) {
+    int a[] = {1, 2, 3, 4, 5};
+    int b[] = {1, 2, 3, 4, 5};
+
+    ASSERT_ORDERED_NE(a, b); //fails
+
+    int c[] = {5, 4, 3, 2, 1};
+
+    ASSERT_ORDERED_NE(a, c); //passes
+
+    std::vector<int> d = {8, 6, 7, 5, 3, 0, 9};
+    int e[] = {8, 6, 7, 5, 3, 0, 9};
+
+    ASSERT_ORDERED_NE(d, e); //fails
+
+    std::set<std::vector<int>> f = {{1, 2, 3}, {4, 5, 6}};
+    std::set<std::vector<int>> g = {{1, 2, 3}, {4, 5, 6}};
+
+    ASSERT_ORDERED_NE(f, g); //fails
+
+    std::unordered_set<int> h = {1, 2, 3, 4, 5, 6};
+    std::unordered_set<int> i = {1, 2, 3, 4, 5, 6};
+
+    ASSERT_ORDERED_NE(h, i); //undefined behavior, but will most likely fail
+
+    int j[] = {1, 1, 2, 3};
+    int k[] = {1, 2, 3, 3};
+    ASSERT_ORDERED_NE(j, k); //passes because there is a mismatch in counts on 1 and 3
+}
+```
+
+### ASSERT_UNORDERED_NE()
+`ASSERT_UNORDERED_NE(first, second)` takes in two parameters: two iterable containers that satisfy the `ranges` concept whose elements are capable of being compared by the `==` operator. It passes iff `first` and `second` have at least one element that do not pass a comparison by the `==` operator and fails otherwise. Unlike `ASSERT_ORDERED_NE()`, this function can be used on any kind of container, eg. the ones that don't maintain any ordering. Upon failure it will terminate testing for the test suite it was called in.
+
+```
+#include <tester/Tests.hpp>
+#include <vector>
+#include <set>
+#include <unordered_set>
+
+D_TEST(assert_unordered_ne) {
+    int a[] = {1, 2, 3, 4, 5};
+    int b[] = {1, 2, 3, 4, 5};
+
+    ASSERT_UNORDERED_NE(a, b); //fails
+
+    int c[] = {5, 4, 3, 2, 1};
+
+    ASSERT_UNORDERED_NE(a, c); //fails
+
+    std::vector<int> d = {8, 6, 7, 5, 3, 0, 9};
+    int e[] = {8, 6, 7, 5, 3, 0, 9};
+
+    ASSERT_UNORDERED_NE(d, e); //fails
+
+    std::set<std::vector<int>> f = {{1, 2, 3}, {4, 5, 6}};
+    std::set<std::vector<int>> g = {{2, 2, 3}, {4, 5, 6}};
+
+    ASSERT_UNORDERED_NE(f, g); //passes
+
+    std::unordered_set<int> h = {1, 2, 3, 5, 5, 6};
+    std::unordered_set<int> i = {1, 2, 3, 4, 5, 6};
+
+    ASSERT_UNORDERED_NE(h, i); //passes
+
+    int j[] = {1, 1, 2, 3};
+    int k[] = {1, 2, 3, 3};
+    ASSERT_UNORDERED_NE(j, k); //passes
 }
 ```
 
@@ -2201,6 +2281,86 @@ D_TEST(expect_ordered_eq) {
     int j[] = {1, 1, 2, 3};
     int k[] = {1, 2, 3, 3};
     EXPECT_UNORDERED_EQ(j, k); //fails because there is a mismatch in counts on 1 and 3
+}
+```
+
+### EXPECT_ORDERED_NE()
+`EXPECT_ORDERED_NE(first, second)` takes in two parameters: two iterable containers that satisfy the `ranges` concept whose elements are capable of being compared by the `==` operator. It passes iff `first` and `second` have at least one element that do not pass a comparison by the `==` operator and fails otherwise. This function should only be called on containers that have some deterministic method of ordering its elements, ie, passing in `unordered` containers yields undefined behavior.
+
+```
+#include <tester/Tests.hpp>
+#include <vector>
+#include <set>
+#include <unordered_set>
+
+D_TEST(expect_ordered_ne) {
+    int a[] = {1, 2, 3, 4, 5};
+    int b[] = {1, 2, 3, 4, 5};
+
+    EXPECT_ORDERED_NE(a, b); //fails
+
+    int c[] = {5, 4, 3, 2, 1};
+
+    EXPECT_ORDERED_NE(a, c); //passes
+
+    std::vector<int> d = {8, 6, 7, 5, 3, 0, 9};
+    int e[] = {8, 6, 7, 5, 3, 0, 9};
+
+    EXPECT_ORDERED_NE(d, e); //fails
+
+    std::set<std::vector<int>> f = {{1, 2, 3}, {4, 5, 6}};
+    std::set<std::vector<int>> g = {{1, 2, 3}, {4, 5, 6}};
+
+    EXPECT_ORDERED_NE(f, g); //fails
+
+    std::unordered_set<int> h = {1, 2, 3, 4, 5, 6};
+    std::unordered_set<int> i = {1, 2, 3, 4, 5, 6};
+
+    EXPECT_ORDERED_NE(h, i); //undefined behavior, but will most likely fail
+
+    int j[] = {1, 1, 2, 3};
+    int k[] = {1, 2, 3, 3};
+    EXPECT_ORDERED_NE(j, k); //passes because there is a mismatch in counts on 1 and 3
+}
+```
+
+### EXPECT_UNORDERED_NE()
+`EXPECT_UNORDERED_NE(first, second)` takes in two parameters: two iterable containers that satisfy the `ranges` concept whose elements are capable of being compared by the `==` operator. It passes iff `first` and `second` have at least one element that do not pass a comparison by the `==` operator and fails otherwise. Unlike `ASSERT_ORDERED_NE()`, this function can be used on any kind of container, eg. the ones that don't maintain any ordering.
+
+```
+#include <tester/Tests.hpp>
+#include <vector>
+#include <set>
+#include <unordered_set>
+
+D_TEST(expect_unordered_ne) {
+    int a[] = {1, 2, 3, 4, 5};
+    int b[] = {1, 2, 3, 4, 5};
+
+    EXPECT_UNORDERED_NE(a, b); //fails
+
+    int c[] = {5, 4, 3, 2, 1};
+
+    EXPECT_UNORDERED_NE(a, c); //fails
+
+    std::vector<int> d = {8, 6, 7, 5, 3, 0, 9};
+    int e[] = {8, 6, 7, 5, 3, 0, 9};
+
+    EXPECT_UNORDERED_NE(d, e); //fails
+
+    std::set<std::vector<int>> f = {{1, 2, 3}, {4, 5, 6}};
+    std::set<std::vector<int>> g = {{2, 2, 3}, {4, 5, 6}};
+
+    EXPECT_UNORDERED_NE(f, g); //passes
+
+    std::unordered_set<int> h = {1, 2, 3, 5, 5, 6};
+    std::unordered_set<int> i = {1, 2, 3, 4, 5, 6};
+
+    EXPECT_UNORDERED_NE(h, i); //passes
+
+    int j[] = {1, 1, 2, 3};
+    int k[] = {1, 2, 3, 3};
+    EXPECT_UNORDERED_NE(j, k); //passes
 }
 ```
 
