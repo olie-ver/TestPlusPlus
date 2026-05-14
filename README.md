@@ -6,9 +6,16 @@ into a static library and call it a day, but I want the learning experience as w
 
 5/14/25
 Implemented from the list of tests to be implemented:
+1. Same set/Not same set
 2. Ordered not equals/Unordered not equals
+3. Subset/Superset
+4. Strict subset
 
 Total tests implemented:
+1. Same set/Not same set
+2. Ordered not equals/Unordered not equals
+3. Subset/Superset
+4. Strict subset
 2. Ordered not equals/Unordered not equals
 5. Contains/Does not contain
 6. Container size, container empty/not empty
@@ -16,6 +23,9 @@ Total tests implemented:
 9. String contains
 10. String starts/ends with
 11. Throws with message
+
+Still need:
+7. All of, any of, none of (predicate testing)
 
 5/13/26
 Implemented from the list of tests to be implemented:
