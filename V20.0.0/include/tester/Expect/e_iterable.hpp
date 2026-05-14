@@ -15,6 +15,12 @@
 #define EXPECT_UNORDERED_EQ(first, second) \
     internal::Expects::expectUnorderedEquals((first), (second), __FILE__, __LINE__)
 
+#define EXPECT_ORDERED_NE(first, second) \
+    internal::Expects::expectOrderedUnequals((first), (second), __FILE__, __LINE__)
+
+#define EXPECT_UNORDERED_NE(first, second) \
+    internal::Expects::expectUnorderedUnequals((first), (second), __FILE__, __LINE__)
+
 #define EXPECT_EMPTY(container) internal::Expects::expectEmpty((container), __FILE__, __LINE__)
 #define EXPECT_NEMPTY(container) internal::Expects::expectNotEmpty((container), __FILE__, __LINE__)
 #define EXPECT_SIZE(container, size) internal::Expects::expectSize((container), (size), __FILE__, __LINE__)
@@ -68,6 +74,43 @@ namespace internal {
                     });
                 }
             }
+        }
+
+        template <typename A, typename B>
+        requires Concepts::IterableAndComparable<A, B>
+        inline void expectOrderedUnequals(const A& a, const B& b, const char* file, const int line) {
+            namespace ranges = std::ranges;
+
+            auto a_itr = ranges::cbegin(first);
+            auto b_itr = ranges::cbegin(second);
+
+            auto a_end = ranges::cend(first);
+
+            size_t size_a = ranges::size(first);
+            size_t size_b = ranges::size(second);
+
+            if (size_a != size_b) {
+                Runner::CURRENT_TEST->failures.push_back({
+                    std::string("Size of collections are not the same\n      Size of first: ") 
+                    + Helpers::toString(size_a)
+                    + std::string("\n      Size of second: ") + Helpers::toString(size_b),
+                    file,
+                    line
+                });
+                return;
+            }
+
+            for (; a_itr != a_end; ++a_itr, ++b_itr) {
+                if (!(*a_itr == *b_itr)) {
+                    return;
+                }
+            }
+
+            Runner::CURRENT_TEST->failures.push_back({
+                "Collections were equal"
+                file,
+                line
+            });
         }
 
         template <typename A, typename B>
@@ -227,6 +270,57 @@ namespace internal {
             } else 
             {
                 expectUnorderedEqualsGeneral(first, second, file, line);
+            }
+        }
+
+        template <typename A, typename B>
+        requires Concepts::IterableAndComparable<A, B>
+        inline void expectUnorderedUnequals(const A& a, const B& b, 
+            const char* file, const int line)
+        {
+            size_t size_a = std::ranges::size(first);
+            size_t size_b = std::ranges::size(second);
+
+            if (size_a == size_b) {
+                std::vector<bool> used(std::ranges::size(a));
+
+                auto a_itr = std::ranges::begin(first);
+
+                auto a_end = std::ranges::end(first);
+                auto b_end = std::ranges::end(second);
+
+                for (; a_itr != a_end; ++a_itr) {
+                    size_t idx = 0;
+                    auto b_itr = std::ranges::begin(second);
+                    bool found = false;
+                    for (; b_itr != b_end; ++b_itr, ++idx) {
+                        if (*b_itr == *a_itr) {
+                            if (!used[idx]) {
+                                used[idx] = true;
+                                found = true;
+                                break;
+                            }
+                        } 
+                    }
+
+                    //if there's an element in a that's not in b, then they aren't equal => return
+                    if (!found) {
+                        return;
+                    }
+                }
+
+                //unnecessary, but will keep just in case I'm wrong
+                // for (size_t i = 0; i < used.size(); i++) {
+                //     if (!used[i]) {
+                //         return;
+                //     }
+                // }
+
+                Runner::CURRENT_TEST->failures.push_back({
+                    "Collections are equivalent",
+                    file,
+                    line
+                });
             }
         }
 
