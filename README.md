@@ -4,6 +4,23 @@ because even though I know how to use someone else's library, I don't want to in
 every file in every project. I know I could probably just compile someone else's 
 into a static library and call it a day, but I want the learning experience as well. 
 
+5/16/25
+Implemented from the list of tests to be implemented:
+7. All of, any of, none of (predicate testing)
+
+Total tests implemented:
+1. Same set/Not same set
+2. Ordered not equals/Unordered not equals
+3. Subset/Superset
+4. Strict subset
+5. Contains/Does not contain
+6. Container size, container empty/not empty
+7. All of, any of, none of (predicate testing)
+8. Float infinity/negative infinity
+9. String contains
+10. String starts/ends with
+11. Throws with message
+
 5/14/25
 Implemented from the list of tests to be implemented:
 1. Same set/Not same set
@@ -16,7 +33,6 @@ Total tests implemented:
 2. Ordered not equals/Unordered not equals
 3. Subset/Superset
 4. Strict subset
-2. Ordered not equals/Unordered not equals
 5. Contains/Does not contain
 6. Container size, container empty/not empty
 8. Float infinity/negative infinity

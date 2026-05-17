@@ -538,7 +538,7 @@ namespace internal {
                 throw Core::AssertionFailure();
             }
 
-            assertStringStartsWith(std::string(first), std::string(second), file, line);
+            assertStringStartsWith(std::string(first), std::string(substr), file, line);
         }
 
         /// @brief An Assert test for if a string ends with another string
@@ -604,7 +604,7 @@ namespace internal {
                 throw Core::AssertionFailure();
             }
 
-            assertStringEndsWith(std::string(first), std::string(second), file, line);
+            assertStringEndsWith(std::string(first), std::string(substr), file, line);
         }
     }
 }
