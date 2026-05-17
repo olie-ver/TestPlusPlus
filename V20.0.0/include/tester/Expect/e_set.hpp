@@ -21,13 +21,13 @@ namespace internal {
         requires Concepts::IterableAndComparable<A, B>
         inline void expectSameSet(const A& a, const B& b, const char* file, const int line) {
             //everything in A appears in B, and everything in B appears in A
-            auto a_itr = ranges::cbegin(a);
-            auto a_end = ranges::cend(a);
-            auto b_end = ranges::cend(b);
+            auto a_itr = std::ranges::cbegin(a);
+            auto a_end = std::ranges::cend(a);
+            auto b_end = std::ranges::cend(b);
 
             //check that everything in A appears in B
             for (; a_itr != a_end; ++a_itr) {
-                auto b_itr = ranges::cbegin(b);
+                auto b_itr = std::ranges::cbegin(b);
 
                 bool found = false;
                 for (; b_itr != b_end; ++b_itr) {
@@ -38,20 +38,20 @@ namespace internal {
                 }
 
                 if (!found) {
-                    Runner::CURRENT_TEST->failures.push_back(({
+                    Runner::CURRENT_TEST->failures.push_back({
                         std::string("Element in first not present in second: " 
                             + Helpers::toString(*a_itr)),
                         file,
                         line
-                    }));
+                    });
                     return;
                 }
             }
 
             //check that everything in B appears in A
-            auto b_itr = ranges::cbegin(b); //get the start of B since we're checking B now
+            auto b_itr = std::ranges::cbegin(b); //get the start of B since we're checking B now
             for (; b_itr != b_end; ++b_itr) {
-                a_itr = ranges::cbegin(a); //RESET a_itr to point at the beginning again
+                a_itr = std::ranges::cbegin(a); //RESET a_itr to point at the beginning again
                 bool found = false;
                 for (; a_itr != a_end; ++a_itr) {
                     if (*a_itr == *b_itr) {
@@ -61,12 +61,12 @@ namespace internal {
                 }
 
                 if (!found) {
-                     Runner::CURRENT_TEST->failures.push_back(({
+                     Runner::CURRENT_TEST->failures.push_back({
                         std::string("Element in second not present in first: " 
                             + Helpers::toString(*b_itr)),
                         file,
                         line
-                    }));
+                    });
                     return;
                 }
             }
@@ -128,13 +128,13 @@ namespace internal {
         requires Concepts::IterableAndComparable<A, B>
         inline void expectSubset(const A& sub, const B& super, const char* file, const int line) {
             //everything in sub appears in super
-            auto a_itr = ranges::cbegin(sub);
+            auto a_itr = std::ranges::cbegin(sub);
 
-            auto a_end = ranges::cend(sub);
-            auto b_end = ranges::cend(super);
+            auto a_end = std::ranges::cend(sub);
+            auto b_end = std::ranges::cend(super);
 
             for (; a_itr != a_end; ++a_itr) {
-                auto b_itr = ranges::cbegin(super);
+                auto b_itr = std::ranges::cbegin(super);
                 bool found = false;
                 for (; b_itr != b_end; ++b_itr) {
                     if (*a_itr == *b_itr) {
@@ -144,12 +144,12 @@ namespace internal {
                 }
 
                 if (!found) {
-                    Runner::CURRENT_TEST->failures.push_back(({
+                    Runner::CURRENT_TEST->failures.push_back({
                         std::string("Element in first not present in second: " 
                             + Helpers::toString(*a_itr)),
                         file,
                         line
-                    }));
+                    });
                     return;
                 }
             }
@@ -159,13 +159,13 @@ namespace internal {
         requires Concepts::IterableAndComparable<A, B>
         inline void expectSuperset(const A& super, const B& sub, const char* file, const int line) {
             //everything in B appears in A
-            auto b_itr = ranges::cbegin(sub);
+            auto b_itr = std::ranges::cbegin(sub);
 
-            auto a_end = ranges::cend(super);
-            auto b_end = ranges::cend(sub);
+            auto a_end = std::ranges::cend(super);
+            auto b_end = std::ranges::cend(sub);
 
             for (; b_itr != b_end; ++b_itr) {
-                auto a_itr = ranges::cbegin(super);
+                auto a_itr = std::ranges::cbegin(super);
                 bool found = false;
                 for (; a_itr != a_end; ++a_itr) {
                     if (*a_itr == *b_itr) {
@@ -175,12 +175,12 @@ namespace internal {
                 }
 
                 if (!found) {
-                    Runner::CURRENT_TEST->failures.push_back(({
+                    Runner::CURRENT_TEST->failures.push_back({
                         std::string("Element in second not present in first: " 
                             + Helpers::toString(*b_itr)),
                         file,
                         line
-                    }));
+                    });
                     return;
                 }
             }
@@ -193,13 +193,13 @@ namespace internal {
 
             //create a new scope for easier reasoning on variables
             {
-                auto a_itr = ranges::cbegin(sub);
+                auto a_itr = std::ranges::cbegin(sub);
 
-                auto a_end = ranges::cend(sub);
-                auto b_end = ranges::cend(super);
+                auto a_end = std::ranges::cend(sub);
+                auto b_end = std::ranges::cend(super);
 
                 for (; a_itr != a_end; ++a_itr) {
-                    auto b_itr = ranges::cbegin(super);
+                    auto b_itr = std::ranges::cbegin(super);
                     bool found = false;
                     for (; b_itr != b_end; ++b_itr) {
                         if (*a_itr == *b_itr) {
@@ -209,12 +209,12 @@ namespace internal {
                     }
 
                     if (!found) {
-                        Runner::CURRENT_TEST->failures.push_back(({
+                        Runner::CURRENT_TEST->failures.push_back({
                             std::string("Element in first not present in second: " 
                                 + Helpers::toString(*a_itr)),
                             file,
                             line
-                        }));
+                        });
                         return;
                     }
                 }
@@ -247,11 +247,11 @@ namespace internal {
                     }
                 }
 
-                Runner::CURRENT_TEST->failures.push_back(({
+                Runner::CURRENT_TEST->failures.push_back({
                     "First is not a strict subset of Second (everything in Second is in First)" ,
                     file,
                     line
-                }));
+                });
                 return;
             }
         }

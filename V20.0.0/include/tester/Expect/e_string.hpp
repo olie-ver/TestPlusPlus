@@ -502,7 +502,7 @@ namespace internal {
                 return;
             }
 
-            expectStringStartsWith(std::string(first), std::string(second), file, line);
+            expectStringStartsWith(std::string(first), std::string(substr), file, line);
         }
 
         /// @brief An Expects test for if a string ends with another string
@@ -568,7 +568,7 @@ namespace internal {
                 return;
             }
 
-            expectStringEndsWith(std::string(first), std::string(second), file, line);
+            expectStringEndsWith(std::string(first), std::string(substr), file, line);
         }
     }
 }

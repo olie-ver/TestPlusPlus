@@ -99,7 +99,7 @@ namespace internal {
             try {
                 func();
                 Runner::CURRENT_TEST->failures.push_back({
-                    std::string("Expected " + funcName + " to throw an error, but it didn't"),
+                    std::string("Expected ") + funcName + " to throw an error, but it didn't",
                     file, 
                     line
                 });
@@ -108,8 +108,8 @@ namespace internal {
                 std::string what(ex.what());
                 if (message != what) {
                     Runner::CURRENT_TEST->failures.push_back({
-                        std::string("Expected " + funcName + " to throw an error with message: " 
-                            +  message + ", but it threw with message: " + what),
+                        std::string("Expected ") + funcName + " to throw an error with message: " 
+                            +  message + ", but it threw with message: " + what,
                         file, 
                         line
                     });
@@ -118,8 +118,8 @@ namespace internal {
             } catch (std::string what) {
                 if (message != what) {
                     Runner::CURRENT_TEST->failures.push_back({
-                        std::string("Expected " + funcName + " to throw an error with message: " 
-                            +  message + ", but it threw with message: " + what),
+                        std::string("Expected ") + funcName + " to throw an error with message: " 
+                            +  message + ", but it threw with message: " + what,
                         file, 
                         line
                     });
@@ -127,7 +127,7 @@ namespace internal {
                 }
             } catch (...) {
                 Runner::CURRENT_TEST->failures.push_back({
-                    std::string(funcName + " threw an unknown exception type"),
+                    funcName + std::string(" threw an unknown exception type"),
                     file, 
                     line
                 });

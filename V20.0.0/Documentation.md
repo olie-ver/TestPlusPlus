@@ -127,6 +127,23 @@ You may consider this code open-source to be downloaded, modified, and released 
     3. [Expect Passes](#expect_passes)
     4. [Expect Fails](#expect_fails)
 11. [Set Tests](#set-tests)
+    1. [Assert Set Equals](#assert_set_eq)
+    2. [Assert Set Not Equals](#assert_set_ne)
+    3. [Assert Subset](#assert_subset)
+    4. [Assert Superset](#assert_superset)
+    5. [Assert Strict Subset](#assert_strict_subset)
+    6. [Expect Set Equals](#expect_set_eq)
+    7. [Expect Set Not Equals](#expect_set_ne)
+    8. [Expect Subset](#expect_subset)
+    9. [Expect Superset](#expect_superset)
+    10. [Expect Strict Subset](#expect_strict_subset)
+12. [Predicate Tests](#predicate-tests)
+    1. [Assert All](#assert_all)
+    2. [Assert Some](#assert_some)
+    3. [Assert None](#assert_none)
+    4. [Expect All](#expect_all)
+    5. [Expect Some](#expect_some)
+    6. [Expect None](#expect_none)
 
 ## Adding To Your Projects
 
@@ -2539,6 +2556,17 @@ D_TEST(expect_fails) {
 ## Set Tests
 Set tests are used on containers that satisfy the `ranges` concept. They can be used on containers other than `set` and `unordered_set`. The name "set" just means that we perform set operations on containers as if they were mathematical sets.
 
+1. [Assert Set Equals](#assert_set_eq)
+2. [Assert Set Not Equals](#assert_set_ne)
+3. [Assert Subset](#assert_subset)
+4. [Assert Superset](#assert_superset)
+5. [Assert Strict Subset](#assert_strict_subset)
+6. [Expect Set Equals](#expect_set_eq)
+7. [Expect Set Not Equals](#expect_set_ne)
+8. [Expect Subset](#expect_subset)
+9. [Expect Superset](#expect_superset)
+10. [Expect Strict Subset](#expect_strict_subset)
+
 ### ASSERT_SET_EQ()
 `ASSERT_SET_EQ(first, second)` takes in two parameters, two containers that satisfy the `ranges` concept. This test passes iff `first` and `second` contain the same elements, REGARDLESS of counts, and fails otherwise. Note that this indifference of counts is a big criterion that separates this test from `ASSERT_UNORDERED_EQ()`. Upon failure it will terminate testing for the test suite it was called in.
 
@@ -2688,7 +2716,7 @@ D_TEST(expect_set_eq) {
 }
 ```
 
-### ASSERT_SET_NE()
+### EXPECT_SET_NE()
 `EXPECT_SET_NE(first, second)` takes in two parameters, two containers that satisfy the `ranges` concept. This test passes iff `first` and `second` has at least one differing element, REGARDLESS of counts, and fails otherwise. Note that this indifference of counts is a big criterion that separates this test from `EXPECT_UNORDERED_NE()`.
 
 ```
@@ -2786,5 +2814,118 @@ D_TEST(expect_strict_subset) {
 
     std::vector<int> e = {5};
     EXPECT_STRICT_SUBSET(c, e); //fails
+}
+```
+
+## Predicate Tests
+Predicate tests are used to test containers and arrays to see if every element, some elements, or no elements satisfy a given condition.
+
+1. [Assert All](#assert_all)
+2. [Assert Some](#assert_some)
+3. [Assert None](#assert_none)
+4. [Expect All](#expect_all)
+5. [Expect Some](#expect_some)
+6. [Expect None](#expect_none)
+
+### ASSERT_ALL()
+`ASSERT_ALL(container, condition)` takes in two parameters: a container and an anonymous function that returns a boolean value. The container does not have to be an `stl` container, ie. arrays are fine as well. This test passes iff every element in `container` passes the `condition` and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+
+```
+#include <tester/Tests.hpp>
+#include <vector>
+
+D_TEST(assert_all) {
+    std::vector<int> a = {1, 2, 2, 3, 4};
+
+    ASSERT_ALL(a, [](int x) { return x > 0; }); //passes
+
+    ASSERT_ALL(a, [](int x) { return x & 1; }); //fails since there are even elements
+}
+```
+
+### ASSERT_SOME
+`ASSERT_SOME(container, condition)` takes in two parameters: a container and an anonymous function that returns a boolean value. The container does not have to be an `stl` container, ie. arrays are fine as well. This test passes iff at least one element in `container` passes the `condition` and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+
+```
+#include <tester/Tests.hpp>
+#include <vector>
+
+D_TEST(assert_some) {
+    std::vector<int> a = {1, 2, 2, 3, 4};
+
+    ASSERT_SOME(a, [](int x) { return x > 0; }); //passes
+
+    ASSERT_SOME(a, [](int x) { return x & 1; }); //passes since there is at least one odd element
+
+    ASSERT_SOME(a, [](int x) {return x > 10; }) //fails because none of the elements are larger than 10
+}
+```
+
+### ASSERT_NONE
+`ASSERT_NONE(container, condition)` takes in two parameters: a container and an anonymous function that returns a boolean value. The container does not have to be an `stl` container, ie. arrays are fine as well. This test passes iff no element in `container` passes the `condition` and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+
+```
+#include <tester/Tests.hpp>
+#include <vector>
+
+D_TEST(assert_none) {
+    std::vector<int> a = {1, 2, 2, 3, 4};
+
+    ASSERT_NONE(a, [](int x) { return x > 0; }); //fails because every element satisfies this condition
+
+    ASSERT_NONE(a, [](int x) { return x & 1; }); //passes since some elements satisfies this condition
+
+    ASSERT_NONE(a, [](int x) {return x > 10; }) //passes because none of the elements are larger than 10
+}
+```
+
+### EXPECT_ALL()
+`EXPECT_ALL(container, condition)` takes in two parameters: a container and an anonymous function that returns a boolean value. The container does not have to be an `stl` container, ie. arrays are fine as well. This test passes iff every element in `container` passes the `condition` and fails otherwise. 
+
+```
+#include <tester/Tests.hpp>
+#include <vector>
+
+D_TEST(expect_all) {
+    std::vector<int> a = {1, 2, 2, 3, 4};
+
+    EXPECT_ALL(a, [](int x) { return x > 0; }); //passes
+
+    EXPECT_ALL(a, [](int x) { return x & 1; }); //fails since there are even elements
+}
+```
+
+### EXPECT_SOME
+`EXPECT_SOME(container, condition)` takes in two parameters: a container and an anonymous function that returns a boolean value. The container does not have to be an `stl` container, ie. arrays are fine as well. This test passes iff at least one element in `container` passes the `condition` and fails otherwise.
+```
+#include <tester/Tests.hpp>
+#include <vector>
+
+D_TEST(expect_some) {
+    std::vector<int> a = {1, 2, 2, 3, 4};
+
+    EXPECT_SOME(a, [](int x) { return x > 0; }); //passes
+
+    EXPECT_SOME(a, [](int x) { return x & 1; }); //passes since there is at least one odd element
+
+    EXPECT_SOME(a, [](int x) {return x > 10; }) //fails because none of the elements are larger than 10
+}
+```
+
+### EXPECT_NONE
+`EXPECT_NONE(container, condition)` takes in two parameters: a container and an anonymous function that returns a boolean value. The container does not have to be an `stl` container, ie. arrays are fine as well. This test passes iff no element in `container` passes the `condition` and fails otherwise. 
+
+```
+#include <tester/Tests.hpp>
+#include <vector>
+
+D_TEST(expect_none) {
+    std::vector<int> a = {1, 2, 2, 3, 4};
+
+    EXPECT_NONE(a, [](int x) { return x > 0; }); //fails because every element satisfies this condition
+
+    EXPECT_NONE(a, [](int x) { return x & 1; }); //passes since some elements satisfies this condition
+
+    EXPECT_NONE(a, [](int x) {return x > 10; }) //passes because none of the elements are larger than 10
 }
 ```

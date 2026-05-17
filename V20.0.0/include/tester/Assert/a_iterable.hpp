@@ -85,7 +85,7 @@ namespace internal {
 
         template <typename A, typename B>
         requires Concepts::IterableAndComparable<A, B>
-        inline void assertOrderedUnequals(const A& a, const B& b, const char* file, const int line) {
+        inline void assertOrderedUnequals(const A& first, const B& second, const char* file, const int line) {
             namespace ranges = std::ranges;
 
             auto a_itr = ranges::cbegin(first);
@@ -114,10 +114,11 @@ namespace internal {
             }
             
             Runner::CURRENT_TEST->failures.push_back({
-                "Collections were equal"
+                "Collections were equal",
                 file,
                 line
             });
+
             throw Core::AssertionFailure();
         }
 
@@ -283,14 +284,14 @@ namespace internal {
 
         template <typename A, typename B>
         requires Concepts::IterableAndComparable<A, B>
-        inline void assertUnorderedUnequals(const A& a, const B& b, 
+        inline void assertUnorderedUnequals(const A& first, const B& second, 
             const char* file, const int line)
         {
             size_t size_a = std::ranges::size(first);
             size_t size_b = std::ranges::size(second);
 
             if (size_a == size_b) {
-                std::vector<bool> used(std::ranges::size(a));
+                std::vector<bool> used(size_a);
 
                 auto a_itr = std::ranges::begin(first);
 
@@ -344,7 +345,7 @@ namespace internal {
             if (container.size() != 0) {
                 Runner::CURRENT_TEST->failures.push_back({
                     std::string("Expected container size to be 0, but wasn't. \n" 
-                        + "     size = " + container.size()),
+                        "     size = " + container.size()),
                     file,
                     line
                 });
@@ -383,7 +384,7 @@ namespace internal {
             if (container.size() != size) {
                 Runner::CURRENT_TEST->failures.push_back({
                     std::string("Expected container size to be " 
-                        + size ", but wasn't. \n      size = " 
+                        + Helpers::toString(size) + ", but wasn't. \n      size = " 
                         + container.size()),
                     file,
                     line
@@ -401,12 +402,12 @@ namespace internal {
         template <typename T, typename U>
         requires std::ranges::range<T>
         inline void assertContains(const T& container, const U& find, const char* file, const int line) {
-            static_assert(std::is_same<std::ranges::range_value_t<T>, U>);
+            static_assert(std::is_same<std::ranges::range_value_t<T>, U>::value);
             auto it = std::find(std::ranges::begin(container), std::ranges::end(container), find);
 
             if (it == std::ranges::end(container)) {
                 Runner::CURRENT_TEST->failures.push_back({
-                    std::string("The container did not contain the expected value: " + Helpers::ToString(find)),
+                    std::string("The container did not contain the expected value: " + Helpers::toString(find)),
                     file,
                     line
                 });
@@ -425,12 +426,12 @@ namespace internal {
         template <typename T, typename U>
         requires std::ranges::range<T>
         inline void assertDoesNotContain(const T& container, const U& find, const char* file, const int line) {
-            static_assert(std::is_same<std::ranges::range_value_t<T>, U>);
+            static_assert(std::is_same<std::ranges::range_value_t<T>, U>::value);
             auto it = std::find(std::ranges::begin(container), std::ranges::end(container), find);
 
             if (it != std::ranges::end(container)) {
                 Runner::CURRENT_TEST->failures.push_back({
-                    std::string("The container did contained the value: " + Helpers::ToString(find)),
+                    std::string("The container did contained the value: " + Helpers::toString(find)),
                     file,
                     line
                 });
