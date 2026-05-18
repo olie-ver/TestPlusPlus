@@ -3,13 +3,16 @@
 #ifndef A_CMP_H
 #define A_CMP_H
 
-#include "../Core.hpp"
+#include "../Fail.hpp"
 #include "../Concepts.hpp"
-#include "../Helpers.hpp"
-#include "../Runner.hpp"
+#include "../Implementation/cmp.hpp"
 
 #define ASSERT_EQ(a, b) internal::Assert::assertEquals((a), (b), __FILE__, __LINE__)
 #define ASSERT_NE(a, b) internal::Assert::assertNotEquals((a), (b), __FILE__, __LINE__)
+#define ASSERT_LT(a, b) internal::Assert::assertLessThan((a), (b), __FILE__, __LINE__)
+#define ASSERT_LE(a, b) internal::Assert::assertLessThanEquals((a), (b), __FILE__, __LINE__)
+#define ASSERT_GT(a, b) internal::Assert::assertGreaterThan((a), (b), __FILE__, __LINE__)
+#define ASSERT_GE(a, b) internal::Assert::assertGreaterThanEquals((a), (b), __FILE__, __LINE__)
 
 namespace internal {
     namespace Assert {
@@ -23,16 +26,9 @@ namespace internal {
         template <typename A, typename B>
         requires Concepts::HasEQ<A, B>
         inline void assertEquals(A& a, B& b, const char* file, const int line) {
-            if (!(a == b)) {
-                std::string aStr = Helpers::toString(a);
-                std::string bStr = Helpers::toString(b);
-                Runner::CURRENT_TEST->failures.push_back({
-                    "Expected: a == b \n      a = " + aStr + "\n      b = " + bStr,
-                    file,
-                    line
-                });
-
-                throw Core::AssertionFailure();
+            auto result = impl_cmp::equals(a, b, file, line);
+            if (result) {
+                Fail::a_fail(*result);
             }
         }
 
@@ -46,30 +42,9 @@ namespace internal {
         template <typename A, typename B>
         requires (Concepts::HasNE<A, B> || Concepts::HasEQ<A, B>)
         inline void assertNotEquals(A& a, B& b, const char* file, const int line) {
-            if constexpr(Concepts::HasNE<A, B>) {
-                if (!(a != b)) {
-                    std::string aStr = Helpers::toString(a);
-                    std::string bStr = Helpers::toString(b);
-                    Runner::CURRENT_TEST->failures.push_back({
-                        "Expected: a != b \n      a = " + aStr + "\n      b = " + bStr,
-                        file,
-                        line
-                    });
-
-                    throw Core::AssertionFailure();
-                }
-            } else {
-                if (a == b) {
-                    std::string aStr = Helpers::toString(a);
-                    std::string bStr = Helpers::toString(b);
-                    Runner::CURRENT_TEST->failures.push_back({
-                        "Expected: a != b \n      a = " + aStr + "\n      b = " + bStr,
-                        file,
-                        line
-                    });
-
-                    throw Core::AssertionFailure();
-                }
+            auto result = impl_cmp::notEquals(a, b, file, line);
+            if (result) {
+                Fail::a_fail(*result);
             }
         }
 
@@ -83,16 +58,9 @@ namespace internal {
         template <typename A, typename B>
         requires(Concepts::HasLT<A, B>)
         inline void assertLessThan(A a, B b, const char* file, const int line) {
-            if (!(a < b)) {
-                std::string aStr = Helpers::toString(a);
-                std::string bStr = Helpers::toString(b);
-                Runner::CURRENT_TEST->failures.push_back({
-                    "Expected: a < b \n      a = " + aStr + "\n      b = " + bStr,
-                    file,
-                    line
-                });
-
-                throw Core::AssertionFailure();
+            auto result = impl_cmp::lessThan(a, b, file, line);
+            if (result) {
+                Fail::a_fail(*result);
             }
         }
 
@@ -106,16 +74,9 @@ namespace internal {
         template <typename A, typename B>
         requires(Concepts::HasLE<A, B>)
         inline void assertLessThanEqual(A a, B b, const char* file, const int line) {
-            if (!(a <= b)) {
-                std::string aStr = Helpers::toString(a);
-                std::string bStr = Helpers::toString(b);
-                Runner::CURRENT_TEST->failures.push_back({
-                    "Expected: a <= b \n      a = " + aStr + "\n      b = " + bStr,
-                    file,
-                    line
-                });
-
-                throw Core::AssertionFailure();
+            auto result = impl_cmp::lessThanEqual(a, b, file, line);
+            if (result) {
+                Fail::a_fail(*result);
             }
         }
 
@@ -129,16 +90,9 @@ namespace internal {
         template <typename A, typename B>
         requires(Concepts::HasGT<A, B>)
         inline void assertGreaterThan(A a, B b, const char* file, const int line) {
-            if (!(a > b)) {
-                std::string aStr = Helpers::toString(a);
-                std::string bStr = Helpers::toString(b);
-                Runner::CURRENT_TEST->failures.push_back({
-                    "Expected: a <= b \n      a = " + aStr + "\n      b = " + bStr,
-                    file,
-                    line
-                });
-
-                throw Core::AssertionFailure();
+            auto result = impl_cmp::greaterThan(a, b, file, line);
+            if (result) {
+                Fail::a_fail(*result);
             }
         }
 
@@ -153,16 +107,9 @@ namespace internal {
         template <typename A, typename B>
         requires(Concepts::HasGE<A, B>)
         inline void assertGreaterThanEqual(A a, B b, const char* file, const int line) {
-            if (!(a >= b)) {
-                std::string aStr = Helpers::toString(a);
-                std::string bStr = Helpers::toString(b);
-                Runner::CURRENT_TEST->failures.push_back({
-                    "Expected: a <= b \n      a = " + aStr + "\n      b = " + bStr,
-                    file,
-                    line
-                });
-
-                throw Core::AssertionFailure();
+            auto result = impl_cmp::greaterThanEqual(a, b, file, line);
+            if (result) {
+                Fail::a_fail(*result);
             }
         }
     }
