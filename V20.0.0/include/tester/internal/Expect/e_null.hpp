@@ -4,7 +4,7 @@
 #define E_NULL_H
 
 #include "../Concepts.hpp"
-#include "../Runner.hpp"
+#include "../Implementation/null.hpp"
 
 #define EXPECT_NULL(val) internal::Expects::expectNull((val), __FILE__, __LINE__)
 #define EXPECT_NOT_NULL(val) internal::Expects::expectNotNull((val), __FILE__, __LINE__)
@@ -19,12 +19,9 @@ namespace internal {
         template <typename T>
         requires Concepts::Nullable<T>
         inline void expectNull(const T& val, const char* file, const int line) {
-            if (val != nullptr) {
-                Runner::CURRENT_TEST->failures.push_back({
-                    "Expected val to be nullptr.\n val = " + Helpers::toString(val),
-                    file,
-                    line
-                });
+            auto result = impl_null::Null(val, file, line);
+            if (result) {
+                Fail::e_fail(*result);
             }
         }
 
@@ -36,12 +33,9 @@ namespace internal {
         template <typename T>
         requires Concepts::Nullable<T>
         inline void expectNotNull(const T& val, const char* file, const int line) {
-            if (val == nullptr) {
-                Runner::CURRENT_TEST->failures.push_back({
-                    "Expected val to not be a nullptr.\n val = nullptr ",
-                    file,
-                    line
-                });
+            auto result = impl_null::NotNull(val, file, line);
+            if (result) {
+                Fail::e_fail(*result);
             }
         }
     }

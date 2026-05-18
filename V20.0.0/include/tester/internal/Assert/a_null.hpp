@@ -3,9 +3,8 @@
 #ifndef A_NULL_H
 #define A_NULL_H
 
-#include "../Core.hpp"
 #include "../Concepts.hpp"
-#include "../Runner.hpp"
+#include "../Implementation/null.hpp"
 
 #define ASSERT_NULL(val) internal::Assert::assertNull((val), __FILE__, __LINE__)
 #define ASSERT_NOT_NULL(val) internal::Assert::assertnotNull((val), __FILE__, __LINE__)
@@ -20,14 +19,9 @@ namespace internal {
         template <typename T>
         requires Concepts::Nullable<T>
         inline void assertNull(const T& val, const char* file, const int line) {
-            if (val != nullptr) {
-                Runner::CURRENT_TEST->failures.push_back({
-                    "Expected val to be nullptr.\n val = " + Helpers::toString(val),
-                    file,
-                    line
-                });
-
-                throw Core::AssertionFailure();
+            auto result = impl_null::Null(val, file, line);
+            if (result) {
+                Fail::a_fail(*result);
             }
         }
 
@@ -39,14 +33,9 @@ namespace internal {
         template <typename T>
         requires Concepts::Nullable<T>
         inline void assertNotNull(const T& val, const char* file, const int line) {
-            if (val == nullptr) {
-                Runner::CURRENT_TEST->failures.push_back({
-                    "Expected val to not be a nullptr.\n val = nullptr ",
-                    file,
-                    line
-                });
-
-                throw Core::AssertionFailure();
+            auto result = impl_null::NotNull(val, file, line);
+            if (result) {
+                Fail::a_fail(*result);
             }
         }
     }
