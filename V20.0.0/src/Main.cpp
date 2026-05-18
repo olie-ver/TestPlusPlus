@@ -1,6 +1,6 @@
-#include <tester/Core.hpp>
-#include <tester/Renderer.hpp>
-#include <tester/Runner.hpp>
+#include <tester/internal/Core.hpp>
+#include <tester/internal/Renderer.hpp>
+#include <tester/internal/Runner.hpp>
 #include <iostream>
 
 int main(int argc, char** argv) {
