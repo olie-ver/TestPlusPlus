@@ -33,7 +33,7 @@ namespace internal {
             const char* file, const int line)
         {
             auto result = impl_iter::orderedEquals(first, second, file, line);
-            if (!result) {
+            if (result) {
                 Fail::a_fail(*result);
             }
         }
@@ -42,7 +42,7 @@ namespace internal {
         requires Concepts::IterableAndComparable<A, B>
         inline void assertOrderedUnequals(const A& first, const B& second, const char* file, const int line) {
             auto result = impl_iter::orderedUnequals(first, second, file, line);
-            if (!result) {
+            if (result) {
                 Fail::a_fail(*result);
             }
         }
@@ -53,7 +53,7 @@ namespace internal {
             const char* file, const int line) 
         {
             auto result = impl_iter::unorderedEquals(first, second, file, line);
-            if (!result) {
+            if (result) {
                 Fail::a_fail(*result);
             }
         }
@@ -64,7 +64,7 @@ namespace internal {
             const char* file, const int line)
         {
             auto result = impl_iter::unorderedUnequals(first, second, file, line);
-            if (!result) {
+            if (result) {
                 Fail::a_fail(*result);
             }
         }
@@ -78,7 +78,7 @@ namespace internal {
         requires Concepts::Sizeable<T>
         inline void assertEmpty(const T& container, const char* file, const int line) {
             auto result = impl_iter::empty(container, file, line);
-            if (!result) {
+            if (result) {
                 Fail::a_fail(*result);
             }
         }
@@ -92,7 +92,7 @@ namespace internal {
         requires Concepts::Sizeable<T>
         inline void assertNotEmpty(const T& container, const char* file, const int line) {
             auto result = impl_iter::notEmpty(container, file, line);
-            if (!result) {
+            if (result) {
                 Fail::a_fail(*result);
             }
         }
@@ -106,7 +106,7 @@ namespace internal {
         requires Concepts::Sizeable<T>
         inline void assertSize(const T& container, const size_t size, const char* file, const int line) {
             auto result = impl_iter::size(container, size, file, line);
-            if (!result) {
+            if (result) {
                 Fail::a_fail(*result);
             }
         }
@@ -122,7 +122,7 @@ namespace internal {
         requires std::ranges::range<T>
         inline void assertContains(const T& container, const U& find, const char* file, const int line) {
             auto result = impl_iter::contains(container, find, file, line);
-            if (!result) {
+            if (result) {
                 Fail::a_fail(*result);
             }
         }
@@ -138,7 +138,7 @@ namespace internal {
         requires std::ranges::range<T>
         inline void assertDoesNotContain(const T& container, const U& find, const char* file, const int line) {
             auto result = impl_iter::doesNotContain(container, find, file, line);
-            if (!result) {
+            if (result) {
                 Fail::a_fail(*result);
             }
         }
