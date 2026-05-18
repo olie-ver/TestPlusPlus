@@ -6,6 +6,8 @@
 #include "../Runner.hpp"
 #include <functional>
 
+//Need FAILS_WITH_MSG
+
 #define EXPECT_PASSES(test) internal::Expects::expectPasses([&](){(test);}, #test, __FILE__, __LINE__)
 #define EXPECT_FAILS(test) internal::Expects::expectFails([&](){(test);}, #test, __FILE__, __LINE__)
 
