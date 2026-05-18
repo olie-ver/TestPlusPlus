@@ -3,6 +3,7 @@
 #ifndef E_FLT_H
 #define E_FLT_H
 
+#include "../Fail.hpp"
 #include "../Implementation/flt.hpp"
 #include "../Concepts.hpp"
 
