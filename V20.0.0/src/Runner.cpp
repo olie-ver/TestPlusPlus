@@ -1,4 +1,4 @@
-#include <tester/Runner.hpp>
+#include <tester/internal/Runner.hpp>
 #include <chrono>
 #include <iostream>
 

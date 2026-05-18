@@ -1,4 +1,4 @@
-#include <tester/Renderer.hpp>
+#include <tester/internal/Renderer.hpp>
 #include <iostream>
 #include <map>
 
