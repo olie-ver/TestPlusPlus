@@ -3,11 +3,9 @@
 #ifndef A_THROWS_H
 #define A_THROWS_H
 
-#include "../Core.hpp"
 #include "../Runner.hpp"
 #include "../Helpers.hpp"
-#include <string>
-#include <exception>
+#include "../Implementation/throws.hpp"
 
 #define ASSERT_THROWS_1_ARGS(func) internal::Assert::assertThrows([&]() {(func);}, #func, __FILE__, __LINE__)
 #define ASSERT_THROWS_2_ARGS(func, ex) internal::Assert::assertThrows<ex>([&]() {(func);}, #func, __FILE__, __LINE__)
@@ -34,60 +32,9 @@ namespace internal {
         /// @param line the line this function was called on
         template <typename Expected = void, typename Func>
         inline void assertThrows(Func&& func, const char* funcName, const char* file, int line) {
-            if constexpr (std::is_same_v<Expected, void>) {
-                try {
-                    func();
-                    Runner::CURRENT_TEST->failures.push_back({
-                        std::string("Expected function \"") + funcName 
-                        + std::string("\" to throw an exception, but it didn't"),
-                        file,
-                        line
-                    });
-                    throw Core::AssertionFailure();
-                }
-                catch (const std::exception& ex) {
-
-                }  
-                catch (...) {
-                    
-                }   
-            } else {
-                try {
-                    func();
-                    Runner::CURRENT_TEST->failures.push_back({
-                        std::string("Expected function \"") + funcName 
-                        + std::string("\" to throw an exception, but it didn't"),
-                        file,
-                        line
-                    });
-
-                    throw Core::AssertionFailure();
-                } catch (const Expected& ex) {
-
-                } catch (...) {
-                    std::string actualType = "unknown";
-                    std::string expectedType = Helpers::demangle(typeid(Expected).name());
-
-                    try {
-                        throw;
-                    } catch (const std::exception& ex) {
-                        actualType = Helpers::demangle(typeid(ex).name());
-                    } catch (...) {
-                        actualType = "non-std::exception";
-                    }
-
-                    Runner::CURRENT_TEST->failures.push_back({
-                        std::string("Expected function \"") + funcName +
-                        "\" to throw exception of expected type: \"" 
-                            + expectedType 
-                            + "\" but got: \"" 
-                            + actualType +'\"',
-                        file,
-                        line
-                    });
-
-                    throw Core::AssertionFailure();
-                }
+            auto result = impl_throws::throws(func, funcName, file, line);
+            if (result) {
+                Fail::a_fail(*result);
             }
         }
 
@@ -102,42 +49,9 @@ namespace internal {
         inline void assertThrowsWithMessage(Func&& func, const char* funcName, 
             const std::string& message, const char* file, const int line)
         {
-            try {
-                func();
-                Runner::CURRENT_TEST->failures.push_back({
-                    std::string("Expected ") + funcName + " to throw an error, but it didn't",
-                    file, 
-                    line
-                });
-                throw Core::AssertionFailure();
-            } catch (const std::exception& ex) {
-                std::string what(ex.what());
-                if (message != what) {
-                    Runner::CURRENT_TEST->failures.push_back({
-                        std::string("Expected ") + funcName + " to throw an error with message: " 
-                            +  message + ", but it threw with message: " + what,
-                        file, 
-                        line
-                    });
-                    throw Core::AssertionFailure();
-                }
-            } catch (std::string what) {
-                if (message != what) {
-                    Runner::CURRENT_TEST->failures.push_back({
-                        std::string("Expected ") + funcName + " to throw an error with message: " 
-                            +  message + ", but it threw with message: " + what,
-                        file, 
-                        line
-                    });
-                    throw Core::AssertionFailure();
-                }
-            } catch (...) {
-                Runner::CURRENT_TEST->failures.push_back({
-                    funcName + std::string(" threw an unknown exception type"),
-                    file, 
-                    line
-                });
-                throw Core::AssertionFailure();
+            auto result = impl_throws::throwsWithMessage(func, funcName, message, file, line);
+            if (result) {
+                Fail::a_fail(*result);
             }
         }
 
@@ -149,28 +63,9 @@ namespace internal {
         /// @param line the line this function was called on
         template <typename Func>
         inline void assertDoesNotThrow(Func&& func, const char* funcName, const char* file, int line) {
-            try {
-                func();
-            } catch (const std::exception& ex){
-                Runner::CURRENT_TEST->failures.push_back({
-                    std::string("Expected function \"") + funcName 
-                    + std::string("\" to not throw an exception, but it did\n") 
-                    + std::string("    Error message: \"") + ex.what() + "\"",
-                    file,
-                    line
-                });
-
-                throw Core::AssertionFailure();
-            } catch (...) {
-                Runner::CURRENT_TEST->failures.push_back({
-                    std::string("Expected function \"") + funcName 
-                    + std::string("\" to not throw an exception, but it did\n") 
-                    + std::string("    Exception type: unknown"),
-                    file,
-                    line
-                });
-
-                throw Core::AssertionFailure();
+            auto result = impl_throws::doesNotThrow(func, funcName, file, line);
+            if (result) {
+                Fail::a_fail(*result);
             }
         }
     }
