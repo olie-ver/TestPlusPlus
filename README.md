@@ -4,7 +4,10 @@ because even though I know how to use someone else's library, I don't want to in
 every file in every project. I know I could probably just compile someone else's 
 into a static library and call it a day, but I want the learning experience as well. 
 
-5/16/25
+5/18/26
+Refactored all tests in the V20.0.0 folder. Created a new meta test for failing with a message
+
+5/16/26
 Implemented from the list of tests to be implemented:
 7. All of, any of, none of (predicate testing)
 
