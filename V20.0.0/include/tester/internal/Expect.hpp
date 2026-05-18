@@ -13,11 +13,4 @@
 #include "Expect/e_test.hpp"
 #include "Expect/e_throws.hpp"
 
-/// @brief An internal namespace. Using anything from within is not advised
-namespace internal {
-    /// @brief A tests namespace containing different tests for expecting
-    namespace Expects {
-    }
-}
-
 #endif

@@ -13,11 +13,4 @@
 #include "Assert/a_test.hpp"
 #include "Assert/a_throws.hpp"
 
-/// @brief An internal namespace. Using anything from within is not advised
-namespace internal {
-    /// @brief A tests namespace containing different tests for asserting
-    namespace Assert {
-    }
-}
-
 #endif
