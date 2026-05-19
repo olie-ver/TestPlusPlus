@@ -101,7 +101,7 @@ namespace internal {
                     return Core::Failure({
                         "Expected test to fail with message: \"" 
                         + msg
-                        + "\"\nbut it failed with message: \""
+                        + "\"\n\tbut it failed with message: \""
                         + last.message + "\"",
                         file,
                         line
