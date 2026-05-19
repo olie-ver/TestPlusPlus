@@ -68,7 +68,7 @@ namespace internal {
         // -----------------------------
 
         template <Range T>
-            requires (!StringLike<T>)
+            requires (!StringLike<T> && !Streamable<T>)
         std::string toString(const T& range) {
             std::ostringstream oss;
             oss << "[";

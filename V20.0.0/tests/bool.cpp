@@ -92,3 +92,10 @@ TEST(e_false, comparison_fail) {
     ASSERT_FAILS(EXPECT_FALSE(2 > -5));
     ASSERT_FAILS(EXPECT_FALSE(0.12 >= 0.1)); 
 }
+
+TEST(e_false, complicated_fail) {
+    ASSERT_FAILS(EXPECT_FALSE(!(1 != 1 && 2 == 500)));
+    ASSERT_FAILS(EXPECT_FALSE(!(!(5 + 10 == 15 || 8 - 1 == 9) && 5 + 5 == 10)));
+    ASSERT_FAILS(EXPECT_FALSE(!(true && false)));
+    ASSERT_FAILS(EXPECT_FALSE(!(!('h' + 'i'))));
+}
