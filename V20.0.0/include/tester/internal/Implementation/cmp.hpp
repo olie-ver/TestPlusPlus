@@ -18,7 +18,7 @@ namespace internal {
                 std::string aStr = Helpers::toString(a);
                 std::string bStr = Helpers::toString(b);
                 return Core::Failure(
-                    "Expected: a == b \n      a = " + aStr + "\n      b = " + bStr,
+                    "Expected: a == b \n\ta = " + aStr + "\n\tb = " + bStr,
                     file,
                     line
                 );
@@ -37,7 +37,7 @@ namespace internal {
                     std::string bStr = Helpers::toString(b);
 
                     return Core::Failure(
-                        "Expected: a != b \n      a = " + aStr + "\n      b = " + bStr,
+                        "Expected: a != b \n\ta = " + aStr + "\n\tb = " + bStr,
                         file,
                         line
                     );
@@ -50,7 +50,7 @@ namespace internal {
                     std::string bStr = Helpers::toString(b);
 
                     return Core::Failure(
-                        "Expected: a != b \n      a = " + aStr + "\n      b = " + bStr,
+                        "Expected: a != b \n\ta = " + aStr + "\n\tb = " + bStr,
                         file,
                         line
                     );
@@ -69,7 +69,7 @@ namespace internal {
                 std::string bStr = Helpers::toString(b);
 
                 return Core::Failure(
-                    "Expected: a < b \n      a = " + aStr + "\n      b = " + bStr,
+                    "Expected: a < b \n\ta = " + aStr + "\n\tb = " + bStr,
                     file,
                     line
                 );
@@ -87,7 +87,7 @@ namespace internal {
                 std::string bStr = Helpers::toString(b);
 
                 return Core::Failure(
-                    "Expected: a <= b \n      a = " + aStr + "\n      b = " + bStr,
+                    "Expected: a <= b \n\ta = " + aStr + "\n\tb = " + bStr,
                     file,
                     line
                 );
@@ -105,7 +105,7 @@ namespace internal {
                 std::string bStr = Helpers::toString(b);
 
                 return Core::Failure(
-                    "Expected: a > b \n      a = " + aStr + "\n      b = " + bStr,
+                    "Expected: a > b \n\ta = " + aStr + "\n\tb = " + bStr,
                     file,
                     line
                 );
@@ -123,7 +123,7 @@ namespace internal {
                 std::string bStr = Helpers::toString(b);
 
                 return Core::Failure(
-                    "Expected: a >= b \n      a = " + aStr + "\n      b = " + bStr,
+                    "Expected: a >= b \n\ta = " + aStr + "\n\tb = " + bStr,
                     file,
                     line
                 );
