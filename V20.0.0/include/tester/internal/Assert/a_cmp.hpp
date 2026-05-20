@@ -25,7 +25,7 @@ namespace internal {
         /// @param line the line the function was called on
         template <typename A, typename B>
         requires Concepts::HasEQ<A, B>
-        inline void assertEquals(A& a, B& b, const char* file, const int line) {
+        inline void assertEquals(const A& a, const B& b, const char* file, const int line) {
             auto result = impl_cmp::equals(a, b, file, line);
             if (result) {
                 Fail::a_fail(*result);
@@ -41,7 +41,7 @@ namespace internal {
         /// @param line the line the function was called on
         template <typename A, typename B>
         requires (Concepts::HasNE<A, B> || Concepts::HasEQ<A, B>)
-        inline void assertNotEquals(A& a, B& b, const char* file, const int line) {
+        inline void assertNotEquals(const A& a, const B& b, const char* file, const int line) {
             auto result = impl_cmp::notEquals(a, b, file, line);
             if (result) {
                 Fail::a_fail(*result);
@@ -57,7 +57,7 @@ namespace internal {
         /// @param line the line the function was called on
         template <typename A, typename B>
         requires(Concepts::HasLT<A, B>)
-        inline void assertLessThan(A a, B b, const char* file, const int line) {
+        inline void assertLessThan(const A& a, const B& b, const char* file, const int line) {
             auto result = impl_cmp::lessThan(a, b, file, line);
             if (result) {
                 Fail::a_fail(*result);
@@ -73,7 +73,7 @@ namespace internal {
         /// @param line the line the function was called on
         template <typename A, typename B>
         requires(Concepts::HasLE<A, B>)
-        inline void assertLessThanEqual(A a, B b, const char* file, const int line) {
+        inline void assertLessThanEquals(const A& a, const B& b, const char* file, const int line) {
             auto result = impl_cmp::lessThanEqual(a, b, file, line);
             if (result) {
                 Fail::a_fail(*result);
@@ -89,7 +89,7 @@ namespace internal {
         /// @param line the line the function was called on
         template <typename A, typename B>
         requires(Concepts::HasGT<A, B>)
-        inline void assertGreaterThan(A a, B b, const char* file, const int line) {
+        inline void assertGreaterThan(const A& a, const B& b, const char* file, const int line) {
             auto result = impl_cmp::greaterThan(a, b, file, line);
             if (result) {
                 Fail::a_fail(*result);
@@ -106,7 +106,7 @@ namespace internal {
         /// @param line the line the function was called on
         template <typename A, typename B>
         requires(Concepts::HasGE<A, B>)
-        inline void assertGreaterThanEqual(A a, B b, const char* file, const int line) {
+        inline void assertGreaterThanEquals(const A& a, const B& b, const char* file, const int line) {
             auto result = impl_cmp::greaterThanEqual(a, b, file, line);
             if (result) {
                 Fail::a_fail(*result);

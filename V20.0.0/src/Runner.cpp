@@ -6,6 +6,11 @@ namespace internal {
     namespace Runner {
         Core::TestResult* CURRENT_TEST;
 
+        Core::TestRun& makeTestRun() {
+            static Core::TestRun instance;
+            return instance;
+        }
+
         std::map<std::string, std::vector<Core::Test>>& getRegistry() {
             static std::map<std::string, std::vector<Core::Test>> instance;
             return instance;
@@ -38,8 +43,8 @@ namespace internal {
         void runAllRegisteredTests(Core::TestRun& run) {
             std::map<std::string, std::vector<Core::Test>>& REGISTRY = getRegistry();
 
-            for (std::map<std::string, std::vector<Core::Test>>::iterator it = REGISTRY.begin(); 
-                it != REGISTRY.end(); ++it) 
+            // for (std::map<std::string, std::vector<Core::Test>>::iterator it = REGISTRY.begin(); 
+            for (auto&& it = REGISTRY.begin(); it != REGISTRY.end(); ++it) 
             {
                 const std::vector<Core::Test>&test = it->second;
                 const std::string suite_name = it->first;

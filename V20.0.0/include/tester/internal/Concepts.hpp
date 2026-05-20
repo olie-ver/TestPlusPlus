@@ -45,10 +45,11 @@ namespace internal {
         };
 
         //A concept for types that can be nullable
-        template <typename A>
-        concept Nullable = requires(A a) {
-            std::convertible_to<decltype(a == nullptr), bool>;
-        };
+        template <typename T>
+        concept Nullable = std::is_pointer_v<std::decay_t<T>> || //is a raw pointer or decays to a raw pointer
+            std::is_null_pointer_v<std::decay_t<T>> || //or it decays to nullptr
+            requires(T t) { t.get(); } || //has .get() like a smart pointer
+            requires(T t) { { t.has_value() } -> std::convertible_to<bool>; }; //has .has_value() like an optional
 
 
         //A concept for a common floating point type

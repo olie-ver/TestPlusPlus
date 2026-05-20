@@ -116,7 +116,7 @@ namespace internal {
         /// @param first the string
         /// @param file the file the function was called from
         /// @param line the line the function was called on
-        inline void assertStringEmpty(std::string& first, const char* file, const int line) {
+        inline void assertStringEmpty(const std::string& first, const char* file, const int line) {
             auto result = impl_str::stringEmpty(first, file, line);
             if (result) {
                 Fail::a_fail(*result);
@@ -151,7 +151,7 @@ namespace internal {
         /// @param first the string
         /// @param file the file the function was called from
         /// @param line the line the function was called on
-        inline void assertStringNotEmpty(std::string& first, const char* file, const int line) {
+        inline void assertStringNotEmpty(const std::string& first, const char* file, const int line) {
             auto result = impl_str::stringNotEmpty(first, file, line);
             if (result) {
                 Fail::a_fail(*result);

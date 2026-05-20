@@ -77,4 +77,8 @@ namespace internal {
     }
 }
 
+#include "iterable/attributes.hpp"
+#include "iterable/ordered.hpp"
+#include "iterable/unordered.hpp"
+
 #endif

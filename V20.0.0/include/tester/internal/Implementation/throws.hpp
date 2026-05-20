@@ -74,7 +74,7 @@ namespace internal {
             if constexpr (std::is_same_v<Expected, void>) {
                 return void_throws(func, funcName, file, line);
             } else {
-                return type_throws(func, funcName, file, line);
+                return type_throws<Expected>(func, funcName, file, line);
             }
         }
 

@@ -3,8 +3,10 @@
 #ifndef STR_EQ_H
 #define STR_EQ_H
 
-#include "../string.hpp"
+#include "../../Core.hpp"
 #include "../../Helpers.hpp"
+#include <optional>
+#include <string>
 
 namespace internal {
     namespace impl_str {
@@ -51,6 +53,8 @@ namespace internal {
                     line
                 });
             }
+
+            return std::nullopt;
         }
 
         template <size_t N, size_t M>
@@ -107,6 +111,7 @@ namespace internal {
                     });
                 }
             }
+            
             return std::nullopt;
         }
     }

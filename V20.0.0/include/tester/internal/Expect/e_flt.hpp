@@ -28,7 +28,7 @@
     internal::Expects::absolutelyEqual((first), (second), (abs_tol), __FILE__, __LINE__)
 
 #define EXPECT_NAN(number) internal::Expects::isNaN((number), __FILE__, __LINE__)
-#define EXPECT_NOT_NAN(number) internal::Expects::isNotNan((number), __FILE__, __LINE__)
+#define EXPECT_NOT_NAN(number) internal::Expects::isNotNaN((number), __FILE__, __LINE__)
 
 #define EXPECT_INF(number) internal::Expects::isInf((number), __FILE__, __LINE__)
 #define EXPECT_POS_INF(number) internal::Expects::isPosInf((number), __FILE__, __LINE__)
@@ -49,7 +49,9 @@ namespace internal {
         /// @param line the line the function was called on
         template <typename A, typename B, typename T1, typename T2>
         requires Concepts::CommonFloat<A, B, T1, T2>
-        inline void nearlyEqual(A a, B b, T1 abs_tol, T2 rel_tol, const char* file, int line) {
+        inline void nearlyEqual(const A& a, const B& b, const T1& abs_tol, const T2& rel_tol,
+            const char* file, int line)
+        {
             auto result = impl_flt::nearlyEqual(a, b, abs_tol, rel_tol, file, line);
             if (result) {
                 Fail::e_fail(*result);
@@ -67,7 +69,9 @@ namespace internal {
         /// @param line the line the function was called on
         template <typename A, typename B, typename T1>
         requires Concepts::CommonFloat<A, B, T1, T1> //add in an extra T1 to satisfy the concept
-        inline void absolutelyEqual(A a, B b, T1 abs_tol, const char* file, int line) {
+        inline void absolutelyEqual(const A& a, const B& b, const T1& abs_tol,
+            const char* file, int line)
+        {
             auto result = impl_flt::absolutelyEqual(a, b, abs_tol, file, line);
             if (result) {
                 Fail::e_fail(*result);
@@ -85,7 +89,9 @@ namespace internal {
         /// @param line the line the function was called on
         template <typename A, typename B, typename T1>
         requires Concepts::CommonFloat<A, B, T1, T1>
-        inline void relativelyEqual(A a, B b, T1 rel_tol, const char* file, int line) {
+        inline void relativelyEqual(const A& a, const B& b, const T1& rel_tol, 
+            const char* file, int line)
+        {
             auto result = impl_flt::relativelyEqual(a, b, rel_tol, file, line);
             if (result) {
                 Fail::e_fail(*result);
@@ -99,7 +105,7 @@ namespace internal {
         /// @param line the line the function is called on
         template <typename T>
         requires(std::is_floating_point<T>::value)
-        inline void isNaN(T val, const char* file, int line) {
+        inline void isNaN(const T& val, const char* file, int line) {
             auto result = impl_flt::isNaN(val, file, line);
             if (result) {
                 Fail::e_fail(*result);
@@ -113,7 +119,7 @@ namespace internal {
         /// @param line the line the function is called on
         template <typename T>
         requires(std::is_floating_point<T>::value)
-        inline void isNotNaN(T val, const char* file, int line) {
+        inline void isNotNaN(const T& val, const char* file, int line) {
             auto result = impl_flt::isNotNaN(val, file, line);
             if (result) {
                 Fail::e_fail(*result);
@@ -127,7 +133,7 @@ namespace internal {
         /// @param line the line the function was called on
         template <typename T>
         requires(std::is_floating_point<T>::value)
-        inline void isInf(T val, const char* file, const int line) {
+        inline void isInf(const T& val, const char* file, const int line) {
             auto result = impl_flt::isInf(val, file, line);
             if (result) {
                 Fail::e_fail(*result);
@@ -141,7 +147,7 @@ namespace internal {
         /// @param line the line the function was called on
         template <typename T>
         requires(std::is_floating_point<T>::value)
-        inline void isPosInf(T val, const char* file, const int line) {
+        inline void isPosInf(const T& val, const char* file, const int line) {
             auto result = impl_flt::isPosInf(val, file, line);
             if (result) {
                 Fail::e_fail(*result);
@@ -155,7 +161,7 @@ namespace internal {
         /// @param line the line the function was called on
         template <typename T>
         requires(std::is_floating_point<T>::value)
-        inline void isNegInf(T val, const char* file, const int line) {
+        inline void isNegInf(const T& val, const char* file, const int line) {
             auto result = impl_flt::isNegInf(val, file, line);
             if (result) {
                 Fail::e_fail(*result);

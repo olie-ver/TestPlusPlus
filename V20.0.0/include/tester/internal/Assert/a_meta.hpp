@@ -9,7 +9,7 @@
 #define ASSERT_PASSES(test) internal::Assert::assertPasses([&](){(test);}, #test, __FILE__, __LINE__)
 #define ASSERT_FAILS(test) internal::Assert::assertFails([&](){(test);}, #test, __FILE__, __LINE__)
 #define ASSERT_FAILS_MSG(test, msg) \
-    internal::ASSERT::assertFailsWithMessage([&](){(test);}, #test, (msg), __FILE__, __LINE__)
+    internal::Assert::assertFailsWithMessage([&](){(test);}, #test, (msg), __FILE__, __LINE__)
 
 namespace internal {
     namespace Assert {

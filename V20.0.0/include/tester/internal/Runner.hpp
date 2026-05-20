@@ -34,6 +34,8 @@ namespace internal {
         /// @brief The result for the current test
         extern Core::TestResult* CURRENT_TEST;
 
+        Core::TestRun& makeTestRun();
+
         /// @brief The registry containing all the tests to be run
         std::map<std::string, std::vector<Core::Test>>& getRegistry();
 

@@ -3,7 +3,12 @@
 #ifndef ITER_ORDER_H
 #define ITER_ORDER_H
 
-#include "../iterable.hpp"
+#include "../../Core.hpp"
+#include "../../Concepts.hpp"
+#include <algorithm>
+#include <optional>
+#include <ranges>
+#include <string>
 
 namespace internal {
     namespace impl_iter {
