@@ -15,12 +15,30 @@ namespace internal {
         inline std::optional<const Core::Failure> 
             Null(const T& val, const char* file, const int line) 
         {
-            if (val != nullptr) {
-                return Core::Failure({
-                    "Expected val to be nullptr.\n val = " + Helpers::toString(val),
-                    file,
-                    line
-                });
+            if constexpr (std::is_pointer_v<T>) {
+                if (val != nullptr) {
+                    return Core::Failure({
+                        "Expected val to be nullptr.\n val = " + Helpers::toString(val),
+                        file,
+                        line
+                    });
+                }
+            } else if constexpr (requires { val.get(); }) {
+                if (val.get() != nullptr) {
+                    return Core::Failure({
+                        "Expected val to be nullptr.\n val = " + Helpers::toString(val.get()),
+                        file,
+                        line
+                    });
+                }
+            } else if constexpr (requires { val.has_value(); }) {
+                if (val.has_value()) {
+                    return Core::Failure({
+                        "Expected val to be nullptr.\n val = " + Helpers::toString(*val),
+                        file,
+                        line
+                    });
+                }
             }
 
             return std::nullopt;
@@ -31,12 +49,30 @@ namespace internal {
         inline std::optional<const Core::Failure> 
             NotNull(const T& val, const char* file, const int line)
         {
-            if (val == nullptr) {
-                return Core::Failure({
-                    "Expected val to not be a nullptr.\n val = nullptr ",
-                    file,
-                    line
-                });
+            if constexpr (std::is_pointer_v<T>) {
+                if (val == nullptr) {
+                    return Core::Failure({
+                        "Expected val to be nullptr.\n val = nullptr",
+                        file,
+                        line
+                    });
+                }
+            } else if constexpr (requires { val.get(); }) {
+                if (val.get() == nullptr) {
+                    return Core::Failure({
+                        "Expected val to be nullptr.\n val = nullptr",
+                        file,
+                        line
+                    });
+                }
+            } else if constexpr (requires { val.has_value(); }) {
+                if (!val.has_value()) {
+                    return Core::Failure({
+                        "Expected val to be nullptr.\n val = nullopt",
+                        file,
+                        line
+                    });
+                }
             }
 
             return std::nullopt;

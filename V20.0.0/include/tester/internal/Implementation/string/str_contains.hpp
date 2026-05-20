@@ -3,8 +3,10 @@
 #ifndef STR_CONT_H
 #define STR_CONT_H
 
-#include "../string.hpp"
+#include "../../Core.hpp"
 #include "../../Helpers.hpp"
+#include <optional>
+#include <string>
 
 namespace internal {
     namespace impl_str {
@@ -61,7 +63,7 @@ namespace internal {
                 });
             }
 
-            return expectStringContains(std::string(first), std::string(substr), file, line);
+            return stringContains(std::string(first), std::string(substr), file, line);
         }
     }
 }
