@@ -13,12 +13,12 @@ namespace internal {
     namespace impl_cmp {
         template <typename A, typename B>
         requires Concepts::HasEQ<A, B>
-        inline std::optional<const Core::Failure> equals(A& a, B& b, const char* file, const int line) {
+        inline std::optional<const Core::Failure> equals(const A& a, const B& b, const char* file, const int line) {
             if (!(a == b)) {
                 std::string aStr = Helpers::toString(a);
                 std::string bStr = Helpers::toString(b);
                 return Core::Failure(
-                    "Expected: a == b \n      a = " + aStr + "\n      b = " + bStr,
+                    "Expected: a == b \n\ta = " + aStr + "\n\tb = " + bStr,
                     file,
                     line
                 );
@@ -30,14 +30,14 @@ namespace internal {
         template <typename A, typename B>
         requires (Concepts::HasNE<A, B> || Concepts::HasEQ<A, B>)
         inline std::optional<const Core::Failure>
-        notEquals(A& a, B& b, const char* file, const int line) {
+        notEquals(const A& a, const B& b, const char* file, const int line) {
             if constexpr(Concepts::HasNE<A, B>) {
                 if (!(a != b)) {
                     std::string aStr = Helpers::toString(a);
                     std::string bStr = Helpers::toString(b);
 
                     return Core::Failure(
-                        "Expected: a != b \n      a = " + aStr + "\n      b = " + bStr,
+                        "Expected: a != b \n\ta = " + aStr + "\n\tb = " + bStr,
                         file,
                         line
                     );
@@ -50,7 +50,7 @@ namespace internal {
                     std::string bStr = Helpers::toString(b);
 
                     return Core::Failure(
-                        "Expected: a != b \n      a = " + aStr + "\n      b = " + bStr,
+                        "Expected: a != b \n\ta = " + aStr + "\n\tb = " + bStr,
                         file,
                         line
                     );
@@ -63,13 +63,13 @@ namespace internal {
         template <typename A, typename B>
         requires(Concepts::HasLT<A, B>)
         inline std::optional<const Core::Failure> 
-        lessThan(A a, B b, const char* file, const int line) {
+        lessThan(const A& a, const B& b, const char* file, const int line) {
             if (!(a < b)) {
                 std::string aStr = Helpers::toString(a);
                 std::string bStr = Helpers::toString(b);
 
                 return Core::Failure(
-                    "Expected: a < b \n      a = " + aStr + "\n      b = " + bStr,
+                    "Expected: a < b \n\ta = " + aStr + "\n\tb = " + bStr,
                     file,
                     line
                 );
@@ -81,13 +81,13 @@ namespace internal {
         template <typename A, typename B>
         requires(Concepts::HasLE<A, B>)
         inline std::optional<const Core::Failure> 
-        lessThanEqual(A a, B b, const char* file, const int line) {
+        lessThanEqual(const A& a, const B& b, const char* file, const int line) {
             if (!(a <= b)) {
                 std::string aStr = Helpers::toString(a);
                 std::string bStr = Helpers::toString(b);
 
                 return Core::Failure(
-                    "Expected: a <= b \n      a = " + aStr + "\n      b = " + bStr,
+                    "Expected: a <= b \n\ta = " + aStr + "\n\tb = " + bStr,
                     file,
                     line
                 );
@@ -99,13 +99,13 @@ namespace internal {
         template <typename A, typename B>
         requires(Concepts::HasGT<A, B>)
         inline std::optional<const Core::Failure> 
-        greaterThan(A a, B b, const char* file, const int line) {
+        greaterThan(const A& a, const B& b, const char* file, const int line) {
             if (!(a > b)) {
                 std::string aStr = Helpers::toString(a);
                 std::string bStr = Helpers::toString(b);
 
                 return Core::Failure(
-                    "Expected: a > b \n      a = " + aStr + "\n      b = " + bStr,
+                    "Expected: a > b \n\ta = " + aStr + "\n\tb = " + bStr,
                     file,
                     line
                 );
@@ -117,17 +117,19 @@ namespace internal {
         template <typename A, typename B>
         requires(Concepts::HasGE<A, B>)
         inline std::optional<const Core::Failure> 
-        greaterThanEqual(A a, B b, const char* file, const int line) {
+        greaterThanEqual(const A& a, const B& b, const char* file, const int line) {
             if (!(a >= b)) {
                 std::string aStr = Helpers::toString(a);
                 std::string bStr = Helpers::toString(b);
 
                 return Core::Failure(
-                    "Expected: a >= b \n      a = " + aStr + "\n      b = " + bStr,
+                    "Expected: a >= b \n\ta = " + aStr + "\n\tb = " + bStr,
                     file,
                     line
                 );
             }
+
+            return std::nullopt;
         }
     }
 }

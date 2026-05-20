@@ -115,7 +115,7 @@ namespace internal {
         /// @param first the string
         /// @param file the file the function was called from
         /// @param line the line the function was called on
-        inline void expectStringEmpty(std::string& first, const char* file, const int line) {
+        inline void expectStringEmpty(const std::string& first, const char* file, const int line) {
             auto result = impl_str::stringEmpty(first, file, line);
             if (result) {
                 Fail::e_fail(*result);
@@ -150,7 +150,7 @@ namespace internal {
         /// @param first the string
         /// @param file the file the function was called from
         /// @param line the line the function was called on
-        inline void expectStringNotEmpty(std::string& first, const char* file, const int line) {
+        inline void expectStringNotEmpty(const std::string& first, const char* file, const int line) {
             auto result = impl_str::stringNotEmpty(first, file, line);
             if (result) {
                 Fail::e_fail(*result);

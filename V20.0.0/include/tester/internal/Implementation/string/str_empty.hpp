@@ -3,12 +3,15 @@
 #ifndef STR_EMPTY_H
 #define STR_EMPTY_H
 
-#include "../string.hpp"
+#include "../../Core.hpp"
+#include "../../Helpers.hpp"
+#include <optional>
+#include <string>
 
 namespace internal {
     namespace impl_str {
         std::optional<const Core::Failure> 
-        inline stringEmpty(std::string& first, const char* file, const int line)
+        inline stringEmpty(const std::string& first, const char* file, const int line)
         {
             if (!first.empty()) {
                 return Core::Failure({
@@ -62,7 +65,7 @@ namespace internal {
         }
 
         std::optional<const Core::Failure>
-        inline stringNotEmpty(std::string& first, const char* file, const int line)
+        inline stringNotEmpty(const std::string& first, const char* file, const int line)
         {
             if (first.empty()) {
                 return Core::Failure({
