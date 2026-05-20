@@ -128,6 +128,8 @@ namespace internal {
                     line
                 );
             }
+
+            return std::nullopt;
         }
     }
 }

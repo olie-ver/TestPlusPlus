@@ -3,7 +3,12 @@
 #ifndef ITER_ATTR_H
 #define ITER_ATTR_H
 
-#include "../iterable.hpp"
+#include "../../Core.hpp"
+#include "../../Concepts.hpp"
+#include <algorithm>
+#include <optional>
+#include <ranges>
+#include <string>
 
 namespace internal {
     namespace impl_iter {
@@ -15,7 +20,7 @@ namespace internal {
             if (container.size() != 0) {
                 return Core::Failure({
                     std::string("Expected container size to be 0, but wasn't. \n" 
-                        "     size = " + container.size()),
+                        "     size = " + Helpers::toString(container.size())),
                     file,
                     line
                 });
@@ -49,7 +54,7 @@ namespace internal {
                 return Core::Failure({
                     std::string("Expected container size to be " 
                         + Helpers::toString(size) + ", but wasn't. \n      size = " 
-                        + container.size()),
+                        + Helpers::toString(container.size())),
                     file,
                     line
                 });
@@ -67,7 +72,7 @@ namespace internal {
             auto it = std::find(std::ranges::begin(container), std::ranges::end(container), find);
 
             if (it == std::ranges::end(container)) {
-                return Core::AssertionFailure({
+                return Core::Failure({
                     std::string("The container did not contain the expected value: " 
                         + Helpers::toString(find)),
                     file,
@@ -94,7 +99,7 @@ namespace internal {
                 });
             }
 
-            return std::nullopt
+            return std::nullopt;
         }
     }
 }

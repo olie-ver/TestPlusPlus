@@ -3,15 +3,26 @@
 #ifndef FLT_EQ_H
 #define FLT_EQ_H
 
-#include "../flt.hpp"
+#include "../../Core.hpp"
+#include "../../Concepts.hpp"
+#include "../../Helpers.hpp"
+#include <cmath>
+#include <optional>
+#include <string>
 
 namespace internal {
     namespace impl_flt {
         template <typename A, typename B, typename T1>
         requires Concepts::CommonFloat<A, B, T1, T1>
         inline std::optional<const Core::Failure> 
-            absolutelyEqual(A a, B b, T1 abs_tol, const char* file, int line) 
+            absolutelyEqual(const A& a, const B& b, const T1& abs_tol, const char* file, int line) 
         {
+            if (std::isnan(a)) {
+                return Core::Failure("First parameter is NaN", file, line);
+            } else if (std::isnan(b)) {
+                return Core::Failure("Second parameter is NaN", file, line);
+            }
+
             using T = std::common_type_t<A, B, T1>;
             
             T aa = static_cast<T>(a);
@@ -35,8 +46,14 @@ namespace internal {
         template <typename A, typename B, typename T1, typename T2>
         requires Concepts::CommonFloat<A, B, T1, T2>
         inline std::optional<const Core::Failure> 
-            nearlyEqual(A a, B b, T1 abs_tol, T2 rel_tol, const char* file, int line) 
+            nearlyEqual(const A& a, const B& b, const T1& abs_tol, const T2& rel_tol, const char* file, int line) 
         {
+            if (std::isnan(a)) {
+                return Core::Failure("First parameter is NaN", file, line);
+            } else if (std::isnan(b)) {
+                return Core::Failure("Second parameter is NaN", file, line);
+            }
+
             using T = std::common_type_t<A, B, T1, T2>;
 
             T aa = static_cast<T>(a);
@@ -64,8 +81,14 @@ namespace internal {
         template <typename A, typename B, typename T1>
         requires Concepts::CommonFloat<A, B, T1, T1>
         std::optional<const Core::Failure>
-            relativelyEqual(A a, B b, T1 rel_tol, const char* file, int line) 
+            relativelyEqual(const A& a, const B& b, const T1& rel_tol, const char* file, int line) 
         {
+            if (std::isnan(a)) {
+                return Core::Failure("First parameter is NaN", file, line);
+            } else if (std::isnan(b)) {
+                return Core::Failure("Second parameter is NaN", file, line);
+            }
+            
             using T = std::common_type_t<A, B, T1>;
 
             T aa = static_cast<T>(a);

@@ -52,7 +52,7 @@ namespace internal {
         inline void expectUnorderedEquals(const A& first, const B& second,
             const char* file, const int line) 
         {
-            auto result = impl_iter::unorderedUnequals(first, second, file, line);
+            auto result = impl_iter::unorderedEquals(first, second, file, line);
             if (result) {
                 Fail::e_fail(*result);
             }
