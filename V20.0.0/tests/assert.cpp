@@ -4,6 +4,7 @@
 #include <map>
 #include <string>
 #include <vector>
+#include <iostream>
 
 //These tests are specifically for testing the behavior of 
 //  the Assert tests' short-circuiting behavior when they fail within a suite
@@ -38,9 +39,17 @@ TEST(test_assertion_short_circuit, test) {
     internal::Core::TestResult testResult = internal::Runner::runTest("short_circuit", test);
 
     ASSERT_SIZE(testResult.failures, 1);
+    //If the ASSERT fails, the code ahead won't run
+    //  so if this test passes, then the failure of the other test will be cleared
+    //  but if this test fails, then the failure of the other test won't be cleared
+    //  so either both fail or both pass
 
-    //I could change the code so that the hidden testRun variable is static so I can
-    //  manipulate it so that after the above test passes, I remove the failure from 
-    //  the previous test and stuff so that if this test doesn't pass, neither does
-    //  the other one, but I'm not feeling it so I won't at the moment
+    //grab the test run
+    internal::Core::TestRun& globalRun = internal::Runner::makeTestRun();
+    //grab the suite with the failing test
+    std::vector<internal::Core::TestResult>& results = globalRun.results["assertion_short_circuit"];
+    //remove its failures
+    results[0].failures.clear();
+    //change its status to passed
+    results[0].status = internal::Core::TestStatus::Passed;
 }
