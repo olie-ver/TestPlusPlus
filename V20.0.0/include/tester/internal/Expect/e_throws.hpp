@@ -32,7 +32,7 @@ namespace internal {
         /// @param line the line this function was called on
         template <typename Expected = void, typename Func>
         inline void expectThrows(Func&& func, const char* funcName, const char* file, int line) {
-            auto result = impl_throws::throws(func, funcName, file, line);
+            auto result = impl_throws::throws<Expected>(func, funcName, file, line);
             if (result) {
                 Fail::e_fail(*result);
             }
