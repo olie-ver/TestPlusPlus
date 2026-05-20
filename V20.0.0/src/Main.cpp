@@ -18,7 +18,7 @@ int main(int argc, char** argv) {
         verbFlag = internal::Core::Verbosity::Minimum;
     }
 
-    internal::Core::TestRun testRun;
+    internal::Core::TestRun& testRun = internal::Runner::makeTestRun();
 
     internal::Runner::runAllRegisteredTests(testRun);
 

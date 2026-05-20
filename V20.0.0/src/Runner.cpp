@@ -6,6 +6,11 @@ namespace internal {
     namespace Runner {
         Core::TestResult* CURRENT_TEST;
 
+        Core::TestRun& makeTestRun() {
+            static Core::TestRun instance;
+            return instance;
+        }
+
         std::map<std::string, std::vector<Core::Test>>& getRegistry() {
             static std::map<std::string, std::vector<Core::Test>> instance;
             return instance;
