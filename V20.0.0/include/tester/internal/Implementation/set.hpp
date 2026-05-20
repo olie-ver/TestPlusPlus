@@ -15,6 +15,8 @@ namespace internal {
                     return true;
                 }
             }
+            
+            return false;
         }
 
         template <typename A, typename B>
