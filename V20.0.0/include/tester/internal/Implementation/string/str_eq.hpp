@@ -53,6 +53,8 @@ namespace internal {
                     line
                 });
             }
+
+            return std::nullopt;
         }
 
         template <size_t N, size_t M>
@@ -109,6 +111,7 @@ namespace internal {
                     });
                 }
             }
+            
             return std::nullopt;
         }
     }

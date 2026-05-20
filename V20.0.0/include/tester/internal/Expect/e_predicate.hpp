@@ -19,7 +19,7 @@ namespace internal {
     namespace Expects {
         template <typename T, typename Func>
         requires std::ranges::range<T>
-        inline void expectAllOf(const T& t, const Func&&, const char* file, const int line) {
+        inline void expectAllOf(const T& t, const Func& func, const char* file, const int line) {
             auto result = impl_pred::allOf(t, func, file, line);
             if (result) {
                 Fail::e_fail(*result);
@@ -27,7 +27,7 @@ namespace internal {
         }
 
         template <typename T, size_t N, typename Func>
-        inline void expectAllOf(const T(& t)[N], const Func&&, const char* file, const int line) {
+        inline void expectAllOf(const T(& t)[N], const Func& func, const char* file, const int line) {
             auto result = impl_pred::allOf(t, func, file, line);
             if (result) {
                 Fail::e_fail(*result);
@@ -36,7 +36,7 @@ namespace internal {
 
         template <typename T, typename Func>
         requires std::ranges::range<T>
-        inline void expectAnyOf(const T& t, const Func&&, const char* file, const int line) {
+        inline void expectAnyOf(const T& t, const Func& func, const char* file, const int line) {
             auto result = impl_pred::anyOf(t, func, file, line);
             if (result) {
                 Fail::e_fail(*result);
@@ -44,7 +44,7 @@ namespace internal {
         }
 
         template <typename T, size_t N, typename Func>
-        inline void expectAnyOf(const T(& t)[N], const Func&&, const char* file, const int line) {
+        inline void expectAnyOf(const T(& t)[N], const Func& func, const char* file, const int line) {
             auto result = impl_pred::anyOf(t, func, file, line);
             if (result) {
                 Fail::e_fail(*result);
@@ -53,7 +53,7 @@ namespace internal {
 
         template <typename T, typename Func>
         requires std::ranges::range<T>
-        inline void expectNoneOf(const T& t, const Func&&, const char* file, const int line) {
+        inline void expectNoneOf(const T& t, const Func& func, const char* file, const int line) {
             auto result = impl_pred::noneOf(t, func, file, line);
             if (result) {
                 Fail::e_fail(*result);
@@ -61,7 +61,7 @@ namespace internal {
         }
 
         template <typename T, size_t N, typename Func>
-        inline void expectNoneOf(const T(& t)[N], const Func&&, const char* file, const int line) {
+        inline void expectNoneOf(const T(& t)[N], const Func& func, const char* file, const int line) {
             auto result = impl_pred::noneOf(t, func, file, line);
             if (result) {
                 Fail::e_fail(*result);

@@ -63,7 +63,7 @@ namespace internal {
                 });
             }
 
-            return expectStringContains(std::string(first), std::string(substr), file, line);
+            return stringContains(std::string(first), std::string(substr), file, line);
         }
     }
 }
