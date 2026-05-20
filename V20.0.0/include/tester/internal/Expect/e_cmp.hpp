@@ -73,7 +73,7 @@ namespace internal {
         /// @param line the line the function was called on
         template <typename A, typename B>
         requires(Concepts::HasLE<A, B>)
-        inline void expectLessThanEqual(const A& a, const B& b, const char* file, const int line) {
+        inline void expectLessThanEquals(const A& a, const B& b, const char* file, const int line) {
             auto result = impl_cmp::lessThanEqual(a, b, file, line);
             if (result) {
                 Fail::e_fail(*result);
@@ -105,7 +105,7 @@ namespace internal {
         /// @param line the line the function was called on
         template <typename A, typename B>
         requires(Concepts::HasGE<A, B>)
-        inline void expectGreaterThanEqual(const A& a, const B& b, const char* file, const int line) {
+        inline void expectGreaterThanEquals(const A& a, const B& b, const char* file, const int line) {
             auto result = impl_cmp::greaterThanEqual(a, b, file, line);
             if (result) {
                 Fail::e_fail(*result);

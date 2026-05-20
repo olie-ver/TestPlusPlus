@@ -3,7 +3,14 @@
 #ifndef ITER_UNORDER_H
 #define ITER_UNORDER_H
 
-#include "../iterable.hpp"
+#include "../../Core.hpp"
+#include "../../Concepts.hpp"
+#include <algorithm>
+#include <optional>
+#include <ranges>
+#include <string>
+#include <unordered_map>
+#include <vector>
 
 namespace internal {
     namespace impl_iter {
@@ -146,7 +153,7 @@ namespace internal {
                 }
 
                 if (!found) {
-                    return Core::AssertionFailure({
+                    return Core::Failure({
                         std::string("Missing element: ") + Helpers::toString(*a_itr),
                         file,
                         line
@@ -156,13 +163,15 @@ namespace internal {
 
             for (size_t i = 0; i < used.size(); i++) {
                 if (!used[i]) {
-                    return Core::AssertionFailure({
+                    return Core::Failure({
                         "Collections not equivalent",
                         file,
                         line
                     });
                 }
             }
+
+            return std::nullopt;
         }
 
         // This can also be optimized the same way unorderedEquals is optimized
@@ -205,7 +214,7 @@ namespace internal {
                 //unnecessary, but will keep just in case I'm wrong
                 // for (size_t i = 0; i < used.size(); i++) {
                 //     if (!used[i]) {
-                //         return;
+                //         return std::nullopt;
                 //     }
                 // }
 
@@ -215,6 +224,8 @@ namespace internal {
                     line
                 });
             }
+
+            return std::nullopt;
         }
     }
 }

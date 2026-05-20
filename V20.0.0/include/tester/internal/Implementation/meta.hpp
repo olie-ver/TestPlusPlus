@@ -99,9 +99,9 @@ namespace internal {
 
                 if (msg != last.message) { //failed with wrong message
                     return Core::Failure({
-                        "Expected test to fail with message: \"" 
+                        "Expected test to fail with message: \n\t\"" 
                         + msg
-                        + "\"\n\tbut it failed with message: \""
+                        + "\"\n    but it failed with message: \n\t\""
                         + last.message + "\"",
                         file,
                         line
