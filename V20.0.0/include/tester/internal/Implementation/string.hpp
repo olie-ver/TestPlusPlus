@@ -36,7 +36,7 @@ namespace internal {
             const char* file, const int line);
 
         std::optional<const Core::Failure> 
-        stringEmpty(std::string& first, const char* file, const int line);
+        stringEmpty(const std::string& first, const char* file, const int line);
 
         std::optional<const Core::Failure> 
         stringEmpty(const char* first, const char* file, const int line);
@@ -46,7 +46,7 @@ namespace internal {
         stringEmpty(const char(&first)[N], const char* file, const int line);
 
         std::optional<const Core::Failure>
-        stringNotEmpty(std::string& first, const char* file, const int line);
+        stringNotEmpty(const std::string& first, const char* file, const int line);
 
         std::optional<const Core::Failure> 
         stringNotEmpty(const char* first, const char* file, const int line);
