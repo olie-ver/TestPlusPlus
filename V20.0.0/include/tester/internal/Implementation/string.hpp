@@ -96,4 +96,10 @@ namespace internal {
     }
 }
 
+#include "string/str_contains.hpp"
+#include "string/str_empty.hpp"
+#include "string/str_eq.hpp"
+#include "string/str_ne.hpp"
+#include "string/str_start_end.hpp"
+
 #endif

@@ -3,8 +3,10 @@
 #ifndef STR_EQ_H
 #define STR_EQ_H
 
-#include "../string.hpp"
+#include "../../Core.hpp"
 #include "../../Helpers.hpp"
+#include <optional>
+#include <string>
 
 namespace internal {
     namespace impl_str {
