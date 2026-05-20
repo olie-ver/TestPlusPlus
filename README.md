@@ -7,6 +7,8 @@ into a static library and call it a day, but I want the learning experience as w
 5/19/26
 TODO:
 Create a concept that detects mixed sign types and disallow comparisons unless the user opts out of it
+Create tests for failing an Assert test actually stops testing for a test suite
+Redo the documentation for after these changes are implemented
 
 5/18/26
 Refactored all tests in the V20.0.0 folder. Created a new meta test for failing with a message
