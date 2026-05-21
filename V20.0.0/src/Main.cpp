@@ -67,6 +67,18 @@ int main(int argc, char** argv) {
             std::string originalFlag(argv[i]);
             std::string arg = originalFlag.substr(originalFlag.find('=') + 1);
             getTestOnly(arg, testOnlySuites);
+        } else {
+            std::cerr << "Unknown flag: " << argv[i] << std::endl;
+            std::cerr << "Usage: ./pathToExecutable --flags\n" << std::endl;
+            std::cerr << "Supported flags:" << std::endl;
+            std::cerr << "\tVerbosity: --v= or --verbosity=" << std::endl;
+            std::cerr << "\tThreads: --t= or --num_threads= or --threads=" << std::endl;
+            std::cerr << "\tSkip Suites: --s= or --skip=" << std::endl;
+            std::cerr << "\tTest Only Suites: --testonly= or --test_only= or --to= or t_o=\n" << std::endl;
+            std::cerr << "Supported verbosity flags: ";
+            std::cerr << "default, minimum, passonly, failonly, failonlymin" << std::endl;
+            std::cerr << "Suites being skipped must be separated by ',' with NO space in between" << std::endl;
+            return EXIT_FAILURE;
         }
     }
 
