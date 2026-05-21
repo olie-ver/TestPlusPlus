@@ -1,12 +1,13 @@
 #include <tester/internal/Runner.hpp>
 #include <atomic>
 #include <chrono>
+#include <deque>
 #include <iostream>
 #include <thread>
 
 namespace internal {
     namespace Runner {
-        thread_local Core::TestResult CURRENT_TEST;
+        thread_local std::deque<Core::TestResult> TEST_STACK;
 
         std::atomic<size_t> next_index{0};
 
@@ -15,21 +16,10 @@ namespace internal {
             return instance;
         }
 
-        // std::map<std::string, std::vector<Core::Test>>& getRegistry() {
-        //     static std::map<std::string, std::vector<Core::Test>> instance;
-        //     return instance;
-        // }
-
         std::vector<Core::Test>& getRegistry() {
             static std::vector<Core::Test> instance;
             return instance;
         }
-
-
-        // std::unordered_set<std::pair<std::string, std::string>, Core::PairHash>& getAllTests() {
-        //     static std::unordered_set<std::pair<std::string, std::string>, Core::PairHash> instance;
-        //     return instance;
-        // }
 
         std::unordered_set<Core::Test, Core::TestHash>& getAllTests() {
             static std::unordered_set<Core::Test, Core::TestHash> instance;
@@ -37,9 +27,6 @@ namespace internal {
         }
 
         bool registerTest(const Core::Test& test) {
-        // bool registerTest(const std::string& suite_name, const Core::Test& test) {
-            // const auto to_register = std::make_pair(suite_name, test.test_name);
-
             auto& ALL_TESTS = getAllTests();
 
             auto [it, inserted] = ALL_TESTS.insert(test);
@@ -87,28 +74,12 @@ namespace internal {
                 run.results[suite_name].push_back(result);
                 run.total++;
             }
-
-            // for (auto&& it = REGISTRY.begin(); it != REGISTRY.end(); ++it) 
-            // {
-            //     const std::vector<Core::Test>&test = it->second;
-            //     const std::string suite_name = it->first;
-            //     size_t size = test.size();
-            //     for (size_t i = 0; i < size; i++) {
-            //         run.results[suite_name].push_back(runTest(suite_name, test[i]));
-            //         run.total++;
-            //     }
-            // }
         }
 
         Core::TestResult runTest(const Core::Test& test) {
             // std::cout << "Running test: " << suite_name << " " << test.name << std::endl;
-            // Core::TestResult result;
-            // result.suiteName = test.suite_name;
-            // result.testName = test.test_name;
-            // result.status = Core::TestStatus::Passed;
-            // CURRENT_TEST = result;
-
-            CURRENT_TEST = {};
+            TEST_STACK.push_back({});
+            Core::TestResult& CURRENT_TEST = TEST_STACK.back();
             CURRENT_TEST.suiteName = test.suite_name;
             CURRENT_TEST.testName = test.test_name;
             CURRENT_TEST.status = Core::TestStatus::Passed;
@@ -122,33 +93,35 @@ namespace internal {
                 test.test();
                 clock::time_point end_time = clock::now();
 
-                // result.durationMs = std::chrono::duration_cast<ms>(end_time - start_time).count();
-
                 CURRENT_TEST.durationMs =  std::chrono::duration_cast<ms>(end_time - start_time).count();
-
-                // if (!result.failures.empty()) {
-                //     result.status = Core::TestStatus::Failed;
-                // }
 
                 if (!CURRENT_TEST.failures.empty()) {
                     CURRENT_TEST.status =  Core::TestStatus::Failed;
                 }
 
-                // return result;
-                return CURRENT_TEST;
+                Core::TestResult result = CURRENT_TEST;
+                TEST_STACK.pop_back();
+                return result;
             } catch (const Core::AssertionFailure&) {
                 clock::time_point end_time = clock::now();
 
-                // result.durationMs = std::chrono::duration_cast<ms>(end_time - start_time).count();
-
                 CURRENT_TEST.durationMs =  std::chrono::duration_cast<ms>(end_time - start_time).count();
-
-                // result.status = Core::TestStatus::Failed;
 
                 CURRENT_TEST.status =  Core::TestStatus::Failed;
 
-                // return result;
-                return CURRENT_TEST;
+                Core::TestResult result = CURRENT_TEST;
+                TEST_STACK.pop_back();
+                return result;
+            } catch (...) {
+                clock::time_point end_time = clock::now();
+
+                CURRENT_TEST.durationMs =  std::chrono::duration_cast<ms>(end_time - start_time).count();
+
+                CURRENT_TEST.status =  Core::TestStatus::Failed;
+
+                Core::TestResult result = CURRENT_TEST;
+                TEST_STACK.pop_back();
+                return result;
             }
         }
 
@@ -161,7 +134,6 @@ namespace internal {
                 if (index >= REGISTRY.size()) {
                     break;
                 }
-
                 results[index] = runTest(REGISTRY[index]);
             }
         }

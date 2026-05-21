@@ -9,13 +9,11 @@
 namespace internal {
     namespace Fail {
         inline void e_fail(const Core::Failure& result) {
-            // Runner::CURRENT_TEST->failures.push_back(result);
-            Runner::CURRENT_TEST.failures.push_back(result);
+            Runner::TEST_STACK.back().failures.push_back(result);
         }
 
         inline void a_fail(const Core::Failure& result) {
-            // Runner::CURRENT_TEST->failures.push_back(result);
-            Runner::CURRENT_TEST.failures.push_back(result);
+            Runner::TEST_STACK.back().failures.push_back(result);
             throw Core::AssertionFailure();
         }
     }

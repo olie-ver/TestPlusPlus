@@ -15,8 +15,8 @@ namespace internal {
         passes(const std::function<void()>& test, const char* testName, 
             const char* file, const int line)
         {
-            // size_t oldSize = Runner::CURRENT_TEST->failures.size();
-            size_t oldSize = Runner::CURRENT_TEST.failures.size();
+            Core::TestResult& current = Runner::TEST_STACK.back();
+            size_t oldSize = current.failures.size();
 
             //needs to take into account for things that throw => the assertion tests
             try {
@@ -26,14 +26,11 @@ namespace internal {
             }
 
             //if the number of failures grew
-            // if (oldSize < Runner::CURRENT_TEST->failures.size()) {
-            if (oldSize < Runner::CURRENT_TEST.failures.size()) {
+            if (oldSize < current.failures.size()) {
                 //Get the last failure
-                // Core::Failure prev = Runner::CURRENT_TEST->failures.back();
-                Core::Failure prev = Runner::CURRENT_TEST.failures.back();
+                Core::Failure prev = current.failures.back();
                 //Delete it
-                // Runner::CURRENT_TEST->failures.pop_back();
-                Runner::CURRENT_TEST.failures.pop_back();
+                current.failures.pop_back();
                 //Return a new one
                 return Core::Failure({
                     std::string("Expected test: ") + testName 
@@ -52,8 +49,8 @@ namespace internal {
         fails(const std::function<void()>& test, const char* testName, 
             const char* file, const int line)
         {
-            // size_t oldSize = Runner::CURRENT_TEST->failures.size();
-            size_t oldSize = Runner::CURRENT_TEST.failures.size();
+            Core::TestResult& current = Runner::TEST_STACK.back();
+            size_t oldSize = current.failures.size();
 
             try {
                 test();
@@ -62,8 +59,7 @@ namespace internal {
             }
 
             //if the number of failures didn't change
-            // if (Runner::CURRENT_TEST->failures.size() == oldSize) {
-            if (Runner::CURRENT_TEST.failures.size() == oldSize) {
+            if (oldSize == current.failures.size()) {
                 std::string error = std::string("Expected test: ") + testName + " to fail, but it passed";
                 //modify the old failure message to use this function's failure message
                 return Core::Failure({
@@ -72,8 +68,7 @@ namespace internal {
                     line
                 });
             } else { //the test failed => this one passed => erase its error message
-                // Runner::CURRENT_TEST->failures.pop_back();
-                Runner::CURRENT_TEST.failures.pop_back();
+                current.failures.pop_back();
                 return std::nullopt;
             }
         }
@@ -82,8 +77,8 @@ namespace internal {
         failsWithMessage(const std::function<void()>& test, const char* testName, 
             const std::string msg, const char* file, const int line)
         {
-            // size_t oldSize = Runner::CURRENT_TEST->failures.size();
-            size_t oldSize = Runner::CURRENT_TEST.failures.size();
+            Core::TestResult& current = Runner::TEST_STACK.back();
+            size_t oldSize = current.failures.size();
 
             try {
                 test();
@@ -92,8 +87,7 @@ namespace internal {
             }
 
             //if the number of failures didn't change
-            // if (Runner::CURRENT_TEST->failures.size() == oldSize) {
-            if (Runner::CURRENT_TEST.failures.size() == oldSize) {
+            if (oldSize == current.failures.size()) {
                 std::string error = std::string("Expected test: ") + testName + " to fail, but it passed";
                 //modify the old failure message to use this function's failure message
                 return Core::Failure({
@@ -102,11 +96,9 @@ namespace internal {
                     line
                 });
             } else { //The test failed
-                // Core::Failure last = Runner::CURRENT_TEST->failures.back();
-                Core::Failure last = Runner::CURRENT_TEST.failures.back();
+                Core::Failure last = current.failures.back();
 
-                // Runner::CURRENT_TEST->failures.pop_back(); //delete the old failure
-                Runner::CURRENT_TEST.failures.pop_back(); //delete the old failure
+                current.failures.pop_back();
 
                 if (msg != last.message) { //failed with wrong message
                     return Core::Failure({

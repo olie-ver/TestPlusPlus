@@ -4,6 +4,7 @@
 #define RUNNER_H
 
 #include "Core.hpp"
+#include <deque>
 #include <map>
 #include <vector>
 #include <unordered_set>
@@ -32,16 +33,14 @@ namespace internal {
     /// @brief An internal Runner namespace that is used for running tests
     namespace Runner {
         /// @brief The result for the current test
-        extern thread_local Core::TestResult CURRENT_TEST;
+        extern thread_local std::deque<Core::TestResult> TEST_STACK;
 
         Core::TestRun& makeTestRun();
 
         /// @brief The registry containing all the tests to be run
-        // std::map<std::string, std::vector<Core::Test>>& getRegistry();
         std::vector<Core::Test>& getRegistry();
 
         /// @brief A set ensuring no duplicate tests are registered
-        // std::unordered_set<std::pair<std::string, std::string>, Core::PairHash>& getAllTests();
         std::unordered_set<Core::Test, Core::TestHash>& getAllTests();
 
         /// @brief Adds a test to the registry under a test suite

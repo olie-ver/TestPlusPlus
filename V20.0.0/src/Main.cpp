@@ -4,15 +4,7 @@
 #include <iostream>
 #include <thread>
 
-//example usage: ./runtests --v=default --num_threads=8
-
 int main(int argc, char** argv) {
-    // if (argc != 2) {
-    //     std::cerr << "Usage: ./runtests --verbosity-flag \n";
-    //     std::cerr << "\t Supported --verbosity-flags: --default, --minimum";
-    //     return EXIT_FAILURE;
-    // } 
-
     internal::Core::Verbosity verbFlag;
     int num_threads = 1;
 
