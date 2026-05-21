@@ -11,7 +11,7 @@ namespace internal {
 
         std::atomic<size_t> next_index{0};
 
-        Core::TestRun& makeTestRun() {
+        Core::TestRun& getTestRun() {
             static Core::TestRun instance;
             return instance;
         }
@@ -26,7 +26,19 @@ namespace internal {
             return instance;
         }
 
-        bool registerTest(const Core::Test& test) {
+        std::unordered_set<std::string>& getSkipSuites() {
+            static std::unordered_set<std::string> instance;
+            return instance;
+        }
+
+        std::unordered_set<std::string>& getTestOnly()
+        {
+            static std::unordered_set<std::string> instance;
+            return instance;
+        }
+
+        bool registerTest(const Core::Test &test)
+        {
             auto& ALL_TESTS = getAllTests();
 
             auto [it, inserted] = ALL_TESTS.insert(test);
@@ -42,7 +54,12 @@ namespace internal {
             return true;
         }
 
-        void runAllRegisteredTests(Core::TestRun& run, const int num_threads) {
+        void runAllRegisteredTests(Core::TestRun& run, const int num_threads)
+        {   
+            using clock = std::chrono::steady_clock;
+            using ms = std::chrono::milliseconds;
+            clock::time_point start_time = clock::now();
+
             next_index.store(0);
 
             std::vector<Core::Test>& REGISTRY = getRegistry();
@@ -67,6 +84,8 @@ namespace internal {
                 threads[i].join();
             }
 
+            clock::time_point end_time = clock::now();
+
             //aggregate results
             for (size_t i = 0; i < results.size(); i++) {
                 Core::TestResult& result = results[i];
@@ -74,10 +93,40 @@ namespace internal {
                 run.results[suite_name].push_back(result);
                 run.total++;
             }
+
+            run.totalMs =  std::chrono::duration_cast<ms>(end_time - start_time).count();
         }
 
         Core::TestResult runTest(const Core::Test& test) {
-            // std::cout << "Running test: " << suite_name << " " << test.name << std::endl;
+
+            auto& skip = getSkipSuites();
+            auto& testOnly = getTestOnly();
+
+            //if the test's suite_name is marked to be skipped, skip it
+            if (skip.contains(test.suite_name)) {
+                Core::TestResult skip;
+                skip.suiteName = test.suite_name;
+                skip.testName = test.test_name;
+                skip.status = Core::TestStatus::Skipped;
+                skip.durationMs = 0;
+
+                return skip;
+            //if testOnly's size != 0 (there are suites marked to be only tested)
+            //  and this test's suite_name is not one of them, skip it
+            } else if (testOnly.size() != 0 && !testOnly.contains(test.suite_name)) {
+                Core::TestResult skip;
+                skip.suiteName = test.suite_name;
+                skip.testName = test.test_name;
+                skip.status = Core::TestStatus::Skipped;
+                skip.durationMs = 0;
+
+                return skip;
+            }
+
+            //otherwise, this test is not marked to be skipped
+            //  and testOnly.size() == 0 (run all tests other than the ones to be skipped)
+            //  or testOnly contains this suite => so run the test
+
             TEST_STACK.push_back({});
             Core::TestResult& CURRENT_TEST = TEST_STACK.back();
             CURRENT_TEST.suiteName = test.suite_name;

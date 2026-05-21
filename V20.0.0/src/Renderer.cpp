@@ -13,14 +13,8 @@ namespace internal {
                 case Core::Verbosity::Default:
                     renderDefault(testRun);
                     break;
-                case Core::Verbosity::Verbose:
-                    renderVerbose(testRun);
-                    break;
                 case Core::Verbosity::Minimum:
                     renderMinimum(testRun);
-                    break;
-                case Core::Verbosity::All:
-                    renderVerbose(testRun);
                     break;
             }
 
@@ -41,7 +35,6 @@ namespace internal {
             for (auto&& it = tests.begin(); it != tests.end(); ++it) 
             {
                 const std::vector<Core::TestResult>& test = it->second;
-                // const std::string& suite_name = it->first;
                 size_t size = test.size();
                 for (size_t i = 0; i < size; i++) {
                     const Core::TestResult& result = test[i];
@@ -78,7 +71,6 @@ namespace internal {
             for (auto&& it = tests.begin(); it != tests.end(); ++it) 
             {
                 const std::vector<Core::TestResult>& test = it->second;
-                // const std::string& suite_name = it->first;
                 size_t size = test.size();
                 for (size_t i = 0; i < size; i++) {
                     const Core::TestResult& result = test[i];

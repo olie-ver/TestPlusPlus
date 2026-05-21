@@ -35,13 +35,19 @@ namespace internal {
         /// @brief The result for the current test
         extern thread_local std::deque<Core::TestResult> TEST_STACK;
 
-        Core::TestRun& makeTestRun();
+        Core::TestRun& getTestRun();
 
         /// @brief The registry containing all the tests to be run
         std::vector<Core::Test>& getRegistry();
 
         /// @brief A set ensuring no duplicate tests are registered
         std::unordered_set<Core::Test, Core::TestHash>& getAllTests();
+
+        /// @brief A set containing suites that should not be tested
+        std::unordered_set<std::string>& getSkipSuites();
+
+        /// @brief A set containing suites that ONLY should be tested
+        std::unordered_set<std::string>& getTestOnly();
 
         /// @brief Adds a test to the registry under a test suite
         /// @param suite_name The name of the test suite the test is a part of 
