@@ -2,13 +2,17 @@
 A C++ Unit Tester for C++20 written by Oliver Lie. As a beta build/release, I make no guarantees that future versions will work the same, and implementations could change until the first working release.
 
 ### License/Conditions of Usage
-You may consider this code open-source to be downloaded, modified, and released for others under the condition that any other subsidiary code will keep these same conditions. This includes keeping the software free of charge.
+You may consider this code open-source to be downloaded, modified, and released for others under the condition that any other subsidiary code will keep these same conditions. This includes keeping the software free of charge. I also make no guarantees about correctness and the amount of bugs in this software. Don't sue me if it doesn't work :3
 
 ## Table of Contents
 1. [Adding To Your Projects](#adding-to-your-projects)
-    1. [Compiling And Linking](#compiling-and-linking)
-    2. [Include Inside Your Project](#include-inside-your-project)
+    1. [Compiling And Linked](#compiling-and-linking)
+    2. [Include Inside Your Projects](#include-inside-your-project)
     3. [CLI Usage](#cli-usage)
+        1. [Verbosity](#verbosity)
+        2. [Threads](#threads)
+        3. [Skipping Tests](#skipping-tests)
+        4. [Specifying Tests](#test-specific)
 2. [Testing](#testing)
     1. [Registering Tests](#registering-tests)
     2. [Different Types Of Tests](#different-types-of-tests)
@@ -30,12 +34,71 @@ You may consider this code open-source to be downloaded, modified, and released 
     10. [Expect Less Than or Equals](#expect_le)
     11. [Expect Greater Than](#expect_gt)
     12. [Expect Greater Than or Equals](#expect_ge)
-5. [Null Tests](#null-tests)
+5. [Float Tests](#float-tests)
+    1. [Assert Near](#assert_near)
+    2. [Assert Absolutely Near](#assert_abs_near)
+    3. [Assert Relatively Near](#assert_rel_near)
+    4. [Assert NaN](#assert_nan)
+    5. [Assert Not NaN](#assert_not_nan)
+    6. [Assert Infinity](#assert_inf)
+    7. [Assert Positive Infinity](#assert_pos_inf)
+    8. [Assert Negative Infinity](#assert_neg_inf)
+    9. [Expect Near](#expect_near)
+    10. [Expect Absolutely Near](#expect_abs_near)
+    11. [Expect Relatively Near](#expect_rel_near)
+    12. [Expect NaN](#expect_nan)
+    13. [Expect Not NaN](#expect_not_nan)
+    14. [Expect Infinity](#expect_inf)
+    15. [Expect Positive Infinity](#expect_pos_inf)
+    16. [Expect Negative Infinity](#expect_neg_inf)
+6. [Iterable Tests](#iterable-tests)
+    1. [Assert Ordered Equals](#assert_ordered_eq)
+    2. [Assert Unordered Equals](#assert_unordered_eq)
+    3. [Assert Ordered Not Equals](#assert_ordered_ne)
+    4. [Assert Unordered Not Equals](#assert_unordered_ne)
+    5. [Assert Empty](#assert_empty)
+    6. [Assert Not Empty](#assert_nempty)
+    7. [Assert Size](#assert_size)
+    8. [Assert Contains](#assert_contains)
+    9. [Assert Does Not Contain](#assert_does_not_contain)
+    10. [Expect Ordered Equals](#expect_ordered_eq)
+    11. [Expect Unordered Equals](#expect_unordered_eq)
+    12. [Expect Ordered Not Equals](#expect_ordered_ne)
+    13. [Expect Unordered Not Equals](#expect_unordered_ne)
+    14. [Expect Empty](#expect_empty)
+    15. [Expect Not Empty](#expect_nempty)
+    16. [Expect Size](#expect_size)
+    17. [Expect Contains](#expect_contains)
+    18. [Expect Does Not Contain](#expect_does_not_contain)
+7. [Meta Tests](#meta-tests)
+    1. [Assert Passes](#assert_passes)
+    2. [Assert Fails](#assert_fails)
+    3. [Expect Passes](#expect_passes)
+    4. [Expect Fails](#expect_fails)
+8. [Null Tests](#null-tests)
     1. [Assert Null](#assert_null)
     2. [Assert Not Null](#assert_not_null)
     3. [Expect Null](#expect_null)
     4. [Expect Not Null](#expect_not_null)
-6. [String Tests](#string-tests)
+9. [Predicate Tests](#predicate-tests)
+    1. [Assert All](#assert_all)
+    2. [Assert Some](#assert_some)
+    3. [Assert None](#assert_none)
+    4. [Expect All](#expect_all)
+    5. [Expect Some](#expect_some)
+    6. [Expect None](#expect_none)
+10. [Set Tests](#set-tests)
+    1. [Assert Set Equals](#assert_set_eq)
+    2. [Assert Set Not Equals](#assert_set_ne)
+    3. [Assert Subset](#assert_subset)
+    4. [Assert Superset](#assert_superset)
+    5. [Assert Strict Subset](#assert_strict_subset)
+    6. [Expect Set Equals](#expect_set_eq)
+    7. [Expect Set Not Equals](#expect_set_ne)
+    8. [Expect Subset](#expect_subset)
+    9. [Expect Superset](#expect_superset)
+    10. [Expect Strict Subset](#expect_strict_subset)
+11. [String Tests](#string-tests)
     1. [Assert String Equals](#assert_str_eq)
         1. [std::string](#stdstring)
         2. [const char*](#const-char)
@@ -92,58 +155,13 @@ You may consider this code open-source to be downloaded, modified, and released 
         1. [std::string](#stdstring-13)
         2. [const char*](#const-char-13)
         3. [char[]](#char-13)
-7. [Throws Tests](#throws-tests)
-   1. [Assert Throws](#assert_throws)
+12. [Throws Tests](#throws-tests)
+    1. [Assert Throws](#assert_throws)
     2. [Assert Does Not Throw](#assert_does_not_throw)
     3. [Assert Throws With Message](#assert_throws_msg)
     4. [Expect Throws](#expect_throws)
     5. [Expect Does Not Throw](#expect_does_not_throw)
     6. [Expect Throws With Message](#expect_throws_msg)
-8. [Float Tests](#float-tests)
-    1. [Assert Near](#assert_near)
-    2. [Assert Absolutely Near](#assert_abs_near)
-    3. [Assert Relatively Near](#assert_rel_near)
-    4. [Assert NaN](#assert_nan)
-    5. [Assert Not NaN](#assert_not_nan)
-    6. [Assert Infinity](#assert_inf)
-    7. [Assert Positive Infinity](#assert_pos_inf)
-    8. [Assert Negative Infinity](#assert_neg_inf)
-    9. [Expect Near](#expect_near)
-    10. [Expect Absolutely Near](#expect_abs_near)
-    11. [Expect Relatively Near](#expect_rel_near)
-    12. [Expect NaN](#expect_nan)
-    13. [Expect Not NaN](#expect_not_nan)
-    14. [Expect Infinity](#expect_inf)
-    15. [Expect Positive Infinity](#expect_pos_inf)
-    16. [Expect Negative Infinity](#expect_neg_inf)`
-9. [Iterable Tests](#iterable-tests)
-    1. [Assert Ordered Equals](#assert_ordered_eq)
-    2. [Assert Unordered Equals](#assert_unordered_eq)
-    3. [Expect Ordered Equals](#expect_ordered_eq)
-    4. [Expect Unordered Equals](#expect_unordered_eq)
-10. [Test Tests](#test-tests)
-    1. [Assert Passes](#assert_passes)
-    2. [Assert Fails](#assert_fails)
-    3. [Expect Passes](#expect_passes)
-    4. [Expect Fails](#expect_fails)
-11. [Set Tests](#set-tests)
-    1. [Assert Set Equals](#assert_set_eq)
-    2. [Assert Set Not Equals](#assert_set_ne)
-    3. [Assert Subset](#assert_subset)
-    4. [Assert Superset](#assert_superset)
-    5. [Assert Strict Subset](#assert_strict_subset)
-    6. [Expect Set Equals](#expect_set_eq)
-    7. [Expect Set Not Equals](#expect_set_ne)
-    8. [Expect Subset](#expect_subset)
-    9. [Expect Superset](#expect_superset)
-    10. [Expect Strict Subset](#expect_strict_subset)
-12. [Predicate Tests](#predicate-tests)
-    1. [Assert All](#assert_all)
-    2. [Assert Some](#assert_some)
-    3. [Assert None](#assert_none)
-    4. [Expect All](#expect_all)
-    5. [Expect Some](#expect_some)
-    6. [Expect None](#expect_none)
 
 ## Adding To Your Projects
 
@@ -155,8 +173,8 @@ Root/ <br>
 &emsp;libtester.a <br> 
 &emsp;Main.cpp <br> 
 With this, the compile command would be: <br> 
-`g++ -std=c++17 -Wall -Wextra -I./include -c Main.cpp` <br>
-`g++ -std=c++17 -Wall -Wextra -I./include Main.o libtester.a -o NAME_OF_EXECUTABLE` <br> 
+`g++ -std=c++20 -Wall -Wextra -I./include -c Main.cpp` <br>
+`g++ -std=c++20 -Wall -Wextra -I./include Main.o libtester.a -o NAME_OF_EXECUTABLE` <br> 
 There are more ways to compile and link, and I expect the general user to have more complicated file systems. 
 
 ### Include Inside Your Project
@@ -170,16 +188,55 @@ And now you can start testing right away.
 ### CLI Usage
 As of now, the way to use the unit tester is like so:
 <br>
-`PATH_TO_EXECUTABLE --verbosity-flag`  
+`PATH_TO_EXECUTABLE --flags`  
 <br>
-The current verbosity flags are:
-<br>
-1. `--default`
-2. `--verbose`
-3. `--minimum`
-4. `--all`
-<br>
-As of now, only `--minimum` changes the output, which only shows which tests pass/fail/skip and what test suite and test they belonged to.
+There are four flags supported: Verbosity, Threads, Skip, and TestOnly. The flags and the flag values can be typed in either lowercase/uppercase/a mix of both
+
+#### Verbosity
+To add a verbosity flag, you may type in any of the following (lower vs uppercase doesn't matter):
+1. `--v=`
+2. `--verbosity=`
+
+The supported verbosity values are:
+1. `default`: renders the output in the default manner
+2. `minimum`: renders only the status of each test
+3. `passonly`/`pass_only`: renders only which tests passed
+4. `failonly`/`fail_only`/`failonlyall`/`fail_only_all`: renders only which tests failed with failure messages
+5. `failonlymin`/`fail_only_min`: renders only which tests failed and without failure messages (status only).
+
+
+#### Threads
+To specify the number of threads to be used, you may type in any of the following (lower vs uppercase doesn't matter):
+
+1. `--t=`
+2. `--threads=`
+3. `--num_threads=`
+
+You can type in any integer value to the number of threads, however, you cannot exceed the number of threads from `std::thread::hardware_concurrency()` and you cannot go below 1 thread. The default value for the number of threads is 1 thread. Because you can specify the number of threads you can use, it is important that your tests are thread-safe. Or not. Free will.
+
+#### Skipping Tests
+In order to skip test suites, you can type in any of the following (lower vs uppercase doesn't matter):
+
+1. `--s=`
+2. `--skip=`
+
+In order to specify which test suites to be skipped, you need to type in the test suite's name AS IT IS REGISTERED. To specify multiple suites, you can type in multiple suite names, each separated solely by a comma ','.
+
+By default, excluding this flag will make every test run, unless the [test only](#test-specific) flag is included (with suites attached).
+
+#### Test Specific
+In order to test only specific test suites, you can type in any of the following (lower vs uppercase doesn't matter):
+
+1. `--to=`
+2. `--t_o=`
+3. `--testonly=`
+4. `--test_only=`
+
+In order to specify which test suites are to be tested, you need to type in the test suite's name AS IT IS REGISTERED. To specify multiple suites, you can type in multiple suite names, each separated solely by a comma ','.
+
+By default, excluding this flag will make every test be run unless the [skip](#skipping-tests) flag is included (with suites attached).
+
+Notice how skipping tests and specifying tests to be run are basically identical behavior. They are for your own convenience. If you specify a test suite to be skipped and to be tested: `--skip=Suite --test_only=Suite`, then the suite will still be skipped. 
 
 ## Testing
 
@@ -250,7 +307,34 @@ TEST(another_suite_name, not_unique_name) {
 ```
 
 ### Different Types of Tests
-There are two types of tests supported: Expects and Asserts. Expects tests will always run to fruition no matter what (failure or throws), but Asserts tests will stop testing the current test suite upon failure.
+There are two types of tests supported: Expects and Asserts. Expects tests will always run to fruition no matter what (failure or throws), but Asserts tests will stop testing the current test function upon failure.
+
+```
+TEST(expect_example, name) {
+    ...
+    EXPECT_SOMETHING(); //suppose this fails
+    EXPECT_ANOTHER(); //this one still runs
+    ...
+}
+```
+
+```
+TEST(assert_example, name) {
+    ...
+    ASSERT_SOMETHING(); //suppose this fails
+    ASSERT_ANOTHER(); //this one (and everything after) WONT RUN
+    ...
+}
+
+//this test function will still run even though
+//  a failing assert happened in the same suite
+TEST(assert_example, another_test) {
+    ...
+    ASSERT_SOMETHING();
+    ASSERT_ANOTHER(); 
+    ...
+}
+```
 
 ## Boolean Tests
 Boolean tests are used to check the truthiness of a value/condition.
@@ -270,7 +354,7 @@ D_TEST(assert_true) {
     ASSERT_TRUE(true); //passes
     ASSERT_TRUE(5 != 10); //passes
     ASSERT_TRUE(1 == 2); //fails
-    ASSERT_TRUE("cool", "nice"); //doesn't get run
+    ASSERT_TRUE("cool" == "nice"); //doesn't get run
 }
 ```
 
@@ -284,7 +368,7 @@ D_TEST(assert_false) {
     ASSERT_FALSE(false); //passes
     ASSERT_FALSE(5 == 10); //passes
     ASSERT_FALSE(1 != 2); //fails
-    ASSERT_FALSE("cool", "nice"); //doesn't get run
+    ASSERT_FALSE("cool" == "nice"); //doesn't get run
 }
 ```
 
@@ -298,7 +382,7 @@ D_TEST(expect_true) {
     EXPECT_TRUE(true); //passes
     EXPECT_TRUE(5 != 10); //passes
     EXPECT_TRUE(1 == 2); //fails
-    EXPECT_TRUE("cool", "nice"); //runs and fails
+    EXPECT_TRUE("cool" == "nice"); //runs and fails
 }
 ```
 
@@ -312,12 +396,12 @@ D_TEST(expect_false) {
     EXPECT_FALSE(false); //passes
     EXPECT_FALSE(5 == 10); //passes
     EXPECT_FALSE(1 != 2); //fails
-    EXPECT_FALSE("cool", "nice"); //runs and passes
+    EXPECT_FALSE("cool" == "nice"); //runs and passes
 }
 ```
 
 ## Comparison Tests
-Comparison tests are used to compare the relation between two different values. 
+Comparison tests are used to compare the relation between two different values. These tests can fail if you mixed signed vs unsigned types due to implicit conversions done by C++. If you think that's a bug that should be fixed, let me know so I can update the framework.
 
 1. [Assert Equals](#assert_eq)
 2. [Assert Not Equals](#assert_ne)
@@ -492,6 +576,935 @@ D_TEST(assert_greater_than_equals) {
 }
 ```
 
+## Float Tests
+Float tests are used to check something about a float, generally absolute/relative tolerance. These can also be used to check for `NaN`. Each test can take in any combination of floating point types. Ie, for tests that take in multiple floating point values, it's possible to mix the type parameters (eg. pass in a `float` and `double`). In this case, they are cast to the common floating point type and these commonly cast versions are used in the tests.
+
+1. [Assert Near](#assert_near)
+2. [Assert Absolutely Near](#assert_abs_near)
+3. [Assert Relatively Near](#assert_rel_near)
+4. [Assert NaN](#assert_nan)
+5. [Assert Not NaN](#assert_not_nan)
+6. [Assert Infinity](#assert_inf)
+7. [Assert Positive Infinity](#assert_pos_inf)
+8. [Assert Negative Infinity](#assert_neg_inf)
+9. [Expect Near](#expect_near)
+10. [Expect Absolutely Near](#expect_abs_near)
+11. [Expect Relatively Near](#expect_rel_near)
+12. [Expect NaN](#expect_nan)
+13. [Expect Not NaN](#expect_not_nan)
+14. [Expect Infinity](#expect_inf)
+15. [Expect Positive Infinity](#expect_pos_inf)
+16. [Expect Negative Infinity](#expect_neg_inf)
+
+### ASSERT_NEAR()
+`ASSERT_NEAR(a, b, abs_tol, rel_tol)` takes in up to four arguments. `a` and `b` are two floating point values of any two floating point types. `abs_tol` is the absolute tolerance that should be between `a` and `b`. `rel_tol` is an optional parameter that defines how relatively near `a` and `b` should be.
+
+In the case that `rel_tol` is not provided, this test becomes the same as [Assert Absolutely Near](#assert_abs_near). 
+
+In the case that `rel_tol` is provided, this test passes iff `|a - b| <= max(|abs_tol|, |rel_tol| * max(|a|, |b|))`. That is, the absolute difference of `a` and `b` must be smaller than the larger of the absolute value of `abs_tol` and the product of the absolute value of `rel_tol` and the larger of `|a|` and `|b|`. Upon failure it will terminate testing for the test suite it was called in.
+
+```
+#include <tester/Tests.hpp>
+
+TEST(assert_near, three_param) {
+    float a = 5.0;
+    double b = 6.0;
+    long double abs_tol = 0.01;
+
+    ASSERT_NEAR(a, b, abs_tol); //fails
+}
+
+TEST(assert_near, four_param) {
+    float a = 5.0;
+    double b = 6.0;
+    long double abs_tol = 0.01;
+    long double rel_tol_pass = 0.5;
+    long double rel_tol_fail = 0.05;
+
+    ASSERT_NEAR(a, b, abs_tol, rel_tol_pass); //passes
+    ASSERT_NEAR(a, b, abs_tol, rel_tol_fail); //fails
+}
+```
+
+### ASSERT_ABS_NEAR()
+`ASSERT_ABS_NEAR(a, b, abs_tol)` takes in three arguments. `a` and `b` are two floating point values of an two floating point types. `abs_tol` defines the maximum difference `a` and `b` can be from each other. This test passes iff `|a - b| <= |abs_tol|`. That is, the absolute difference of `a` and `b` must be smaller than the absolute value of `abs_tol`. Upon failure it will terminate testing for the test suite it was called in.
+
+```
+#include <tester/Tests.hpp>
+
+D_TEST(assert_abs_near) {
+    float a = 5.0;
+    double b = 6.0;
+    long double abs_tol = 2.0;
+
+    ASSERT_ABS_NEAR(a, b, abs_tol); //passes
+
+    long double abs_tol_two = 0.5;
+    ASSERT_ABS_NEAR(a, b, abs_tol_two); //fails because |a - b| > 0.5
+}
+```
+
+### ASSERT_REL_NEAR()
+`ASSERT_REL_NEAR(a, b, rel_tol)` takes in three arguments. `a` and `b` are two floating point values of an two floating point types. `rel_tol` defines how relatively near `a` and `b` should be. This test passes iff `|a - b| <= |rel_tol| * max(|a|, |b|)`. That is, the absolute difference of `a` and `b` must be smaller than the product of `rel_tol` and the larger of `|a|` and `|b|`. Upon failure it will terminate testing for the test suite it was called in.
+
+```
+#include <tester/Tests.hpp>
+
+D_TEST(assert_rel_near) {
+    float a = 5.0;
+    double b = 6.0;
+    long double rel_tol = 0.5;
+
+    ASSERT_REL_NEAR(a, b, rel_tol); //passes
+
+    long double rel_tol_two = 0.1;
+    ASSERT_REL_NEAR(a, b, rel_tol_two); //fails because 0.1 * 0.6 = 0.06 < |a - b|
+}
+```
+
+### ASSERT_NAN()
+`ASSERT_NAN(a)` takes in one parameter, `a`, which is a floating point value. It passes iff `a` is equivalent to `NAN` and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+
+```
+#include <tester/Tests.hpp>
+
+D_TEST(assert_nan) {
+    float a = 5.0;
+
+    ASSERT_NAN(a); //fails
+}
+```
+
+### ASSERT_NOT_NAN()
+`ASSERT_NOT_NAN(a)` takes in one parameter, `a`, which is a floating point value. It passes iff `a` is not equivalent to `NAN` and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+
+```
+#include <tester/Tests.hpp>
+
+D_TEST(assert_nan) {
+    float a = 5.0;
+
+    ASSERT_NOT_NAN(a); //passes
+}
+```
+
+### ASSERT_INF()
+`ASSERT_INF(number)` takes in one parameter, a floating point value. If passes iff `number` is positive infinity or negative infinity and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+
+```
+#include <tester/Tests.hpp>
+
+D_TEST(assert_int) {
+    float a = 5.0;
+
+    ASSERT_INF(a); //fails
+
+    double b = std::numeric_limits<double>::infinity();
+
+    ASSERT_INF(b); //passes
+
+    float c = -std::numeric_limits<double>::infinity();
+
+    ASSERT_INF(c); //passes
+}
+```
+
+### ASSERT_POS_INF()
+`ASSERT_POS_INF(number)` takes in one parameter, a floating point value. If passes iff `number` is positive infinity and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+
+```
+#include <tester/Tests.hpp>
+
+D_TEST(assert_pos_int) {
+    float a = 5.0;
+
+    ASSERT_POS_INF(a); //fails
+
+    double b = std::numeric_limits<double>::infinity();
+
+    ASSERT_POS_INF(b); //passes
+
+    float c = -std::numeric_limits<double>::infinity();
+
+    ASSERT_POS_INF(c); //fails
+}
+```
+
+### ASSERT_NEG_INF()
+`ASSERT_NEG_INF(number)` takes in one parameter, a floating point value. If passes iff `number` is negative infinity and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+
+```
+#include <tester/Tests.hpp>
+
+D_TEST(assert_neg_int) {
+    float a = 5.0;
+
+    ASSERT_NEG_INF(a); //fails
+
+    double b = std::numeric_limits<double>::infinity();
+
+    ASSERT_NEG_INF(b); //fails
+
+    float c = -std::numeric_limits<double>::infinity();
+
+    ASSERT_NEG_INF(c); //passes
+}
+```
+
+### EXPECT_NEAR()
+`EXPECT_NEAR(a, b, abs_tol, rel_tol)` takes in up to four arguments. `a` and `b` are two floating point values of any two floating point types. `abs_tol` is the absolute tolerance that should be between `a` and `b`. `rel_tol` is an optional parameter that defines how relatively near `a` and `b` should be.
+
+In the case that `rel_tol` is not provided, this test becomes the same as [Expect Absolutely Near](#expect_abs_near). 
+
+In the case that `rel_tol` is provided, this test passes iff `|a - b| <= max(|abs_tol|, |rel_tol| * max(|a|, |b|))`. That is, the absolute difference of `a` and `b` must be smaller than the larger of the absolute value of `abs_tol` and the product of the absolute value of `rel_tol` and the larger of `|a|` and `|b|`.
+
+```
+#include <tester/Tests.hpp>
+
+TEST(expect_near, three_param) {
+    float a = 5.0;
+    double b = 6.0;
+    long double abs_tol = 0.01;
+
+    EXPECT_NEAR(a, b, abs_tol); //fails
+}
+
+TEST(expect_near, four_param) {
+    float a = 5.0;
+    double b = 6.0;
+    long double abs_tol = 0.01;
+    long double rel_tol_pass = 0.5;
+    long double rel_tol_fail = 0.05;
+
+    EXPECT_NEAR(a, b, abs_tol, rel_tol_pass); //passes
+    EXPECT_NEAR(a, b, abs_tol, rel_tol_fail); //fails
+}
+```
+
+### EXPECT_ABS_NEAR()
+`EXPECT_ABS_NEAR(a, b, abs_tol)` takes in three arguments. `a` and `b` are two floating point values of an two floating point types. `abs_tol` defines the maximum difference `a` and `b` can be from each other. This test passes iff `|a - b| <= |abs_tol|`. That is, the absolute difference of `a` and `b` must be smaller than the absolute value of `abs_tol`.
+
+```
+#include <tester/Tests.hpp>
+
+D_TEST(expect_abs_near) {
+    float a = 5.0;
+    double b = 6.0;
+    long double abs_tol = 2.0;
+
+    EXPECT_ABS_NEAR(a, b, abs_tol); //passes
+
+    long double abs_tol_two = 0.5;
+    EXPECT_ABS_NEAR(a, b, abs_tol_two); //fails because |a - b| > 0.5
+}
+```
+
+### EXPECT_REL_NEAR()
+`EXPECT_REL_NEAR(a, b, rel_tol)` takes in three arguments. `a` and `b` are two floating point values of an two floating point types. `rel_tol` defines how relatively near `a` and `b` should be. This test passes iff `|a - b| <= |rel_tol| * max(|a|, |b|)`. That is, the absolute difference of `a` and `b` must be smaller than the product of `rel_tol` and the larger of `|a|` and `|b|`.
+
+```
+#include <tester/Tests.hpp>
+
+D_TEST(expect_rel_near) {
+    float a = 5.0;
+    double b = 6.0;
+    long double rel_tol = 0.5;
+
+    EXPECT_REL_NEAR(a, b, rel_tol); //passes
+
+    long double rel_tol_two = 0.1;
+    EXPECT_REL_NEAR(a, b, rel_tol_two); //fails because 0.1 * 0.6 = 0.06 < |a - b|
+}
+```
+
+### EXPECT_NAN()
+`EXPECT_NAN(a)` takes in one parameter, `a`, which is a floating point value. It passes iff `a` is equivalent to `NAN` and fails otherwise.
+
+```
+#include <tester/Tests.hpp>
+
+D_TEST(expect_nan) {
+    float a = 5.0;
+
+    EXPECT_NAN(a); //fails
+}
+```
+
+### EXPECT_NOT_NAN()
+`ASSERT_NOT_NAN(a)` takes in one parameter, `a`, which is a floating point value. It passes iff `a` is not equivalent to `NAN` and fails otherwise.
+
+```
+#include <tester/Tests.hpp>
+
+D_TEST(expect_nan) {
+    float a = 5.0;
+
+    EXPECT_NOT_NAN(a); //passes
+}
+```
+
+### EXPECT_INF()
+`EXPECT_INF(number)` takes in one parameter, a floating point value. If passes iff `number` is positive infinity or negative infinity and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+
+```
+#include <tester/Tests.hpp>
+
+D_TEST(expect_int) {
+    float a = 5.0;
+
+    EXPECT_INF(a); //fails
+
+    double b = std::numeric_limits<double>::infinity();
+
+    EXPECT_INF(b); //passes
+
+    float c = -std::numeric_limits<double>::infinity();
+
+    EXPECT_INF(c); //passes
+}
+```
+
+### EXPECT_POS_INF()
+`EXPECT_POS_INF(number)` takes in one parameter, a floating point value. If passes iff `number` is positive infinity and fails otherwise.
+
+```
+#include <tester/Tests.hpp>
+
+D_TEST(expect_pos_int) {
+    float a = 5.0;
+
+    EXPECT_POS_INF(a); //fails
+
+    double b = std::numeric_limits<double>::infinity();
+
+    EXPECT_POS_INF(b); //passes
+
+    float c = -std::numeric_limits<double>::infinity();
+
+    EXPECT_POS_INF(c); //fails
+}
+```
+
+### EXPECT_NEG_INF()
+`EXPECT_NEG_INF(number)` takes in one parameter, a floating point value. If passes iff `number` is negative infinity and fails otherwise.
+
+```
+#include <tester/Tests.hpp>
+
+D_TEST(expect_neg_int) {
+    float a = 5.0;
+
+    EXPECT_NEG_INF(a); //fails
+
+    double b = std::numeric_limits<double>::infinity();
+
+    EXPECT_NEG_INF(b); //fails
+
+    float c = -std::numeric_limits<double>::infinity();
+
+    EXPECT_NEG_INF(c); //passes
+}
+```
+
+## Iterable Tests
+Iterable tests are used for iterable containers, such as arrays, maps, sets, etc. They require that whatever types are within the containers to have `==` defined. Items in the passed in containers don't necessarily need to be the same type.
+
+In order to be an iterable container, the passed in container needs to satisfy the `std::ranges::range` concept.
+
+1. [Assert Ordered Equals](#assert_ordered_eq)
+2. [Assert Unordered Equals](#assert_unordered_eq)
+3. [Assert Ordered Not Equals](#assert_ordered_ne)
+4. [Assert Unordered Not Equals](#assert_unordered_ne)
+5. [Assert Empty](#assert_empty)
+6. [Assert Not Empty](#assert_nempty)
+7. [Assert Size](#assert_size)
+8. [Assert Contains](#assert_contains)
+9. [Assert Does Not Contain](#assert_does_not_contain)
+10. [Expect Ordered Equals](#expect_ordered_eq)
+11. [Expect Unordered Equals](#expect_unordered_eq)
+12. [Expect Ordered Not Equals](#expect_ordered_ne)
+13. [Expect Unordered Not Equals](#expect_unordered_ne)
+14. [Expect Empty](#expect_empty)
+15. [Expect Not Empty](#expect_nempty)
+16. [Expect Size](#expect_size)
+17. [Expect Contains](#expect_contains)
+18. [Expect Does Not Contain](#expect_does_not_contain)
+
+### ASSERT_ORDERED_EQ
+`EXPECT_ORDERED_EQ(first, second)` takes in two arguments: two iterable containers. The two containers do not necessarily have to be the same type. However, you are responsible for passing in the correct container types into the function. Ie, passing in unordered containers such as `unordered_map` and `unordered_set` are not guaranteed to work properly. This test passes iff every element in each container are `==` at the same index, and fails otherwise. This test will also automatically fail when given two containers with different item counts. Upon failure it will terminate testing for the test suite it was called in.
+
+```
+#include <tester/Tests.hpp>
+#include <vector>
+#include <set>
+#include <unordered_set>
+
+D_TEST(assert_ordered_eq) {
+    int a[] = {1, 2, 3, 4, 5};
+    int b[] = {1, 2, 3, 4, 5};
+
+    ASSERT_ORDERED_EQ(a, b); //passes
+
+    int c[] = {5, 4, 3, 2, 1};
+
+    ASSERT_ORDERED_EQ(a, c); // fails
+
+    std::vector<int> d = {8, 6, 7, 5, 3, 0, 9};
+    int e[] = {8, 6, 7, 5, 3, 0, 9};
+
+    ASSERT_ORDERED_EQ(d, e); //would pass
+
+    std::set<std::vector<int>> f = {{1, 2, 3}, {4, 5, 6}};
+    std::set<std::vector<int>> g = {{1, 2, 3}, {4, 5, 6}};
+
+    ASSERT_ORDERED_EQ(f, g); //would pass
+
+    std::unordered_set<int> h = {1, 2, 3, 4, 5, 6};
+    std::unordered_set<int> i = {1, 2, 3, 4, 5, 6};
+
+    ASSERT_ORDERED_EQ(h, i); //undefined behavior, but most likely would fail
+}
+```
+
+### ASSERT_UNORDERED_EQ
+`EXPECT_ORDERED_EQ(first, second)` takes in two arguments: two iterable containers. The two containers do not necessarily have to be the same type. However, you are responsible for passing in the correct container types into the function. Ie, passing in unordered containers such as `unordered_map` and `unordered_set` are not guaranteed to work properly. This test passes iff every element in each container are `==` at the same index, and fails otherwise. This test will also automatically fail when given two containers with different item counts. Upon failure it will terminate testing for the test suite it was called in.
+
+```
+#include <tester/Tests.hpp>
+#include <vector>
+#include <set>
+#include <unordered_set>
+
+D_TEST(assert_unordered_eq) {
+    int a[] = {1, 2, 3, 4, 5};
+    int b[] = {1, 2, 3, 4, 5};
+
+    ASSERT_UNORDERED_EQ(a, b); //passes
+
+    int c[] = {5, 4, 3, 2, 1};
+
+    ASSERT_UNORDERED_EQ(a, c); // passes
+
+    std::vector<int> d = {8, 6, 7, 5, 3, 0, 9};
+    int e[] = {8, 6, 7, 5, 3, 0, 9};
+
+    ASSERT_UNORDERED_EQ(d, e); //passes
+
+    std::set<std::vector<int>> f = {{1, 2, 3}, {4, 5, 6}};
+    std::set<std::vector<int>> g = {{1, 2, 3}, {4, 5, 6}};
+
+    ASSERT_UNORDERED_EQ(f, g); //passes
+
+    std::unordered_set<int> h = {1, 2, 3, 4, 5, 6};
+    std::unordered_set<int> i = {1, 2, 3, 4, 5, 6};
+
+    ASSERT_UNORDERED_EQ(h, i); //passes, unlike ASSERT_ORDERED_EQ()
+
+    int j[] = {1, 1, 2, 3};
+    int k[] = {1, 2, 3, 3};
+    ASSERT_UNORDERED_EQ(j, k); //fails because there is a mismatch in counts on 1 and 3
+}
+```
+
+### ASSERT_ORDERED_NE()
+`ASSERT_ORDERED_NE(first, second)` takes in two parameters: two iterable containers that satisfy the `ranges` concept whose elements are capable of being compared by the `==` operator. It passes iff `first` and `second` have at least one element that do not pass a comparison by the `==` operator and fails otherwise. This function should only be called on containers that have some deterministic method of ordering its elements, ie, passing in `unordered` containers yields undefined behavior. Upon failure it will terminate testing for the test suite it was called in.
+
+```
+#include <tester/Tests.hpp>
+#include <vector>
+#include <set>
+#include <unordered_set>
+
+D_TEST(assert_ordered_ne) {
+    int a[] = {1, 2, 3, 4, 5};
+    int b[] = {1, 2, 3, 4, 5};
+
+    ASSERT_ORDERED_NE(a, b); //fails
+
+    int c[] = {5, 4, 3, 2, 1};
+
+    ASSERT_ORDERED_NE(a, c); //passes
+
+    std::vector<int> d = {8, 6, 7, 5, 3, 0, 9};
+    int e[] = {8, 6, 7, 5, 3, 0, 9};
+
+    ASSERT_ORDERED_NE(d, e); //fails
+
+    std::set<std::vector<int>> f = {{1, 2, 3}, {4, 5, 6}};
+    std::set<std::vector<int>> g = {{1, 2, 3}, {4, 5, 6}};
+
+    ASSERT_ORDERED_NE(f, g); //fails
+
+    std::unordered_set<int> h = {1, 2, 3, 4, 5, 6};
+    std::unordered_set<int> i = {1, 2, 3, 4, 5, 6};
+
+    ASSERT_ORDERED_NE(h, i); //undefined behavior, but will most likely fail
+
+    int j[] = {1, 1, 2, 3};
+    int k[] = {1, 2, 3, 3};
+    ASSERT_ORDERED_NE(j, k); //passes because there is a mismatch in counts on 1 and 3
+}
+```
+
+### ASSERT_UNORDERED_NE()
+`ASSERT_UNORDERED_NE(first, second)` takes in two parameters: two iterable containers that satisfy the `ranges` concept whose elements are capable of being compared by the `==` operator. It passes iff `first` and `second` have at least one element that do not pass a comparison by the `==` operator and fails otherwise. Unlike `ASSERT_ORDERED_NE()`, this function can be used on any kind of container, eg. the ones that don't maintain any ordering. Upon failure it will terminate testing for the test suite it was called in.
+
+```
+#include <tester/Tests.hpp>
+#include <vector>
+#include <set>
+#include <unordered_set>
+
+D_TEST(assert_unordered_ne) {
+    int a[] = {1, 2, 3, 4, 5};
+    int b[] = {1, 2, 3, 4, 5};
+
+    ASSERT_UNORDERED_NE(a, b); //fails
+
+    int c[] = {5, 4, 3, 2, 1};
+
+    ASSERT_UNORDERED_NE(a, c); //fails
+
+    std::vector<int> d = {8, 6, 7, 5, 3, 0, 9};
+    int e[] = {8, 6, 7, 5, 3, 0, 9};
+
+    ASSERT_UNORDERED_NE(d, e); //fails
+
+    std::set<std::vector<int>> f = {{1, 2, 3}, {4, 5, 6}};
+    std::set<std::vector<int>> g = {{2, 2, 3}, {4, 5, 6}};
+
+    ASSERT_UNORDERED_NE(f, g); //passes
+
+    std::unordered_set<int> h = {1, 2, 3, 5, 5, 6};
+    std::unordered_set<int> i = {1, 2, 3, 4, 5, 6};
+
+    ASSERT_UNORDERED_NE(h, i); //passes
+
+    int j[] = {1, 1, 2, 3};
+    int k[] = {1, 2, 3, 3};
+    ASSERT_UNORDERED_NE(j, k); //passes
+}
+```
+
+### ASSERT_EMPTY()
+`ASSERT_EMPTY(container)` takes in one parameter, a container with the `size()` method. It passes iff `container.size() == 0` and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+
+```
+#include <tester/Tests.hpp>
+#include <vector>
+#include <set>
+
+D_TEST(assert_empty) {
+    std::vector<int> a = {1, 2, 3, 4, 5};
+    ASSERT_EMPTY(a); //fails
+
+    std::set<int> b = {};
+    ASSERT_EMPTY(b); //passes
+}
+```
+
+### ASSERT_NEMPTY()
+`ASSERT_NEMPTY(container)` takes in one parameter. takes in one parameter, a container with the `size()` method. It passes iff `container.size() != 0` and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+
+```
+#include <tester/Tests.hpp>
+#include <vector>
+#include <set>
+
+D_TEST(assert_nempty) {
+    std::vector<int> a = {1, 2, 3, 4, 5};
+    ASSERT_NEMPTY(a); //passes
+
+    std::set<int> b = {};
+    ASSERT_NEMPTY(b); //fails
+}
+```
+
+### ASSERT_SIZE()
+`ASSERT_SIZE(container, size)` takes in two parameters, takes in one parameter, a container with the `size()` method and a `size_t`. It passes iff `container.size() == size` and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+
+```
+#include <tester/Tests.hpp>
+#include <vector>
+#include <set>
+
+D_TEST(assert_size) {
+    std::vector<int> a = {1, 2, 3, 4, 5};
+    ASSERT_SIZE(a, 5); //passes
+
+    std::set<int> b = {};
+    ASSERT_SIZE(b, 0); //passes
+
+    ASSERT_SIZE(b, 5); //fails
+}
+```
+
+### ASSERT_CONTAINS()
+`ASSERT_CONTAINS(container, value)` takes in two parameters, a `ranges` container and a value to search for. It passes iff `container` contains `value` and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+
+```
+#include <tester/Tests.hpp>
+#include <vector>
+#include <set>
+
+D_TEST(assert_contains) {
+    std::vector<int> a = {1, 2, 3, 4, 5};
+    ASSERT_CONTAINS(a, 5); //passes
+
+    std::set<int> b = {};
+    ASSERT_CONTAINS(b, 11); //fails
+
+    ASSERT_CONTAINS(a, -1); //fails
+}
+```
+
+### ASSERT_DOES_NOT_CONTAIN()
+`ASSERT_DOES_NOT_CONTAIN(container, value)` takes in two parameters, a `ranges` container and a value to search for. It passes iff `container` does not contain `value` and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+
+```
+#include <tester/Tests.hpp>
+#include <vector>
+#include <set>
+
+D_TEST(assert_does_not_contain) {
+    std::vector<int> a = {1, 2, 3, 4, 5};
+    ASSERT_DOES_NOT_CONTAIN(a, 5); //fails
+
+    std::set<int> b = {};
+    ASSERT_DOES_NOT_CONTAIN(b, 11); //passes
+
+    ASSERT_DOES_NOT_CONTAIN(a, -1); //passes
+}
+```
+
+### EXPECT_ORDERED_EQ()
+`EXPECT_ORDERED_EQ(first, second)` takes in two arguments: two iterable containers. The two containers do not necessarily have to be the same type. However, you are responsible for passing in the correct container types into the function. Ie, passing in unordered containers such as `unordered_map` and `unordered_set` are not guaranteed to work properly. This test passes iff every element in each container are `==` at the same index, and fails otherwise. This test will also automatically fail when given two containers with different item counts.
+
+```
+#include <tester/Tests.hpp>
+#include <vector>
+#include <set>
+#include <unordered_set>
+
+D_TEST(expect_ordered_eq) {
+    int a[] = {1, 2, 3, 4, 5};
+    int b[] = {1, 2, 3, 4, 5};
+
+    EXPECT_ORDERED_EQ(a, b); //passes
+
+    int c[] = {5, 4, 3, 2, 1};
+
+    EXPECT_ORDERED_EQ(a, c); // fails
+
+    std::vector<int> d = {8, 6, 7, 5, 3, 0, 9};
+    int e[] = {8, 6, 7, 5, 3, 0, 9};
+
+    EXPECT_ORDERED_EQ(d, e); //passes
+
+    std::set<std::vector<int>> f = {{1, 2, 3}, {4, 5, 6}};
+    std::set<std::vector<int>> g = {{1, 2, 3}, {4, 5, 6}};
+
+    EXPECT_ORDERED_EQ(f, g); //passes
+
+    std::unordered_set<int> h = {1, 2, 3, 4, 5, 6};
+    std::unordered_set<int> i = {1, 2, 3, 4, 5, 6};
+
+    EXPECT_ORDERED_EQ(h, i); //undefined behavior, but most likely to fail
+}
+```
+
+### EXPECT_UNORDERED_EQ()
+`EXPECT_UNORDERED_EQ(first, second)` takes in two arguments: two iterable containers. The two containers do not necessarily have to be the same type. This test can take in any kind of container, ordered or unordered, in fact, when this test is used on ordered containers, its behavior is the same as `EXPECT_ORDERED_EQ()`. This test passes iff both containers have the same elements (as defined by `==`) and the same count of each element, regardless of indexing, and fails otherwise. This test will also automatically fail when given two containers with different item counts.
+
+```
+#include <tester/Tests.hpp>
+#include <vector>
+#include <set>
+#include <unordered_set>
+
+D_TEST(expect_ordered_eq) {
+    int a[] = {1, 2, 3, 4, 5};
+    int b[] = {1, 2, 3, 4, 5};
+
+    EXPECT_UNORDERED_EQ(a, b); //passes
+
+    int c[] = {5, 4, 3, 2, 1};
+
+    EXPECT_UNORDERED_EQ(a, c); // passes
+
+    std::vector<int> d = {8, 6, 7, 5, 3, 0, 9};
+    int e[] = {8, 6, 7, 5, 3, 0, 9};
+
+    EXPECT_UNORDERED_EQ(d, e); //passes
+
+    std::set<std::vector<int>> f = {{1, 2, 3}, {4, 5, 6}};
+    std::set<std::vector<int>> g = {{1, 2, 3}, {4, 5, 6}};
+
+    EXPECT_UNORDERED_EQ(f, g); //passes
+
+    std::unordered_set<int> h = {1, 2, 3, 4, 5, 6};
+    std::unordered_set<int> i = {1, 2, 3, 4, 5, 6};
+
+    EXPECT_UNORDERED_EQ(h, i); //passes, unlike EXPECT_ORDERED_EQ()
+
+    int j[] = {1, 1, 2, 3};
+    int k[] = {1, 2, 3, 3};
+    EXPECT_UNORDERED_EQ(j, k); //fails because there is a mismatch in counts on 1 and 3
+}
+```
+
+### EXPECT_ORDERED_NE()
+`EXPECT_ORDERED_NE(first, second)` takes in two parameters: two iterable containers that satisfy the `ranges` concept whose elements are capable of being compared by the `==` operator. It passes iff `first` and `second` have at least one element that do not pass a comparison by the `==` operator and fails otherwise. This function should only be called on containers that have some deterministic method of ordering its elements, ie, passing in `unordered` containers yields undefined behavior.
+
+```
+#include <tester/Tests.hpp>
+#include <vector>
+#include <set>
+#include <unordered_set>
+
+D_TEST(expect_ordered_ne) {
+    int a[] = {1, 2, 3, 4, 5};
+    int b[] = {1, 2, 3, 4, 5};
+
+    EXPECT_ORDERED_NE(a, b); //fails
+
+    int c[] = {5, 4, 3, 2, 1};
+
+    EXPECT_ORDERED_NE(a, c); //passes
+
+    std::vector<int> d = {8, 6, 7, 5, 3, 0, 9};
+    int e[] = {8, 6, 7, 5, 3, 0, 9};
+
+    EXPECT_ORDERED_NE(d, e); //fails
+
+    std::set<std::vector<int>> f = {{1, 2, 3}, {4, 5, 6}};
+    std::set<std::vector<int>> g = {{1, 2, 3}, {4, 5, 6}};
+
+    EXPECT_ORDERED_NE(f, g); //fails
+
+    std::unordered_set<int> h = {1, 2, 3, 4, 5, 6};
+    std::unordered_set<int> i = {1, 2, 3, 4, 5, 6};
+
+    EXPECT_ORDERED_NE(h, i); //undefined behavior, but will most likely fail
+
+    int j[] = {1, 1, 2, 3};
+    int k[] = {1, 2, 3, 3};
+    EXPECT_ORDERED_NE(j, k); //passes because there is a mismatch in counts on 1 and 3
+}
+```
+
+### EXPECT_UNORDERED_NE()
+`EXPECT_UNORDERED_NE(first, second)` takes in two parameters: two iterable containers that satisfy the `ranges` concept whose elements are capable of being compared by the `==` operator. It passes iff `first` and `second` have at least one element that do not pass a comparison by the `==` operator and fails otherwise. Unlike `ASSERT_ORDERED_NE()`, this function can be used on any kind of container, eg. the ones that don't maintain any ordering.
+
+```
+#include <tester/Tests.hpp>
+#include <vector>
+#include <set>
+#include <unordered_set>
+
+D_TEST(expect_unordered_ne) {
+    int a[] = {1, 2, 3, 4, 5};
+    int b[] = {1, 2, 3, 4, 5};
+
+    EXPECT_UNORDERED_NE(a, b); //fails
+
+    int c[] = {5, 4, 3, 2, 1};
+
+    EXPECT_UNORDERED_NE(a, c); //fails
+
+    std::vector<int> d = {8, 6, 7, 5, 3, 0, 9};
+    int e[] = {8, 6, 7, 5, 3, 0, 9};
+
+    EXPECT_UNORDERED_NE(d, e); //fails
+
+    std::set<std::vector<int>> f = {{1, 2, 3}, {4, 5, 6}};
+    std::set<std::vector<int>> g = {{2, 2, 3}, {4, 5, 6}};
+
+    EXPECT_UNORDERED_NE(f, g); //passes
+
+    std::unordered_set<int> h = {1, 2, 3, 5, 5, 6};
+    std::unordered_set<int> i = {1, 2, 3, 4, 5, 6};
+
+    EXPECT_UNORDERED_NE(h, i); //passes
+
+    int j[] = {1, 1, 2, 3};
+    int k[] = {1, 2, 3, 3};
+    EXPECT_UNORDERED_NE(j, k); //passes
+}
+```
+
+### EXPECT_EMPTY()
+`EXPECT_EMPTY(container)` takes in one parameter, a container with the `size()` method. It passes iff `container.size() == 0` and fails otherwise.
+
+```
+#include <tester/Tests.hpp>
+#include <vector>
+#include <set>
+
+D_TEST(expect_empty) {
+    std::vector<int> a = {1, 2, 3, 4, 5};
+    EXPECT_EMPTY(a); //fails
+
+    std::set<int> b = {};
+    EXPECT_EMPTY(b); //passes
+}
+```
+
+### EXPECT_NEMPTY()
+`EXPECT_NEMPTY(container)` takes in one parameter. takes in one parameter, a container with the `size()` method. It passes iff `container.size() != 0` and fails otherwise.
+
+```
+#include <tester/Tests.hpp>
+#include <vector>
+#include <set>
+
+D_TEST(expect_nempty) {
+    std::vector<int> a = {1, 2, 3, 4, 5};
+    EXPECT_NEMPTY(a); //passes
+
+    std::set<int> b = {};
+    EXPECT_NEMPTY(b); //fails
+}
+```
+
+### EXPECT_SIZE()
+`EXPECT_SIZE(container, size)` takes in two parameters, takes in one parameter, a container with the `size()` method and a `size_t`. It passes iff `container.size() == size` and fails otherwise. 
+
+```
+#include <tester/Tests.hpp>
+#include <vector>
+#include <set>
+
+D_TEST(expect_size) {
+    std::vector<int> a = {1, 2, 3, 4, 5};
+    EXPECT_SIZE(a, 5); //passes
+
+    std::set<int> b = {};
+    EXPECT_SIZE(b, 0); //passes
+
+    EXPECT_SIZE(b, 5); //fails
+}
+```
+
+### EXPECT_CONTAINS()
+`EXPECT_CONTAINS(container, value)` takes in two parameters, a `ranges` container and a value to search for. It passes iff `container` contains `value` and fails otherwise. 
+
+```
+#include <tester/Tests.hpp>
+#include <vector>
+#include <set>
+
+D_TEST(expect_contains) {
+    std::vector<int> a = {1, 2, 3, 4, 5};
+    EXPECT_CONTAINS(a, 5); //passes
+
+    std::set<int> b = {};
+    EXPECT_CONTAINS(b, 11); //fails
+
+    EXPECT_CONTAINS(a, -1); //fails
+}
+```
+
+### EXPECT_DOES_NOT_CONTAIN()
+`EXPECT_DOES_NOT_CONTAIN(container, value)` takes in two parameters, a `ranges` container and a value to search for. It passes iff `container` does not contain `value` and fails otherwise.
+
+```
+#include <tester/Tests.hpp>
+#include <vector>
+#include <set>
+
+D_TEST(expect_does_not_contain) {
+    std::vector<int> a = {1, 2, 3, 4, 5};
+    EXPECT_DOES_NOT_CONTAIN(a, 5); //fails
+
+    std::set<int> b = {};
+    EXPECT_DOES_NOT_CONTAIN(b, 11); //passes
+
+    EXPECT_DOES_NOT_CONTAIN(a, -1); //passes
+}
+```
+
+## Meta Tests
+Meta tests are used to see if a test will pass/fail. Ie, these are tests to ensure that tests are working. It is very important that you do not pass in random functions. These tests also have the capability of defining new tests, in a sense. For instance, there is no `STRING_DOES_NOT_CONTAIN()` test, however, you could combine `ASSERT_STRING_CONTAINS()` with `ASSERT_FAILS()` to create one that would have a similar functionality to what an `ASSERT_STRING_DOES_NOT_CONTAIN()` test would have.
+There is an extra meta test `*_FAILS_WITH_MSG()`, however, since the error messaging could change, this test will remain undocumented and shouldn't really be used.
+
+1. [Assert Passes](#assert_passes)
+2. [Assert Fails](#assert_fails)
+3. [Expect Passes](#expect_passes)
+4. [Expect Fails](#expect_fails)
+
+### ASSERT_PASSES()
+`ASSERT_PASSES(test)` takes in one parameter, which is a test. It passes iff the passed in test passes, and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+
+```
+#include <tester/Tests.hpp>
+
+void gonnaBreakThings() { }
+
+//this is a simple example, but it gets the point across
+D_TEST(assert_passes) {
+    ASSERT_PASSES(EXPECT_TRUE(true)); //passes
+    ASSERT_PASSES(EXPECT_TRUE(false)); //fails
+    ASSERT_PASSES(gonnaBreakThings()); //don't do this, but it would pass 
+
+    //fails, but the nested ASSERT_TRUE failing DOES NOT terminate testing for the rest of the suite
+    ASSERT_PASSES(ASSERT_TRUE(false)); 
+}
+```
+
+### ASSERT_FAILS()
+`EXPECT_FAILS(test)` takes in one parameter, which is a test. It passes iff the passed in test fails, and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+
+```
+#include <tester/Tests.hpp>
+
+void gonnaBreakThings() { }
+
+//this is a simple example, but it gets the point across
+D_TEST(assert_fails) {
+    ASSERT_FAILS(EXPECT_TRUE(true)); //fails
+    ASSERT_FAILS(EXPECT_TRUE(false)); //would pass
+    ASSERT_FAILS(gonnaBreakThings()); //don't do this, but it would fail
+    ASSERT_FAILS(ASSERT_TRUE(true)); //fails
+}
+```
+
+### EXPECT_PASSES()
+`EXPECT_PASSES(test)` takes in one parameter, which is a test. It passes iff the passed in test passes, and fails otherwise.
+
+```
+#include <tester/Tests.hpp>
+
+void gonnaBreakThings() { }
+
+//this is a simple example, but it gets the point across
+D_TEST(expect_passes) {
+    EXPECT_PASSES(EXPECT_TRUE(true)); //passes
+    EXPECT_PASSES(EXPECT_TRUE(false)); //fails
+    EXPECT_PASSES(gonnaBreakThings()); //don't do this, but it would pass 
+
+    //fails, but ASSERT_TRUE failing DOES NOT terminate testing for the rest of the suite
+    EXPECT_PASSES(ASSERT_TRUE(false)); 
+}
+```
+
+### EXPECT_FAILS()
+`EXPECT_FAILS(test)` takes in one parameter, which is a test. It passes iff the passed in test fails, and fails otherwise.
+
+```
+#include <tester/Tests.hpp>
+
+void gonnaBreakThings() { }
+
+//this is a simple example, but it gets the point across
+D_TEST(expect_fails) {
+    EXPECT_FAILS(EXPECT_TRUE(true)); //fails
+    EXPECT_FAILS(EXPECT_TRUE(false)); //passes
+    EXPECT_FAILS(gonnaBreakThings()); //don't do this, but it would fail
+    EXPECT_FAILS(ASSERT_TRUE(true)); 
+}
+```
+
 ## Null Tests
 Null tests are used to check if a value is equal to the `nullptr` or not. Since it checks solely for the `nullptr`, passing in the macro `NULL` is not a valid parameter type for any of the test. 
 
@@ -550,6 +1563,383 @@ D_TEST(assert_null) {
     void*& ref = ptr;
     EXPECT_NOT_NULL(ref) //fails
     EXPECT_NOT_NULL(NULL) //doesn't even compile
+}
+```
+
+## Predicate Tests
+Predicate tests are used to test containers and arrays to see if every element, some elements, or no elements satisfy a given condition.
+
+1. [Assert All](#assert_all)
+2. [Assert Some](#assert_some)
+3. [Assert None](#assert_none)
+4. [Expect All](#expect_all)
+5. [Expect Some](#expect_some)
+6. [Expect None](#expect_none)
+
+### ASSERT_ALL()
+`ASSERT_ALL(container, condition)` takes in two parameters: a container and an anonymous function that returns a boolean value. The container does not have to be an `stl` container, ie. arrays are fine as well. This test passes iff every element in `container` passes the `condition` and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+
+```
+#include <tester/Tests.hpp>
+#include <vector>
+
+D_TEST(assert_all) {
+    std::vector<int> a = {1, 2, 2, 3, 4};
+
+    ASSERT_ALL(a, [](int x) { return x > 0; }); //passes
+
+    ASSERT_ALL(a, [](int x) { return x & 1; }); //fails since there are even elements
+}
+```
+
+### ASSERT_SOME
+`ASSERT_SOME(container, condition)` takes in two parameters: a container and an anonymous function that returns a boolean value. The container does not have to be an `stl` container, ie. arrays are fine as well. This test passes iff at least one element in `container` passes the `condition` and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+
+```
+#include <tester/Tests.hpp>
+#include <vector>
+
+D_TEST(assert_some) {
+    std::vector<int> a = {1, 2, 2, 3, 4};
+
+    ASSERT_SOME(a, [](int x) { return x > 0; }); //passes
+
+    ASSERT_SOME(a, [](int x) { return x & 1; }); //passes since there is at least one odd element
+
+    ASSERT_SOME(a, [](int x) {return x > 10; }) //fails because none of the elements are larger than 10
+}
+```
+
+### ASSERT_NONE
+`ASSERT_NONE(container, condition)` takes in two parameters: a container and an anonymous function that returns a boolean value. The container does not have to be an `stl` container, ie. arrays are fine as well. This test passes iff no element in `container` passes the `condition` and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+
+```
+#include <tester/Tests.hpp>
+#include <vector>
+
+D_TEST(assert_none) {
+    std::vector<int> a = {1, 2, 2, 3, 4};
+
+    ASSERT_NONE(a, [](int x) { return x > 0; }); //fails because every element satisfies this condition
+
+    ASSERT_NONE(a, [](int x) { return x & 1; }); //passes since some elements satisfies this condition
+
+    ASSERT_NONE(a, [](int x) {return x > 10; }) //passes because none of the elements are larger than 10
+}
+```
+
+### EXPECT_ALL()
+`EXPECT_ALL(container, condition)` takes in two parameters: a container and an anonymous function that returns a boolean value. The container does not have to be an `stl` container, ie. arrays are fine as well. This test passes iff every element in `container` passes the `condition` and fails otherwise. 
+
+```
+#include <tester/Tests.hpp>
+#include <vector>
+
+D_TEST(expect_all) {
+    std::vector<int> a = {1, 2, 2, 3, 4};
+
+    EXPECT_ALL(a, [](int x) { return x > 0; }); //passes
+
+    EXPECT_ALL(a, [](int x) { return x & 1; }); //fails since there are even elements
+}
+```
+
+### EXPECT_SOME
+`EXPECT_SOME(container, condition)` takes in two parameters: a container and an anonymous function that returns a boolean value. The container does not have to be an `stl` container, ie. arrays are fine as well. This test passes iff at least one element in `container` passes the `condition` and fails otherwise.
+```
+#include <tester/Tests.hpp>
+#include <vector>
+
+D_TEST(expect_some) {
+    std::vector<int> a = {1, 2, 2, 3, 4};
+
+    EXPECT_SOME(a, [](int x) { return x > 0; }); //passes
+
+    EXPECT_SOME(a, [](int x) { return x & 1; }); //passes since there is at least one odd element
+
+    EXPECT_SOME(a, [](int x) {return x > 10; }) //fails because none of the elements are larger than 10
+}
+```
+
+### EXPECT_NONE
+`EXPECT_NONE(container, condition)` takes in two parameters: a container and an anonymous function that returns a boolean value. The container does not have to be an `stl` container, ie. arrays are fine as well. This test passes iff no element in `container` passes the `condition` and fails otherwise. 
+
+```
+#include <tester/Tests.hpp>
+#include <vector>
+
+D_TEST(expect_none) {
+    std::vector<int> a = {1, 2, 2, 3, 4};
+
+    EXPECT_NONE(a, [](int x) { return x > 0; }); //fails because every element satisfies this condition
+
+    EXPECT_NONE(a, [](int x) { return x & 1; }); //passes since some elements satisfies this condition
+
+    EXPECT_NONE(a, [](int x) {return x > 10; }) //passes because none of the elements are larger than 10
+}
+```
+
+## Set Tests
+Set tests are used on containers that satisfy the `ranges` concept. They can be used on containers other than `set` and `unordered_set`. The name "set" just means that we perform set operations on containers as if they were mathematical sets.
+
+1. [Assert Set Equals](#assert_set_eq)
+2. [Assert Set Not Equals](#assert_set_ne)
+3. [Assert Subset](#assert_subset)
+4. [Assert Superset](#assert_superset)
+5. [Assert Strict Subset](#assert_strict_subset)
+6. [Expect Set Equals](#expect_set_eq)
+7. [Expect Set Not Equals](#expect_set_ne)
+8. [Expect Subset](#expect_subset)
+9. [Expect Superset](#expect_superset)
+10. [Expect Strict Subset](#expect_strict_subset)
+
+### ASSERT_SET_EQ()
+`ASSERT_SET_EQ(first, second)` takes in two parameters, two containers that satisfy the `ranges` concept. This test passes iff `first` and `second` contain the same elements, REGARDLESS of counts, and fails otherwise. Note that this indifference of counts is a big criterion that separates this test from `ASSERT_UNORDERED_EQ()`. Upon failure it will terminate testing for the test suite it was called in.
+
+```
+#include <tester/Tests.hpp>
+#include <vector>
+#include <unordered_set>
+
+//this is a simple example, but it gets the point across
+D_TEST(assert_set_eq) {
+    std::vector<int> a = {1, 2, 2, 3, 4};
+    std::vector<int> b = {1, 2, 3, 4};
+
+    ASSERT_SET_EQ(a, b); //passes
+
+    std::unordered_set<int> c = {1, 2, 3, 4};
+
+    ASSERT_SET_EQ(a, c); //passes
+
+    std::unordered_set<int> d = {1, 2, 3};
+    ASSERT_SET_EQ(b, d); //fails
+}
+```
+
+### ASSERT_SET_NE()
+`ASSERT_SET_NE(first, second)` takes in two parameters, two containers that satisfy the `ranges` concept. This test passes iff `first` and `second` has at least one differing element, REGARDLESS of counts, and fails otherwise. Note that this indifference of counts is a big criterion that separates this test from `ASSERT_UNORDERED_NE()`. Upon failure it will terminate testing for the test suite it was called in.
+
+```
+#include <tester/Tests.hpp>
+#include <vector>
+#include <unordered_set>
+
+//this is a simple example, but it gets the point across
+D_TEST(assert_set_ne) {
+    std::vector<int> a = {1, 2, 2, 3, 4};
+    std::vector<int> b = {1, 2, 3, 4};
+
+    ASSERT_SET_NE(a, b); //fails
+
+    std::unordered_set<int> c = {1, 2, 3, 4};
+
+    ASSERT_SET_NE(a, c); //fails
+
+    std::unordered_set<int> d = {1, 2, 3};
+    ASSERT_SET_NE(b, d); //passes
+}
+```
+
+### ASSERT_SUBSET()
+`ASSERT_SUBSET(first, second)` takes in two parameters, two containers that satisfy the `ranges` concept. This test passes iff every element in `first` appears in `second` REGARDLESS of counts, and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+
+```
+#include <tester/Tests.hpp>
+#include <vector>
+#include <unordered_set>
+
+D_TEST(assert_subset) {
+    std::vector<int> a = {1, 2, 2, 3, 4};
+    std::vector<int> b = {1, 2, 3, 4};
+
+    ASSERT_SUBSET(a, b); //passes
+
+    std::unordered_set<int> c = {1, 2, 3, 4};
+
+    ASSERT_SUBSET(a, c); //passes
+
+    std::unordered_set<int> d = {1, 2, 3};
+    ASSERT_SUBSET(b, d); //fails
+}
+```
+
+### ASSERT_SUPERSET()
+`ASSERT_SUPERSET(first, second)` takes in two parameters, two containers that satisfy the `ranges` concept. This test passes iff every element in `second` appears in `first` REGARDLESS of counts, and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+
+```
+#include <tester/Tests.hpp>
+#include <vector>
+#include <unordered_set>
+
+D_TEST(assert_superset) {
+    std::vector<int> a = {1, 2, 2, 3, 4};
+    std::vector<int> b = {1, 2, 3, 4};
+
+    ASSERT_SUPERSET(a, b); //passes
+
+    std::unordered_set<int> c = {1, 2, 3, 4};
+
+    ASSERT_SUPERSET(a, c); //passes
+
+    std::unordered_set<int> d = {1, 2, 3};
+    ASSERT_SUPERSET(b, d); //passes
+
+    std::vector<int> e = {5};
+    ASSERT_SUPER_SET(c, e); //fails
+}
+```
+
+### ASSERT_STRICT_SUBSET()
+`ASSERT_STRICT_SUBSET(first, second)` takes in two parameters, two containers that satisfy the `ranges` concept. This test passes iff every element in `first` appears in `second`, and there is at least one element in `second` that does not appear in `first`, REGARDLESS of counts, and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+
+```
+#include <tester/Tests.hpp>
+#include <vector>
+#include <unordered_set>
+
+D_TEST(assert_strict_subset) {
+    std::vector<int> a = {1, 2, 2, 3, 4};
+    std::vector<int> b = {1, 2, 3, 4};
+
+    ASSERT_STRICT_SUBSET(a, b); //fails
+    ASSERT_STRICT_SUBSET(b, a); //fails
+
+    std::unordered_set<int> c = {1, 2, 3, 4};
+
+    ASSERT_STRICT_SUBSET(a, c); //fails
+
+    std::unordered_set<int> d = {1, 2, 3};
+    ASSERT_STRICT_SUBSET(b, d); //fails
+    ASSERT_STRICT_SUBSET(d, b); //passes
+
+    std::vector<int> e = {5};
+    ASSERT_STRICT_SUBSET(c, e); //fails
+}
+```
+
+### EXPECT_SET_EQ()
+`EXPECT_SET_EQ(first, second)` takes in two parameters, two containers that satisfy the `ranges` concept. This test passes iff `first` and `second` contain the same elements, REGARDLESS of counts, and fails otherwise. Note that this indifference of counts is a big criterion that separates this test from `EXPECT_UNORDERED_EQ()`.
+
+```
+#include <tester/Tests.hpp>
+#include <vector>
+#include <unordered_set>
+
+//this is a simple example, but it gets the point across
+D_TEST(expect_set_eq) {
+    std::vector<int> a = {1, 2, 2, 3, 4};
+    std::vector<int> b = {1, 2, 3, 4};
+
+    EXPECT_SET_EQ(a, b); //passes
+
+    std::unordered_set<int> c = {1, 2, 3, 4};
+
+    EXPECT_SET_EQ(a, c); //passes
+
+    std::unordered_set<int> d = {1, 2, 3};
+    EXPECT_SET_EQ(b, d); //fails
+}
+```
+
+### EXPECT_SET_NE()
+`EXPECT_SET_NE(first, second)` takes in two parameters, two containers that satisfy the `ranges` concept. This test passes iff `first` and `second` has at least one differing element, REGARDLESS of counts, and fails otherwise. Note that this indifference of counts is a big criterion that separates this test from `EXPECT_UNORDERED_NE()`.
+
+```
+#include <tester/Tests.hpp>
+#include <vector>
+#include <unordered_set>
+
+//this is a simple example, but it gets the point across
+D_TEST(expect_set_ne) {
+    std::vector<int> a = {1, 2, 2, 3, 4};
+    std::vector<int> b = {1, 2, 3, 4};
+
+    EXPECT_SET_NE(a, b); //fails
+
+    std::unordered_set<int> c = {1, 2, 3, 4};
+
+    EXPECT_SET_NE(a, c); //fails
+
+    std::unordered_set<int> d = {1, 2, 3};
+    EXPECT_SET_NE(b, d); //passes
+}
+```
+
+### EXPECT_SUBSET()
+`EXPECT_SUBSET(first, second)` takes in two parameters, two containers that satisfy the `ranges` concept. This test passes iff every element in `first` appears in `second` REGARDLESS of counts, and fails otherwise.
+
+```
+#include <tester/Tests.hpp>
+#include <vector>
+#include <unordered_set>
+
+D_TEST(expect_subset) {
+    std::vector<int> a = {1, 2, 2, 3, 4};
+    std::vector<int> b = {1, 2, 3, 4};
+
+    EXPECT_SUBSET(a, b); //passes
+
+    std::unordered_set<int> c = {1, 2, 3, 4};
+
+    EXPECT_SUBSET(a, c); //passes
+
+    std::unordered_set<int> d = {1, 2, 3};
+    EXPECT_SUBSET(b, d); //fails
+}
+```
+
+### EXPECT_SUPERSET()
+`EXPECT_SUPERSET(first, second)` takes in two parameters, two containers that satisfy the `ranges` concept. This test passes iff every element in `second` appears in `first` REGARDLESS of counts, and fails otherwise. 
+
+```
+#include <tester/Tests.hpp>
+#include <vector>
+#include <unordered_set>
+
+D_TEST(expect_superset) {
+    std::vector<int> a = {1, 2, 2, 3, 4};
+    std::vector<int> b = {1, 2, 3, 4};
+
+    EXPECT_SUPERSET(a, b); //passes
+
+    std::unordered_set<int> c = {1, 2, 3, 4};
+
+    EXPECT_SUPERSET(a, c); //passes
+
+    std::unordered_set<int> d = {1, 2, 3};
+    EXPECT_SUPERSET(b, d); //passes
+
+    std::vector<int> e = {5};
+    EXPECT_SUPER_SET(c, e); //fails
+}
+```
+
+### EXPECT_STRICT_SUBSET()
+`EXPECT_STRICT_SUBSET(first, second)` takes in two parameters, two containers that satisfy the `ranges` concept. This test passes iff every element in `first` appears in `second`, and there is at least one element in `second` that does not appear in `first`, REGARDLESS of counts, and fails otherwise.
+
+```
+#include <tester/Tests.hpp>
+#include <vector>
+#include <unordered_set>
+
+D_TEST(expect_strict_subset) {
+    std::vector<int> a = {1, 2, 2, 3, 4};
+    std::vector<int> b = {1, 2, 3, 4};
+
+    EXPECT_STRICT_SUBSET(a, b); //fails
+    EXPECT_STRICT_SUBSET(b, a); //fails
+
+    std::unordered_set<int> c = {1, 2, 3, 4};
+
+    EXPECT_STRICT_SUBSET(a, c); //fails
+
+    std::unordered_set<int> d = {1, 2, 3};
+    EXPECT_STRICT_SUBSET(b, d); //fails
+    EXPECT_STRICT_SUBSET(d, b); //passes
+
+    std::vector<int> e = {5};
+    EXPECT_STRICT_SUBSET(c, e); //fails
 }
 ```
 
@@ -1636,1296 +3026,5 @@ D_TEST(expect_throws_with_message) {
     EXPECT_THROWS_MSG(dumbFunc, "hi"); //fails
     EXPECT_THROWS_MSG(throwsException(), "This is a bad argument"); //passes
     EXPECT_THROWS_MSG(throwString, "hi"); //passes
-}
-```
-
-## Float Tests
-Float tests are used to check something about a float, generally absolute/relative tolerance. These can also be used to check for `NaN`. Each test can take in any combination of floating point types. Ie, for tests that take in multiple floating point values, it's possible to mix the type parameters (eg. pass in a `float` and `double`). In this case, they are cast to the common floating point type and these commonly cast versions are used in the tests.
-
-1. [Assert Near](#assert_near)
-2. [Assert Absolutely Near](#assert_abs_near)
-3. [Assert Relatively Near](#assert_rel_near)
-4. [Assert NaN](#assert_nan)
-5. [Assert Not NaN](#assert_not_nan)
-6. [Assert Infinity](#assert_inf)
-7. [Assert Positive Infinity](#assert_pos_inf)
-8. [Assert Negative Infinity](#assert_neg_inf)
-9. [Expect Near](#expect_near)
-10. [Expect Absolutely Near](#expect_abs_near)
-11. [Expect Relatively Near](#expect_rel_near)
-12. [Expect NaN](#expect_nan)
-13. [Expect Not NaN](#expect_not_nan)
-14. [Expect Infinity](#expect_inf)
-15. [Expect Positive Infinity](#expect_pos_inf)
-16. [Expect Negative Infinity](#expect_neg_inf)
-
-### ASSERT_NEAR()
-`ASSERT_NEAR(a, b, abs_tol, rel_tol)` takes in up to four arguments. `a` and `b` are two floating point values of any two floating point types. `abs_tol` is the absolute tolerance that should be between `a` and `b`. `rel_tol` is an optional parameter that defines how relatively near `a` and `b` should be.
-
-In the case that `rel_tol` is not provided, this test becomes the same as [Assert Absolutely Near](#assert_abs_near). 
-
-In the case that `rel_tol` is provided, this test passes iff `|a - b| <= max(|abs_tol|, |rel_tol| * max(|a|, |b|))`. That is, the absolute difference of `a` and `b` must be smaller than the larger of the absolute value of `abs_tol` and the product of the absolute value of `rel_tol` and the larger of `|a|` and `|b|`. Upon failure it will terminate testing for the test suite it was called in.
-
-```
-#include <tester/Tests.hpp>
-
-TEST(assert_near, three_param) {
-    float a = 5.0;
-    double b = 6.0;
-    long double abs_tol = 0.01;
-
-    ASSERT_NEAR(a, b, abs_tol); //fails
-}
-
-TEST(assert_near, four_param) {
-    float a = 5.0;
-    double b = 6.0;
-    long double abs_tol = 0.01;
-    long double rel_tol_pass = 0.5;
-    long double rel_tol_fail = 0.05;
-
-    ASSERT_NEAR(a, b, abs_tol, rel_tol_pass); //passes
-    ASSERT_NEAR(a, b, abs_tol, rel_tol_fail); //fails
-}
-```
-
-### ASSERT_ABS_NEAR()
-`ASSERT_ABS_NEAR(a, b, abs_tol)` takes in three arguments. `a` and `b` are two floating point values of an two floating point types. `abs_tol` defines the maximum difference `a` and `b` can be from each other. This test passes iff `|a - b| <= |abs_tol|`. That is, the absolute difference of `a` and `b` must be smaller than the absolute value of `abs_tol`. Upon failure it will terminate testing for the test suite it was called in.
-
-```
-#include <tester/Tests.hpp>
-
-D_TEST(assert_abs_near) {
-    float a = 5.0;
-    double b = 6.0;
-    long double abs_tol = 2.0;
-
-    ASSERT_ABS_NEAR(a, b, abs_tol); //passes
-
-    long double abs_tol_two = 0.5;
-    ASSERT_ABS_NEAR(a, b, abs_tol_two); //fails because |a - b| > 0.5
-}
-```
-
-### ASSERT_REL_NEAR()
-`ASSERT_REL_NEAR(a, b, rel_tol)` takes in three arguments. `a` and `b` are two floating point values of an two floating point types. `rel_tol` defines how relatively near `a` and `b` should be. This test passes iff `|a - b| <= |rel_tol| * max(|a|, |b|)`. That is, the absolute difference of `a` and `b` must be smaller than the product of `rel_tol` and the larger of `|a|` and `|b|`. Upon failure it will terminate testing for the test suite it was called in.
-
-```
-#include <tester/Tests.hpp>
-
-D_TEST(assert_rel_near) {
-    float a = 5.0;
-    double b = 6.0;
-    long double rel_tol = 0.5;
-
-    ASSERT_REL_NEAR(a, b, rel_tol); //passes
-
-    long double rel_tol_two = 0.1;
-    ASSERT_REL_NEAR(a, b, rel_tol_two); //fails because 0.1 * 0.6 = 0.06 < |a - b|
-}
-```
-
-### ASSERT_NAN()
-`ASSERT_NAN(a)` takes in one parameter, `a`, which is a floating point value. It passes iff `a` is equivalent to `NAN` and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
-
-```
-#include <tester/Tests.hpp>
-
-D_TEST(assert_nan) {
-    float a = 5.0;
-
-    ASSERT_NAN(a); //fails
-}
-```
-
-### ASSERT_NOT_NAN()
-`ASSERT_NOT_NAN(a)` takes in one parameter, `a`, which is a floating point value. It passes iff `a` is not equivalent to `NAN` and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
-
-```
-#include <tester/Tests.hpp>
-
-D_TEST(assert_nan) {
-    float a = 5.0;
-
-    ASSERT_NOT_NAN(a); //passes
-}
-```
-
-### ASSERT_INF()
-`ASSERT_INF(number)` takes in one parameter, a floating point value. If passes iff `number` is positive infinity or negative infinity and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
-
-```
-#include <tester/Tests.hpp>
-
-D_TEST(assert_int) {
-    float a = 5.0;
-
-    ASSERT_INF(a); //fails
-
-    double b = std::numeric_limits<double>::infinity();
-
-    ASSERT_INF(b); //passes
-
-    float c = -std::numeric_limits<double>::infinity();
-
-    ASSERT_INF(c); //passes
-}
-```
-
-### ASSERT_POS_INF()
-`ASSERT_POS_INF(number)` takes in one parameter, a floating point value. If passes iff `number` is positive infinity and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
-
-```
-#include <tester/Tests.hpp>
-
-D_TEST(assert_pos_int) {
-    float a = 5.0;
-
-    ASSERT_POS_INF(a); //fails
-
-    double b = std::numeric_limits<double>::infinity();
-
-    ASSERT_POS_INF(b); //passes
-
-    float c = -std::numeric_limits<double>::infinity();
-
-    ASSERT_POS_INF(c); //fails
-}
-```
-
-### ASSERT_NEG_INF()
-`ASSERT_NEG_INF(number)` takes in one parameter, a floating point value. If passes iff `number` is negative infinity and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
-
-```
-#include <tester/Tests.hpp>
-
-D_TEST(assert_neg_int) {
-    float a = 5.0;
-
-    ASSERT_NEG_INF(a); //fails
-
-    double b = std::numeric_limits<double>::infinity();
-
-    ASSERT_NEG_INF(b); //fails
-
-    float c = -std::numeric_limits<double>::infinity();
-
-    ASSERT_NEG_INF(c); //passes
-}
-```
-
-### EXPECT_NEAR()
-`EXPECT_NEAR(a, b, abs_tol, rel_tol)` takes in up to four arguments. `a` and `b` are two floating point values of any two floating point types. `abs_tol` is the absolute tolerance that should be between `a` and `b`. `rel_tol` is an optional parameter that defines how relatively near `a` and `b` should be.
-
-In the case that `rel_tol` is not provided, this test becomes the same as [Expect Absolutely Near](#expect_abs_near). 
-
-In the case that `rel_tol` is provided, this test passes iff `|a - b| <= max(|abs_tol|, |rel_tol| * max(|a|, |b|))`. That is, the absolute difference of `a` and `b` must be smaller than the larger of the absolute value of `abs_tol` and the product of the absolute value of `rel_tol` and the larger of `|a|` and `|b|`.
-
-```
-#include <tester/Tests.hpp>
-
-TEST(expect_near, three_param) {
-    float a = 5.0;
-    double b = 6.0;
-    long double abs_tol = 0.01;
-
-    EXPECT_NEAR(a, b, abs_tol); //fails
-}
-
-TEST(expect_near, four_param) {
-    float a = 5.0;
-    double b = 6.0;
-    long double abs_tol = 0.01;
-    long double rel_tol_pass = 0.5;
-    long double rel_tol_fail = 0.05;
-
-    EXPECT_NEAR(a, b, abs_tol, rel_tol_pass); //passes
-    EXPECT_NEAR(a, b, abs_tol, rel_tol_fail); //fails
-}
-```
-
-### EXPECT_ABS_NEAR()
-`EXPECT_ABS_NEAR(a, b, abs_tol)` takes in three arguments. `a` and `b` are two floating point values of an two floating point types. `abs_tol` defines the maximum difference `a` and `b` can be from each other. This test passes iff `|a - b| <= |abs_tol|`. That is, the absolute difference of `a` and `b` must be smaller than the absolute value of `abs_tol`.
-
-```
-#include <tester/Tests.hpp>
-
-D_TEST(expect_abs_near) {
-    float a = 5.0;
-    double b = 6.0;
-    long double abs_tol = 2.0;
-
-    EXPECT_ABS_NEAR(a, b, abs_tol); //passes
-
-    long double abs_tol_two = 0.5;
-    EXPECT_ABS_NEAR(a, b, abs_tol_two); //fails because |a - b| > 0.5
-}
-```
-
-### EXPECT_REL_NEAR()
-`EXPECT_REL_NEAR(a, b, rel_tol)` takes in three arguments. `a` and `b` are two floating point values of an two floating point types. `rel_tol` defines how relatively near `a` and `b` should be. This test passes iff `|a - b| <= |rel_tol| * max(|a|, |b|)`. That is, the absolute difference of `a` and `b` must be smaller than the product of `rel_tol` and the larger of `|a|` and `|b|`.
-
-```
-#include <tester/Tests.hpp>
-
-D_TEST(expect_rel_near) {
-    float a = 5.0;
-    double b = 6.0;
-    long double rel_tol = 0.5;
-
-    EXPECT_REL_NEAR(a, b, rel_tol); //passes
-
-    long double rel_tol_two = 0.1;
-    EXPECT_REL_NEAR(a, b, rel_tol_two); //fails because 0.1 * 0.6 = 0.06 < |a - b|
-}
-```
-
-### EXPECT_NAN()
-`EXPECT_NAN(a)` takes in one parameter, `a`, which is a floating point value. It passes iff `a` is equivalent to `NAN` and fails otherwise.
-
-```
-#include <tester/Tests.hpp>
-
-D_TEST(expect_nan) {
-    float a = 5.0;
-
-    EXPECT_NAN(a); //fails
-}
-```
-
-### EXPECT_NOT_NAN()
-`ASSERT_NOT_NAN(a)` takes in one parameter, `a`, which is a floating point value. It passes iff `a` is not equivalent to `NAN` and fails otherwise.
-
-```
-#include <tester/Tests.hpp>
-
-D_TEST(expect_nan) {
-    float a = 5.0;
-
-    EXPECT_NOT_NAN(a); //passes
-}
-```
-
-### EXPECT_INF()
-`EXPECT_INF(number)` takes in one parameter, a floating point value. If passes iff `number` is positive infinity or negative infinity and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
-
-```
-#include <tester/Tests.hpp>
-
-D_TEST(expect_int) {
-    float a = 5.0;
-
-    EXPECT_INF(a); //fails
-
-    double b = std::numeric_limits<double>::infinity();
-
-    EXPECT_INF(b); //passes
-
-    float c = -std::numeric_limits<double>::infinity();
-
-    EXPECT_INF(c); //passes
-}
-```
-
-### EXPECT_POS_INF()
-`EXPECT_POS_INF(number)` takes in one parameter, a floating point value. If passes iff `number` is positive infinity and fails otherwise.
-
-```
-#include <tester/Tests.hpp>
-
-D_TEST(expect_pos_int) {
-    float a = 5.0;
-
-    EXPECT_POS_INF(a); //fails
-
-    double b = std::numeric_limits<double>::infinity();
-
-    EXPECT_POS_INF(b); //passes
-
-    float c = -std::numeric_limits<double>::infinity();
-
-    EXPECT_POS_INF(c); //fails
-}
-```
-
-### EXPECT_NEG_INF()
-`EXPECT_NEG_INF(number)` takes in one parameter, a floating point value. If passes iff `number` is negative infinity and fails otherwise.
-
-```
-#include <tester/Tests.hpp>
-
-D_TEST(expect_neg_int) {
-    float a = 5.0;
-
-    EXPECT_NEG_INF(a); //fails
-
-    double b = std::numeric_limits<double>::infinity();
-
-    EXPECT_NEG_INF(b); //fails
-
-    float c = -std::numeric_limits<double>::infinity();
-
-    EXPECT_NEG_INF(c); //passes
-}
-```
-
-## Iterable Tests
-Iterable tests are used for iterable containers, such as arrays, maps, sets, etc. They require that whatever types are within the containers to have `==` defined. Items in the passed in containers don't necessarily need to be the same type.
-
-In order to be an iterable container, the passed in container needs to satisfy the `std::ranges::range` concept.
-
-1. [Assert Ordered Equals](#assert_ordered_eq)
-2. [Assert Unordered Equals](#assert_unordered_eq)
-3. [Expect Ordered Equals](#expect_ordered_eq)
-4. [Expect Unordered Equals](#expect_unordered_eq)
-
-### ASSERT_ORDERED_EQ
-`EXPECT_ORDERED_EQ(first, second)` takes in two arguments: two iterable containers. The two containers do not necessarily have to be the same type. However, you are responsible for passing in the correct container types into the function. Ie, passing in unordered containers such as `unordered_map` and `unordered_set` are not guaranteed to work properly. This test passes iff every element in each container are `==` at the same index, and fails otherwise. This test will also automatically fail when given two containers with different item counts. Upon failure it will terminate testing for the test suite it was called in.
-
-```
-#include <tester/Tests.hpp>
-#include <vector>
-#include <set>
-#include <unordered_set>
-
-D_TEST(assert_ordered_eq) {
-    int a[] = {1, 2, 3, 4, 5};
-    int b[] = {1, 2, 3, 4, 5};
-
-    ASSERT_ORDERED_EQ(a, b); //passes
-
-    int c[] = {5, 4, 3, 2, 1};
-
-    ASSERT_ORDERED_EQ(a, c); // fails
-
-    std::vector<int> d = {8, 6, 7, 5, 3, 0, 9};
-    int e[] = {8, 6, 7, 5, 3, 0, 9};
-
-    ASSERT_ORDERED_EQ(d, e); //would pass
-
-    std::set<std::vector<int>> f = {{1, 2, 3}, {4, 5, 6}};
-    std::set<std::vector<int>> g = {{1, 2, 3}, {4, 5, 6}};
-
-    ASSERT_ORDERED_EQ(f, g); //would pass
-
-    std::unordered_set<int> h = {1, 2, 3, 4, 5, 6};
-    std::unordered_set<int> i = {1, 2, 3, 4, 5, 6};
-
-    ASSERT_ORDERED_EQ(h, i); //undefined behavior, but most likely would fail
-}
-```
-
-### ASSERT_UNORDERED_EQ
-`EXPECT_ORDERED_EQ(first, second)` takes in two arguments: two iterable containers. The two containers do not necessarily have to be the same type. However, you are responsible for passing in the correct container types into the function. Ie, passing in unordered containers such as `unordered_map` and `unordered_set` are not guaranteed to work properly. This test passes iff every element in each container are `==` at the same index, and fails otherwise. This test will also automatically fail when given two containers with different item counts. Upon failure it will terminate testing for the test suite it was called in.
-
-```
-#include <tester/Tests.hpp>
-#include <vector>
-#include <set>
-#include <unordered_set>
-
-D_TEST(assert_unordered_eq) {
-    int a[] = {1, 2, 3, 4, 5};
-    int b[] = {1, 2, 3, 4, 5};
-
-    ASSERT_UNORDERED_EQ(a, b); //passes
-
-    int c[] = {5, 4, 3, 2, 1};
-
-    ASSERT_UNORDERED_EQ(a, c); // passes
-
-    std::vector<int> d = {8, 6, 7, 5, 3, 0, 9};
-    int e[] = {8, 6, 7, 5, 3, 0, 9};
-
-    ASSERT_UNORDERED_EQ(d, e); //passes
-
-    std::set<std::vector<int>> f = {{1, 2, 3}, {4, 5, 6}};
-    std::set<std::vector<int>> g = {{1, 2, 3}, {4, 5, 6}};
-
-    ASSERT_UNORDERED_EQ(f, g); //passes
-
-    std::unordered_set<int> h = {1, 2, 3, 4, 5, 6};
-    std::unordered_set<int> i = {1, 2, 3, 4, 5, 6};
-
-    ASSERT_UNORDERED_EQ(h, i); //passes, unlike ASSERT_ORDERED_EQ()
-
-    int j[] = {1, 1, 2, 3};
-    int k[] = {1, 2, 3, 3};
-    ASSERT_UNORDERED_EQ(j, k); //fails because there is a mismatch in counts on 1 and 3
-}
-```
-
-### ASSERT_ORDERED_NE()
-`ASSERT_ORDERED_NE(first, second)` takes in two parameters: two iterable containers that satisfy the `ranges` concept whose elements are capable of being compared by the `==` operator. It passes iff `first` and `second` have at least one element that do not pass a comparison by the `==` operator and fails otherwise. This function should only be called on containers that have some deterministic method of ordering its elements, ie, passing in `unordered` containers yields undefined behavior. Upon failure it will terminate testing for the test suite it was called in.
-
-```
-#include <tester/Tests.hpp>
-#include <vector>
-#include <set>
-#include <unordered_set>
-
-D_TEST(assert_ordered_ne) {
-    int a[] = {1, 2, 3, 4, 5};
-    int b[] = {1, 2, 3, 4, 5};
-
-    ASSERT_ORDERED_NE(a, b); //fails
-
-    int c[] = {5, 4, 3, 2, 1};
-
-    ASSERT_ORDERED_NE(a, c); //passes
-
-    std::vector<int> d = {8, 6, 7, 5, 3, 0, 9};
-    int e[] = {8, 6, 7, 5, 3, 0, 9};
-
-    ASSERT_ORDERED_NE(d, e); //fails
-
-    std::set<std::vector<int>> f = {{1, 2, 3}, {4, 5, 6}};
-    std::set<std::vector<int>> g = {{1, 2, 3}, {4, 5, 6}};
-
-    ASSERT_ORDERED_NE(f, g); //fails
-
-    std::unordered_set<int> h = {1, 2, 3, 4, 5, 6};
-    std::unordered_set<int> i = {1, 2, 3, 4, 5, 6};
-
-    ASSERT_ORDERED_NE(h, i); //undefined behavior, but will most likely fail
-
-    int j[] = {1, 1, 2, 3};
-    int k[] = {1, 2, 3, 3};
-    ASSERT_ORDERED_NE(j, k); //passes because there is a mismatch in counts on 1 and 3
-}
-```
-
-### ASSERT_UNORDERED_NE()
-`ASSERT_UNORDERED_NE(first, second)` takes in two parameters: two iterable containers that satisfy the `ranges` concept whose elements are capable of being compared by the `==` operator. It passes iff `first` and `second` have at least one element that do not pass a comparison by the `==` operator and fails otherwise. Unlike `ASSERT_ORDERED_NE()`, this function can be used on any kind of container, eg. the ones that don't maintain any ordering. Upon failure it will terminate testing for the test suite it was called in.
-
-```
-#include <tester/Tests.hpp>
-#include <vector>
-#include <set>
-#include <unordered_set>
-
-D_TEST(assert_unordered_ne) {
-    int a[] = {1, 2, 3, 4, 5};
-    int b[] = {1, 2, 3, 4, 5};
-
-    ASSERT_UNORDERED_NE(a, b); //fails
-
-    int c[] = {5, 4, 3, 2, 1};
-
-    ASSERT_UNORDERED_NE(a, c); //fails
-
-    std::vector<int> d = {8, 6, 7, 5, 3, 0, 9};
-    int e[] = {8, 6, 7, 5, 3, 0, 9};
-
-    ASSERT_UNORDERED_NE(d, e); //fails
-
-    std::set<std::vector<int>> f = {{1, 2, 3}, {4, 5, 6}};
-    std::set<std::vector<int>> g = {{2, 2, 3}, {4, 5, 6}};
-
-    ASSERT_UNORDERED_NE(f, g); //passes
-
-    std::unordered_set<int> h = {1, 2, 3, 5, 5, 6};
-    std::unordered_set<int> i = {1, 2, 3, 4, 5, 6};
-
-    ASSERT_UNORDERED_NE(h, i); //passes
-
-    int j[] = {1, 1, 2, 3};
-    int k[] = {1, 2, 3, 3};
-    ASSERT_UNORDERED_NE(j, k); //passes
-}
-```
-
-### ASSERT_EMPTY()
-`ASSERT_EMPTY(container)` takes in one parameter, a container with the `size()` method. It passes iff `container.size() == 0` and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
-
-```
-#include <tester/Tests.hpp>
-#include <vector>
-#include <set>
-
-D_TEST(assert_empty) {
-    std::vector<int> a = {1, 2, 3, 4, 5};
-    ASSERT_EMPTY(a); //fails
-
-    std::set<int> b = {};
-    ASSERT_EMPTY(b); //passes
-}
-```
-
-### ASSERT_NEMPTY()
-`ASSERT_NEMPTY(container)` takes in one parameter. takes in one parameter, a container with the `size()` method. It passes iff `container.size() != 0` and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
-
-```
-#include <tester/Tests.hpp>
-#include <vector>
-#include <set>
-
-D_TEST(assert_nempty) {
-    std::vector<int> a = {1, 2, 3, 4, 5};
-    ASSERT_NEMPTY(a); //passes
-
-    std::set<int> b = {};
-    ASSERT_NEMPTY(b); //fails
-}
-```
-
-### ASSERT_SIZE()
-`ASSERT_SIZE(container, size)` takes in two parameters, takes in one parameter, a container with the `size()` method and a `size_t`. It passes iff `container.size() == size` and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
-
-```
-#include <tester/Tests.hpp>
-#include <vector>
-#include <set>
-
-D_TEST(assert_size) {
-    std::vector<int> a = {1, 2, 3, 4, 5};
-    ASSERT_SIZE(a, 5); //passes
-
-    std::set<int> b = {};
-    ASSERT_SIZE(b, 0); //passes
-
-    ASSERT_SIZE(b, 5); //fails
-}
-```
-
-### ASSERT_CONTAINS()
-`ASSERT_CONTAINS(container, value)` takes in two parameters, a `ranges` container and a value to search for. It passes iff `container` contains `value` and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
-
-```
-#include <tester/Tests.hpp>
-#include <vector>
-#include <set>
-
-D_TEST(assert_contains) {
-    std::vector<int> a = {1, 2, 3, 4, 5};
-    ASSERT_CONTAINS(a, 5); //passes
-
-    std::set<int> b = {};
-    ASSERT_CONTAINS(b, 11); //fails
-
-    ASSERT_CONTAINS(a, -1); //fails
-}
-```
-
-### ASSERT_DOES_NOT_CONTAIN()
-`ASSERT_DOES_NOT_CONTAIN(container, value)` takes in two parameters, a `ranges` container and a value to search for. It passes iff `container` does not contain `value` and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
-
-```
-#include <tester/Tests.hpp>
-#include <vector>
-#include <set>
-
-D_TEST(assert_does_not_contain) {
-    std::vector<int> a = {1, 2, 3, 4, 5};
-    ASSERT_DOES_NOT_CONTAIN(a, 5); //fails
-
-    std::set<int> b = {};
-    ASSERT_DOES_NOT_CONTAIN(b, 11); //passes
-
-    ASSERT_DOES_NOT_CONTAIN(a, -1); //passes
-}
-```
-
-### EXPECT_ORDERED_EQ()
-`EXPECT_ORDERED_EQ(first, second)` takes in two arguments: two iterable containers. The two containers do not necessarily have to be the same type. However, you are responsible for passing in the correct container types into the function. Ie, passing in unordered containers such as `unordered_map` and `unordered_set` are not guaranteed to work properly. This test passes iff every element in each container are `==` at the same index, and fails otherwise. This test will also automatically fail when given two containers with different item counts.
-
-```
-#include <tester/Tests.hpp>
-#include <vector>
-#include <set>
-#include <unordered_set>
-
-D_TEST(expect_ordered_eq) {
-    int a[] = {1, 2, 3, 4, 5};
-    int b[] = {1, 2, 3, 4, 5};
-
-    EXPECT_ORDERED_EQ(a, b); //passes
-
-    int c[] = {5, 4, 3, 2, 1};
-
-    EXPECT_ORDERED_EQ(a, c); // fails
-
-    std::vector<int> d = {8, 6, 7, 5, 3, 0, 9};
-    int e[] = {8, 6, 7, 5, 3, 0, 9};
-
-    EXPECT_ORDERED_EQ(d, e); //passes
-
-    std::set<std::vector<int>> f = {{1, 2, 3}, {4, 5, 6}};
-    std::set<std::vector<int>> g = {{1, 2, 3}, {4, 5, 6}};
-
-    EXPECT_ORDERED_EQ(f, g); //passes
-
-    std::unordered_set<int> h = {1, 2, 3, 4, 5, 6};
-    std::unordered_set<int> i = {1, 2, 3, 4, 5, 6};
-
-    EXPECT_ORDERED_EQ(h, i); //undefined behavior, but most likely to fail
-}
-```
-
-### EXPECT_UNORDERED_EQ()
-`EXPECT_UNORDERED_EQ(first, second)` takes in two arguments: two iterable containers. The two containers do not necessarily have to be the same type. This test can take in any kind of container, ordered or unordered, in fact, when this test is used on ordered containers, its behavior is the same as `EXPECT_ORDERED_EQ()`. This test passes iff both containers have the same elements (as defined by `==`) and the same count of each element, regardless of indexing, and fails otherwise. This test will also automatically fail when given two containers with different item counts.
-
-```
-#include <tester/Tests.hpp>
-#include <vector>
-#include <set>
-#include <unordered_set>
-
-D_TEST(expect_ordered_eq) {
-    int a[] = {1, 2, 3, 4, 5};
-    int b[] = {1, 2, 3, 4, 5};
-
-    EXPECT_UNORDERED_EQ(a, b); //passes
-
-    int c[] = {5, 4, 3, 2, 1};
-
-    EXPECT_UNORDERED_EQ(a, c); // passes
-
-    std::vector<int> d = {8, 6, 7, 5, 3, 0, 9};
-    int e[] = {8, 6, 7, 5, 3, 0, 9};
-
-    EXPECT_UNORDERED_EQ(d, e); //passes
-
-    std::set<std::vector<int>> f = {{1, 2, 3}, {4, 5, 6}};
-    std::set<std::vector<int>> g = {{1, 2, 3}, {4, 5, 6}};
-
-    EXPECT_UNORDERED_EQ(f, g); //passes
-
-    std::unordered_set<int> h = {1, 2, 3, 4, 5, 6};
-    std::unordered_set<int> i = {1, 2, 3, 4, 5, 6};
-
-    EXPECT_UNORDERED_EQ(h, i); //passes, unlike EXPECT_ORDERED_EQ()
-
-    int j[] = {1, 1, 2, 3};
-    int k[] = {1, 2, 3, 3};
-    EXPECT_UNORDERED_EQ(j, k); //fails because there is a mismatch in counts on 1 and 3
-}
-```
-
-### EXPECT_ORDERED_NE()
-`EXPECT_ORDERED_NE(first, second)` takes in two parameters: two iterable containers that satisfy the `ranges` concept whose elements are capable of being compared by the `==` operator. It passes iff `first` and `second` have at least one element that do not pass a comparison by the `==` operator and fails otherwise. This function should only be called on containers that have some deterministic method of ordering its elements, ie, passing in `unordered` containers yields undefined behavior.
-
-```
-#include <tester/Tests.hpp>
-#include <vector>
-#include <set>
-#include <unordered_set>
-
-D_TEST(expect_ordered_ne) {
-    int a[] = {1, 2, 3, 4, 5};
-    int b[] = {1, 2, 3, 4, 5};
-
-    EXPECT_ORDERED_NE(a, b); //fails
-
-    int c[] = {5, 4, 3, 2, 1};
-
-    EXPECT_ORDERED_NE(a, c); //passes
-
-    std::vector<int> d = {8, 6, 7, 5, 3, 0, 9};
-    int e[] = {8, 6, 7, 5, 3, 0, 9};
-
-    EXPECT_ORDERED_NE(d, e); //fails
-
-    std::set<std::vector<int>> f = {{1, 2, 3}, {4, 5, 6}};
-    std::set<std::vector<int>> g = {{1, 2, 3}, {4, 5, 6}};
-
-    EXPECT_ORDERED_NE(f, g); //fails
-
-    std::unordered_set<int> h = {1, 2, 3, 4, 5, 6};
-    std::unordered_set<int> i = {1, 2, 3, 4, 5, 6};
-
-    EXPECT_ORDERED_NE(h, i); //undefined behavior, but will most likely fail
-
-    int j[] = {1, 1, 2, 3};
-    int k[] = {1, 2, 3, 3};
-    EXPECT_ORDERED_NE(j, k); //passes because there is a mismatch in counts on 1 and 3
-}
-```
-
-### EXPECT_UNORDERED_NE()
-`EXPECT_UNORDERED_NE(first, second)` takes in two parameters: two iterable containers that satisfy the `ranges` concept whose elements are capable of being compared by the `==` operator. It passes iff `first` and `second` have at least one element that do not pass a comparison by the `==` operator and fails otherwise. Unlike `ASSERT_ORDERED_NE()`, this function can be used on any kind of container, eg. the ones that don't maintain any ordering.
-
-```
-#include <tester/Tests.hpp>
-#include <vector>
-#include <set>
-#include <unordered_set>
-
-D_TEST(expect_unordered_ne) {
-    int a[] = {1, 2, 3, 4, 5};
-    int b[] = {1, 2, 3, 4, 5};
-
-    EXPECT_UNORDERED_NE(a, b); //fails
-
-    int c[] = {5, 4, 3, 2, 1};
-
-    EXPECT_UNORDERED_NE(a, c); //fails
-
-    std::vector<int> d = {8, 6, 7, 5, 3, 0, 9};
-    int e[] = {8, 6, 7, 5, 3, 0, 9};
-
-    EXPECT_UNORDERED_NE(d, e); //fails
-
-    std::set<std::vector<int>> f = {{1, 2, 3}, {4, 5, 6}};
-    std::set<std::vector<int>> g = {{2, 2, 3}, {4, 5, 6}};
-
-    EXPECT_UNORDERED_NE(f, g); //passes
-
-    std::unordered_set<int> h = {1, 2, 3, 5, 5, 6};
-    std::unordered_set<int> i = {1, 2, 3, 4, 5, 6};
-
-    EXPECT_UNORDERED_NE(h, i); //passes
-
-    int j[] = {1, 1, 2, 3};
-    int k[] = {1, 2, 3, 3};
-    EXPECT_UNORDERED_NE(j, k); //passes
-}
-```
-
-### EXPECT_EMPTY()
-`EXPECT_EMPTY(container)` takes in one parameter, a container with the `size()` method. It passes iff `container.size() == 0` and fails otherwise.
-
-```
-#include <tester/Tests.hpp>
-#include <vector>
-#include <set>
-
-D_TEST(expect_empty) {
-    std::vector<int> a = {1, 2, 3, 4, 5};
-    EXPECT_EMPTY(a); //fails
-
-    std::set<int> b = {};
-    EXPECT_EMPTY(b); //passes
-}
-```
-
-### EXPECT_NEMPTY()
-`EXPECT_NEMPTY(container)` takes in one parameter. takes in one parameter, a container with the `size()` method. It passes iff `container.size() != 0` and fails otherwise.
-
-```
-#include <tester/Tests.hpp>
-#include <vector>
-#include <set>
-
-D_TEST(expect_nempty) {
-    std::vector<int> a = {1, 2, 3, 4, 5};
-    EXPECT_NEMPTY(a); //passes
-
-    std::set<int> b = {};
-    EXPECT_NEMPTY(b); //fails
-}
-```
-
-### EXPECT_SIZE()
-`EXPECT_SIZE(container, size)` takes in two parameters, takes in one parameter, a container with the `size()` method and a `size_t`. It passes iff `container.size() == size` and fails otherwise. 
-
-```
-#include <tester/Tests.hpp>
-#include <vector>
-#include <set>
-
-D_TEST(expect_size) {
-    std::vector<int> a = {1, 2, 3, 4, 5};
-    EXPECT_SIZE(a, 5); //passes
-
-    std::set<int> b = {};
-    EXPECT_SIZE(b, 0); //passes
-
-    EXPECT_SIZE(b, 5); //fails
-}
-```
-
-### EXPECT_CONTAINS()
-`EXPECT_CONTAINS(container, value)` takes in two parameters, a `ranges` container and a value to search for. It passes iff `container` contains `value` and fails otherwise. 
-
-```
-#include <tester/Tests.hpp>
-#include <vector>
-#include <set>
-
-D_TEST(expect_contains) {
-    std::vector<int> a = {1, 2, 3, 4, 5};
-    EXPECT_CONTAINS(a, 5); //passes
-
-    std::set<int> b = {};
-    EXPECT_CONTAINS(b, 11); //fails
-
-    EXPECT_CONTAINS(a, -1); //fails
-}
-```
-
-### EXPECT_DOES_NOT_CONTAIN()
-`EXPECT_DOES_NOT_CONTAIN(container, value)` takes in two parameters, a `ranges` container and a value to search for. It passes iff `container` does not contain `value` and fails otherwise.
-
-```
-#include <tester/Tests.hpp>
-#include <vector>
-#include <set>
-
-D_TEST(expect_does_not_contain) {
-    std::vector<int> a = {1, 2, 3, 4, 5};
-    EXPECT_DOES_NOT_CONTAIN(a, 5); //fails
-
-    std::set<int> b = {};
-    EXPECT_DOES_NOT_CONTAIN(b, 11); //passes
-
-    EXPECT_DOES_NOT_CONTAIN(a, -1); //passes
-}
-```
-
-## Test Tests
-Test tests are used to see if a test will pass/fail. Ie, these are tests to ensure that tests are working. It is very important that you do not pass in random functions. These tests also have the capability of defining new tests, in a sense. For instance, there is no `STRING_DOES_NOT_CONTAIN()` test, however, you could combine `ASSERT_STRING_CONTAINS()` with `ASSERT_FAILS()` to create one that would have a similar functionality to what an `ASSERT_STRING_DOES_NOT_CONTAIN()` test would have.
-
-1. [Assert Passes](#assert_passes)
-2. [Assert Fails](#assert_fails)
-3. [Expect Passes](#expect_passes)
-4. [Expect Fails](#expect_fails)
-
-### ASSERT_PASSES()
-`ASSERT_PASSES(test)` takes in one parameter, which is a test. It passes iff the passed in test passes, and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
-
-```
-#include <tester/Tests.hpp>
-
-void gonnaBreakThings() { }
-
-//this is a simple example, but it gets the point across
-D_TEST(assert_passes) {
-    ASSERT_PASSES(EXPECT_TRUE(true)); //passes
-    ASSERT_PASSES(EXPECT_TRUE(false)); //fails
-    ASSERT_PASSES(gonnaBreakThings()); //don't do this, but it would pass 
-
-    //fails, but the nested ASSERT_TRUE failing DOES NOT terminate testing for the rest of the suite
-    ASSERT_PASSES(ASSERT_TRUE(false)); 
-}
-```
-
-### ASSERT_FAILS()
-`EXPECT_FAILS(test)` takes in one parameter, which is a test. It passes iff the passed in test fails, and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
-
-```
-#include <tester/Tests.hpp>
-
-void gonnaBreakThings() { }
-
-//this is a simple example, but it gets the point across
-D_TEST(assert_fails) {
-    ASSERT_FAILS(EXPECT_TRUE(true)); //fails
-    ASSERT_FAILS(EXPECT_TRUE(false)); //would pass
-    ASSERT_FAILS(gonnaBreakThings()); //don't do this, but it would fail
-    ASSERT_FAILS(ASSERT_TRUE(true)); //fails
-}
-```
-
-### EXPECT_PASSES()
-`EXPECT_PASSES(test)` takes in one parameter, which is a test. It passes iff the passed in test passes, and fails otherwise.
-
-```
-#include <tester/Tests.hpp>
-
-void gonnaBreakThings() { }
-
-//this is a simple example, but it gets the point across
-D_TEST(expect_passes) {
-    EXPECT_PASSES(EXPECT_TRUE(true)); //passes
-    EXPECT_PASSES(EXPECT_TRUE(false)); //fails
-    EXPECT_PASSES(gonnaBreakThings()); //don't do this, but it would pass 
-
-    //fails, but ASSERT_TRUE failing DOES NOT terminate testing for the rest of the suite
-    EXPECT_PASSES(ASSERT_TRUE(false)); 
-}
-```
-
-### EXPECT_FAILS()
-`EXPECT_FAILS(test)` takes in one parameter, which is a test. It passes iff the passed in test fails, and fails otherwise.
-
-```
-#include <tester/Tests.hpp>
-
-void gonnaBreakThings() { }
-
-//this is a simple example, but it gets the point across
-D_TEST(expect_fails) {
-    EXPECT_FAILS(EXPECT_TRUE(true)); //fails
-    EXPECT_FAILS(EXPECT_TRUE(false)); //passes
-    EXPECT_FAILS(gonnaBreakThings()); //don't do this, but it would fail
-    EXPECT_FAILS(ASSERT_TRUE(true)); 
-}
-```
-
-## Set Tests
-Set tests are used on containers that satisfy the `ranges` concept. They can be used on containers other than `set` and `unordered_set`. The name "set" just means that we perform set operations on containers as if they were mathematical sets.
-
-1. [Assert Set Equals](#assert_set_eq)
-2. [Assert Set Not Equals](#assert_set_ne)
-3. [Assert Subset](#assert_subset)
-4. [Assert Superset](#assert_superset)
-5. [Assert Strict Subset](#assert_strict_subset)
-6. [Expect Set Equals](#expect_set_eq)
-7. [Expect Set Not Equals](#expect_set_ne)
-8. [Expect Subset](#expect_subset)
-9. [Expect Superset](#expect_superset)
-10. [Expect Strict Subset](#expect_strict_subset)
-
-### ASSERT_SET_EQ()
-`ASSERT_SET_EQ(first, second)` takes in two parameters, two containers that satisfy the `ranges` concept. This test passes iff `first` and `second` contain the same elements, REGARDLESS of counts, and fails otherwise. Note that this indifference of counts is a big criterion that separates this test from `ASSERT_UNORDERED_EQ()`. Upon failure it will terminate testing for the test suite it was called in.
-
-```
-#include <tester/Tests.hpp>
-#include <vector>
-#include <unordered_set>
-
-//this is a simple example, but it gets the point across
-D_TEST(assert_set_eq) {
-    std::vector<int> a = {1, 2, 2, 3, 4};
-    std::vector<int> b = {1, 2, 3, 4};
-
-    ASSERT_SET_EQ(a, b); //passes
-
-    std::unordered_set<int> c = {1, 2, 3, 4};
-
-    ASSERT_SET_EQ(a, c); //passes
-
-    std::unordered_set<int> d = {1, 2, 3};
-    ASSERT_SET_EQ(b, d); //fails
-}
-```
-
-### ASSERT_SET_NE()
-`ASSERT_SET_NE(first, second)` takes in two parameters, two containers that satisfy the `ranges` concept. This test passes iff `first` and `second` has at least one differing element, REGARDLESS of counts, and fails otherwise. Note that this indifference of counts is a big criterion that separates this test from `ASSERT_UNORDERED_NE()`. Upon failure it will terminate testing for the test suite it was called in.
-
-```
-#include <tester/Tests.hpp>
-#include <vector>
-#include <unordered_set>
-
-//this is a simple example, but it gets the point across
-D_TEST(assert_set_ne) {
-    std::vector<int> a = {1, 2, 2, 3, 4};
-    std::vector<int> b = {1, 2, 3, 4};
-
-    ASSERT_SET_NE(a, b); //fails
-
-    std::unordered_set<int> c = {1, 2, 3, 4};
-
-    ASSERT_SET_NE(a, c); //fails
-
-    std::unordered_set<int> d = {1, 2, 3};
-    ASSERT_SET_NE(b, d); //passes
-}
-```
-
-### ASSERT_SUBSET()
-`ASSERT_SUBSET(first, second)` takes in two parameters, two containers that satisfy the `ranges` concept. This test passes iff every element in `first` appears in `second` REGARDLESS of counts, and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
-
-```
-#include <tester/Tests.hpp>
-#include <vector>
-#include <unordered_set>
-
-D_TEST(assert_subset) {
-    std::vector<int> a = {1, 2, 2, 3, 4};
-    std::vector<int> b = {1, 2, 3, 4};
-
-    ASSERT_SUBSET(a, b); //passes
-
-    std::unordered_set<int> c = {1, 2, 3, 4};
-
-    ASSERT_SUBSET(a, c); //passes
-
-    std::unordered_set<int> d = {1, 2, 3};
-    ASSERT_SUBSET(b, d); //fails
-}
-```
-
-### ASSERT_SUPERSET()
-`ASSERT_SUPERSET(first, second)` takes in two parameters, two containers that satisfy the `ranges` concept. This test passes iff every element in `second` appears in `first` REGARDLESS of counts, and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
-
-```
-#include <tester/Tests.hpp>
-#include <vector>
-#include <unordered_set>
-
-D_TEST(assert_superset) {
-    std::vector<int> a = {1, 2, 2, 3, 4};
-    std::vector<int> b = {1, 2, 3, 4};
-
-    ASSERT_SUPERSET(a, b); //passes
-
-    std::unordered_set<int> c = {1, 2, 3, 4};
-
-    ASSERT_SUPERSET(a, c); //passes
-
-    std::unordered_set<int> d = {1, 2, 3};
-    ASSERT_SUPERSET(b, d); //passes
-
-    std::vector<int> e = {5};
-    ASSERT_SUPER_SET(c, e); //fails
-}
-```
-
-### ASSERT_STRICT_SUBSET()
-`ASSERT_STRICT_SUBSET(first, second)` takes in two parameters, two containers that satisfy the `ranges` concept. This test passes iff every element in `first` appears in `second`, and there is at least one element in `second` that does not appear in `first`, REGARDLESS of counts, and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
-
-```
-#include <tester/Tests.hpp>
-#include <vector>
-#include <unordered_set>
-
-D_TEST(assert_strict_subset) {
-    std::vector<int> a = {1, 2, 2, 3, 4};
-    std::vector<int> b = {1, 2, 3, 4};
-
-    ASSERT_STRICT_SUBSET(a, b); //fails
-    ASSERT_STRICT_SUBSET(b, a); //fails
-
-    std::unordered_set<int> c = {1, 2, 3, 4};
-
-    ASSERT_STRICT_SUBSET(a, c); //fails
-
-    std::unordered_set<int> d = {1, 2, 3};
-    ASSERT_STRICT_SUBSET(b, d); //fails
-    ASSERT_STRICT_SUBSET(d, b); //passes
-
-    std::vector<int> e = {5};
-    ASSERT_STRICT_SUBSET(c, e); //fails
-}
-```
-
-### EXPECT_SET_EQ()
-`EXPECT_SET_EQ(first, second)` takes in two parameters, two containers that satisfy the `ranges` concept. This test passes iff `first` and `second` contain the same elements, REGARDLESS of counts, and fails otherwise. Note that this indifference of counts is a big criterion that separates this test from `EXPECT_UNORDERED_EQ()`.
-
-```
-#include <tester/Tests.hpp>
-#include <vector>
-#include <unordered_set>
-
-//this is a simple example, but it gets the point across
-D_TEST(expect_set_eq) {
-    std::vector<int> a = {1, 2, 2, 3, 4};
-    std::vector<int> b = {1, 2, 3, 4};
-
-    EXPECT_SET_EQ(a, b); //passes
-
-    std::unordered_set<int> c = {1, 2, 3, 4};
-
-    EXPECT_SET_EQ(a, c); //passes
-
-    std::unordered_set<int> d = {1, 2, 3};
-    EXPECT_SET_EQ(b, d); //fails
-}
-```
-
-### EXPECT_SET_NE()
-`EXPECT_SET_NE(first, second)` takes in two parameters, two containers that satisfy the `ranges` concept. This test passes iff `first` and `second` has at least one differing element, REGARDLESS of counts, and fails otherwise. Note that this indifference of counts is a big criterion that separates this test from `EXPECT_UNORDERED_NE()`.
-
-```
-#include <tester/Tests.hpp>
-#include <vector>
-#include <unordered_set>
-
-//this is a simple example, but it gets the point across
-D_TEST(expect_set_ne) {
-    std::vector<int> a = {1, 2, 2, 3, 4};
-    std::vector<int> b = {1, 2, 3, 4};
-
-    EXPECT_SET_NE(a, b); //fails
-
-    std::unordered_set<int> c = {1, 2, 3, 4};
-
-    EXPECT_SET_NE(a, c); //fails
-
-    std::unordered_set<int> d = {1, 2, 3};
-    EXPECT_SET_NE(b, d); //passes
-}
-```
-
-### EXPECT_SUBSET()
-`EXPECT_SUBSET(first, second)` takes in two parameters, two containers that satisfy the `ranges` concept. This test passes iff every element in `first` appears in `second` REGARDLESS of counts, and fails otherwise.
-
-```
-#include <tester/Tests.hpp>
-#include <vector>
-#include <unordered_set>
-
-D_TEST(expect_subset) {
-    std::vector<int> a = {1, 2, 2, 3, 4};
-    std::vector<int> b = {1, 2, 3, 4};
-
-    EXPECT_SUBSET(a, b); //passes
-
-    std::unordered_set<int> c = {1, 2, 3, 4};
-
-    EXPECT_SUBSET(a, c); //passes
-
-    std::unordered_set<int> d = {1, 2, 3};
-    EXPECT_SUBSET(b, d); //fails
-}
-```
-
-### EXPECT_SUPERSET()
-`EXPECT_SUPERSET(first, second)` takes in two parameters, two containers that satisfy the `ranges` concept. This test passes iff every element in `second` appears in `first` REGARDLESS of counts, and fails otherwise. 
-
-```
-#include <tester/Tests.hpp>
-#include <vector>
-#include <unordered_set>
-
-D_TEST(expect_superset) {
-    std::vector<int> a = {1, 2, 2, 3, 4};
-    std::vector<int> b = {1, 2, 3, 4};
-
-    EXPECT_SUPERSET(a, b); //passes
-
-    std::unordered_set<int> c = {1, 2, 3, 4};
-
-    EXPECT_SUPERSET(a, c); //passes
-
-    std::unordered_set<int> d = {1, 2, 3};
-    EXPECT_SUPERSET(b, d); //passes
-
-    std::vector<int> e = {5};
-    EXPECT_SUPER_SET(c, e); //fails
-}
-```
-
-### EXPECT_STRICT_SUBSET()
-`EXPECT_STRICT_SUBSET(first, second)` takes in two parameters, two containers that satisfy the `ranges` concept. This test passes iff every element in `first` appears in `second`, and there is at least one element in `second` that does not appear in `first`, REGARDLESS of counts, and fails otherwise.
-
-```
-#include <tester/Tests.hpp>
-#include <vector>
-#include <unordered_set>
-
-D_TEST(expect_strict_subset) {
-    std::vector<int> a = {1, 2, 2, 3, 4};
-    std::vector<int> b = {1, 2, 3, 4};
-
-    EXPECT_STRICT_SUBSET(a, b); //fails
-    EXPECT_STRICT_SUBSET(b, a); //fails
-
-    std::unordered_set<int> c = {1, 2, 3, 4};
-
-    EXPECT_STRICT_SUBSET(a, c); //fails
-
-    std::unordered_set<int> d = {1, 2, 3};
-    EXPECT_STRICT_SUBSET(b, d); //fails
-    EXPECT_STRICT_SUBSET(d, b); //passes
-
-    std::vector<int> e = {5};
-    EXPECT_STRICT_SUBSET(c, e); //fails
-}
-```
-
-## Predicate Tests
-Predicate tests are used to test containers and arrays to see if every element, some elements, or no elements satisfy a given condition.
-
-1. [Assert All](#assert_all)
-2. [Assert Some](#assert_some)
-3. [Assert None](#assert_none)
-4. [Expect All](#expect_all)
-5. [Expect Some](#expect_some)
-6. [Expect None](#expect_none)
-
-### ASSERT_ALL()
-`ASSERT_ALL(container, condition)` takes in two parameters: a container and an anonymous function that returns a boolean value. The container does not have to be an `stl` container, ie. arrays are fine as well. This test passes iff every element in `container` passes the `condition` and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
-
-```
-#include <tester/Tests.hpp>
-#include <vector>
-
-D_TEST(assert_all) {
-    std::vector<int> a = {1, 2, 2, 3, 4};
-
-    ASSERT_ALL(a, [](int x) { return x > 0; }); //passes
-
-    ASSERT_ALL(a, [](int x) { return x & 1; }); //fails since there are even elements
-}
-```
-
-### ASSERT_SOME
-`ASSERT_SOME(container, condition)` takes in two parameters: a container and an anonymous function that returns a boolean value. The container does not have to be an `stl` container, ie. arrays are fine as well. This test passes iff at least one element in `container` passes the `condition` and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
-
-```
-#include <tester/Tests.hpp>
-#include <vector>
-
-D_TEST(assert_some) {
-    std::vector<int> a = {1, 2, 2, 3, 4};
-
-    ASSERT_SOME(a, [](int x) { return x > 0; }); //passes
-
-    ASSERT_SOME(a, [](int x) { return x & 1; }); //passes since there is at least one odd element
-
-    ASSERT_SOME(a, [](int x) {return x > 10; }) //fails because none of the elements are larger than 10
-}
-```
-
-### ASSERT_NONE
-`ASSERT_NONE(container, condition)` takes in two parameters: a container and an anonymous function that returns a boolean value. The container does not have to be an `stl` container, ie. arrays are fine as well. This test passes iff no element in `container` passes the `condition` and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
-
-```
-#include <tester/Tests.hpp>
-#include <vector>
-
-D_TEST(assert_none) {
-    std::vector<int> a = {1, 2, 2, 3, 4};
-
-    ASSERT_NONE(a, [](int x) { return x > 0; }); //fails because every element satisfies this condition
-
-    ASSERT_NONE(a, [](int x) { return x & 1; }); //passes since some elements satisfies this condition
-
-    ASSERT_NONE(a, [](int x) {return x > 10; }) //passes because none of the elements are larger than 10
-}
-```
-
-### EXPECT_ALL()
-`EXPECT_ALL(container, condition)` takes in two parameters: a container and an anonymous function that returns a boolean value. The container does not have to be an `stl` container, ie. arrays are fine as well. This test passes iff every element in `container` passes the `condition` and fails otherwise. 
-
-```
-#include <tester/Tests.hpp>
-#include <vector>
-
-D_TEST(expect_all) {
-    std::vector<int> a = {1, 2, 2, 3, 4};
-
-    EXPECT_ALL(a, [](int x) { return x > 0; }); //passes
-
-    EXPECT_ALL(a, [](int x) { return x & 1; }); //fails since there are even elements
-}
-```
-
-### EXPECT_SOME
-`EXPECT_SOME(container, condition)` takes in two parameters: a container and an anonymous function that returns a boolean value. The container does not have to be an `stl` container, ie. arrays are fine as well. This test passes iff at least one element in `container` passes the `condition` and fails otherwise.
-```
-#include <tester/Tests.hpp>
-#include <vector>
-
-D_TEST(expect_some) {
-    std::vector<int> a = {1, 2, 2, 3, 4};
-
-    EXPECT_SOME(a, [](int x) { return x > 0; }); //passes
-
-    EXPECT_SOME(a, [](int x) { return x & 1; }); //passes since there is at least one odd element
-
-    EXPECT_SOME(a, [](int x) {return x > 10; }) //fails because none of the elements are larger than 10
-}
-```
-
-### EXPECT_NONE
-`EXPECT_NONE(container, condition)` takes in two parameters: a container and an anonymous function that returns a boolean value. The container does not have to be an `stl` container, ie. arrays are fine as well. This test passes iff no element in `container` passes the `condition` and fails otherwise. 
-
-```
-#include <tester/Tests.hpp>
-#include <vector>
-
-D_TEST(expect_none) {
-    std::vector<int> a = {1, 2, 2, 3, 4};
-
-    EXPECT_NONE(a, [](int x) { return x > 0; }); //fails because every element satisfies this condition
-
-    EXPECT_NONE(a, [](int x) { return x & 1; }); //passes since some elements satisfies this condition
-
-    EXPECT_NONE(a, [](int x) {return x > 10; }) //passes because none of the elements are larger than 10
 }
 ```
