@@ -22,10 +22,11 @@ namespace internal {
 
             private:
                 Core::Verbosity verb;
-                void renderAll(Core::TestRun& result);
-                void renderMinimum(Core::TestRun& result);
-                void renderVerbose(Core::TestRun& result);
                 void renderDefault(Core::TestRun& result);
+                void renderMinimum(Core::TestRun& result);
+                void renderPassOnly(Core::TestRun& result);
+                void renderFailAll(Core::TestRun& result);
+                void renderFailMin(Core::TestRun& result);
         };
         
     }
