@@ -38,12 +38,10 @@ namespace internal {
 
         void ConsoleRenderer::renderMinimum(Core::TestRun& testRun) {
             std::map<std::string, std::vector<Core::TestResult>>& tests = testRun.results;
-
-            for (std::map<std::string, std::vector<Core::TestResult>>::iterator it = tests.begin(); 
-                it != tests.end(); ++it) 
+            for (auto&& it = tests.begin(); it != tests.end(); ++it) 
             {
                 const std::vector<Core::TestResult>& test = it->second;
-                const std::string suite_name = it->first;
+                // const std::string& suite_name = it->first;
                 size_t size = test.size();
                 for (size_t i = 0; i < size; i++) {
                     const Core::TestResult& result = test[i];
@@ -77,11 +75,10 @@ namespace internal {
         void ConsoleRenderer::renderDefault(Core::TestRun& testRun) {
             std::map<std::string, std::vector<Core::TestResult>>& tests = testRun.results;
 
-            for (std::map<std::string, std::vector<Core::TestResult>>::iterator it = tests.begin(); 
-                it != tests.end(); ++it) 
+            for (auto&& it = tests.begin(); it != tests.end(); ++it) 
             {
                 const std::vector<Core::TestResult>& test = it->second;
-                const std::string suite_name = it->first;
+                // const std::string& suite_name = it->first;
                 size_t size = test.size();
                 for (size_t i = 0; i < size; i++) {
                     const Core::TestResult& result = test[i];
