@@ -43,7 +43,6 @@ namespace internal {
         void runAllRegisteredTests(Core::TestRun& run) {
             std::map<std::string, std::vector<Core::Test>>& REGISTRY = getRegistry();
 
-            // for (std::map<std::string, std::vector<Core::Test>>::iterator it = REGISTRY.begin(); 
             for (auto&& it = REGISTRY.begin(); it != REGISTRY.end(); ++it) 
             {
                 const std::vector<Core::Test>&test = it->second;
