@@ -41,7 +41,7 @@ namespace internal {
             for (auto&& it = tests.begin(); it != tests.end(); ++it) 
             {
                 const std::vector<Core::TestResult>& test = it->second;
-                const std::string& suite_name = it->first;
+                // const std::string& suite_name = it->first;
                 size_t size = test.size();
                 for (size_t i = 0; i < size; i++) {
                     const Core::TestResult& result = test[i];
@@ -78,7 +78,7 @@ namespace internal {
             for (auto&& it = tests.begin(); it != tests.end(); ++it) 
             {
                 const std::vector<Core::TestResult>& test = it->second;
-                const std::string& suite_name = it->first;
+                // const std::string& suite_name = it->first;
                 size_t size = test.size();
                 for (size_t i = 0; i < size; i++) {
                     const Core::TestResult& result = test[i];

@@ -55,7 +55,10 @@ clean:
 	rm -rf $(BUILD_DIR)
 
 run: all
-	./$(TARGET) --default
+	./$(TARGET) --v=default
 
 test: all
-	./$(TARGET) --minimum
+	./$(TARGET) --v=minimum
+
+thread: all
+	./$(TARGET) --v=default --t=8
