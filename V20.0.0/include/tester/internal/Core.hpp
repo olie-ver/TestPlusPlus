@@ -21,10 +21,11 @@ namespace internal {
 
         /// @brief Flags for renderer verbosity
         enum class Verbosity {
-            All,
+            Default,
             Minimum,
-            Verbose,
-            Default
+            PassOnly,
+            FailOnlyAll,
+            FailOnlyMin
         };
 
         /// @brief A Test struct that contains information about a test
