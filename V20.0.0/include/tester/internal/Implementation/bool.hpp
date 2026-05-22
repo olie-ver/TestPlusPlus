@@ -15,6 +15,7 @@ namespace internal {
             if (!cond) {
                 return Core::Failure("Expected: " + std::string(expr) + " to be true", file, line);
             }
+
             return std::nullopt;
         }
 
@@ -24,6 +25,7 @@ namespace internal {
             if (cond) {
                 return Core::Failure("Expected: " + std::string(expr) + " to be false", file, line);
             }
+
             return std::nullopt;
         }
     }

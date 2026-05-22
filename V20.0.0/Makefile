@@ -55,7 +55,34 @@ clean:
 	rm -rf $(BUILD_DIR)
 
 run: all
-	./$(TARGET) --default
+	./$(TARGET) --v=default
 
 test: all
-	./$(TARGET) --minimum
+	./$(TARGET) --v=minimum
+
+json: all
+	./$(TARGET) --v=default --json output.json
+
+1: all
+	./$(TARGET) --v=default --t=1
+
+2: all
+	./$(TARGET) --v=default --t=2
+
+3: all
+	./$(TARGET) --v=default --t=3
+
+4: all
+	./$(TARGET) --v=default --t=4
+
+5: all
+	./$(TARGET) --v=default --t=5
+
+6: all
+	./$(TARGET) --v=default --t=6
+
+7: all
+	./$(TARGET) --v=default --t=7
+
+8: all
+	./$(TARGET) --v=default --t=8

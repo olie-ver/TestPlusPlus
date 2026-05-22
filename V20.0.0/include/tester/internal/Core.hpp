@@ -12,15 +12,6 @@
 namespace internal {
     /// @brief A core namespace containing the core data structures used by the rest of the internal namespace
     namespace Core {
-        /// @brief Hashes a pair of strings
-        struct PairHash {
-            size_t operator()(const std::pair<std::string, std::string>& p) const {
-                size_t h1 = std::hash<std::string>{}(p.first);
-                size_t h2 = std::hash<std::string>{}(p.second);
-                return h1 ^ (h2 << 1);
-            }
-        };
-
         /// @brief The types of statuses a test can have after being run
         enum class TestStatus {
             Passed,
@@ -28,18 +19,33 @@ namespace internal {
             Skipped
         };
 
+        static std::string StatusStrings[] = {"Passed", "Failed", "Skipped"};
+
+        /// @brief The types of time units for timeout
+        enum class TimeUnit {
+            Seconds,
+            Milliseconds
+        };
+
         /// @brief Flags for renderer verbosity
         enum class Verbosity {
-            All,
+            Default,
             Minimum,
-            Verbose,
-            Default
+            PassOnly,
+            FailOnlyAll,
+            FailOnlyMin
         };
 
         /// @brief A Test struct that contains information about a test
         struct Test {
-            std::string name;
+            std::string suite_name;
+            std::string test_name;
             std::function<void()> test;
+
+            bool operator==(const Test& other) const {
+                return suite_name == other.suite_name
+                    && test_name == other.test_name;
+            }
         };
 
         /// @brief A Failure struct that contains information about a test failure
@@ -70,6 +76,17 @@ namespace internal {
             int skipped = 0;
 
             double totalMs = 0.0;
+        };
+
+        /// @brief Hashes a Test struct
+        struct TestHash {
+            size_t operator()(const Test& p) const {
+                // size_t h1 = std::hash<std::string>{}(p.first);
+                // size_t h2 = std::hash<std::string>{}(p.second);
+                size_t h1 = std::hash<std::string>{}(p.suite_name);
+                size_t h2 = std::hash<std::string>{}(p.test_name);
+                return h1 ^ (h2 << 1);
+            }
         };
 
         //An assertion failure struct

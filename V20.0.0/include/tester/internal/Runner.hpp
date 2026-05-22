@@ -4,6 +4,7 @@
 #define RUNNER_H
 
 #include "Core.hpp"
+#include <deque>
 #include <map>
 #include <vector>
 #include <unordered_set>
@@ -17,8 +18,8 @@
 #define TEST_IMPL(suite_name, test_name, line) \
     void suite_name##_##test_name(); \
     static bool MAKE_UNIQUE(register, line) = \
-        internal::Runner::registerTest(STR(suite_name), \
-            {STR(test_name), suite_name##_##test_name}); \
+        internal::Runner::registerTest( \
+            {STR(suite_name), STR(test_name), suite_name##_##test_name}); \
     void suite_name##_##test_name()
 
 #define TEST(suite_name, test_name) \
@@ -32,28 +33,40 @@ namespace internal {
     /// @brief An internal Runner namespace that is used for running tests
     namespace Runner {
         /// @brief The result for the current test
-        extern Core::TestResult* CURRENT_TEST;
+        extern thread_local std::deque<Core::TestResult> TEST_STACK;
 
-        Core::TestRun& makeTestRun();
+        /// @brief gets the global TestRun struct
+        Core::TestRun& getTestRun();
 
         /// @brief The registry containing all the tests to be run
-        std::map<std::string, std::vector<Core::Test>>& getRegistry();
+        std::vector<Core::Test>& getRegistry();
 
         /// @brief A set ensuring no duplicate tests are registered
-        std::unordered_set<std::pair<std::string, std::string>, Core::PairHash>& getAllTests();
+        std::unordered_set<Core::Test, Core::TestHash>& getAllTests();
+
+        /// @brief A set containing suites that should not be tested
+        std::unordered_set<std::string>& getSkipSuites();
+
+        /// @brief A set containing suites that ONLY should be tested
+        std::unordered_set<std::string>& getTestOnly();
 
         /// @brief Adds a test to the registry under a test suite
         /// @param suite_name The name of the test suite the test is a part of 
         /// @param test The test
-        bool registerTest(const std::string& suite_name, const Core::Test& test);
+        bool registerTest(const Core::Test& test);
 
         /// @brief Runs all tests added to REGISTRY
         /// @param run The TestRun to put the results in
-        void runAllRegisteredTests(Core::TestRun& run);
+        void runAllRegisteredTests(Core::TestRun& run, const int num_threads, 
+            const int timeout = 0, Core::TimeUnit unit = Core::TimeUnit::Seconds);
 
         /// @brief Runs the given test
         /// @param test The test to be run
-        Core::TestResult runTest(const std::string& suite_name, const Core::Test& test);
+        Core::TestResult runTest(const Core::Test& test);
+
+        /// @brief A function that defines what each thread should do
+        /// @param results the results that each thread is feeding into
+        void threadWorker(std::vector<Core::TestResult>& results, Core::Test& running);
     }
 }
 
