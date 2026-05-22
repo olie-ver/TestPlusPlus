@@ -79,15 +79,22 @@ int main(int argc, char** argv) {
         } else if (flag == "--json") {
             if (i != argc - 1) {
                 jsonFile = argv[++i];
+                if (!jsonFile.ends_with(".json")) {
+                    std::cerr << "Invalid .json path: " << jsonFile << std::endl;
+                    return EXIT_FAILURE;
+                }
             } else {
-                std::cerr << "Missing json file path after --json flag" << std::endl;
+                std::cerr << "Missing .json file path after --json flag" << std::endl;
                 return EXIT_FAILURE;
             }
-        } else if (flag == "--junit") {
+        } else if (flag == "--junit" || flag == "--xml") {
             if (i != argc - 1) {
                 jUnitFile = argv[++i];
+                if (!jUnitFile.ends_with(".xml")) {
+                    std::cerr << "Invalid .xml path: " << jUnitFile << std::endl;
+                }
             } else {
-                std::cerr << "Missing jUnit file path after --junit flag" << std::endl;
+                std::cerr << "Missing .xml file path after --junit/--xml flag" << std::endl;
             }
         } else {
             renderUsage(argv[i]);

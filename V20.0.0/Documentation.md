@@ -14,6 +14,7 @@ You may consider this code open-source to be downloaded, modified, and released 
         3. [Timeout](#timeouts)
         3. [Skipping Tests](#skipping-tests)
         4. [Specifying Tests](#test-specific)
+        5. [JSON Output](#json-output)
 2. [Testing](#testing)
     1. [Registering Tests](#registering-tests)
     2. [Different Types Of Tests](#different-types-of-tests)
@@ -253,6 +254,12 @@ In order to specify which test suites are to be tested, you need to type in the 
 By default, excluding this flag will make every test be run unless the [skip](#skipping-tests) flag is included (with suites attached).
 
 Notice how skipping tests and specifying tests to be run are basically identical behavior. They are for your own convenience. If you specify a test suite to be skipped and to be tested: `--skip=Suite --test_only=Suite`, then the suite will still be skipped. 
+
+#### JSON Output
+In order to have JSON output of a test run, type in the following flag:
+`--json PATH_TO_FILE`. 
+
+When you stream JSON output to an external file, no output will be rendered in the console.
 
 ## Testing
 

@@ -19,7 +19,7 @@ namespace internal {
             public:
                 ConsoleRenderer(const std::string jsonFile = "", const std::string junitFile = "", 
                     Core::Verbosity verbosity = Core::Verbosity::Default) 
-                    : jsonFile(jsonFile), junitFile(junitFile), verb(verbosity) {};
+                    : verb(verbosity), jsonFile(jsonFile), junitFile(junitFile) {};
 
                 void render(Core::TestRun& result) override;
 

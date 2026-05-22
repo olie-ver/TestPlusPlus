@@ -37,9 +37,6 @@ namespace internal {
 
             stream << "{\n\t\"suites\": [\n\t\t";
 
-            auto& skip = Runner::getSkipSuites();
-            auto& testOnly = Runner::getTestOnly();
-
             bool first_suite = true;
 
             for (auto it = tests.begin(); it != tests.end(); ++it) {
@@ -114,9 +111,6 @@ namespace internal {
 
             stream << "{\n\t\"suites\": [\n\t\t";
 
-            auto& skip = Runner::getSkipSuites();
-            auto& testOnly = Runner::getTestOnly();
-
             bool first_suite = true;
 
             for (auto it = tests.begin(); it != tests.end(); ++it) {
@@ -172,9 +166,6 @@ namespace internal {
             auto& tests = testRun.results;
 
             stream << "{\n\t\"suites\": [\n\t\t";
-
-            auto& skip = Runner::getSkipSuites();
-            auto& testOnly = Runner::getTestOnly();
 
             bool first_suite = true;
 
@@ -243,9 +234,6 @@ namespace internal {
             auto& tests = testRun.results;
 
             stream << "{\n\t\"suites\": [\n\t\t";
-
-            auto& skip = Runner::getSkipSuites();
-            auto& testOnly = Runner::getTestOnly();
 
             bool first_suite = true;
 
@@ -331,9 +319,6 @@ namespace internal {
             auto& tests = testRun.results;
 
             stream << "{\n\t\"suites\": [\n\t\t";
-
-            auto& skip = Runner::getSkipSuites();
-            auto& testOnly = Runner::getTestOnly();
 
             bool first_suite = true;
 

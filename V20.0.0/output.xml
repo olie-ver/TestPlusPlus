@@ -1,0 +1,9 @@
+<testsuites>
+	<testsuite name="Default" tests="6" successes="1" failures="5" skips="0">
+		<testcase name="fail1" status="failed"/>
+		<testcase name="fail2" status="failed"/>
+		<testcase name="fail3" status="failed"/>
+		<testcase name="fail4" status="failed"/>
+		<testcase name="fail5" status="failed"/>
+	</testsuite>
+</testsuites>
