@@ -35,6 +35,7 @@ namespace internal {
         /// @brief The result for the current test
         extern thread_local std::deque<Core::TestResult> TEST_STACK;
 
+        /// @brief gets the global TestRun struct
         Core::TestRun& getTestRun();
 
         /// @brief The registry containing all the tests to be run
@@ -56,7 +57,8 @@ namespace internal {
 
         /// @brief Runs all tests added to REGISTRY
         /// @param run The TestRun to put the results in
-        void runAllRegisteredTests(Core::TestRun& run, const int num_threads);
+        void runAllRegisteredTests(Core::TestRun& run, const int num_threads, 
+            const int timeout = 0, Core::TimeUnit unit = Core::TimeUnit::Seconds);
 
         /// @brief Runs the given test
         /// @param test The test to be run
@@ -64,7 +66,7 @@ namespace internal {
 
         /// @brief A function that defines what each thread should do
         /// @param results the results that each thread is feeding into
-        void threadWorker(std::vector<Core::TestResult>& results);
+        void threadWorker(std::vector<Core::TestResult>& results, Core::Test& running);
     }
 }
 

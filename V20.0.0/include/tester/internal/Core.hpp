@@ -19,6 +19,14 @@ namespace internal {
             Skipped
         };
 
+        static std::string StatusStrings[] = {"Passed", "Failed", "Skipped"};
+
+        /// @brief The types of time units for timeout
+        enum class TimeUnit {
+            Seconds,
+            Milliseconds
+        };
+
         /// @brief Flags for renderer verbosity
         enum class Verbosity {
             Default,

@@ -54,37 +54,82 @@ namespace internal {
             return true;
         }
 
-        void runAllRegisteredTests(Core::TestRun& run, const int num_threads)
+        void runAllRegisteredTests(Core::TestRun& run, const int num_threads, const int timeout, Core::TimeUnit unit)
         {   
             using clock = std::chrono::steady_clock;
             using ms = std::chrono::milliseconds;
+
             clock::time_point start_time = clock::now();
 
+            std::atomic<bool> finished{false};
+            std::thread watchdog;
+    
             next_index.store(0);
 
             std::vector<Core::Test>& REGISTRY = getRegistry();
 
             //create our thread pool:
             std::vector<std::thread> threads;
-            threads.reserve(num_threads - 1);
+            threads.reserve(num_threads);
+
+            std::vector<Core::Test> running;
+            running.resize(num_threads);
 
             std::vector<Core::TestResult> results;
             results.resize(REGISTRY.size());
 
             //threads start
-            for (int i = 0; i < num_threads - 1; i++) {
-                threads.emplace_back(threadWorker, std::ref(results));
+            for (int i = 0; i < num_threads; i++) {
+                threads.emplace_back(threadWorker, std::ref(results), std::ref(running[i]));
             }
 
-            //this thread does work
-            threadWorker(results);
+            if (timeout > 0) {
+                int time = 0;
+                std::string timeUnit;
+                switch (unit) {
+                    case Core::TimeUnit::Seconds:
+                        time = timeout * 1000;
+                        timeUnit = "seconds";
+                        break;
+                    case Core::TimeUnit::Milliseconds:
+                        time = timeout;
+                        timeUnit = "milliseconds";
+                        break;
+                }
+
+                watchdog = std::thread([&]() {
+                    while (!finished.load()) {
+                        clock::time_point now = clock::now();
+                        int elapsed = std::chrono::duration_cast<ms>(now - start_time).count();
+
+                        if (elapsed >= time) {
+                            std::cerr << "\nGLOBAL TEST TIMEOUT EXCEEDED (" << time << ' '
+                                << timeUnit << ")\n";
+
+                            //print out what each thread is running
+                            for (int i = 0; i < num_threads; i++) {
+                                std::cout << "Thread " << i << " is running test: "
+                                    << running[i].suite_name << " -> " << running[i].test_name << '\n';
+                            }
+                            std::abort();
+                        }
+
+                        std::this_thread::sleep_for(ms(100));
+                    }
+                });
+            }
 
             //join them
-            for (int i = 0; i < num_threads - 1; i++) {
+            for (int i = 0; i < num_threads; i++) {
                 threads[i].join();
             }
+            finished.store(true);
 
             clock::time_point end_time = clock::now();
+
+            if (watchdog.joinable()) {
+                watchdog.join();
+            }
 
             //aggregate results
             for (size_t i = 0; i < results.size(); i++) {
@@ -98,35 +143,6 @@ namespace internal {
         }
 
         Core::TestResult runTest(const Core::Test& test) {
-
-            auto& skip = getSkipSuites();
-            auto& testOnly = getTestOnly();
-
-            //if the test's suite_name is marked to be skipped, skip it
-            if (skip.contains(test.suite_name)) {
-                Core::TestResult skip;
-                skip.suiteName = test.suite_name;
-                skip.testName = test.test_name;
-                skip.status = Core::TestStatus::Skipped;
-                skip.durationMs = 0;
-
-                return skip;
-            //if testOnly's size != 0 (there are suites marked to be only tested)
-            //  and this test's suite_name is not one of them, skip it
-            } else if (testOnly.size() != 0 && !testOnly.contains(test.suite_name)) {
-                Core::TestResult skip;
-                skip.suiteName = test.suite_name;
-                skip.testName = test.test_name;
-                skip.status = Core::TestStatus::Skipped;
-                skip.durationMs = 0;
-
-                return skip;
-            }
-
-            //otherwise, this test is not marked to be skipped
-            //  and testOnly.size() == 0 (run all tests other than the ones to be skipped)
-            //  or testOnly contains this suite => so run the test
-
             TEST_STACK.push_back({});
             Core::TestResult& CURRENT_TEST = TEST_STACK.back();
             CURRENT_TEST.suiteName = test.suite_name;
@@ -174,16 +190,45 @@ namespace internal {
             }
         }
 
-        void threadWorker(std::vector<Core::TestResult>& results) {
+        void threadWorker(std::vector<Core::TestResult>& results, Core::Test& running) {
             std::vector<Core::Test>& REGISTRY = getRegistry();
-
+            auto& skip = getSkipSuites();
+            auto& testOnly = getTestOnly();
+    
             while (true) {
                 size_t index = next_index.fetch_add(1);
 
                 if (index >= REGISTRY.size()) {
                     break;
                 }
-                results[index] = runTest(REGISTRY[index]);
+
+                Core::Test& test = REGISTRY[index];
+
+                //if the test's suite_name is marked to be skipped, skip it
+                if (skip.contains(test.suite_name)) {
+                    Core::TestResult skip;
+                    skip.suiteName = test.suite_name;
+                    skip.testName = test.test_name;
+                    skip.status = Core::TestStatus::Skipped;
+                    skip.durationMs = 0;
+
+                    results[index] = skip;
+                //if testOnly's size != 0 (there are suites marked to be only tested)
+                //  and this test's suite_name is not one of them, skip it
+                } else if (testOnly.size() != 0 && !testOnly.contains(test.suite_name)) {
+                    Core::TestResult skip;
+                    skip.suiteName = test.suite_name;
+                    skip.testName = test.test_name;
+                    skip.status = Core::TestStatus::Skipped;
+                    skip.durationMs = 0;
+
+                    results[index] = skip;
+                } else {
+                    running = test;
+
+                    //only allow non-skipped tests to be run
+                    results[index] = runTest(REGISTRY[index]);
+                }
             }
         }
     }
