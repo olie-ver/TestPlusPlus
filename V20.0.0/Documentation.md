@@ -11,6 +11,7 @@ You may consider this code open-source to be downloaded, modified, and released 
     3. [CLI Usage](#cli-usage)
         1. [Verbosity](#verbosity)
         2. [Threads](#threads)
+        3. [Timeout](#timeouts)
         3. [Skipping Tests](#skipping-tests)
         4. [Specifying Tests](#test-specific)
 2. [Testing](#testing)
@@ -213,6 +214,21 @@ To specify the number of threads to be used, you may type in any of the followin
 3. `--num_threads=`
 
 You can type in any integer value to the number of threads, however, you cannot exceed the number of threads from `std::thread::hardware_concurrency()` and you cannot go below 1 thread. The default value for the number of threads is 1 thread. Because you can specify the number of threads you can use, it is important that your tests are thread-safe. Or not. Free will.
+
+#### Timeouts
+Timeouts are a great way to ensure that the framework doesn't run forever. To specify how long a timeout should be, you can use the following (lower vs uppercase doesn't matter):
+1. `--timeout=`
+2. `--timeout_sec=`
+3. `--timeout_ms=`
+
+If you don't specify a unit, like in the `--timeout=` case, the resulting unit is in seconds. For good measure, these are the units and their abbreviations:
+
+1. sec = seconds
+2. ms = milliseconds
+
+If there is no timeout flag included, the framework will run for as long as it takes for the tests to complete. This means that if you have an infinite loop, deadlock, or unperformant code, the framework won't alert you.
+
+Upon a timeout, the framework aborts and it will tell you which test was being run by each thread.
 
 #### Skipping Tests
 In order to skip test suites, you can type in any of the following (lower vs uppercase doesn't matter):

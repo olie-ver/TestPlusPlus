@@ -21,7 +21,9 @@ void getTestOnly(const std::string& arg, std::unordered_set<std::string>& suites
 
 int main(int argc, char** argv) {
     internal::Core::Verbosity verbFlag = internal::Core::Verbosity::Default;
+    internal::Core::TimeUnit unit = internal::Core::TimeUnit::Seconds;
     int num_threads = 1;
+    int timeout = 0;
     std::unordered_set<std::string>& skipSuites = internal::Runner::getSkipSuites();
     std::unordered_set<std::string>& testOnlySuites = internal::Runner::getTestOnly();
 
@@ -67,6 +69,26 @@ int main(int argc, char** argv) {
             std::string originalFlag(argv[i]);
             std::string arg = originalFlag.substr(originalFlag.find('=') + 1);
             getTestOnly(arg, testOnlySuites);
+        } else if (flag.find("--timeout") != std::string::npos 
+            && flag.find('=') != std::string::npos)
+        {
+            if (flag.find("_ms=") != std::string::npos) {
+                std::cout << "MILLISECONDS" << std::endl;
+                unit = internal::Core::TimeUnit::Milliseconds;
+            }
+
+            std::string arg = flag.substr(flag.find('=') + 1);
+
+            try {
+                size_t pos{};
+                timeout = std::stoi(arg, &pos);
+            } catch (std::invalid_argument const& ex) {
+                std::cerr << "std::invalid_argument::what(): " << ex.what() << '\n';
+                return EXIT_FAILURE;
+            } catch (std::out_of_range const& ex) {
+                std::cerr << "std::out_of_range::what(): " << ex.what() << '\n';
+                return EXIT_FAILURE;
+            }
         } else {
             std::cerr << "Unknown flag: " << argv[i] << std::endl;
             std::cerr << "Usage: ./pathToExecutable --flags\n" << std::endl;
@@ -84,7 +106,7 @@ int main(int argc, char** argv) {
 
     internal::Core::TestRun& testRun = internal::Runner::getTestRun();
 
-    internal::Runner::runAllRegisteredTests(testRun, num_threads);
+    internal::Runner::runAllRegisteredTests(testRun, num_threads, timeout, unit);
 
     internal::Renderer::ConsoleRenderer renderer(verbFlag);
 
@@ -127,7 +149,6 @@ void getSkip(const std::string& arg, std::unordered_set<std::string>& suites)
 
     while(std::getline(args, suite, ','))
     {
-        // std::cout << "SKIPPING " + suite << std::endl;
         suites.insert(suite);
     }
 }
