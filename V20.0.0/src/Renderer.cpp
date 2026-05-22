@@ -142,18 +142,25 @@ namespace internal {
 
             auto& skip = Runner::getSkipSuites();
             auto& testOnly = Runner::getTestOnly();
-            int i = 0;
+
+            bool first_suite = true;
 
             for (auto it = tests.begin(); it != tests.end(); ++it) {
-                std::cout << "iteration " << i << std::endl;
                 const std::string& suite_name = it->first;
+
                 if (skip.contains(suite_name) 
                     || (testOnly.size() != 0 && !testOnly.contains(suite_name)))
                 {
                     continue;
                 }
 
-                bool first = true;
+                if (!first_suite) {
+                    stream << "\t,";
+                }
+
+                first_suite = false;
+
+                bool first_test = true;
                 const std::vector<Core::TestResult>& test = it->second;
                 size_t size = test.size();
 
@@ -162,6 +169,12 @@ namespace internal {
                 stream << "\"tests\": [\n\t\t\t\t";
 
                 for (size_t i = 0; i < size; i++) {
+                    if (!first_test) {
+                        stream << "\t,";
+                    }
+
+                    first_test = false;
+
                     stream << "{\n\t\t\t\t\t";
                     stream << "\"suiteName\": \"" << suite_name << "\",\n\t\t\t\t\t";
                     stream << "\"testName\": \"" << test[i].testName << "\",\n\t\t\t\t\t";
@@ -170,31 +183,27 @@ namespace internal {
                     stream << "\"failures\": [\n\t\t\t\t\t\t";
 
                     size_t num_failures = test[i].failures.size();
-                    for (size_t j = 0; j < num_failures - 1; j++) {
+
+                    bool first_failure = true;
+                    for (size_t j = 0; j < num_failures; j++) {
+                        if (!first_failure) {
+                            stream << "\t,";
+                        }
+
+                        first_failure = false;
                         stream << "{\n\t\t\t\t\t\t\t";
                         stream << "\"message\": \"" << test[i].failures[j].message << "\",\n\t\t\t\t\t\t\t";
                         stream << "\"file\": \"" << test[i].failures[j].file << "\",\n\t\t\t\t\t\t\t";
                         stream << "\"line\": \"" << test[i].failures[j].line << "\"\n\t\t\t\t\t\t";
-                        if (j != num_failures - 2) {
-                            stream << "},\n\t\t\t\t\t\t";
-                        } else {
-                            stream << "}\n\t\t\t\t\t";
-                        }
+                        stream << "}\n\t\t\t\t\t";
                     }
-                    stream << "]\n\t\t\t\t";
 
-                    if (i != size - 1) {
-                       stream << "},\n\t\t\t\t"; 
-                       std::cout << "NOT SECOND TO LAST\n";
-                    } else {
-                        stream << "}\n\t\t\t";
-                        std::cout << "SECOND TO LAST\n";
-                    }
+                    stream << "]\n\t\t\t\t";
+                    stream << "}\n\t\t\t";
                 }
-                
+
                 stream << "]\n\t\t";
                 stream << "}\n\t";
-                i++;
             }
 
             stream << "]\n";
