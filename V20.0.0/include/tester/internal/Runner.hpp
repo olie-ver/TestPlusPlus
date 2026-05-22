@@ -6,9 +6,10 @@
 #include "Core.hpp"
 #include <deque>
 #include <map>
-#include <vector>
-#include <unordered_set>
 #include <string>
+#include <thread>
+#include <unordered_set>
+#include <vector>
 
 #define STR(x) #x
 
@@ -50,6 +51,11 @@ namespace internal {
         /// @brief A set containing suites that ONLY should be tested
         std::unordered_set<std::string>& getTestOnly();
 
+        /// @brief Checks if a suite should be skipped
+        /// @param suite_name the suite name
+        /// @return true if the suite should be skipped, false otherwise
+        bool shouldSkip(const std::string& suite_name);
+
         /// @brief Adds a test to the registry under a test suite
         /// @param suite_name The name of the test suite the test is a part of 
         /// @param test The test
@@ -67,6 +73,14 @@ namespace internal {
         /// @brief A function that defines what each thread should do
         /// @param results the results that each thread is feeding into
         void threadWorker(std::vector<Core::TestResult>& results, Core::Test& running);
+
+        /// @brief Creates a watchdog thread
+        /// @return a thread
+        std::thread createWatchdog(const int& time, const int& num_threads, 
+            const std::atomic<bool>& finished, 
+            const std::vector<Core::Test>& running, 
+            const std::string& timeUnit,
+            const std::chrono::steady_clock::time_point& start_time);
     }
 }
 
