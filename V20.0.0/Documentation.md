@@ -261,6 +261,286 @@ In order to have JSON output of a test run, type in the following flag:
 
 When you stream JSON output to an external file, no output will be rendered in the console.
 
+Some examples of JSON output on each verbosity flag:
+`--verbosity=default`:
+
+```
+{
+	"suites": [
+		{
+			"suite_name": "Default",
+			"tests": [
+				{
+					"suiteName": "Default",
+					"testName": "1",
+					"status": "Passed",
+					"durationMs": "0",
+					"failures": [
+						
+					]
+				},
+                {
+					"suiteName": "Default",
+					"testName": "fail2",
+					"status": "Failed",
+					"durationMs": "0",
+					"failures": [
+						{
+							"message": "Expected: true to be false",
+							"file": "tests/failingTests.cpp",
+							"line": "32"
+						}
+					]
+				}
+            ]
+        }
+    ]
+}
+```
+
+On this level of verbosity, every detail gets streamed.
+
+`--verbosity=minimum`:
+
+```
+{
+	"suites": [
+		{
+			"suite_name": "Default",
+			"tests": [
+				{
+					"suiteName": "Default",
+					"testName": "1",
+					"status": "Passed",
+					"durationMs": "0",
+					"failures": []
+				},
+				{
+					"suiteName": "Default",
+					"testName": "fail1",
+					"status": "Failed",
+					"durationMs": "0",
+					"failures": []
+				},
+            ]
+        }
+    ]
+}
+```
+
+On this level of verbosity, none of the failure messages are recorded.
+
+`--verbosity=passOnly`:
+
+```
+{
+	"suites": [
+		{
+			"suite_name": "Default",
+			"tests": [
+				{
+					"suiteName": "Default",
+					"testName": "1",
+					"status": "Passed",
+					"durationMs": "0",
+					"failures": []
+				}
+			]
+		},
+		{
+			"suite_name": "FloatBasic",
+			"tests": [
+				{
+					"suiteName": "FloatBasic",
+					"testName": "AbsoluteEquality",
+					"status": "Passed",
+					"durationMs": "0",
+					"failures": []
+				}
+            ]
+        }
+    ]
+}
+```
+
+On this level, only the suites and tests that pass will be rendered. If a suite has no passing test cases, it will not be rendered in the output.
+
+`--verbosity=failOnly`:
+
+```
+{
+	"suites": [
+		{
+			"suite_name": "Default",
+			"tests": [
+				{
+					"suiteName": "Default",
+					"testName": "fail1",
+					"status": "Failed",
+					"durationMs": "0",
+					"failures": [
+						{
+							"message": "Expected: true to be false",
+							"file": "tests/failingTests.cpp",
+							"line": "4"
+						}
+                        ...
+                    ]
+                }
+            ]
+        }
+    ]
+}
+```
+
+On this level, only suites and tests that fail are rendered, with all failure messages. Suites that have no failures are not rendered in the output.
+
+`--verbosity=failOnlyMin`:
+
+```
+{
+	"suites": [
+		{
+			"suite_name": "Default",
+			"tests": [
+				{
+					"suiteName": "Default",
+					"testName": "fail1",
+					"status": "Failed",
+					"durationMs": "0",
+					"failures": []
+				},
+				{
+					"suiteName": "Default",
+					"testName": "fail2",
+					"status": "Failed",
+					"durationMs": "0",
+					"failures": []
+				},
+                ...
+            ]
+        }
+    ]
+}
+```
+
+On this level, only suites and tests that fail are rendered, without failure messages. Suites that have no failures are not rendered in the output.
+
+Note that you can combine to have JSON and XML output by adding both flags
+
+#### XML Output
+In order to have XML output of a test run, type in the one of the following flags:
+1. `--junit PATH_TO_FILE`
+2. `--xml PATH_TO_FILE`
+
+When you stream XML output to an external file, no output will be rendered in the console.
+
+Some examples of XML output on each verbosity flag:
+`--verbosity=default`:
+
+```
+<testsuites>
+	<testsuite name="Default" tests="6" successes="1" failures="5" skips="0">
+		<testcase name="1" status="passed"/>
+		<testcase name="fail1" status="failed">
+			<failure message="Expected: true to be false"/>
+			<failure message="Expected: 1 to be false"/>
+			<failure message="Expected: false to be true"/>
+			<failure message="Expected test: EXPECT_TRUE(true) to fail, but it passed"/>
+		</testcase>
+		<testcase name="fail2" status="failed">
+			<failure message="Expected: true to be false"/>
+			<failure message="Expected: 1 to be false"/>
+			<failure message="Expected: false to be true"/>
+			<failure message="Expected test: EXPECT_TRUE(true) to fail, but it passed"/>
+		</testcase>
+    </testsuite>
+</testsuites>
+```
+
+On this level of verbosity, every detail gets streamed.
+
+`--verbosity=minimum`:
+
+```
+<testsuites>
+	<testsuite name="Default" tests="6" successes="1" failures="5" skips="0">
+		<testcase name="1" status="passed"/>
+		<testcase name="fail1" status="failed"/>
+		<testcase name="fail2" status="failed"/>
+		<testcase name="fail3" status="failed"/>
+		<testcase name="fail4" status="failed"/>
+		<testcase name="fail5" status="failed"/>
+	</testsuite>
+	<testsuite name="FloatBasic" tests="3" successes="3" failures="0" skips="0">
+		<testcase name="AbsoluteEquality" status="passed"/>
+		<testcase name="RelativeEquality" status="passed"/>
+		<testcase name="CombinedNear" status="passed"/>
+	</testsuite>
+    ...
+</testsuites>
+```
+
+On this level of verbosity, none of the failure messages are recorded.
+
+`--verbosity=passOnly`:
+
+```
+<testsuites>
+	<testsuite name="Default" tests="6" successes="1" failures="5" skips="0">
+		<testcase name="1" status="passed"/>
+	</testsuite>
+	<testsuite name="FloatBasic" tests="3" successes="3" failures="0" skips="0">
+		<testcase name="AbsoluteEquality" status="passed"/>
+		<testcase name="RelativeEquality" status="passed"/>
+		<testcase name="CombinedNear" status="passed"/>
+	</testsuite>
+    ...
+</testsuites>
+```
+
+On this level, only the suites and tests that pass will be rendered. If a suite has no passing test cases, it will not be rendered in the output.
+
+`--verbosity=failOnly`:
+
+```
+<testsuites>
+	<testsuite name="Default" tests="5" successes="0" failures="5" skips="0">
+		<testcase name="fail1" status="failed">
+			<failure message="Expected: true to be false"/>
+			<failure message="Expected: 1 to be false"/>
+			<failure message="Expected: false to be true"/>
+			<failure message="Expected test: EXPECT_TRUE(true) to fail, but it passed"/>
+		</testcase>
+		<testcase name="fail2" status="failed">
+			<failure message="Expected: true to be false"/>
+			<failure message="Expected: 1 to be false"/>
+			<failure message="Expected: false to be true"/>
+			<failure message="Expected test: EXPECT_TRUE(true) to fail, but it passed"/>
+		</testcase>
+        ...
+    </testsuite>
+</testsuites>
+```
+
+On this level, only suites and tests that fail are rendered, with all failure messages. Suites that have no failures are not rendered in the output.
+
+`--verbosity=failOnlyMin`:
+
+```
+<testsuites>
+	<testsuite name="Default" tests="6" successes="1" failures="5" skips="0">
+		<testcase name="fail1" status="failed"/>
+		<testcase name="fail2" status="failed"/>
+		<testcase name="fail3" status="failed"/>
+		<testcase name="fail4" status="failed"/>
+		<testcase name="fail5" status="failed"/>
+	</testsuite>
+</testsuites>
+```
+
+Note that you can combine to have JSON and XML output by adding both flags
+
 ## Testing
 
 ### Registering Tests
