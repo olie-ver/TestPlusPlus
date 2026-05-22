@@ -19,6 +19,7 @@ namespace internal {
             Skipped
         };
 
+        /// @brief A simple mapping from TestStatus => string representation
         static std::string StatusStrings[] = {"Passed", "Failed", "Skipped"};
 
         /// @brief The types of time units for timeout
@@ -81,8 +82,6 @@ namespace internal {
         /// @brief Hashes a Test struct
         struct TestHash {
             size_t operator()(const Test& p) const {
-                // size_t h1 = std::hash<std::string>{}(p.first);
-                // size_t h2 = std::hash<std::string>{}(p.second);
                 size_t h1 = std::hash<std::string>{}(p.suite_name);
                 size_t h2 = std::hash<std::string>{}(p.test_name);
                 return h1 ^ (h2 << 1);

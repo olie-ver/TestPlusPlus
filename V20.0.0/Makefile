@@ -61,7 +61,10 @@ test: all
 	./$(TARGET) --v=minimum
 
 json: all
-	./$(TARGET) --v=default --json output.json
+	./$(TARGET) --v=failOnlyMin --skip=timeout --json output.json
+
+xml: all
+	./$(TARGET) --v=default --skip=timeout --xml output.xml
 
 1: all
 	./$(TARGET) --v=default --t=1
