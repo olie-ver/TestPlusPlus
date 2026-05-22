@@ -20,12 +20,16 @@ void getSkip(const std::string& arg, std::unordered_set<std::string>& suites);
 void getTestOnly(const std::string& arg, std::unordered_set<std::string>& suites);
 
 int main(int argc, char** argv) {
-    internal::Core::Verbosity verbFlag = internal::Core::Verbosity::Default;
-    internal::Core::TimeUnit unit = internal::Core::TimeUnit::Seconds;
     int num_threads = 1;
     int timeout = 0;
+
+    internal::Core::Verbosity verbFlag = internal::Core::Verbosity::Default;
+    internal::Core::TimeUnit unit = internal::Core::TimeUnit::Seconds;
     std::unordered_set<std::string>& skipSuites = internal::Runner::getSkipSuites();
     std::unordered_set<std::string>& testOnlySuites = internal::Runner::getTestOnly();
+
+    std::string jsonFile = "";
+    std::string jUnitFile = "";
 
     // process the arguments
     for (int i = 1; i < argc; i++) {
@@ -89,12 +93,26 @@ int main(int argc, char** argv) {
                 std::cerr << "std::out_of_range::what(): " << ex.what() << '\n';
                 return EXIT_FAILURE;
             }
+        } else if (flag == "--json") {
+            if (i != argc - 1) {
+                jsonFile = argv[++i];
+            } else {
+                std::cerr << "Missing json file path after --json flag" << std::endl;
+                return EXIT_FAILURE;
+            }
+        } else if (flag == "--junit") {
+            if (i != argc - 1) {
+                jUnitFile = argv[++i];
+            } else {
+                std::cerr << "Missing jUnit file path after --junit flag" << std::endl;
+            }
         } else {
             std::cerr << "Unknown flag: " << argv[i] << std::endl;
             std::cerr << "Usage: ./pathToExecutable --flags\n" << std::endl;
             std::cerr << "Supported flags:" << std::endl;
             std::cerr << "\tVerbosity: --v= or --verbosity=" << std::endl;
             std::cerr << "\tThreads: --t= or --num_threads= or --threads=" << std::endl;
+            std::cerr << "\tTimeout: --timeout= or --timeout_sec= or --timeout_ms=" << std::endl;
             std::cerr << "\tSkip Suites: --s= or --skip=" << std::endl;
             std::cerr << "\tTest Only Suites: --testonly= or --test_only= or --to= or t_o=\n" << std::endl;
             std::cerr << "Supported verbosity flags: ";
@@ -108,7 +126,7 @@ int main(int argc, char** argv) {
 
     internal::Runner::runAllRegisteredTests(testRun, num_threads, timeout, unit);
 
-    internal::Renderer::ConsoleRenderer renderer(verbFlag);
+    internal::Renderer::ConsoleRenderer renderer(jsonFile, jUnitFile, verbFlag);
 
     renderer.render(testRun);
     return EXIT_SUCCESS;
