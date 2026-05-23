@@ -1,6 +1,9 @@
 cmake_minimum_required(VERSION 3.20)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 
 project(tester LANGUAGES CXX)
 
@@ -21,9 +24,7 @@ set_target_properties(tester PROPERTIES
 )
 
 target_precompile_headers(tester PRIVATE
-    $<$<COMPILE_LANGUAGE:CXX>:
-        ${CMAKE_CURRENT_SOURCE_DIR}/include/tester/internal/PCH/pch.hpp
-    >
+    "${CMAKE_CURRENT_SOURCE_DIR}/include/tester/internal/PCH/pch.hpp"
 )
 
 target_compile_features(tester PUBLIC cxx_std_20)
@@ -54,7 +55,3 @@ target_link_libraries(runTests PRIVATE tester)
 enable_testing()
 
 add_test(NAME framework_tests COMMAND runTests)
-
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)

@@ -3,8 +3,6 @@
 #ifndef SRC_PCH
 #define SRC_PCH
 
-#pragma once
-
 #include <algorithm>
 #include <atomic>
 #include <chrono>
