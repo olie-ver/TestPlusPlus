@@ -1,265 +1,265 @@
 <testsuites>
 	<testsuite name="Default" tests="6" successes="1" failures="5" skips="0">
-		<testcase name="1" status="passed"/>
-		<testcase name="fail1" status="failed">
-			<failure message="Expected: true to be false"/>
-			<failure message="Expected: 1 to be false"/>
-			<failure message="Expected: false to be true"/>
-			<failure message="Expected test: EXPECT_TRUE(true) to fail, but it passed"/>
+		<testcase name="1" status="Passed"/>
+		<testcase name="fail1" status="Failed">
+			<failure message="Expected: true to be false" file="tests/failingTests.cpp" line="4"/>
+			<failure message="Expected: 1 to be false" file="tests/failingTests.cpp" line="5"/>
+			<failure message="Expected: false to be true" file="tests/failingTests.cpp" line="6"/>
+			<failure message="Expected test: EXPECT_TRUE(true) to fail, but it passed" file="tests/failingTests.cpp" line="7"/>
 		</testcase>
-		<testcase name="fail2" status="failed">
-			<failure message="Expected: true to be false"/>
-			<failure message="Expected: 1 to be false"/>
-			<failure message="Expected: false to be true"/>
-			<failure message="Expected test: EXPECT_TRUE(true) to fail, but it passed"/>
+		<testcase name="fail2" status="Failed">
+			<failure message="Expected: true to be false" file="tests/failingTests.cpp" line="11"/>
+			<failure message="Expected: 1 to be false" file="tests/failingTests.cpp" line="12"/>
+			<failure message="Expected: false to be true" file="tests/failingTests.cpp" line="13"/>
+			<failure message="Expected test: EXPECT_TRUE(true) to fail, but it passed" file="tests/failingTests.cpp" line="14"/>
 		</testcase>
-		<testcase name="fail3" status="failed">
-			<failure message="Expected: true to be false"/>
-			<failure message="Expected: 1 to be false"/>
-			<failure message="Expected: false to be true"/>
-			<failure message="Expected test: EXPECT_TRUE(true) to fail, but it passed"/>
+		<testcase name="fail3" status="Failed">
+			<failure message="Expected: true to be false" file="tests/failingTests.cpp" line="18"/>
+			<failure message="Expected: 1 to be false" file="tests/failingTests.cpp" line="19"/>
+			<failure message="Expected: false to be true" file="tests/failingTests.cpp" line="20"/>
+			<failure message="Expected test: EXPECT_TRUE(true) to fail, but it passed" file="tests/failingTests.cpp" line="21"/>
 		</testcase>
-		<testcase name="fail4" status="failed">
-			<failure message="Expected: true to be false"/>
-			<failure message="Expected: 1 to be false"/>
-			<failure message="Expected: false to be true"/>
-			<failure message="Expected test: EXPECT_TRUE(true) to fail, but it passed"/>
+		<testcase name="fail4" status="Failed">
+			<failure message="Expected: true to be false" file="tests/failingTests.cpp" line="25"/>
+			<failure message="Expected: 1 to be false" file="tests/failingTests.cpp" line="26"/>
+			<failure message="Expected: false to be true" file="tests/failingTests.cpp" line="27"/>
+			<failure message="Expected test: EXPECT_TRUE(true) to fail, but it passed" file="tests/failingTests.cpp" line="28"/>
 		</testcase>
-		<testcase name="fail5" status="failed">
-			<failure message="Expected: true to be false"/>
+		<testcase name="fail5" status="Failed">
+			<failure message="Expected: true to be false" file="tests/failingTests.cpp" line="32"/>
 		</testcase>
 	</testsuite>
 	<testsuite name="FloatBasic" tests="3" successes="3" failures="0" skips="0">
-		<testcase name="AbsoluteEquality" status="passed"/>
-		<testcase name="RelativeEquality" status="passed"/>
-		<testcase name="CombinedNear" status="passed"/>
+		<testcase name="AbsoluteEquality" status="Passed"/>
+		<testcase name="RelativeEquality" status="Passed"/>
+		<testcase name="CombinedNear" status="Passed"/>
 	</testsuite>
 	<testsuite name="FloatTorture" tests="9" successes="9" failures="0" skips="0">
-		<testcase name="PrecisionIssues" status="passed"/>
-		<testcase name="MagnitudeDifferences" status="passed"/>
-		<testcase name="ZeroHandling" status="passed"/>
-		<testcase name="NaNChecks" status="passed"/>
-		<testcase name="InfinityChecks" status="passed"/>
-		<testcase name="MixedFloatTypes" status="passed"/>
-		<testcase name="Cancellation" status="passed"/>
-		<testcase name="Symmetry" status="passed"/>
-		<testcase name="NonTransitive" status="passed"/>
+		<testcase name="PrecisionIssues" status="Passed"/>
+		<testcase name="MagnitudeDifferences" status="Passed"/>
+		<testcase name="ZeroHandling" status="Passed"/>
+		<testcase name="NaNChecks" status="Passed"/>
+		<testcase name="InfinityChecks" status="Passed"/>
+		<testcase name="MixedFloatTypes" status="Passed"/>
+		<testcase name="Cancellation" status="Passed"/>
+		<testcase name="Symmetry" status="Passed"/>
+		<testcase name="NonTransitive" status="Passed"/>
 	</testsuite>
 	<testsuite name="IterableTest" tests="20" successes="20" failures="0" skips="0">
-		<testcase name="OrderedEqPassesSameSequence" status="passed"/>
-		<testcase name="OrderedEqFailsDifferentOrder" status="passed"/>
-		<testcase name="OrderedEqFailsDifferentSize" status="passed"/>
-		<testcase name="OrderedNePassesWhenDifferent" status="passed"/>
-		<testcase name="OrderedNeFailsWhenSame" status="passed"/>
-		<testcase name="UnorderedEqPassesDifferentOrder" status="passed"/>
-		<testcase name="UnorderedEqFailsDifferentElements" status="passed"/>
-		<testcase name="UnorderedEqHandlesDuplicatesCorrectly" status="passed"/>
-		<testcase name="EmptyPasses" status="passed"/>
-		<testcase name="EmptyFailsWhenNotEmpty" status="passed"/>
-		<testcase name="NEmptyPasses" status="passed"/>
-		<testcase name="NEmptyFailsWhenEmpty" status="passed"/>
-		<testcase name="SizePasses" status="passed"/>
-		<testcase name="SizeFails" status="passed"/>
-		<testcase name="ContainsPasses" status="passed"/>
-		<testcase name="ContainsFails" status="passed"/>
-		<testcase name="DoesNotContainPasses" status="passed"/>
-		<testcase name="DoesNotContainFails" status="passed"/>
-		<testcase name="WorksAcrossContainerTypes" status="passed"/>
-		<testcase name="UnorderedEqEmptyContainers" status="passed"/>
+		<testcase name="OrderedEqPassesSameSequence" status="Passed"/>
+		<testcase name="OrderedEqFailsDifferentOrder" status="Passed"/>
+		<testcase name="OrderedEqFailsDifferentSize" status="Passed"/>
+		<testcase name="OrderedNePassesWhenDifferent" status="Passed"/>
+		<testcase name="OrderedNeFailsWhenSame" status="Passed"/>
+		<testcase name="UnorderedEqPassesDifferentOrder" status="Passed"/>
+		<testcase name="UnorderedEqFailsDifferentElements" status="Passed"/>
+		<testcase name="UnorderedEqHandlesDuplicatesCorrectly" status="Passed"/>
+		<testcase name="EmptyPasses" status="Passed"/>
+		<testcase name="EmptyFailsWhenNotEmpty" status="Passed"/>
+		<testcase name="NEmptyPasses" status="Passed"/>
+		<testcase name="NEmptyFailsWhenEmpty" status="Passed"/>
+		<testcase name="SizePasses" status="Passed"/>
+		<testcase name="SizeFails" status="Passed"/>
+		<testcase name="ContainsPasses" status="Passed"/>
+		<testcase name="ContainsFails" status="Passed"/>
+		<testcase name="DoesNotContainPasses" status="Passed"/>
+		<testcase name="DoesNotContainFails" status="Passed"/>
+		<testcase name="WorksAcrossContainerTypes" status="Passed"/>
+		<testcase name="UnorderedEqEmptyContainers" status="Passed"/>
 	</testsuite>
 	<testsuite name="IterableTorture" tests="16" successes="16" failures="0" skips="0">
-		<testcase name="UnorderedEqHashBasic" status="passed"/>
-		<testcase name="UnorderedEqHashDuplicateMismatch" status="passed"/>
-		<testcase name="UnorderedEqHandlesHashCollisions" status="passed"/>
-		<testcase name="UnorderedEqSortPath" status="passed"/>
-		<testcase name="UnorderedEqSortDuplicateMismatch" status="passed"/>
-		<testcase name="SortPathDifferentInitialOrder" status="passed"/>
-		<testcase name="UnorderedEqFallbackPath" status="passed"/>
-		<testcase name="FallbackDuplicateMismatch" status="passed"/>
-		<testcase name="FallbackWorstCaseMatching" status="passed"/>
-		<testcase name="MixedContainerTypesHashPath" status="passed"/>
-		<testcase name="UnorderedEqSizeMismatchEarlyExit" status="passed"/>
-		<testcase name="ContainsWithDuplicates" status="passed"/>
-		<testcase name="DoesNotContainWithDuplicates" status="passed"/>
-		<testcase name="OrderedVsUnorderedDifference" status="passed"/>
-		<testcase name="DoesNotMutateInputs" status="passed"/>
-		<testcase name="AllElementsSame" status="passed"/>
+		<testcase name="UnorderedEqHashBasic" status="Passed"/>
+		<testcase name="UnorderedEqHashDuplicateMismatch" status="Passed"/>
+		<testcase name="UnorderedEqHandlesHashCollisions" status="Passed"/>
+		<testcase name="UnorderedEqSortPath" status="Passed"/>
+		<testcase name="UnorderedEqSortDuplicateMismatch" status="Passed"/>
+		<testcase name="SortPathDifferentInitialOrder" status="Passed"/>
+		<testcase name="UnorderedEqFallbackPath" status="Passed"/>
+		<testcase name="FallbackDuplicateMismatch" status="Passed"/>
+		<testcase name="FallbackWorstCaseMatching" status="Passed"/>
+		<testcase name="MixedContainerTypesHashPath" status="Passed"/>
+		<testcase name="UnorderedEqSizeMismatchEarlyExit" status="Passed"/>
+		<testcase name="ContainsWithDuplicates" status="Passed"/>
+		<testcase name="DoesNotContainWithDuplicates" status="Passed"/>
+		<testcase name="OrderedVsUnorderedDifference" status="Passed"/>
+		<testcase name="DoesNotMutateInputs" status="Passed"/>
+		<testcase name="AllElementsSame" status="Passed"/>
 	</testsuite>
 	<testsuite name="Meta" tests="18" successes="18" failures="0" skips="0">
-		<testcase name="ExpectPassesBasic" status="passed"/>
-		<testcase name="ExpectPassesFailsWhenInnerFails" status="passed"/>
-		<testcase name="ExpectFailsBasic" status="passed"/>
-		<testcase name="ExpectFailsFailsWhenInnerPasses" status="passed"/>
-		<testcase name="NestedPasses" status="passed"/>
-		<testcase name="NestedFailures" status="passed"/>
-		<testcase name="TripleNesting" status="passed"/>
-		<testcase name="ComparisonAssertions" status="passed"/>
-		<testcase name="FloatAssertions" status="passed"/>
-		<testcase name="NanInfAssertions" status="passed"/>
-		<testcase name="ContainerAssertions" status="passed"/>
-		<testcase name="ContainsAssertions" status="passed"/>
-		<testcase name="SetAssertions" status="passed"/>
-		<testcase name="StringAssertions" status="passed"/>
-		<testcase name="PointerAssertions" status="passed"/>
-		<testcase name="ThrowAssertions" status="passed"/>
-		<testcase name="MetaRecursion" status="passed"/>
-		<testcase name="MetaRecursionFailures" status="passed"/>
+		<testcase name="ExpectPassesBasic" status="Passed"/>
+		<testcase name="ExpectPassesFailsWhenInnerFails" status="Passed"/>
+		<testcase name="ExpectFailsBasic" status="Passed"/>
+		<testcase name="ExpectFailsFailsWhenInnerPasses" status="Passed"/>
+		<testcase name="NestedPasses" status="Passed"/>
+		<testcase name="NestedFailures" status="Passed"/>
+		<testcase name="TripleNesting" status="Passed"/>
+		<testcase name="ComparisonAssertions" status="Passed"/>
+		<testcase name="FloatAssertions" status="Passed"/>
+		<testcase name="NanInfAssertions" status="Passed"/>
+		<testcase name="ContainerAssertions" status="Passed"/>
+		<testcase name="ContainsAssertions" status="Passed"/>
+		<testcase name="SetAssertions" status="Passed"/>
+		<testcase name="StringAssertions" status="Passed"/>
+		<testcase name="PointerAssertions" status="Passed"/>
+		<testcase name="ThrowAssertions" status="Passed"/>
+		<testcase name="MetaRecursion" status="Passed"/>
+		<testcase name="MetaRecursionFailures" status="Passed"/>
 	</testsuite>
 	<testsuite name="String" tests="5" successes="5" failures="0" skips="0">
-		<testcase name="Equality" status="passed"/>
-		<testcase name="Emptiness" status="passed"/>
-		<testcase name="Contains" status="passed"/>
-		<testcase name="StartsWith" status="passed"/>
-		<testcase name="EndsWith" status="passed"/>
+		<testcase name="Equality" status="Passed"/>
+		<testcase name="Emptiness" status="Passed"/>
+		<testcase name="Contains" status="Passed"/>
+		<testcase name="StartsWith" status="Passed"/>
+		<testcase name="EndsWith" status="Passed"/>
 	</testsuite>
 	<testsuite name="Throws" tests="22" successes="22" failures="0" skips="0">
-		<testcase name="BasicThrowsPass" status="passed"/>
-		<testcase name="BasicThrowsFailsWhenNoThrow" status="passed"/>
-		<testcase name="FunctionThrowsPass" status="passed"/>
-		<testcase name="FunctionNoThrowFails" status="passed"/>
-		<testcase name="CorrectTypePass" status="passed"/>
-		<testcase name="WrongTypeFails" status="passed"/>
-		<testcase name="TypeNoThrowFails" status="passed"/>
-		<testcase name="DerivedTypePass" status="passed"/>
-		<testcase name="DoesNotThrowPass" status="passed"/>
-		<testcase name="DoesNotThrowFailsStdException" status="passed"/>
-		<testcase name="DoesNotThrowFailsUnknownException" status="passed"/>
-		<testcase name="ThrowsMessageStdPass" status="passed"/>
-		<testcase name="ThrowsMessageStdWrongMessageFails" status="passed"/>
-		<testcase name="ThrowsMessageNoThrowFails" status="passed"/>
-		<testcase name="ThrowsMessageStringPass" status="passed"/>
-		<testcase name="ThrowsMessageStringWrongFails" status="passed"/>
-		<testcase name="ThrowsMessageUnknownTypeFails" status="passed"/>
-		<testcase name="InlineExpressionWorks" status="passed"/>
-		<testcase name="ComplexExpressionWorks" status="passed"/>
-		<testcase name="ComplexExpressionFailsWhenNoThrow" status="passed"/>
-		<testcase name="MessageUsesWhatFromStdException" status="passed"/>
-		<testcase name="TypeMismatchNonStdExceptionFails" status="passed"/>
+		<testcase name="BasicThrowsPass" status="Passed"/>
+		<testcase name="BasicThrowsFailsWhenNoThrow" status="Passed"/>
+		<testcase name="FunctionThrowsPass" status="Passed"/>
+		<testcase name="FunctionNoThrowFails" status="Passed"/>
+		<testcase name="CorrectTypePass" status="Passed"/>
+		<testcase name="WrongTypeFails" status="Passed"/>
+		<testcase name="TypeNoThrowFails" status="Passed"/>
+		<testcase name="DerivedTypePass" status="Passed"/>
+		<testcase name="DoesNotThrowPass" status="Passed"/>
+		<testcase name="DoesNotThrowFailsStdException" status="Passed"/>
+		<testcase name="DoesNotThrowFailsUnknownException" status="Passed"/>
+		<testcase name="ThrowsMessageStdPass" status="Passed"/>
+		<testcase name="ThrowsMessageStdWrongMessageFails" status="Passed"/>
+		<testcase name="ThrowsMessageNoThrowFails" status="Passed"/>
+		<testcase name="ThrowsMessageStringPass" status="Passed"/>
+		<testcase name="ThrowsMessageStringWrongFails" status="Passed"/>
+		<testcase name="ThrowsMessageUnknownTypeFails" status="Passed"/>
+		<testcase name="InlineExpressionWorks" status="Passed"/>
+		<testcase name="ComplexExpressionWorks" status="Passed"/>
+		<testcase name="ComplexExpressionFailsWhenNoThrow" status="Passed"/>
+		<testcase name="MessageUsesWhatFromStdException" status="Passed"/>
+		<testcase name="TypeMismatchNonStdExceptionFails" status="Passed"/>
 	</testsuite>
 	<testsuite name="boolean_torture" tests="37" successes="37" failures="0" skips="0">
-		<testcase name="literal_true_passes" status="passed"/>
-		<testcase name="literal_false_fails" status="passed"/>
-		<testcase name="false_passes_expect_false" status="passed"/>
-		<testcase name="true_fails_expect_false" status="passed"/>
-		<testcase name="double_negation_true" status="passed"/>
-		<testcase name="double_negation_false" status="passed"/>
-		<testcase name="negated_true_fails" status="passed"/>
-		<testcase name="negated_false_fails_false_check" status="passed"/>
-		<testcase name="zero_is_false" status="passed"/>
-		<testcase name="nonzero_is_true" status="passed"/>
-		<testcase name="negative_is_true" status="passed"/>
-		<testcase name="zero_fails_true" status="passed"/>
-		<testcase name="nonzero_fails_false" status="passed"/>
-		<testcase name="null_pointer_false" status="passed"/>
-		<testcase name="nonnull_pointer_true" status="passed"/>
-		<testcase name="null_pointer_fails_true" status="passed"/>
-		<testcase name="and_expression_true" status="passed"/>
-		<testcase name="and_expression_false" status="passed"/>
-		<testcase name="or_expression_true" status="passed"/>
-		<testcase name="or_expression_false" status="passed"/>
-		<testcase name="precedence_without_parentheses" status="passed"/>
-		<testcase name="precedence_with_parentheses" status="passed"/>
-		<testcase name="comparison_true" status="passed"/>
-		<testcase name="comparison_false" status="passed"/>
-		<testcase name="equality_true" status="passed"/>
-		<testcase name="inequality_false" status="passed"/>
-		<testcase name="ternary_true_branch" status="passed"/>
-		<testcase name="ternary_false_branch" status="passed"/>
-		<testcase name="chained_logic_true" status="passed"/>
-		<testcase name="chained_logic_false" status="passed"/>
-		<testcase name="true_expression_expected_false" status="passed"/>
-		<testcase name="false_expression_expected_true" status="passed"/>
-		<testcase name="bool_variable_true" status="passed"/>
-		<testcase name="bool_variable_false" status="passed"/>
-		<testcase name="bool_variable_mutation" status="passed"/>
-		<testcase name="assignment_inside_expression" status="passed"/>
-		<testcase name="assignment_returns_false" status="passed"/>
+		<testcase name="literal_true_passes" status="Passed"/>
+		<testcase name="literal_false_fails" status="Passed"/>
+		<testcase name="false_passes_expect_false" status="Passed"/>
+		<testcase name="true_fails_expect_false" status="Passed"/>
+		<testcase name="double_negation_true" status="Passed"/>
+		<testcase name="double_negation_false" status="Passed"/>
+		<testcase name="negated_true_fails" status="Passed"/>
+		<testcase name="negated_false_fails_false_check" status="Passed"/>
+		<testcase name="zero_is_false" status="Passed"/>
+		<testcase name="nonzero_is_true" status="Passed"/>
+		<testcase name="negative_is_true" status="Passed"/>
+		<testcase name="zero_fails_true" status="Passed"/>
+		<testcase name="nonzero_fails_false" status="Passed"/>
+		<testcase name="null_pointer_false" status="Passed"/>
+		<testcase name="nonnull_pointer_true" status="Passed"/>
+		<testcase name="null_pointer_fails_true" status="Passed"/>
+		<testcase name="and_expression_true" status="Passed"/>
+		<testcase name="and_expression_false" status="Passed"/>
+		<testcase name="or_expression_true" status="Passed"/>
+		<testcase name="or_expression_false" status="Passed"/>
+		<testcase name="precedence_without_parentheses" status="Passed"/>
+		<testcase name="precedence_with_parentheses" status="Passed"/>
+		<testcase name="comparison_true" status="Passed"/>
+		<testcase name="comparison_false" status="Passed"/>
+		<testcase name="equality_true" status="Passed"/>
+		<testcase name="inequality_false" status="Passed"/>
+		<testcase name="ternary_true_branch" status="Passed"/>
+		<testcase name="ternary_false_branch" status="Passed"/>
+		<testcase name="chained_logic_true" status="Passed"/>
+		<testcase name="chained_logic_false" status="Passed"/>
+		<testcase name="true_expression_expected_false" status="Passed"/>
+		<testcase name="false_expression_expected_true" status="Passed"/>
+		<testcase name="bool_variable_true" status="Passed"/>
+		<testcase name="bool_variable_false" status="Passed"/>
+		<testcase name="bool_variable_mutation" status="Passed"/>
+		<testcase name="assignment_inside_expression" status="Passed"/>
+		<testcase name="assignment_returns_false" status="Passed"/>
 	</testsuite>
 	<testsuite name="comparison_torture" tests="6" successes="6" failures="0" skips="0">
-		<testcase name="equality" status="passed"/>
-		<testcase name="inequality" status="passed"/>
-		<testcase name="less_than" status="passed"/>
-		<testcase name="less_equal" status="passed"/>
-		<testcase name="greater_than" status="passed"/>
-		<testcase name="greater_equal" status="passed"/>
+		<testcase name="equality" status="Passed"/>
+		<testcase name="inequality" status="Passed"/>
+		<testcase name="less_than" status="Passed"/>
+		<testcase name="less_equal" status="Passed"/>
+		<testcase name="greater_than" status="Passed"/>
+		<testcase name="greater_equal" status="Passed"/>
 	</testsuite>
 	<testsuite name="intentionally_fail_assert" tests="1" successes="1" failures="0" skips="0">
-		<testcase name="short_circuit_check" status="passed"/>
+		<testcase name="short_circuit_check" status="Passed"/>
 	</testsuite>
 	<testsuite name="null" tests="29" successes="29" failures="0" skips="0">
-		<testcase name="simple_pass" status="passed"/>
-		<testcase name="simple_fail" status="passed"/>
-		<testcase name="Nullptr_Literal" status="passed"/>
-		<testcase name="Nullptr_Ternary" status="passed"/>
-		<testcase name="VoidPointer" status="passed"/>
-		<testcase name="VoidPointer_NonNull" status="passed"/>
-		<testcase name="ConstPointer" status="passed"/>
-		<testcase name="PointerToConst" status="passed"/>
-		<testcase name="FunctionReturn" status="passed"/>
-		<testcase name="ExpressionChain" status="passed"/>
-		<testcase name="UniquePtr_Empty" status="passed"/>
-		<testcase name="UniquePtr_NonEmpty" status="passed"/>
-		<testcase name="sharedPtr_Empty" status="passed"/>
-		<testcase name="SharedPtr_NonEmpty" status="passed"/>
-		<testcase name="DoublePointer" status="passed"/>
-		<testcase name="ArrayDecay" status="passed"/>
-		<testcase name="StringLiteral" status="passed"/>
-		<testcase name="Optional_Empty" status="passed"/>
-		<testcase name="Optional_WithValue" status="passed"/>
-		<testcase name="ShouldFail_WhenNonNull" status="passed"/>
-		<testcase name="ShouldFail_WhenNull" status="passed"/>
-		<testcase name="TemplateForwarding" status="passed"/>
-		<testcase name="ZeroLiteral" status="passed"/>
-		<testcase name="MixedExpression" status="passed"/>
-		<testcase name="Torture_Pointers" status="passed"/>
-		<testcase name="Torture_SmartPointers" status="passed"/>
-		<testcase name="Torture_Optional_Basic" status="passed"/>
-		<testcase name="Torture_Optional_Nested" status="passed"/>
-		<testcase name="Torture_WeirdCases" status="passed"/>
+		<testcase name="simple_pass" status="Passed"/>
+		<testcase name="simple_fail" status="Passed"/>
+		<testcase name="Nullptr_Literal" status="Passed"/>
+		<testcase name="Nullptr_Ternary" status="Passed"/>
+		<testcase name="VoidPointer" status="Passed"/>
+		<testcase name="VoidPointer_NonNull" status="Passed"/>
+		<testcase name="ConstPointer" status="Passed"/>
+		<testcase name="PointerToConst" status="Passed"/>
+		<testcase name="FunctionReturn" status="Passed"/>
+		<testcase name="ExpressionChain" status="Passed"/>
+		<testcase name="UniquePtr_Empty" status="Passed"/>
+		<testcase name="UniquePtr_NonEmpty" status="Passed"/>
+		<testcase name="sharedPtr_Empty" status="Passed"/>
+		<testcase name="SharedPtr_NonEmpty" status="Passed"/>
+		<testcase name="DoublePointer" status="Passed"/>
+		<testcase name="ArrayDecay" status="Passed"/>
+		<testcase name="StringLiteral" status="Passed"/>
+		<testcase name="Optional_Empty" status="Passed"/>
+		<testcase name="Optional_WithValue" status="Passed"/>
+		<testcase name="ShouldFail_WhenNonNull" status="Passed"/>
+		<testcase name="ShouldFail_WhenNull" status="Passed"/>
+		<testcase name="TemplateForwarding" status="Passed"/>
+		<testcase name="ZeroLiteral" status="Passed"/>
+		<testcase name="MixedExpression" status="Passed"/>
+		<testcase name="Torture_Pointers" status="Passed"/>
+		<testcase name="Torture_SmartPointers" status="Passed"/>
+		<testcase name="Torture_Optional_Basic" status="Passed"/>
+		<testcase name="Torture_Optional_Nested" status="Passed"/>
+		<testcase name="Torture_WeirdCases" status="Passed"/>
 	</testsuite>
 	<testsuite name="predicate" tests="16" successes="16" failures="0" skips="0">
-		<testcase name="AllOf_Passes_Vector" status="passed"/>
-		<testcase name="AllOf_Fails_Vector" status="passed"/>
-		<testcase name="AnyOf_Passes_Vector" status="passed"/>
-		<testcase name="AnyOf_Fails_Vector" status="passed"/>
-		<testcase name="NoneOf_Passes_Vector" status="passed"/>
-		<testcase name="NoneOf_Fails_Vector" status="passed"/>
-		<testcase name="AllOf_Array" status="passed"/>
-		<testcase name="AnyOf_Array" status="passed"/>
-		<testcase name="NoneOf_Array" status="passed"/>
-		<testcase name="Empty_AllOf" status="passed"/>
-		<testcase name="Empty_AnyOf" status="passed"/>
-		<testcase name="Empty_NoneOf" status="passed"/>
-		<testcase name="SingleElement_AllOf" status="passed"/>
-		<testcase name="SingleElement_NoneOf" status="passed"/>
-		<testcase name="StopsEarly_AllOf" status="passed"/>
-		<testcase name="LambdaCapture" status="passed"/>
+		<testcase name="AllOf_Passes_Vector" status="Passed"/>
+		<testcase name="AllOf_Fails_Vector" status="Passed"/>
+		<testcase name="AnyOf_Passes_Vector" status="Passed"/>
+		<testcase name="AnyOf_Fails_Vector" status="Passed"/>
+		<testcase name="NoneOf_Passes_Vector" status="Passed"/>
+		<testcase name="NoneOf_Fails_Vector" status="Passed"/>
+		<testcase name="AllOf_Array" status="Passed"/>
+		<testcase name="AnyOf_Array" status="Passed"/>
+		<testcase name="NoneOf_Array" status="Passed"/>
+		<testcase name="Empty_AllOf" status="Passed"/>
+		<testcase name="Empty_AnyOf" status="Passed"/>
+		<testcase name="Empty_NoneOf" status="Passed"/>
+		<testcase name="SingleElement_AllOf" status="Passed"/>
+		<testcase name="SingleElement_NoneOf" status="Passed"/>
+		<testcase name="StopsEarly_AllOf" status="Passed"/>
+		<testcase name="LambdaCapture" status="Passed"/>
 	</testsuite>
 	<testsuite name="set" tests="22" successes="22" failures="0" skips="0">
-		<testcase name="SetEq_Passes_Vector" status="passed"/>
-		<testcase name="SetEq_Fails_Vector" status="passed"/>
-		<testcase name="SetNe_Passes" status="passed"/>
-		<testcase name="SetNe_Fails" status="passed"/>
-		<testcase name="Subset_Passes_Vector" status="passed"/>
-		<testcase name="Subset_Fails_Vector" status="passed"/>
-		<testcase name="Superset_Passes_Vector" status="passed"/>
-		<testcase name="Superset_Fails_Vector" status="passed"/>
-		<testcase name="StrictSubset_Passes" status="passed"/>
-		<testcase name="StrictSubset_Fails_Equal" status="passed"/>
-		<testcase name="StrictSubset_Fails_NotSubset" status="passed"/>
-		<testcase name="Works_With_StdSet" status="passed"/>
-		<testcase name="Subset_With_StdSet" status="passed"/>
-		<testcase name="Works_With_List" status="passed"/>
-		<testcase name="Works_With_Array" status="passed"/>
-		<testcase name="Subset_Array" status="passed"/>
-		<testcase name="Duplicates_Ignored_For_SetEq" status="passed"/>
-		<testcase name="Duplicates_DoNotBreakSubset" status="passed"/>
-		<testcase name="Empty_Subset" status="passed"/>
-		<testcase name="Empty_StrictSubset_Fails" status="passed"/>
-		<testcase name="Empty_SetEq" status="passed"/>
-		<testcase name="Large_Unordered_Input" status="passed"/>
+		<testcase name="SetEq_Passes_Vector" status="Passed"/>
+		<testcase name="SetEq_Fails_Vector" status="Passed"/>
+		<testcase name="SetNe_Passes" status="Passed"/>
+		<testcase name="SetNe_Fails" status="Passed"/>
+		<testcase name="Subset_Passes_Vector" status="Passed"/>
+		<testcase name="Subset_Fails_Vector" status="Passed"/>
+		<testcase name="Superset_Passes_Vector" status="Passed"/>
+		<testcase name="Superset_Fails_Vector" status="Passed"/>
+		<testcase name="StrictSubset_Passes" status="Passed"/>
+		<testcase name="StrictSubset_Fails_Equal" status="Passed"/>
+		<testcase name="StrictSubset_Fails_NotSubset" status="Passed"/>
+		<testcase name="Works_With_StdSet" status="Passed"/>
+		<testcase name="Subset_With_StdSet" status="Passed"/>
+		<testcase name="Works_With_List" status="Passed"/>
+		<testcase name="Works_With_Array" status="Passed"/>
+		<testcase name="Subset_Array" status="Passed"/>
+		<testcase name="Duplicates_Ignored_For_SetEq" status="Passed"/>
+		<testcase name="Duplicates_DoNotBreakSubset" status="Passed"/>
+		<testcase name="Empty_Subset" status="Passed"/>
+		<testcase name="Empty_StrictSubset_Fails" status="Passed"/>
+		<testcase name="Empty_SetEq" status="Passed"/>
+		<testcase name="Large_Unordered_Input" status="Passed"/>
 	</testsuite>
 	<testsuite name="timeout" tests="1" successes="0" failures="0" skips="1">
-		<testcase name="fail" status="skipped"/>
+		<testcase name="fail" status="Skipped"/>
 	</testsuite>
 </testsuites>
