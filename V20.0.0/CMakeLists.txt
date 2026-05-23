@@ -10,6 +10,7 @@ project(tester LANGUAGES CXX)
 find_package(Threads REQUIRED)
 
 add_library(tester
+    # src/Main.cpp
     src/Multithread.cpp
     src/ProcessArgs.cpp
     src/RenderConsole.cpp
@@ -24,6 +25,9 @@ set_target_properties(tester PROPERTIES
 )
 
 target_precompile_headers(tester PRIVATE
+    "${CMAKE_CURRENT_SOURCE_DIR}/include/tester/internal/PCH/impl_pch.hpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/include/tester/internal/PCH/core_pch.hpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/include/tester/internal/PCH/src_pch.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/tester/internal/PCH/pch.hpp"
 )
 
@@ -48,6 +52,21 @@ endif()
 
 add_executable(runTests
     src/Main.cpp
+    tests/_dataStructs.hpp
+    tests/assert.cpp
+    tests/bool.cpp
+    tests/cmp.cpp
+    tests/failingTests.cpp
+    tests/flt.cpp
+    tests/iterable.cpp
+    tests/meta.cpp
+    tests/null.cpp
+    tests/predicate.cpp
+    tests/set.cpp
+    tests/short.cpp
+    tests/string.cpp
+    tests/throws.cpp
+    tests/timeout.cpp
 )
 
 target_link_libraries(runTests PRIVATE tester)
