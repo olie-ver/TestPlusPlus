@@ -1,3 +1,5 @@
+Source-available under the OSNCL v1.0 license. Commercial use is prohibited without permission
+
 The Makefile is provided for executing convenience, running it won't rebuild the project
 The _Makefile can be used to compile and rebuild the project, but may require edits
     because it assumes that CMake is the primary method of building/running
