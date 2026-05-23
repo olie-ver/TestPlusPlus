@@ -1,3 +1,5 @@
+#include <tester/internal/PCH/pch.hpp>
+
 #include <tester/internal/Core.hpp>
 #include <tester/internal/Renderer.hpp>
 #include <tester/internal/Runner.hpp>

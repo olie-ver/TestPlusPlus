@@ -5,6 +5,7 @@
 
 #include "../Core.hpp"
 #include "../Concepts.hpp"
+#include <optional>
 #include <string>
 
 namespace internal {

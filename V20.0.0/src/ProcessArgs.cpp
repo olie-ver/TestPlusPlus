@@ -1,3 +1,5 @@
+#include <tester/internal/PCH/pch.hpp>
+
 #include <tester/internal/Main.hpp>
 #include <algorithm>
 #include <iostream>

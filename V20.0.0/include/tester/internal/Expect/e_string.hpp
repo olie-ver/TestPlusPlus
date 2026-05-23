@@ -3,8 +3,10 @@
 #ifndef E_STR_H
 #define E_STR_H
 
+#include "../PCH/impl_pch.hpp"
+
 #include "../Fail.hpp"
-#include "../Implementation/string.hpp"
+// #include "../Implementation/string.hpp"
 
 #define EXPECT_STR_EQ(first, second) internal::Expects::expectStringEquals((first), (second), __FILE__, __LINE__)
 #define EXPECT_STR_NE(first, second) internal::Expects::expectStringNotEquals((first), (second), __FILE__, __LINE__)

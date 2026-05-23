@@ -1,4 +1,7 @@
+#include <tester/internal/PCH/pch.hpp>
+
 #include <tester/internal/Renderer.hpp>
+#include <tester/internal/Escape.hpp>
 #include <tester/internal/Runner.hpp>
 #include <fstream>
 
@@ -13,290 +16,197 @@
     </testsuites>
 */
 
-namespace internal {
-    namespace Renderer {
-        void ConsoleRenderer::renderDefaultXml(Core::TestRun& testRun) {
-            std::fstream stream;
-            stream.open(junitFile, std::fstream::out);
+namespace internal::Renderer {
 
-            stream << "<testsuites>\n";
+    namespace {
 
-            auto& tests = testRun.results;
+        using TestList = std::vector<Core::TestResult>;
 
-            for (auto&& it = tests.begin(); it != tests.end(); ++it) {
-                const std::string& suite_name = it->first;
-                const std::vector<Core::TestResult>& test = it->second;
-                size_t size = test.size();
+        struct SuiteStats {
+            int passed = 0;
+            int failed = 0;
+            int skipped = 0;
+        };
 
-                int numPassed = 0;
-                int numFailed = 0;
-                int numSkipped = 0;
+        SuiteStats calculateStats(const TestList& tests) {
+            SuiteStats stats;
 
-                for (size_t i = 0; i < size; i++) {
-                    switch (test[i].status) {
-                        case Core::TestStatus::Passed:
-                            numPassed++;
-                            break;
+            for (const auto& test : tests) {
+                switch (test.status) {
+                    case Core::TestStatus::Passed:
+                        stats.passed++;
+                        break;
 
-                        case Core::TestStatus::Skipped:
-                            numSkipped++;
-                            break;
+                    case Core::TestStatus::Failed:
+                        stats.failed++;
+                        break;
 
-                        case Core::TestStatus::Failed:
-                            numFailed++;
-                            break;
-                    }
+                    case Core::TestStatus::Skipped:
+                        stats.skipped++;
+                        break;
                 }
-
-                stream << "\t<testsuite name=\"" << suite_name << "\" tests=\""
-                    << size << "\" successes=\"" << numPassed << "\" failures=\"" << numFailed 
-                    << "\" skips=\"" << numSkipped << "\">\n";
-
-                for (size_t i = 0; i < size; i++) {
-                    switch (test[i].status) {
-                        case Core::TestStatus::Passed:
-                            stream << "\t\t<testcase name=\"" << test[i].testName << "\" status=\"passed\"/>\n";
-                            break;
-
-                        case Core::TestStatus::Skipped:
-                            stream << "\t\t<testcase name=\"" << test[i].testName << "\" status=\"skipped\"/>\n";
-                            break;
-
-                        case Core::TestStatus::Failed:
-                            stream << "\t\t<testcase name=\"" << test[i].testName << "\" status=\"failed\">\n";
-                            size_t numFailures = test[i].failures.size();
-
-                            for (size_t j = 0; j < numFailures; j++) {
-                                stream << "\t\t\t<failure message=\"" << test[i].failures[j].message << "\"/>\n";
-                            }
-                            stream << "\t\t</testcase>\n";
-                            break;
-                    }
-                }
-
-                stream << "\t</testsuite>\n";
             }
-            stream << "</testsuites>";
+
+            return stats;
         }
 
-        void ConsoleRenderer::renderMinimumXml(Core::TestRun& testRun) {
-            std::fstream stream;
-            stream.open(junitFile, std::fstream::out);
-
-            stream << "<testsuites>\n";
-
-            auto& tests = testRun.results;
-
-            for (auto&& it = tests.begin(); it != tests.end(); ++it) {
-                const std::string& suite_name = it->first;
-                const std::vector<Core::TestResult>& test = it->second;
-                size_t size = test.size();
-
-                int numPassed = 0;
-                int numFailed = 0;
-                int numSkipped = 0;
-
-                for (size_t i = 0; i < size; i++) {
-                    switch (test[i].status) {
-                        case Core::TestStatus::Passed:
-                            numPassed++;
-                            break;
-                            
-                        case Core::TestStatus::Skipped:
-                            numSkipped++;
-                            break;
-
-                        case Core::TestStatus::Failed:
-                            numFailed++;
-                            break;
-                    }
-                }
-
-                stream << "\t<testsuite name=\"" << suite_name << "\" tests=\""
-                    << size << "\" successes=\"" << numPassed << "\" failures=\"" << numFailed 
-                    << "\" skips=\"" << numSkipped << "\">\n";
-
-                for (size_t i = 0; i < size; i++) {
-                    switch (test[i].status) {
-                        case Core::TestStatus::Passed:
-                            stream << "\t\t<testcase name=\"" << test[i].testName << "\" status=\"passed\"/>\n";
-                            break;
-
-                        case Core::TestStatus::Skipped:
-                            stream << "\t\t<testcase name=\"" << test[i].testName << "\" status=\"skipped\"/>\n";
-                            break;
-
-                        case Core::TestStatus::Failed:
-                            stream << "\t\t<testcase name=\"" << test[i].testName << "\" status=\"failed\"/>\n";
-                            break;
-                    }
-                }
-
-                stream << "\t</testsuite>\n";
+        void renderFailures(std::ostream& stream, const Core::TestResult& test) {
+            for (const auto& failure : test.failures) {
+                stream << "\t\t\t<failure "
+                       << "message=\"" << Helpers::escapeXml(failure.message) << "\" "
+                       << "file=\"" << Helpers::escapeXml(failure.file) << "\" "
+                       << "line=\"" << failure.line << "\"/>\n";
             }
-            stream << "</testsuites>";
         }
 
-        void ConsoleRenderer::renderPassOnlyXml(Core::TestRun& testRun) {
-            std::fstream stream;
-            stream.open(junitFile, std::fstream::out);
+        void renderTestcase(
+            std::ostream& stream,
+            const Core::TestResult& test,
+            bool includeFailures
+        ) {
+            const std::string& status = Core::StatusStrings[(int)test.status];
 
+            if (includeFailures && test.status == Core::TestStatus::Failed) {
+
+                stream << "\t\t<testcase "
+                       << "name=\"" << Helpers::escapeXml(test.testName) << "\" "
+                       << "status=\"" << status << "\">\n";
+
+                renderFailures(stream, test);
+
+                stream << "\t\t</testcase>\n";
+            }
+            else {
+                stream << "\t\t<testcase "
+                       << "name=\"" << Helpers::escapeXml(test.testName) << "\" "
+                       << "status=\"" << status << "\"/>\n";
+            }
+        }
+
+        template <typename SuitePredicate, typename TestPredicate>
+        void renderXml(
+            std::ostream& stream,
+            Core::TestRun& testRun,
+            SuitePredicate suitePredicate,
+            TestPredicate testPredicate,
+            bool includeFailures
+        ) {
             stream << "<testsuites>\n";
 
-            auto& tests = testRun.results;
+            for (auto&& [suiteName, tests] : testRun.results) {
 
-            for (auto&& it = tests.begin(); it != tests.end(); ++it) {
-                const std::string& suite_name = it->first;
-                const std::vector<Core::TestResult>& test = it->second;
-                size_t size = test.size();
+                SuiteStats stats = calculateStats(tests);
 
-                int numPassed = 0;
-                int numFailed = 0;
-                int numSkipped = 0;
-
-                for (size_t i = 0; i < size; i++) {
-                    switch (test[i].status) {
-                        case Core::TestStatus::Passed:
-                            numPassed++;
-                            break;
-                            
-                        case Core::TestStatus::Skipped:
-                            numSkipped++;
-                            break;
-
-                        case Core::TestStatus::Failed:
-                            numFailed++;
-                            break;
-                    }
-                }
-
-                if (numPassed == 0) {
+                if (!suitePredicate(suiteName, tests, stats)) {
                     continue;
                 }
 
-                stream << "\t<testsuite name=\"" << suite_name << "\" tests=\""
-                    << size << "\" successes=\"" << numPassed << "\" failures=\"" << numFailed 
-                    << "\" skips=\"" << numSkipped << "\">\n";
+                stream << "\t<testsuite "
+                       << "name=\"" << Helpers::escapeXml(suiteName) << "\" "
+                       << "tests=\"" << tests.size() << "\" "
+                       << "successes=\"" << stats.passed << "\" "
+                       << "failures=\"" << stats.failed << "\" "
+                       << "skips=\"" << stats.skipped << "\">\n";
 
-                for (size_t i = 0; i < size; i++) {
-                    if (test[i].status == Core::TestStatus::Passed) {
-                        stream << "\t\t<testcase name=\"" << test[i].testName << "\" status=\"passed\"/>\n";
+                for (const auto& test : tests) {
+
+                    if (!testPredicate(test)) {
+                        continue;
                     }
+
+                    renderTestcase(
+                        stream,
+                        test,
+                        includeFailures
+                    );
                 }
 
                 stream << "\t</testsuite>\n";
             }
+
             stream << "</testsuites>";
         }
 
-        void ConsoleRenderer::renderFailAllXml(Core::TestRun& testRun) {
-            std::fstream stream;
-            stream.open(junitFile, std::fstream::out);
-
-            stream << "<testsuites>\n";
-
-            auto& tests = testRun.results;
-
-            for (auto&& it = tests.begin(); it != tests.end(); ++it) {
-                const std::string& suite_name = it->first;
-                const std::vector<Core::TestResult>& test = it->second;
-                size_t size = test.size();
-
-                int numPassed = 0;
-                int numFailed = 0;
-                int numSkipped = 0;
-
-                for (size_t i = 0; i < size; i++) {
-                    switch (test[i].status) {
-                        case Core::TestStatus::Passed:
-                            numPassed++;
-                            break;
-
-                        case Core::TestStatus::Skipped:
-                            numSkipped++;
-                            break;
-
-                        case Core::TestStatus::Failed:
-                            numFailed++;
-                            break;
-                    }
-                }
-
-                if (numFailed == 0) {
-                    continue;
-                }
-
-                stream << "\t<testsuite name=\"" << suite_name << "\" tests=\""
-                    << size << "\" successes=\"" << numPassed << "\" failures=\"" << numFailed 
-                    << "\" skips=\"" << numSkipped << "\">\n";
-
-                for (size_t i = 0; i < size; i++) {
-                    if (test[i].status == Core::TestStatus::Failed) {
-                        stream << "\t\t<testcase name=\"" << test[i].testName << "\" status=\"failed\">\n";
-                        size_t numFailures = test[i].failures.size();
-
-                        for (size_t j = 0; j < numFailures; j++) {
-                            stream << "\t\t\t<failure message=\"" << test[i].failures[j].message << "\"/>\n";
-                        }
-                        stream << "\t\t</testcase>\n";
-                    }
-                }
-
-                stream << "\t</testsuite>\n";
-            }
-            stream << "</testsuites>";
-        }
-
-        void ConsoleRenderer::renderFailMinXml(Core::TestRun& testRun) {
-            std::fstream stream;
-            stream.open(junitFile, std::fstream::out);
-
-            stream << "<testsuites>\n";
-
-            auto& tests = testRun.results;
-
-            for (auto&& it = tests.begin(); it != tests.end(); ++it) {
-                const std::string& suite_name = it->first;
-                const std::vector<Core::TestResult>& test = it->second;
-                size_t size = test.size();
-
-                int numPassed = 0;
-                int numFailed = 0;
-                int numSkipped = 0;
-
-                for (size_t i = 0; i < size; i++) {
-                    switch (test[i].status) {
-                        case Core::TestStatus::Passed:
-                            numPassed++;
-                            break;
-
-                        case Core::TestStatus::Skipped:
-                            numSkipped++;
-                            break;
-
-                        case Core::TestStatus::Failed:
-                            numFailed++;
-                            break;
-                    }
-                }
-
-                if (numFailed == 0) {
-                    continue;
-                }
-
-                stream << "\t<testsuite name=\"" << suite_name << "\" tests=\""
-                    << size << "\" successes=\"" << numPassed << "\" failures=\"" << numFailed 
-                    << "\" skips=\"" << numSkipped << "\">\n";
-
-                for (size_t i = 0; i < size; i++) {
-                    if (test[i].status == Core::TestStatus::Failed) {
-                        stream << "\t\t<testcase name=\"" << test[i].testName << "\" status=\"failed\"/>\n";
-                    }
-                }
-
-                stream << "\t</testsuite>\n";
-            }
-            stream << "</testsuites>";
-        }
     }
+
+    void ConsoleRenderer::renderDefaultXml(Core::TestRun& testRun) {
+        std::fstream stream(junitFile, std::fstream::out);
+
+        renderXml(
+            stream,
+            testRun,
+            [](const std::string&, const TestList&, const SuiteStats&) {
+                return true;
+            },
+            [](const Core::TestResult&) {
+                return true;
+            },
+            true
+        );
+    }
+
+    void ConsoleRenderer::renderMinimumXml(Core::TestRun& testRun) {
+        std::fstream stream(junitFile, std::fstream::out);
+
+        renderXml(
+            stream,
+            testRun,
+            [](const std::string&, const TestList&, const SuiteStats&) {
+                return true;
+            },
+            [](const Core::TestResult&) {
+                return true;
+            },
+            false
+        );
+    }
+
+    void ConsoleRenderer::renderPassOnlyXml(Core::TestRun& testRun) {
+        std::fstream stream(junitFile, std::fstream::out);
+
+        renderXml(
+            stream,
+            testRun,
+            [](const std::string&, const TestList&, const SuiteStats& stats) {
+                return stats.passed > 0;
+            },
+            [](const Core::TestResult& test) {
+                return test.status == Core::TestStatus::Passed;
+            },
+            false
+        );
+    }
+
+    void ConsoleRenderer::renderFailAllXml(Core::TestRun& testRun) {
+        std::fstream stream(junitFile, std::fstream::out);
+
+        renderXml(
+            stream,
+            testRun,
+            [](const std::string&, const TestList&, const SuiteStats& stats) {
+                return stats.failed > 0;
+            },
+            [](const Core::TestResult& test) {
+                return test.status == Core::TestStatus::Failed;
+            },
+            true
+        );
+    }
+
+    void ConsoleRenderer::renderFailMinXml(Core::TestRun& testRun) {
+        std::fstream stream(junitFile, std::fstream::out);
+
+        renderXml(
+            stream,
+            testRun,
+            [](const std::string&, const TestList&, const SuiteStats& stats) {
+                return stats.failed > 0;
+            },
+            [](const Core::TestResult& test) {
+                return test.status == Core::TestStatus::Failed;
+            },
+            false
+        );
+    }
+
 }

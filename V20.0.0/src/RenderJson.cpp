@@ -1,4 +1,7 @@
+#include <tester/internal/PCH/pch.hpp>
+
 #include <tester/internal/Renderer.hpp>
+#include <tester/internal/Escape.hpp>
 #include <tester/internal/Runner.hpp>
 #include <fstream>
 
@@ -27,357 +30,199 @@
     }
 */
 
-namespace internal {
-    namespace Renderer {
-        void ConsoleRenderer::renderDefaultJson(Core::TestRun& testRun) {
-            std::fstream stream;
-            stream.open(jsonFile, std::fstream::out);
+namespace internal::Renderer {
+    namespace {
+        using TestList = std::vector<Core::TestResult>;
 
-            auto& tests = testRun.results;
+        bool hasStatus(const TestList& tests, Core::TestStatus status) {
+            for (const auto& test : tests) {
+                if (test.status == status) {
+                    return true;
+                }
+            }
 
-            stream << "{\n\t\"suites\": [\n\t\t";
+            return false;
+        }
 
-            bool first_suite = true;
+        void renderFailures(std::fstream& stream, const Core::TestResult& test) {
+            stream << "[\n\t\t\t\t\t\t";
 
-            for (auto it = tests.begin(); it != tests.end(); ++it) {
-                const std::string& suite_name = it->first;
+            bool first = true;
 
-                if (Runner::shouldSkip(suite_name))
-                {
-                    continue;
+            for (const auto& failure : test.failures) {
+                if (!first) {
+                    stream << ",\n\t\t\t\t\t\t";
                 }
 
-                if (!first_suite) {
-                    stream << ",\n\t\t";
-                }
+                first = false;
 
-                first_suite = false;
-
-                bool first_test = true;
-                const std::vector<Core::TestResult>& test = it->second;
-                size_t size = test.size();
-
-                stream << "{\n\t\t\t";
-                stream << "\"suite_name\": \"" << suite_name << "\",\n\t\t\t";
-                stream << "\"tests\": [\n\t\t\t\t";
-
-                for (size_t i = 0; i < size; i++) {
-                    if (!first_test) {
-                        stream << ",\n\t\t\t\t";
-                    }
-
-                    first_test = false;
-
-                    stream << "{\n\t\t\t\t\t";
-                    stream << "\"suiteName\": \"" << suite_name << "\",\n\t\t\t\t\t";
-                    stream << "\"testName\": \"" << test[i].testName << "\",\n\t\t\t\t\t";
-                    stream << "\"status\": \"" << Core::StatusStrings[(int)test[i].status] << "\",\n\t\t\t\t\t";
-                    stream << "\"durationMs\": \"" << test[i].durationMs << "\",\n\t\t\t\t\t";
-                    stream << "\"failures\": [\n\t\t\t\t\t\t";
-
-                    size_t num_failures = test[i].failures.size();
-
-                    bool first_failure = true;
-                    for (size_t j = 0; j < num_failures; j++) {
-                        if (!first_failure) {
-                            stream << ",\n\t\t\t\t\t\t";
-                        }
-
-                        first_failure = false;
-                        stream << "{\n\t\t\t\t\t\t\t";
-                        stream << "\"message\": \"" << test[i].failures[j].message << "\",\n\t\t\t\t\t\t\t";
-                        stream << "\"file\": \"" << test[i].failures[j].file << "\",\n\t\t\t\t\t\t\t";
-                        stream << "\"line\": \"" << test[i].failures[j].line << "\"\n\t\t\t\t\t\t";
-                        stream << "}";
-                    }
-
-                    stream << "\n\t\t\t\t\t]\n\t\t\t\t";
-                    stream << "}";
-                }
-
-                stream << "\n\t\t\t]\n\t\t";
+                stream << "{\n\t\t\t\t\t\t\t";
+                stream << "\"message\": \"" << Helpers::escapeJson(failure.message) << "\",\n\t\t\t\t\t\t\t";
+                stream << "\"file\": \"" << Helpers::escapeJson(failure.file) << "\",\n\t\t\t\t\t\t\t";
+                stream << "\"line\": " << failure.line << "\n\t\t\t\t\t\t";
                 stream << "}";
             }
 
-            stream << "\n\t]\n";
-            stream << "}";
+            stream << "\n\t\t\t\t\t]";
         }
 
-        void ConsoleRenderer::renderMinimumJson(Core::TestRun& testRun) {
-            std::fstream stream;
-            stream.open(jsonFile, std::fstream::out);
+        void renderTest(
+            std::fstream& stream,
+            const std::string& suiteName,
+            const Core::TestResult& test,
+            bool includeFailures
+        ) {
+            stream << "{\n\t\t\t\t\t";
+            stream << "\"suiteName\": \"" << Helpers::escapeJson(suiteName) << "\",\n\t\t\t\t\t";
+            stream << "\"testName\": \"" << Helpers::escapeJson(test.testName) << "\",\n\t\t\t\t\t";
+            stream << "\"status\": \"" << Core::StatusStrings[(int)test.status] << "\",\n\t\t\t\t\t";
+            stream << "\"durationMs\": " << test.durationMs << ",\n\t\t\t\t\t";
+            stream << "\"failures\": ";
 
-            auto& tests = testRun.results;
-
-            stream << "{\n\t\"suites\": [\n\t\t";
-
-            bool first_suite = true;
-
-            for (auto it = tests.begin(); it != tests.end(); ++it) {
-                const std::string& suite_name = it->first;
-
-                if (Runner::shouldSkip(suite_name))
-                {
-                    continue;
-                }
-
-                if (!first_suite) {
-                    stream << ",\n\t\t";
-                }
-
-                first_suite = false;
-
-                bool first_test = true;
-                const std::vector<Core::TestResult>& test = it->second;
-                size_t size = test.size();
-
-                stream << "{\n\t\t\t";
-                stream << "\"suite_name\": \"" << suite_name << "\",\n\t\t\t";
-                stream << "\"tests\": [\n\t\t\t\t";
-
-                for (size_t i = 0; i < size; i++) {
-                    if (!first_test) {
-                        stream << ",\n\t\t\t\t";
-                    }
-
-                    first_test = false;
-
-                    stream << "{\n\t\t\t\t\t";
-                    stream << "\"suiteName\": \"" << suite_name << "\",\n\t\t\t\t\t";
-                    stream << "\"testName\": \"" << test[i].testName << "\",\n\t\t\t\t\t";
-                    stream << "\"status\": \"" << Core::StatusStrings[(int)test[i].status] << "\",\n\t\t\t\t\t";
-                    stream << "\"durationMs\": \"" << test[i].durationMs << "\",\n\t\t\t\t\t";
-                    stream << "\"failures\": []" << "\n\t\t\t\t";
-                    stream << "}";
-                }
-
-                stream << "\n\t\t\t]\n\t\t";
-                stream << "}";
+            if (includeFailures) {
+                renderFailures(stream, test);
+            }
+            else {
+                stream << "[]";
             }
 
-            stream << "\n\t]\n";
-            stream << "}";
+            stream << "\n\t\t\t\t}";
         }
 
-        void ConsoleRenderer::renderPassOnlyJson(Core::TestRun& testRun) {
-            std::fstream stream;
-            stream.open(jsonFile, std::fstream::out);
-
-            auto& tests = testRun.results;
-
+        template <typename SuitePredicate, typename TestPredicate>
+        void renderJson(
+            std::fstream& stream,
+            Core::TestRun& testRun,
+            SuitePredicate suitePredicate,
+            TestPredicate testPredicate,
+            bool includeFailures
+        ) {
             stream << "{\n\t\"suites\": [\n\t\t";
 
-            bool first_suite = true;
+            bool firstSuite = true;
 
-            for (auto it = tests.begin(); it != tests.end(); ++it) {
-                const std::string& suite_name = it->first;
+            for (auto&& [suiteName, tests] : testRun.results) {
 
-                const std::vector<Core::TestResult>& test = it->second;
-                size_t size = test.size();
-                bool passes = false;
-                for (size_t i = 0; i < size; i++) {
-                    if (test[i].status == Core::TestStatus::Passed) {
-                        passes = true;
-                        break;
-                    }
-                }
-
-                if (Runner::shouldSkip(suite_name) || !passes)
-                {
+                if (!suitePredicate(suiteName, tests)) {
                     continue;
                 }
 
-                if (!first_suite) {
+                if (!firstSuite) {
                     stream << ",\n\t\t";
                 }
 
-                first_suite = false;
-
-                bool first_test = true;
+                firstSuite = false;
 
                 stream << "{\n\t\t\t";
-                stream << "\"suite_name\": \"" << suite_name << "\",\n\t\t\t";
+                stream << "\"suite_name\": \"" << Helpers::escapeJson(suiteName) << "\",\n\t\t\t";
                 stream << "\"tests\": [\n\t\t\t\t";
 
-                for (size_t i = 0; i < size; i++) {
-                    if (test[i].status != Core::TestStatus::Passed) {
+                bool firstTest = true;
+
+                for (const auto& test : tests) {
+
+                    if (!testPredicate(test)) {
                         continue;
                     }
 
-                    if (!first_test) {
+                    if (!firstTest) {
                         stream << ",\n\t\t\t\t";
                     }
 
-                    first_test = false;
+                    firstTest = false;
 
-                    stream << "{\n\t\t\t\t\t";
-                    stream << "\"suiteName\": \"" << suite_name << "\",\n\t\t\t\t\t";
-                    stream << "\"testName\": \"" << test[i].testName << "\",\n\t\t\t\t\t";
-                    stream << "\"status\": \"" << Core::StatusStrings[(int)test[i].status] << "\",\n\t\t\t\t\t";
-                    stream << "\"durationMs\": \"" << test[i].durationMs << "\",\n\t\t\t\t\t";
-                    stream << "\"failures\": []" << "\n\t\t\t\t";
-                    stream << "}";
+                    renderTest(stream, suiteName, test, includeFailures);
                 }
 
                 stream << "\n\t\t\t]\n\t\t";
                 stream << "}";
             }
 
-            stream << "\n\t]\n";
-            stream << "}";
+            stream << "\n\t]\n}";
         }
 
-        void ConsoleRenderer::renderFailAllJson(Core::TestRun& testRun) {
-            std::fstream stream;
-            stream.open(jsonFile, std::fstream::out);
+    }
 
-            auto& tests = testRun.results;
+    void ConsoleRenderer::renderDefaultJson(Core::TestRun& testRun) {
+        std::fstream stream(jsonFile, std::fstream::out);
 
-            stream << "{\n\t\"suites\": [\n\t\t";
+        renderJson(
+            stream,
+            testRun,
+            [](const std::string& suite, const TestList&) {
+                return !Runner::shouldSkip(suite);
+            },
+            [](const Core::TestResult&) {
+                return true;
+            },
+            true
+        );
+    }
 
-            bool first_suite = true;
+    void ConsoleRenderer::renderMinimumJson(Core::TestRun& testRun) {
+        std::fstream stream(jsonFile, std::fstream::out);
 
-            for (auto it = tests.begin(); it != tests.end(); ++it) {
-                const std::string& suite_name = it->first;
+        renderJson(
+            stream,
+            testRun,
+            [](const std::string& suite, const TestList&) {
+                return !Runner::shouldSkip(suite);
+            },
+            [](const Core::TestResult&) {
+                return true;
+            },
+            false
+        );
+    }
 
-                const std::vector<Core::TestResult>& test = it->second;
-                size_t size = test.size();
-                bool fails = false;
-                for (size_t i = 0; i < size; i++) {
-                    if (test[i].status == Core::TestStatus::Failed) {
-                        fails = true;
-                        break;
-                    }
-                }
+    void ConsoleRenderer::renderPassOnlyJson(Core::TestRun& testRun) {
+        std::fstream stream(jsonFile, std::fstream::out);
 
-                if (Runner::shouldSkip(suite_name) || !fails)
-                {
-                    continue;
-                }
+        renderJson(
+            stream,
+            testRun,
+            [](const std::string& suite, const TestList& tests) {
+                return !Runner::shouldSkip(suite)
+                    && hasStatus(tests, Core::TestStatus::Passed);
+            },
+            [](const Core::TestResult& test) {
+                return test.status == Core::TestStatus::Passed;
+            },
+            false
+        );
+    }
 
-                if (!first_suite) {
-                    stream << ",\n\t\t";
-                }
+    void ConsoleRenderer::renderFailAllJson(Core::TestRun& testRun) {
+        std::fstream stream(jsonFile, std::fstream::out);
 
-                first_suite = false;
+        renderJson(
+            stream,
+            testRun,
+            [](const std::string& suite, const TestList& tests) {
+                return !Runner::shouldSkip(suite)
+                    && hasStatus(tests, Core::TestStatus::Failed);
+            },
+            [](const Core::TestResult& test) {
+                return test.status == Core::TestStatus::Failed;
+            },
+            true
+        );
+    }
 
-                bool first_test = true;
+    void ConsoleRenderer::renderFailMinJson(Core::TestRun& testRun) {
+        std::fstream stream(jsonFile, std::fstream::out);
 
-                stream << "{\n\t\t\t";
-                stream << "\"suite_name\": \"" << suite_name << "\",\n\t\t\t";
-                stream << "\"tests\": [\n\t\t\t\t";
-
-                for (size_t i = 0; i < size; i++) {
-                    if (test[i].status != Core::TestStatus::Failed) {
-                        continue;
-                    }
-
-                    if (!first_test) {
-                        stream << ",\n\t\t\t\t";
-                    }
-
-                    first_test = false;
-
-                    stream << "{\n\t\t\t\t\t";
-                    stream << "\"suiteName\": \"" << suite_name << "\",\n\t\t\t\t\t";
-                    stream << "\"testName\": \"" << test[i].testName << "\",\n\t\t\t\t\t";
-                    stream << "\"status\": \"" << Core::StatusStrings[(int)test[i].status] << "\",\n\t\t\t\t\t";
-                    stream << "\"durationMs\": \"" << test[i].durationMs << "\",\n\t\t\t\t\t";
-                    stream << "\"failures\": [\n\t\t\t\t\t\t";
-
-                    size_t num_failures = test[i].failures.size();
-
-                    bool first_failure = true;
-                    for (size_t j = 0; j < num_failures; j++) {
-                        if (!first_failure) {
-                            stream << ",\n\t\t\t\t\t\t";
-                        }
-
-                        first_failure = false;
-                        stream << "{\n\t\t\t\t\t\t\t";
-                        stream << "\"message\": \"" << test[i].failures[j].message << "\",\n\t\t\t\t\t\t\t";
-                        stream << "\"file\": \"" << test[i].failures[j].file << "\",\n\t\t\t\t\t\t\t";
-                        stream << "\"line\": \"" << test[i].failures[j].line << "\"\n\t\t\t\t\t\t";
-                        stream << "}";
-                    }
-                    stream << "\n\t\t\t\t\t]\n\t\t\t\t";
-                    stream << "}";
-                }
-
-                stream << "\n\t\t\t]\n\t\t";
-                stream << "}";
-            }
-
-            stream << "\n\t]\n";
-            stream << "}";
-        }
-
-        void ConsoleRenderer::renderFailMinJson(Core::TestRun& testRun) {
-            std::fstream stream;
-            stream.open(jsonFile, std::fstream::out);
-
-            auto& tests = testRun.results;
-
-            stream << "{\n\t\"suites\": [\n\t\t";
-
-            bool first_suite = true;
-
-            for (auto it = tests.begin(); it != tests.end(); ++it) {
-                const std::string& suite_name = it->first;
-
-                const std::vector<Core::TestResult>& test = it->second;
-                size_t size = test.size();
-                bool fails = false;
-                for (size_t i = 0; i < size; i++) {
-                    if (test[i].status == Core::TestStatus::Failed) {
-                        fails = true;
-                        break;
-                    }
-                }
-
-                if (Runner::shouldSkip(suite_name) || !fails)
-                {
-                    continue;
-                }
-
-                if (!first_suite) {
-                    stream << ",\n\t\t";
-                }
-
-                first_suite = false;
-
-                bool first_test = true;
-
-                stream << "{\n\t\t\t";
-                stream << "\"suite_name\": \"" << suite_name << "\",\n\t\t\t";
-                stream << "\"tests\": [\n\t\t\t\t";
-
-                for (size_t i = 0; i < size; i++) {
-                    if (test[i].status != Core::TestStatus::Failed) {
-                        continue;
-                    }
-
-                    if (!first_test) {
-                        stream << ",\n\t\t\t\t";
-                    }
-
-                    first_test = false;
-
-                    stream << "{\n\t\t\t\t\t";
-                    stream << "\"suiteName\": \"" << suite_name << "\",\n\t\t\t\t\t";
-                    stream << "\"testName\": \"" << test[i].testName << "\",\n\t\t\t\t\t";
-                    stream << "\"status\": \"" << Core::StatusStrings[(int)test[i].status] << "\",\n\t\t\t\t\t";
-                    stream << "\"durationMs\": \"" << test[i].durationMs << "\",\n\t\t\t\t\t";
-                    stream << "\"failures\": []" << "\n\t\t\t\t";
-                    stream << "}";
-                }
-
-                stream << "\n\t\t\t]\n\t\t";
-                stream << "}";
-            }
-
-            stream << "\n\t]\n";
-            stream << "}";
-        }
+        renderJson(
+            stream,
+            testRun,
+            [](const std::string& suite, const TestList& tests) {
+                return !Runner::shouldSkip(suite)
+                    && hasStatus(tests, Core::TestStatus::Failed);
+            },
+            [](const Core::TestResult& test) {
+                return test.status == Core::TestStatus::Failed;
+            },
+            false
+        );
     }
 }
