@@ -3,8 +3,11 @@
 #ifndef A_NULL_H
 #define A_NULL_H
 
+#include "../PCH/impl_pch.hpp"
+
 #include "../Concepts.hpp"
-#include "../Implementation/null.hpp"
+#include "../Fail.hpp"
+// #include "../Implementation/null.hpp"
 
 #define ASSERT_NULL(val) internal::Assert::assertNull((val), __FILE__, __LINE__)
 #define ASSERT_NOT_NULL(val) internal::Assert::assertnotNull((val), __FILE__, __LINE__)

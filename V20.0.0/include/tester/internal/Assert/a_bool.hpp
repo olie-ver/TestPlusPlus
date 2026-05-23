@@ -3,7 +3,9 @@
 #ifndef A_BOOL_H
 #define A_BOOL_H
 
-#include "../Implementation/bool.hpp"
+#include "../PCH/impl_pch.hpp"
+
+// #include "../Implementation/bool.hpp"
 #include "../Fail.hpp"
 
 #define ASSERT_TRUE(cond) internal::Assert::assertTrue((cond), #cond, __FILE__, __LINE__)

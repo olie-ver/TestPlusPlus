@@ -3,7 +3,9 @@
 #ifndef E_BOOL_H
 #define E_BOOL_H
 
-#include "../Implementation/bool.hpp"
+#include "../PCH/impl_pch.hpp"
+
+// #include "../Implementation/bool.hpp"
 #include "../Fail.hpp"
 
 #define EXPECT_TRUE(cond) internal::Expects::expectTrue((cond), #cond, __FILE__, __LINE__)

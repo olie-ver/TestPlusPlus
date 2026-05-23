@@ -3,8 +3,10 @@
 #ifndef E_SET_H
 #define E_SET_H
 
+#include "../PCH/impl_pch.hpp"
+
 #include "../Fail.hpp"
-#include "../Implementation/set.hpp"
+// #include "../Implementation/set.hpp"
 
 #define EXPECT_SET_EQ(first, second) internal::Expects::expectSameSet((first), (second), __FILE__, __LINE__)
 #define EXPECT_SET_NE(first, second) internal::Expects::expectNotSameSet((first), (second), __FILE__, __LINE__)

@@ -8,7 +8,7 @@
 namespace internal {
     namespace Renderer {
         namespace Helpers {
-            static std::string escapeJson(const std::string& input) {
+            static inline std::string escapeJson(const std::string& input) {
                 std::string output;
                 output.reserve(input.size());
 
@@ -51,7 +51,7 @@ namespace internal {
                 return output;
             }
 
-            static std::string escapeXml(const std::string& input) {
+            static inline std::string escapeXml(const std::string& input) {
                 std::string output;
                 output.reserve(input.size());
 
