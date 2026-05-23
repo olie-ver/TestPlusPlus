@@ -2,9 +2,9 @@ CXX = g++
 CXXFLAGS = -std=c++20 -Wall -Wextra -I./include
 
 SRC_DIR = src
-TEST_DIR = tests
+TEST_DIR = yourTests
 BUILD_DIR = build
-RUN_DIR = build/bin/
+RUN_DIR = build/bin
 
 LIB = $(BUILD_DIR)/libtester.a
 TARGET = $(RUN_DIR)/runTests

@@ -52,21 +52,8 @@ endif()
 
 add_executable(runTests
     src/Main.cpp
-    tests/_dataStructs.hpp
-    tests/assert.cpp
-    tests/bool.cpp
-    tests/cmp.cpp
-    tests/failingTests.cpp
-    tests/flt.cpp
-    tests/iterable.cpp
-    tests/meta.cpp
-    tests/null.cpp
-    tests/predicate.cpp
-    tests/set.cpp
-    tests/short.cpp
-    tests/string.cpp
-    tests/throws.cpp
-    tests/timeout.cpp
+    yourTests/example.cpp
+    # path to your test files
 )
 
 target_link_libraries(runTests PRIVATE tester)
