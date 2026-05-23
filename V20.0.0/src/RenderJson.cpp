@@ -57,7 +57,7 @@ namespace internal::Renderer {
                 stream << "{\n\t\t\t\t\t\t\t";
                 stream << "\"message\": \"" << Helpers::escapeJson(failure.message) << "\",\n\t\t\t\t\t\t\t";
                 stream << "\"file\": \"" << Helpers::escapeJson(failure.file) << "\",\n\t\t\t\t\t\t\t";
-                stream << "\"line\": \"" << failure.line << "\"\n\t\t\t\t\t\t";
+                stream << "\"line\": " << failure.line << "\n\t\t\t\t\t\t";
                 stream << "}";
             }
 
@@ -74,7 +74,7 @@ namespace internal::Renderer {
             stream << "\"suiteName\": \"" << Helpers::escapeJson(suiteName) << "\",\n\t\t\t\t\t";
             stream << "\"testName\": \"" << Helpers::escapeJson(test.testName) << "\",\n\t\t\t\t\t";
             stream << "\"status\": \"" << Core::StatusStrings[(int)test.status] << "\",\n\t\t\t\t\t";
-            stream << "\"durationMs\": \"" << test.durationMs << "\",\n\t\t\t\t\t";
+            stream << "\"durationMs\": " << test.durationMs << ",\n\t\t\t\t\t";
             stream << "\"failures\": ";
 
             if (includeFailures) {
