@@ -12,12 +12,12 @@ namespace internal {
     namespace impl_null {
         template <typename T>
         requires Concepts::Nullable<T>
-        inline std::optional<const Core::Failure> 
-            Null(const T& val, const char* file, const int line) 
+        inline std::optional<const Core::FailureInfo> 
+            Null(const T& val, const char* file, const uint32_t line) 
         {
             if constexpr (std::is_pointer_v<T>) {
                 if (val != nullptr) {
-                    return Core::Failure({
+                    return Core::FailureInfo({
                         "Expected val to be nullptr.\n val = " + Helpers::toString(val),
                         file,
                         line
@@ -25,7 +25,7 @@ namespace internal {
                 }
             } else if constexpr (requires { val.get(); }) {
                 if (val.get() != nullptr) {
-                    return Core::Failure({
+                    return Core::FailureInfo({
                         "Expected val to be nullptr.\n val = " + Helpers::toString(val.get()),
                         file,
                         line
@@ -33,7 +33,7 @@ namespace internal {
                 }
             } else if constexpr (requires { val.has_value(); }) {
                 if (val.has_value()) {
-                    return Core::Failure({
+                    return Core::FailureInfo({
                         "Expected val to be nullptr.\n val = " + Helpers::toString(*val),
                         file,
                         line
@@ -46,32 +46,32 @@ namespace internal {
 
         template <typename T>
         requires Concepts::Nullable<T>
-        inline std::optional<const Core::Failure> 
-            NotNull(const T& val, const char* file, const int line)
+        inline std::optional<const Core::FailureInfo> 
+            NotNull(const T& val, const char* file, const uint32_t line)
         {
             if constexpr (std::is_pointer_v<T>) {
                 if (val == nullptr) {
-                    return Core::Failure({
+                    return Core::FailureInfo(
                         "Expected val to be nullptr.\n val = nullptr",
                         file,
                         line
-                    });
+                    );
                 }
             } else if constexpr (requires { val.get(); }) {
                 if (val.get() == nullptr) {
-                    return Core::Failure({
+                    return Core::FailureInfo(
                         "Expected val to be nullptr.\n val = nullptr",
                         file,
                         line
-                    });
+                    );
                 }
             } else if constexpr (requires { val.has_value(); }) {
                 if (!val.has_value()) {
-                    return Core::Failure({
+                    return Core::FailureInfo(
                         "Expected val to be nullptr.\n val = nullopt",
                         file,
                         line
-                    });
+                    );
                 }
             }
 

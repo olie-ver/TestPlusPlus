@@ -15,22 +15,22 @@ int getNumThreads(const std::string &arg)
     return std::max(std::min(std::stoi(arg, &pos), max_threads), 1);
 }
 
-internal::Core::Verbosity getVerbFlag(const std::string &arg)
+internal::Renderer::Verbosity getVerbFlag(const std::string &arg)
 {
     if (arg == "minimum") {
-        return internal::Core::Verbosity::Minimum;
+        return internal::Renderer::Verbosity::Minimum;
     } else if (arg == "passonly" || arg == "pass_only") {
-        return internal::Core::Verbosity::PassOnly;
+        return internal::Renderer::Verbosity::PassOnly;
     } else if (arg == "failonly" || arg == "fail_only"
         || arg == "failonlyall" || arg == "fail_only_all") 
     {
-        return internal::Core::Verbosity::FailOnlyAll;
+        return internal::Renderer::Verbosity::FailOnlyAll;
     } else if (arg == "failonlymin" || arg == "fail_only_min")
     {
-        return internal::Core::Verbosity::FailOnlyMin;
+        return internal::Renderer::Verbosity::FailOnlyMin;
     }
 
-    return internal::Core::Verbosity::Default;
+    return internal::Renderer::Verbosity::Default;
 }
 
 void getSkip(const std::string& arg, std::unordered_set<std::string>& suites)

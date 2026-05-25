@@ -16,14 +16,14 @@ namespace internal {
     namespace impl_iter {
         template <typename A, typename B>
         requires Concepts::IterableAndComparable<A, B>
-        inline std::optional<Core::Failure>
-        unorderedEquals(const A& first, const B& second, const char* file, const int line)
+        inline std::optional<Core::FailureInfo>
+        unorderedEquals(const A& first, const B& second, const char* file, const uint32_t line)
         {
             size_t size_a = std::ranges::size(first);
             size_t size_b = std::ranges::size(second);
 
             if (size_a != size_b) {
-                return Core::Failure({
+                return Core::FailureInfo({
                     std::string("Size of collections are not the same\n      Size of first: ") 
                     + Helpers::toString(size_a)
                     + std::string("\n      Size of second: ") + Helpers::toString(size_b),
@@ -53,8 +53,8 @@ namespace internal {
             && Concepts::Hashable<std::ranges::range_value_t<A>>
             && Concepts::Hashable<std::ranges::range_value_t<B>>
             && Concepts::HasEQ<std::ranges::range_value_t<A>, std::ranges::range_value_t<B>>
-        inline std::optional<Core::Failure> 
-        unorderedEqualsHashable(const A& first, const B& second, const char* file, const int line)
+        inline std::optional<Core::FailureInfo> 
+        unorderedEqualsHashable(const A& first, const B& second, const char* file, const uint32_t line)
         {
             using a_val = std::ranges::range_value_t<A>;
             using b_val = std::ranges::range_value_t<B>;
@@ -70,7 +70,7 @@ namespace internal {
             auto b_end = std::ranges::cend(second);
             for (; b_itr != b_end; ++b_itr) {
                 if (counts[*b_itr] == 0) {
-                    return Core::Failure({
+                    return Core::FailureInfo({
                         std::string("Mismatched element: ") + Helpers::toString(*b_itr),
                         file,
                         line
@@ -82,7 +82,7 @@ namespace internal {
 
             for (const auto& [key, count] : counts) {
                 if (count != 0) {
-                    return Core::Failure({
+                    return Core::FailureInfo({
                         std::string("Mismatched element: ") + Helpers::toString(key),
                         file,
                         line
@@ -97,8 +97,8 @@ namespace internal {
         requires Concepts::IterableAndComparable<A, B> 
             && Concepts::HasLT<std::ranges::range_value_t<A>, std::ranges::range_value_t<B>>
             && Concepts::HasEQ<std::ranges::range_value_t<A>, std::ranges::range_value_t<B>>
-        inline std::optional<Core::Failure>
-        unorderedEqualsLessThan(const A& first, const B& second, const char* file, const int line)
+        inline std::optional<Core::FailureInfo>
+        unorderedEqualsLessThan(const A& first, const B& second, const char* file, const uint32_t line)
         {
             using a_val = std::ranges::range_value_t<A>;
             using b_val = std::ranges::range_value_t<B>;
@@ -113,7 +113,7 @@ namespace internal {
 
             for (size_t i = 0; i < size; i++) {
                 if (a_vals[i] != b_vals[i]) {
-                    return Core::Failure({
+                    return Core::FailureInfo({
                         std::string("Mismatched element: ") + Helpers::toString(a_vals[i]),
                         file,
                         line
@@ -127,8 +127,8 @@ namespace internal {
         template <typename A, typename B>
         requires Concepts::IterableAndComparable<A, B>
             && Concepts::HasEQ<std::ranges::range_value_t<A>, std::ranges::range_value_t<B>>
-        inline std::optional<Core::Failure> 
-        unorderedEqualsGeneral(const A& first, const B& second, const char* file, const int line)
+        inline std::optional<Core::FailureInfo> 
+        unorderedEqualsGeneral(const A& first, const B& second, const char* file, const uint32_t line)
         {
             //since this function is being called, first and second have the same size
             std::vector<bool> used(std::ranges::size(first));
@@ -153,7 +153,7 @@ namespace internal {
                 }
 
                 if (!found) {
-                    return Core::Failure({
+                    return Core::FailureInfo({
                         std::string("Missing element: ") + Helpers::toString(*a_itr),
                         file,
                         line
@@ -163,7 +163,7 @@ namespace internal {
 
             for (size_t i = 0; i < used.size(); i++) {
                 if (!used[i]) {
-                    return Core::Failure({
+                    return Core::FailureInfo({
                         "Collections not equivalent",
                         file,
                         line
@@ -177,8 +177,8 @@ namespace internal {
         // This can also be optimized the same way unorderedEquals is optimized
         template <typename A, typename B>
         requires Concepts::IterableAndComparable<A, B>
-        inline std::optional<Core::Failure>
-        unorderedUnequals(const A& first, const B& second, const char* file, const int line)
+        inline std::optional<Core::FailureInfo>
+        unorderedUnequals(const A& first, const B& second, const char* file, const uint32_t line)
         {
             size_t size_a = std::ranges::size(first);
             size_t size_b = std::ranges::size(second);
@@ -218,7 +218,7 @@ namespace internal {
                 //     }
                 // }
 
-                return Core::Failure({
+                return Core::FailureInfo({
                     "Collections are equivalent",
                     file,
                     line

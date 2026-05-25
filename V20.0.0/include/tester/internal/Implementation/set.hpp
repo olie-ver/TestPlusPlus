@@ -22,8 +22,8 @@ namespace internal {
 
         template <typename A, typename B>
         requires Concepts::IterableAndComparable<A, B>
-        inline std::optional<Core::Failure> 
-        sameSet(const A& a, const B& b, const char* file, const int line) {
+        inline std::optional<Core::FailureInfo> 
+        sameSet(const A& a, const B& b, const char* file, const uint32_t line) {
             //everything in A appears in B, and everything in B appears in A
             auto a_itr = std::ranges::cbegin(a);
             auto a_end = std::ranges::cend(a);
@@ -34,7 +34,7 @@ namespace internal {
                 auto b_itr = std::ranges::cbegin(b);
 
                 if (!isPresent(a_itr, b_itr, b_end)) {
-                    return Core::Failure({
+                    return Core::FailureInfo({
                         std::string("Element in first not present in second: " 
                             + Helpers::toString(*a_itr)),
                         file,
@@ -48,7 +48,7 @@ namespace internal {
             for (; b_itr != b_end; ++b_itr) {
                 a_itr = std::ranges::cbegin(a); //RESET a_itr to point at the beginning again
                 if (!isPresent(b_itr, a_itr, a_end)) {
-                    return Core::Failure({
+                    return Core::FailureInfo({
                         std::string("Element in second not present in first: " 
                             + Helpers::toString(*b_itr)),
                         file,
@@ -63,8 +63,8 @@ namespace internal {
 
         template <typename A, typename B>
         requires Concepts::IterableAndComparable<A, B>
-        inline std::optional<Core::Failure> 
-        notSameSet(const A& a, const B& b, const char* file, const int line) {
+        inline std::optional<Core::FailureInfo> 
+        notSameSet(const A& a, const B& b, const char* file, const uint32_t line) {
             //not everything in A appears in B, or not everything in B appears in A
 
             auto a_itr = std::ranges::cbegin(a);
@@ -91,7 +91,7 @@ namespace internal {
                 }
             }
 
-            return Core::Failure({
+            return Core::FailureInfo({
                 "Both sets are the same",
                 file,
                 line
@@ -100,8 +100,8 @@ namespace internal {
 
         template <typename A, typename B>
         requires Concepts::IterableAndComparable<A, B>
-        inline std::optional<Core::Failure> 
-        subset(const A& sub, const B& super, const char* file, const int line) {
+        inline std::optional<Core::FailureInfo> 
+        subset(const A& sub, const B& super, const char* file, const uint32_t line) {
             //everything in sub appears in super
             auto a_itr = std::ranges::cbegin(sub);
 
@@ -112,7 +112,7 @@ namespace internal {
                 auto b_itr = std::ranges::cbegin(super);
 
                 if (!isPresent(a_itr, b_itr, b_end)) {
-                    return Core::Failure({
+                    return Core::FailureInfo({
                         std::string("Element in first not present in second: " 
                             + Helpers::toString(*a_itr)),
                         file,
@@ -126,8 +126,8 @@ namespace internal {
 
         template <typename A, typename B>
         requires Concepts::IterableAndComparable<A, B>
-        inline std::optional<Core::Failure> 
-        superset(const A& super, const B& sub, const char* file, const int line) {
+        inline std::optional<Core::FailureInfo> 
+        superset(const A& super, const B& sub, const char* file, const uint32_t line) {
             //everything in B appears in A
             auto b_itr = std::ranges::cbegin(sub);
 
@@ -138,7 +138,7 @@ namespace internal {
                 auto a_itr = std::ranges::cbegin(super);
 
                 if (!isPresent(b_itr, a_itr, a_end)) {
-                    return Core::Failure({
+                    return Core::FailureInfo({
                         std::string("Element in second not present in first: " 
                             + Helpers::toString(*b_itr)),
                         file,
@@ -152,8 +152,8 @@ namespace internal {
 
         template <typename A, typename B>
         requires Concepts::IterableAndComparable<A, B>
-        inline std::optional<Core::Failure> 
-        strictSubset(const A& sub, const B& super, const char* file, const int line) {
+        inline std::optional<Core::FailureInfo> 
+        strictSubset(const A& sub, const B& super, const char* file, const uint32_t line) {
             //everything in A appears in B, but B has at least one element that does not appear in A
 
             auto a_itr = std::ranges::cbegin(sub);
@@ -165,7 +165,7 @@ namespace internal {
                 auto b_itr = std::ranges::cbegin(super);
                 
                 if (!isPresent(a_itr, b_itr, b_end)) {
-                    return Core::Failure({
+                    return Core::FailureInfo({
                         std::string("Element in first not present in second: " 
                             + Helpers::toString(*a_itr)),
                         file,
@@ -188,7 +188,7 @@ namespace internal {
                 }
             }
 
-            return Core::Failure({
+            return Core::FailureInfo({
                 "First is not a strict subset of Second (everything in Second is in First)" ,
                 file,
                 line

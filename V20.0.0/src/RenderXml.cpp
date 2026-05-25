@@ -26,13 +26,15 @@ namespace internal::Renderer {
             int passed = 0;
             int failed = 0;
             int skipped = 0;
+            int unknown = 0;
+            int expectedFail = 0;
         };
 
         SuiteStats calculateStats(const TestList& tests) {
             SuiteStats stats;
 
             for (const auto& test : tests) {
-                switch (test.status) {
+                switch (test.test_status) {
                     case Core::TestStatus::Passed:
                         stats.passed++;
                         break;
@@ -43,6 +45,14 @@ namespace internal::Renderer {
 
                     case Core::TestStatus::Skipped:
                         stats.skipped++;
+                        break;
+                    
+                    case Core::TestStatus::Unknown:
+                        stats.unknown++;
+                        break;
+
+                    case Core::TestStatus::ExpectedFailure:
+                        stats.expectedFail++;
                         break;
                 }
             }
@@ -64,9 +74,9 @@ namespace internal::Renderer {
             const Core::TestResult& test,
             bool includeFailures
         ) {
-            const std::string& status = Core::StatusStrings[(int)test.status];
+            const std::string& status = Core::StatusStrings[(int)test.test_status];
 
-            if (includeFailures && test.status == Core::TestStatus::Failed) {
+            if (includeFailures && test.test_status == Core::TestStatus::Failed) {
 
                 stream << "\t\t<testcase "
                        << "name=\"" << Helpers::escapeXml(test.testName) << "\" "
@@ -106,7 +116,9 @@ namespace internal::Renderer {
                        << "tests=\"" << tests.size() << "\" "
                        << "successes=\"" << stats.passed << "\" "
                        << "failures=\"" << stats.failed << "\" "
-                       << "skips=\"" << stats.skipped << "\">\n";
+                       << "skips=\"" << stats.skipped << "\" "
+                       << "unknowns=\"" << stats.unknown << "\" "
+                       << "expected_failure\"" << stats.expectedFail << "\">\n";
 
                 for (const auto& test : tests) {
 
@@ -171,7 +183,7 @@ namespace internal::Renderer {
                 return stats.passed > 0;
             },
             [](const Core::TestResult& test) {
-                return test.status == Core::TestStatus::Passed;
+                return test.test_status == Core::TestStatus::Passed;
             },
             false
         );
@@ -187,7 +199,7 @@ namespace internal::Renderer {
                 return stats.failed > 0;
             },
             [](const Core::TestResult& test) {
-                return test.status == Core::TestStatus::Failed;
+                return test.test_status == Core::TestStatus::Failed;
             },
             true
         );
@@ -203,7 +215,7 @@ namespace internal::Renderer {
                 return stats.failed > 0;
             },
             [](const Core::TestResult& test) {
-                return test.status == Core::TestStatus::Failed;
+                return test.test_status == Core::TestStatus::Failed;
             },
             false
         );
