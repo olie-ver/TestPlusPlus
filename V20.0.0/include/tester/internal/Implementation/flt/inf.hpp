@@ -14,15 +14,15 @@ namespace internal {
     namespace impl_flt {
         template <typename T>
         requires(std::is_floating_point<T>::value)
-        inline std::optional<const Core::Failure> 
-            isInf(const T& val, const char* file, int line)
+        inline std::optional<const Core::FailureInfo> 
+            isInf(const T& val, const char* file, uint32_t line)
         {
             if (std::isnan(val)) {
-                return Core::Failure("First parameter is NaN", file, line);
+                return Core::FailureInfo("First parameter is NaN", file, line);
             }
 
             if (!std::isinf(val)) {
-                return Core::Failure({
+                return Core::FailureInfo({
                     std::string("Expected val to be inf \n      val = " + Helpers::toString(val)),
                     file,
                     line
@@ -34,15 +34,15 @@ namespace internal {
 
         template <typename T>
         requires(std::is_floating_point<T>::value)
-        inline std::optional<const Core::Failure> 
-            isPosInf(const T& val, const char* file, int line)
+        inline std::optional<const Core::FailureInfo> 
+            isPosInf(const T& val, const char* file, uint32_t line)
         {
             if (std::isnan(val)) {
-                return Core::Failure("First parameter is NaN", file, line);
+                return Core::FailureInfo("First parameter is NaN", file, line);
             }
 
             if (!std::isinf(val)) {
-                return Core::Failure({
+                return Core::FailureInfo({
                     std::string("Expected val to be positive infinity but it wasn't \n      val = " 
                         + Helpers::toString(val)),
                     file,
@@ -50,7 +50,7 @@ namespace internal {
                 });
 
             } else if (std::isinf(val) && val < 0.0) {
-                return Core::Failure({
+                return Core::FailureInfo({
                     std::string("Expected val to be positive infinity, but it wasn't \n      val = " 
                         + Helpers::toString(val)),
                     file,
@@ -63,22 +63,22 @@ namespace internal {
 
         template <typename T>
         requires(std::is_floating_point<T>::value)
-        inline std::optional<const Core::Failure> 
-            isNegInf(const T& val, const char* file, int line)
+        inline std::optional<const Core::FailureInfo> 
+            isNegInf(const T& val, const char* file, uint32_t line)
         {
             if (std::isnan(val)) {
-                return Core::Failure("First parameter is NaN", file, line);
+                return Core::FailureInfo("First parameter is NaN", file, line);
             }
 
             if (!std::isinf(val)) {
-                return Core::Failure({
+                return Core::FailureInfo({
                     std::string("Expected val to be negative infinity but it wasn't \n      val = "
                         + Helpers::toString(val)),
                     file,
                     line
                 });
             } else if (std::isinf(val) && val > 0.0) {
-                return Core::Failure({
+                return Core::FailureInfo({
                     std::string("Expected val to be negative infinity, but it wasn't \n      val = "
                         + Helpers::toString(val)),
                     file,
