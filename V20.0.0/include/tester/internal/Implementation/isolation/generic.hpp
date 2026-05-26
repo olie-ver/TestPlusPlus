@@ -3,7 +3,10 @@
 #ifndef GENERIC_H
 #define GENERIC_H
 
-#include "../isolation.hpp"
+#include "../../Core.hpp"
+#include "../../Concepts.hpp"
+#include "../../Helpers.hpp"
+#include "isolation_unix.hpp"
 
 namespace internal {
     namespace impl_iso {
