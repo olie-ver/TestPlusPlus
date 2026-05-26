@@ -36,7 +36,7 @@ namespace internal::Renderer {
 
         bool hasStatus(const TestList& tests, Core::TestStatus status) {
             for (const auto& test : tests) {
-                if (test.status == status) {
+                if (test.test_status == status) {
                     return true;
                 }
             }
@@ -75,8 +75,8 @@ namespace internal::Renderer {
             stream << "{\n\t\t\t\t\t";
             stream << "\"suiteName\": \"" << Helpers::escapeJson(suiteName) << "\",\n\t\t\t\t\t";
             stream << "\"testName\": \"" << Helpers::escapeJson(test.testName) << "\",\n\t\t\t\t\t";
-            stream << "\"status\": \"" << Core::StatusStrings[(int)test.status] << "\",\n\t\t\t\t\t";
-            stream << "\"durationMs\": " << test.durationMs << ",\n\t\t\t\t\t";
+            stream << "\"status\": \"" << Core::StatusStrings[(int)test.test_status] << "\",\n\t\t\t\t\t";
+            stream << "\"total_ms\": " << test.timing.total_ms << ",\n\t\t\t\t\t";
             stream << "\"failures\": ";
 
             if (includeFailures) {
@@ -186,7 +186,7 @@ namespace internal::Renderer {
                     && hasStatus(tests, Core::TestStatus::Passed);
             },
             [](const Core::TestResult& test) {
-                return test.status == Core::TestStatus::Passed;
+                return test.test_status == Core::TestStatus::Passed;
             },
             false
         );
@@ -203,7 +203,7 @@ namespace internal::Renderer {
                     && hasStatus(tests, Core::TestStatus::Failed);
             },
             [](const Core::TestResult& test) {
-                return test.status == Core::TestStatus::Failed;
+                return test.test_status == Core::TestStatus::Failed;
             },
             true
         );
@@ -220,7 +220,7 @@ namespace internal::Renderer {
                     && hasStatus(tests, Core::TestStatus::Failed);
             },
             [](const Core::TestResult& test) {
-                return test.status == Core::TestStatus::Failed;
+                return test.test_status == Core::TestStatus::Failed;
             },
             false
         );

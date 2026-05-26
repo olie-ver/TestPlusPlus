@@ -11,7 +11,7 @@ int main(int argc, char** argv) {
     int num_threads = 1;
     int timeout = 0;
 
-    internal::Core::Verbosity verbFlag = internal::Core::Verbosity::Default;
+    internal::Renderer::Verbosity verbFlag = internal::Renderer::Verbosity::Default;
     internal::Core::TimeUnit unit = internal::Core::TimeUnit::Seconds;
     auto& skipSuites = internal::Runner::getSkipSuites();
     auto& testOnlySuites = internal::Runner::getTestOnly();

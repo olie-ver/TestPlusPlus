@@ -14,8 +14,8 @@ namespace internal {
     namespace impl_iter {
         template <typename A, typename B>
         requires Concepts::IterableAndComparable<A, B>
-        inline std::optional<Core::Failure> 
-        orderedEquals(const A& first, const B& second, const char* file, const int line)
+        inline std::optional<Core::FailureInfo> 
+        orderedEquals(const A& first, const B& second, const char* file, const uint32_t line)
         {
             auto a_itr = std::ranges::cbegin(first);
             auto b_itr = std::ranges::cbegin(second);
@@ -26,7 +26,7 @@ namespace internal {
             size_t size_b = std::ranges::size(second);
 
             if (size_a != size_b) {
-                return Core::Failure({
+                return Core::FailureInfo({
                     std::string("Size of collections are not the same\n      Size of first: ") 
                     + Helpers::toString(size_a)
                     + std::string("\n      Size of second: ") + Helpers::toString(size_b),
@@ -43,7 +43,7 @@ namespace internal {
 
                 if (!(a_val == b_val)) {
                     std::string idx = Helpers::toString(index);
-                    return Core::Failure({
+                    return Core::FailureInfo({
                         std::string("Mismatch at index = ") + idx
                         + "\n    a[" + idx + "]: " + Helpers::toString(a_val)
                         + "\n    b[" + idx + "]: " + Helpers::toString(b_val),
@@ -58,8 +58,8 @@ namespace internal {
 
         template <typename A, typename B>
         requires Concepts::IterableAndComparable<A, B>
-        inline std::optional<Core::Failure>
-        orderedUnequals(const A& first, const B& second, const char* file, const int line)
+        inline std::optional<Core::FailureInfo>
+        orderedUnequals(const A& first, const B& second, const char* file, const uint32_t line)
         {
             namespace ranges = std::ranges;
 
@@ -72,7 +72,7 @@ namespace internal {
             size_t size_b = ranges::size(second);
 
             if (size_a != size_b) {
-                return Core::Failure({
+                return Core::FailureInfo({
                     std::string("Size of collections are not the same\n      Size of first: ") 
                     + Helpers::toString(size_a)
                     + std::string("\n      Size of second: ") + Helpers::toString(size_b),
@@ -87,7 +87,7 @@ namespace internal {
                 }
             }
 
-            return Core::Failure({
+            return Core::FailureInfo({
                 "Collections were equal",
                 file,
                 line

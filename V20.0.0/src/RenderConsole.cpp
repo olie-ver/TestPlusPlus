@@ -15,29 +15,44 @@ namespace internal {
                 for (size_t i = 0; i < size; i++) {
                     const Core::TestResult& result = test[i];
 
-                    switch (result.status) {
+                    switch (result.test_status) {
                         case Core::TestStatus::Passed:
                             std::cout << "[PASS] " << result.suiteName << " -> " << result.testName;
-                            std::cout << " (" << result.durationMs << " ms" << ')' << std::endl;
-                            testRun.passed++;
+                            std::cout << " (" << result.timing.total_ms << " ms" << ')' << std::endl;
+                            passed++;
                             break;
                     
                         case Core::TestStatus::Failed:
                             std::cout << "[FAIL] " << result.suiteName << " -> " << result.testName;
-                            std::cout << " (" << result.durationMs << " ms" << ')' << std::endl;
+                            std::cout << " (" << result.timing.total_ms << " ms" << ')' << std::endl;
 
                             for (size_t j = 0; j < result.failures.size(); j++) {
-                                const Core::Failure& fail = result.failures[j];
+                                const Core::FailureInfo& fail = result.failures[j];
                                 std::cout << "\tat: " << fail.file << ":" << fail.line << std::endl;
                                 std::cout << '\t' << fail.message << std::endl;
                                 std::cout << std::endl;
                             }
-                            testRun.failed++;
+                            failed++;
                             break;
 
                         case Core::TestStatus::Skipped:
-                            std::cout << "[SKIP] " << result.suiteName << " -> " << result.testName << std::endl;
-                            testRun.skipped++;
+                            std::cout << "[SKIP] " << result.suiteName << " -> " 
+                                << result.testName << std::endl;
+                            skipped++;
+                            break;
+
+                        case Core::TestStatus::Unknown:
+                            std::cout << "[UNKNOWN] " << result.suiteName << " -> " 
+                                << result.testName;
+                            std::cout << " (" << result.timing.total_ms << " ms" << ')' << std::endl;
+                            unknown++;
+                            break;
+
+                        case Core::TestStatus::ExpectedFailure:
+                            std::cout << "[EXPECTED FAIL] " << result.suiteName << " -> " 
+                                << result.testName << std::endl;
+                            std::cout << " (" << result.timing.total_ms << " ms" << ')' << std::endl;
+                            expectedFailed++;
                             break;
                     }
                 }
@@ -53,22 +68,36 @@ namespace internal {
                 for (size_t i = 0; i < size; i++) {
                     const Core::TestResult& result = test[i];
 
-                    switch (result.status) {
+                    switch (result.test_status) {
                         case Core::TestStatus::Passed:
                             std::cout << "[PASS] " << result.suiteName << " -> " << result.testName;
-                            std::cout << " (" << result.durationMs << " ms" << ')' << std::endl;
-                            testRun.passed++;
+                            std::cout << " (" << result.timing.total_ms << " ms" << ')' << std::endl;
+                            passed++;
                             break;
                     
                         case Core::TestStatus::Failed:
                             std::cout << "[FAIL] " << result.suiteName << " -> " << result.testName;
-                            std::cout << " (" << result.durationMs << " ms" << ')' << std::endl;
-                            testRun.failed++;
+                            std::cout << " (" << result.timing.total_ms << " ms" << ')' << std::endl;
+                            failed++;
                             break;
 
                         case Core::TestStatus::Skipped:
                             std::cout << "[SKIP] " << result.suiteName << " -> " << result.testName << std::endl;
-                            testRun.skipped++;
+                            skipped++;
+                            break;
+                        
+                        case Core::TestStatus::Unknown:
+                            std::cout << "[UNKNOWN] " << result.suiteName << " -> " 
+                                << result.testName;
+                            std::cout << " (" << result.timing.total_ms << " ms" << ')' << std::endl;
+                            unknown++;
+                            break;
+                        
+                        case Core::TestStatus::ExpectedFailure:
+                            std::cout << "[EXPECTED FAIL] " << result.suiteName << " -> " 
+                                << result.testName;
+                            std::cout << " (" << result.timing.total_ms << " ms" << ')' << std::endl;
+                            expectedFailed++;
                             break;
                     }
                 }
@@ -83,17 +112,23 @@ namespace internal {
                 size_t size = test.size();
                 for (size_t i = 0; i < size; i++) {
                     const Core::TestResult& result = test[i];
-                    switch (result.status) {
+                    switch (result.test_status) {
                         case Core::TestStatus::Passed: 
                             std::cout << "[PASS] " << result.suiteName << " -> " << result.testName;
-                            std::cout << " (" << result.durationMs << " ms" << ')' << std::endl;
-                            testRun.passed++;
+                            std::cout << " (" << result.timing.total_ms << " ms" << ')' << std::endl;
+                            passed++;
                             break;
                         case Core::TestStatus::Failed:
-                            testRun.failed++;
+                            failed++;
                             break;
                         case Core::TestStatus::Skipped:
-                            testRun.skipped++;
+                            skipped++;
+                            break;
+                        case Core::TestStatus::Unknown:
+                            unknown++;
+                            break;
+                        case Core::TestStatus::ExpectedFailure:
+                            expectedFailed++;
                             break;
                     }
                 }
@@ -108,24 +143,30 @@ namespace internal {
                 size_t size = test.size();
                 for (size_t i = 0; i < size; i++) {
                     const Core::TestResult& result = test[i];
-                    switch (result.status) {
+                    switch (result.test_status) {
                         case Core::TestStatus::Passed: 
-                            testRun.passed++;
+                            passed++;
                             break;
                         case Core::TestStatus::Failed:
                             std::cout << "[FAIL] " << result.suiteName << " -> " << result.testName;
-                            std::cout << " (" << result.durationMs << " ms" << ')' << std::endl;
+                            std::cout << " (" << result.timing.total_ms << " ms" << ')' << std::endl;
 
                             for (size_t j = 0; j < result.failures.size(); j++) {
-                                const Core::Failure& fail = result.failures[j];
+                                const Core::FailureInfo& fail = result.failures[j];
                                 std::cout << "\tat: " << fail.file << ":" << fail.line << std::endl;
                                 std::cout << '\t' << fail.message << std::endl;
                                 std::cout << std::endl;
                             }
-                            testRun.failed++;
+                            failed++;
                             break;
                         case Core::TestStatus::Skipped:
-                            testRun.skipped++;
+                            skipped++;
+                            break;
+                        case Core::TestStatus::Unknown:
+                            unknown++;
+                            break;
+                        case Core::TestStatus::ExpectedFailure:
+                            expectedFailed++;
                             break;
                     }
                 }
@@ -140,17 +181,23 @@ namespace internal {
                 size_t size = test.size();
                 for (size_t i = 0; i < size; i++) {
                     const Core::TestResult& result = test[i];
-                    switch (result.status) {
+                    switch (result.test_status) {
                         case Core::TestStatus::Passed: 
-                            testRun.passed++;
+                            passed++;
                             break;
                         case Core::TestStatus::Failed:
                             std::cout << "[FAIL] " << result.suiteName << " -> " << result.testName;
-                            std::cout << " (" << result.durationMs << " ms" << ')' << std::endl;
-                            testRun.failed++;
+                            std::cout << " (" << result.timing.total_ms << " ms" << ')' << std::endl;
+                            failed++;
                             break;
                         case Core::TestStatus::Skipped:
-                            testRun.skipped++;
+                            skipped++;
+                            break;
+                        case Core::TestStatus::Unknown:
+                            unknown++;
+                            break;
+                        case Core::TestStatus::ExpectedFailure:
+                            expectedFailed++;
                             break;
                     }
                 }

@@ -133,7 +133,7 @@ namespace internal {
             Core::TestResult& CURRENT_TEST = TEST_STACK.back();
             CURRENT_TEST.suiteName = test.suite_name;
             CURRENT_TEST.testName = test.test_name;
-            CURRENT_TEST.status = Core::TestStatus::Passed;
+            CURRENT_TEST.test_status = Core::TestStatus::Passed;
 
             using clock = std::chrono::steady_clock;
             using ms = std::chrono::milliseconds;
@@ -144,10 +144,10 @@ namespace internal {
                 test.test();
                 clock::time_point end_time = clock::now();
 
-                CURRENT_TEST.durationMs =  std::chrono::duration_cast<ms>(end_time - start_time).count();
+                CURRENT_TEST.timing.total_ms =  std::chrono::duration_cast<ms>(end_time - start_time).count();
 
                 if (!CURRENT_TEST.failures.empty()) {
-                    CURRENT_TEST.status =  Core::TestStatus::Failed;
+                    CURRENT_TEST.test_status =  Core::TestStatus::Failed;
                 }
 
                 Core::TestResult result = CURRENT_TEST;
@@ -156,9 +156,9 @@ namespace internal {
             } catch (...) { //we don't care what error gets thrown, we end the test
                 clock::time_point end_time = clock::now();
 
-                CURRENT_TEST.durationMs =  std::chrono::duration_cast<ms>(end_time - start_time).count();
+                CURRENT_TEST.timing.total_ms =  std::chrono::duration_cast<ms>(end_time - start_time).count();
 
-                CURRENT_TEST.status =  Core::TestStatus::Failed;
+                CURRENT_TEST.test_status =  Core::TestStatus::Failed;
 
                 Core::TestResult result = CURRENT_TEST;
                 TEST_STACK.pop_back();

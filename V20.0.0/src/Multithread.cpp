@@ -26,8 +26,12 @@ namespace internal {
                     Core::TestResult skip;
                     skip.suiteName = test.suite_name;
                     skip.testName = test.test_name;
-                    skip.status = Core::TestStatus::Skipped;
-                    skip.durationMs = 0;
+                    skip.test_status = Core::TestStatus::Skipped;
+
+                    skip.timing.setup_ms = 0.0;
+                    skip.timing.execution_ms = 0.0;
+                    skip.timing.teardown_ms = 0.0;
+                    skip.timing.total_ms = 0.0;
 
                     results[index] = skip;
                 } else {
