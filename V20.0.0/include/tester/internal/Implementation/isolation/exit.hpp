@@ -6,33 +6,32 @@
 #include "../../Core.hpp"
 #include "../../Concepts.hpp"
 #include "../../Helpers.hpp"
-#include "isolation_unix.hpp"
 
 namespace internal {
     namespace impl_iso {
-        std::optional<const Core::FailureInfo> 
+        inline std::optional<const Core::FailureInfo> 
         success() {
-
+            return std::nullopt;
         }
 
-        std::optional<const Core::FailureInfo> 
+        inline std::optional<const Core::FailureInfo> 
         failure() {
-
+            return std::nullopt;
         }
 
-        std::optional<const Core::FailureInfo> 
+        inline std::optional<const Core::FailureInfo> 
         nonzeroExit() {
-
+            return std::nullopt;
         }
 
-        std::optional<const Core::FailureInfo> 
+        inline std::optional<const Core::FailureInfo> 
         exitCode() {
-
+            return std::nullopt;
         }
 
-        std::optional<const Core::FailureInfo> 
+        inline std::optional<const Core::FailureInfo> 
         completes() {
-            
+            return std::nullopt;
         }
     }
 }

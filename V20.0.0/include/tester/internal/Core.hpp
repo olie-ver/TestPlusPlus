@@ -91,7 +91,7 @@ namespace internal {
         /// Contains: process id, the native exit code, the native signal, if the core was dumped
         struct ProcessInfo
         {
-            uint32_t process_id;
+            pid_t process_id;
             int native_exit_code;
             int native_signal;
             bool core_dumped;

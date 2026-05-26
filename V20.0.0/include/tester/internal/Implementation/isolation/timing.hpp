@@ -6,23 +6,23 @@
 #include "../../Core.hpp"
 #include "../../Concepts.hpp"
 #include "../../Helpers.hpp"
-#include "isolation_unix.hpp"
+#include "../isolation_types.hpp"
 
 namespace internal {
     namespace impl_iso {
-        std::optional<const Core::FailureInfo> 
+        inline std::optional<const Core::FailureInfo> 
         timeout() {
-
+            return std::nullopt;
         }
 
-        std::optional<const Core::FailureInfo> 
+        inline std::optional<const Core::FailureInfo> 
         completesWithin() {
-
+            return std::nullopt;
         }
 
-        std::optional<const Core::FailureInfo> 
+        inline std::optional<const Core::FailureInfo> 
         deadlock() {
-            
+            return std::nullopt;
         }
     }
 }

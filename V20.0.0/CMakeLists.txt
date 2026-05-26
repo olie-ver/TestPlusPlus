@@ -18,6 +18,7 @@ add_library(tester
     src/RenderJson.cpp
     src/RenderXml.cpp
     src/Runner.cpp
+    src/platform/unix/isolation_unix.cpp
 )
 
 set_target_properties(tester PROPERTIES
@@ -67,6 +68,7 @@ add_executable(runTests
     tests/string.cpp
     tests/throws.cpp
     tests/timeout.cpp
+    tests/isolation.cpp
 )
 
 target_link_libraries(runTests PRIVATE tester)

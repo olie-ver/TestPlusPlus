@@ -4,6 +4,7 @@
 #define ISO_H
 
 #include "../Core.hpp"
+#include "isolation_types.hpp"
 
 #include <optional>
 #include <string>
@@ -13,8 +14,9 @@ namespace internal {
         // ============================================================
         // Crash / Fatal Behavior Assertions
         // ============================================================
+        template<typename Func>
         std::optional<const Core::FailureInfo> 
-        death();
+        death(Func&& func);
 
         std::optional<const Core::FailureInfo> 
         segfault();
@@ -114,11 +116,11 @@ namespace internal {
     }
 }
 
-#include "Implementation/isolation/exit.hpp"
-#include "Implementation/isolation/fatal.hpp"
-#include "Implementation/isolation/generic.hpp"
-#include "Implementation/isolation/output.hpp"
-#include "Implementation/isolation/sanitizer.hpp"
-#include "Implementation/isolation/timing.hpp"
+#include "isolation/exit.hpp"
+#include "isolation/fatal.hpp"
+#include "isolation/generic.hpp"
+#include "isolation/output.hpp"
+#include "isolation/sanitizer.hpp"
+#include "isolation/timing.hpp"
 
 #endif

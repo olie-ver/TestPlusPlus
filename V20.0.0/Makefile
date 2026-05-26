@@ -23,7 +23,7 @@ run:
 	./$(TARGET) --v=default
 
 test:
-	./$(TARGET) --v=minimum
+	./$(TARGET) --v=minimum --testOnly=isolation
 
 json: 
 	./$(TARGET) --v=default --skip=timeout --json output.json

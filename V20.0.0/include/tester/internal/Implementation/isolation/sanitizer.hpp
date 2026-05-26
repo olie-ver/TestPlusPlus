@@ -6,28 +6,28 @@
 #include "../../Core.hpp"
 #include "../../Concepts.hpp"
 #include "../../Helpers.hpp"
-#include "isolation_unix.hpp"
+#include "../isolation_types.hpp"
 
 namespace internal {
     namespace impl_iso {
-        std::optional<const Core::FailureInfo> 
+        inline std::optional<const Core::FailureInfo> 
         asanFailure() {
-
+            return std::nullopt;
         }
 
-        std::optional<const Core::FailureInfo> 
+        inline std::optional<const Core::FailureInfo> 
         ubsanFailure() {
-
+            return std::nullopt;
         }
 
-        std::optional<const Core::FailureInfo> 
+        inline std::optional<const Core::FailureInfo> 
         tsanFailure() {
-
+            return std::nullopt;
         }
 
-        std::optional<const Core::FailureInfo> 
+        inline std::optional<const Core::FailureInfo> 
         lsanFailure() {
-            
+            return std::nullopt;
         }
     }
 }
