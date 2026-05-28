@@ -12,37 +12,40 @@
 
 namespace internal {
     namespace impl_iso {
-        template<typename Func>
-        inline std::optional<const Core::FailureInfo> 
-        death(Func&& func) {
-            IsolationRun result = isolateRun(func);
+        template<typename Func> 
+        inline Core::ExecutionResult death(Func&& func) {
+            Core::ExecutionResult result = isolateRun(func);
             std::cout << "Execution status: " << Core::ExecutionStrings[(int)result.execution_status] << std::endl;
-            std::cout << "Child pid: " << result.child_process_id << std::endl;
-            std::cout << "Native exit code: " << result.native_exit_code << std::endl;
-            std::cout << "Native signal " << result.native_signal << std::endl;
+            std::cout << "Child pid: " << result.process.process_id << std::endl;
+            std::cout << "Native exit code: " << result.process.native_exit_code << std::endl;
+            std::cout << "Native signal " << result.process.native_signal << std::endl;
             std::cout << "Crash type: " << Core::CrashStrings[(int)result.crash_type] << std::endl;
-            std::cout << "Duration (ms): " << result.duration_ms << std::endl;
-            return std::nullopt;
+            std::cout << "Duration (ms): " << result.execution_ms << std::endl;
+            return result;
         }
 
-        inline std::optional<const Core::FailureInfo> 
-        segfault() {
-            return std::nullopt;
+        template<typename Func> 
+        inline Core::ExecutionResult segfault(Func&& func) {
+            Core::ExecutionResult result = isolateRun(func);
+            return result;
         }
 
-        inline std::optional<const Core::FailureInfo> 
-        abort() {
-            return std::nullopt;
+        template<typename Func> 
+        inline Core::ExecutionResult abort(Func&& func) {
+            Core::ExecutionResult result = isolateRun(func);
+            return result;
         }
 
-        inline std::optional<const Core::FailureInfo> 
-        fatal() {
-            return std::nullopt;
+        template<typename Func> 
+        Core::ExecutionResult fatal(Func&& func) {
+            Core::ExecutionResult result = isolateRun(func);
+            return result;
         }
 
-        inline std::optional<const Core::FailureInfo> 
-        nonFatal() {
-            return std::nullopt;
+        template<typename Func> 
+        Core::ExecutionResult nonFatal(Func&& func) {
+            Core::ExecutionResult result = isolateRun(func);
+            return result;
         }
     }
 }

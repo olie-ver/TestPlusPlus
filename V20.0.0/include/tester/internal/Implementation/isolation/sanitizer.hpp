@@ -10,22 +10,22 @@
 
 namespace internal {
     namespace impl_iso {
-        inline std::optional<const Core::FailureInfo> 
+        inline std::optional<Core::FailureInfo> 
         asanFailure() {
             return std::nullopt;
         }
 
-        inline std::optional<const Core::FailureInfo> 
+        inline std::optional<Core::FailureInfo> 
         ubsanFailure() {
             return std::nullopt;
         }
 
-        inline std::optional<const Core::FailureInfo> 
+        inline std::optional<Core::FailureInfo> 
         tsanFailure() {
             return std::nullopt;
         }
 
-        inline std::optional<const Core::FailureInfo> 
+        inline std::optional<Core::FailureInfo> 
         lsanFailure() {
             return std::nullopt;
         }

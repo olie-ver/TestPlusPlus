@@ -10,17 +10,17 @@
 
 namespace internal {
     namespace impl_iso {
-        inline std::optional<const Core::FailureInfo> 
+        inline std::optional<Core::FailureInfo> 
         timeout() {
             return std::nullopt;
         }
 
-        inline std::optional<const Core::FailureInfo> 
+        inline std::optional<Core::FailureInfo> 
         completesWithin() {
             return std::nullopt;
         }
 
-        inline std::optional<const Core::FailureInfo> 
+        inline std::optional<Core::FailureInfo> 
         deadlock() {
             return std::nullopt;
         }

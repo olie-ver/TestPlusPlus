@@ -9,29 +9,34 @@
 
 namespace internal {
     namespace impl_iso {
-        inline std::optional<const Core::FailureInfo> 
-        success() {
-            return std::nullopt;
+        template<typename Func> 
+        inline Core::ExecutionResult success(Func&& func) {
+            Core::ExecutionResult result = isolateRun(func);
+            return result;
         }
 
-        inline std::optional<const Core::FailureInfo> 
-        failure() {
-            return std::nullopt;
+        template<typename Func> 
+        inline Core::ExecutionResult failure(Func&& func) {
+            Core::ExecutionResult result = isolateRun(func);
+            return result;
         }
 
-        inline std::optional<const Core::FailureInfo> 
-        nonzeroExit() {
-            return std::nullopt;
+        template<typename Func> 
+        inline Core::ExecutionResult nonzeroExit(Func&& func) {
+            Core::ExecutionResult result = isolateRun(func);
+            return result;
         }
 
-        inline std::optional<const Core::FailureInfo> 
-        exitCode() {
-            return std::nullopt;
+        template<typename Func> 
+        inline Core::ExecutionResult exitCode(Func&& func) {
+            Core::ExecutionResult result = isolateRun(func);
+            return result;
         }
 
-        inline std::optional<const Core::FailureInfo> 
-        completes() {
-            return std::nullopt;
+        template<typename Func> 
+        inline Core::ExecutionResult completes(Func&& func) {
+            Core::ExecutionResult result = isolateRun(func);
+            return result;
         }
     }
 }

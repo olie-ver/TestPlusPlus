@@ -6,7 +6,6 @@
 #include "../PCH/impl_pch.hpp"
 
 #include "../Fail.hpp"
-// #include "../Implementation/predicate.hpp"
 
 #define ASSERT_ALL(container, condition) \
     internal::Assert::assertAllOf((container), (condition), __FILE__, __LINE__)

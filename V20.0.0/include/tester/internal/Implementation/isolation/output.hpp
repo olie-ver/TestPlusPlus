@@ -10,29 +10,40 @@
 
 namespace internal {
     namespace impl_iso {
-        inline std::optional<const Core::FailureInfo> 
-        stdoutContains() {
-            return std::nullopt;
+        template<typename Func> 
+        inline Core::ExecutionResult stdoutContains(Func&& func) {
+            Core::ExecutionResult result = isolateRun(func);
+            return result;
         }
 
-        inline std::optional<const Core::FailureInfo> 
-        stderrContains() {
-            return std::nullopt;
+        template<typename Func> 
+        inline Core::ExecutionResult stderrContains(Func&& func) {
+            Core::ExecutionResult result = isolateRun(func);
+            return result;
         }
 
-        inline std::optional<const Core::FailureInfo> 
-        noStderr() {
-            return std::nullopt;
+        template<typename Func> 
+        inline Core::ExecutionResult noStdout(Func&& func) {
+            Core::ExecutionResult result = isolateRun(func);
+            return result;
         }
 
-        inline std::optional<const Core::FailureInfo> 
-        noStdout() {
-            return std::nullopt;
+        template<typename Func> 
+        inline Core::ExecutionResult noStderr(Func&& func) {
+            Core::ExecutionResult result = isolateRun(func);
+            return result;
         }
 
-        inline std::optional<const Core::FailureInfo> 
-        outputMatches() {
-            return std::nullopt;
+        template<typename Func> 
+        inline Core::ExecutionResult stdoutMatches(Func&& func) {
+            Core::ExecutionResult result = isolateRun(func);
+            return result;
+        }
+
+        template<typename Func> 
+        inline Core::ExecutionResult stderrMatches(Func&& func) {
+            Core::ExecutionResult result = isolateRun(func);
+            return result;
         }
     }
 }

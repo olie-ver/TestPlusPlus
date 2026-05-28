@@ -6,7 +6,6 @@
 #include "../PCH/impl_pch.hpp"
 
 #include "../Concepts.hpp"
-// #include "../Implementation/null.hpp"
 
 #define EXPECT_NULL(val) internal::Expects::expectNull((val), __FILE__, __LINE__)
 #define EXPECT_NOT_NULL(val) internal::Expects::expectNotNull((val), __FILE__, __LINE__)
