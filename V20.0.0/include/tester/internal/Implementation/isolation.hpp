@@ -92,17 +92,17 @@ namespace internal {
         // Sanitizer Assertions
         // ============================================================
 
-        std::optional<Core::FailureInfo> 
-        asanFailure();
+        template<typename Func> 
+        inline Core::ExecutionResult asanFailure(Func&& func);
 
-        std::optional<Core::FailureInfo> 
-        ubsanFailure();
+        template<typename Func> 
+        inline Core::ExecutionResult ubsanFailure(Func&& func);
 
-        std::optional<Core::FailureInfo> 
-        tsanFailure();
+        template<typename Func> 
+        inline Core::ExecutionResult tsanFailure(Func&& func);
 
-        std::optional<Core::FailureInfo> 
-        lsanFailure();
+        template<typename Func> 
+        inline Core::ExecutionResult lsanFailure(Func&& func);
 
         // ============================================================
         // Timing / Concurrency Assertions

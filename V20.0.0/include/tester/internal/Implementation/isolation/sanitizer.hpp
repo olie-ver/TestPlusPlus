@@ -10,24 +10,28 @@
 
 namespace internal {
     namespace impl_iso {
-        inline std::optional<Core::FailureInfo> 
-        asanFailure() {
-            return std::nullopt;
+        template<typename Func> 
+        inline Core::ExecutionResult asanFailure(Func&& func) {
+            Core::ExecutionResult result = isolateRun(func);
+            return result;
         }
 
-        inline std::optional<Core::FailureInfo> 
-        ubsanFailure() {
-            return std::nullopt;
+        template<typename Func> 
+        inline Core::ExecutionResult ubsanFailure(Func&& func) {
+            Core::ExecutionResult result = isolateRun(func);
+            return result;
         }
 
-        inline std::optional<Core::FailureInfo> 
-        tsanFailure() {
-            return std::nullopt;
+        template<typename Func> 
+        inline Core::ExecutionResult tsanFailure(Func&& func) {
+            Core::ExecutionResult result = isolateRun(func);
+            return result;
         }
 
-        inline std::optional<Core::FailureInfo> 
-        lsanFailure() {
-            return std::nullopt;
+        template<typename Func> 
+        inline Core::ExecutionResult lsanFailure(Func&& func) {
+            Core::ExecutionResult result = isolateRun(func);
+            return result;
         }
     }
 }

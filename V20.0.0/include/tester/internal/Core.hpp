@@ -34,6 +34,7 @@ namespace internal {
             LaunchFailed, //CreateProcess/fork failure
             CommunicationFailure, //pipe/socket broke
             InternalFrameworkError, //framework bug
+            SanitizerFailure, //sanitizer failure
             Cancelled //future parallel cancellation support
         };
 
@@ -52,7 +53,6 @@ namespace internal {
             Abort,
             DivideByZero,
             IllegalInstruction,
-            StackOverflow,
             BusError,
             FloatingPointException,
             Trap,
@@ -64,7 +64,7 @@ namespace internal {
         static std::string CrashStrings[] = 
             {
                 "None", "Seg Fault", "Access Violation", "Abort", "Divide By Zero",
-                "Illegal Instruction", "Stack Overflow", "Bus Error", "Floating Point Exception",
+                "Illegal Instruction", "Bus Error", "Floating Point Exception",
                 "Trap", "Killed", "Unknown"
             };
 
@@ -107,13 +107,49 @@ namespace internal {
             Process
         };
 
+        enum class SanitizerError {
+            None,
+
+            HeapBufferOverflow,
+            StackBufferOverflow,
+            UseAfterFree,
+            DoubleFree,
+            AllocDeallocMismatch,
+            StackUseAfterReturn,
+
+            SignedIntegerOverflow,
+            InvalidShift,
+            NullDereference,
+            MisalignedAccess,
+            DivideByZero,
+            InvalidEnum,
+            Unreachable,
+
+            DataRace,
+
+            MemoryLeak,
+
+            Unknown
+        };
+
         /// @brief Sanitizer information
         struct SanitizerInfo
         {
             bool asan_detected = false;
+            SanitizerError asan_err = SanitizerError::None;
+            std::string asan_msg = "";
+
             bool ubsan_detected = false;
+            SanitizerError ubsan_err = SanitizerError::None;
+            std::string ubsan_msg = "";
+
             bool tsan_detected = false;
+            SanitizerError tsan_err = SanitizerError::None;
+            std::string tsan_msg = "";
+
             bool lsan_detected = false;
+            SanitizerError lsan_err = SanitizerError::None;
+            std::string lsan_msg = "";
         };
 
         struct ExecutionResult

@@ -7,6 +7,8 @@
 
 namespace internal {
     namespace impl_iso {
+        bool drainPipe(int pipefd, std::string& target, std::array<char, 1024>& buffer);
+
         Core::ExecutionResult runIsolatedImpl(const std::function<void()>& func) {
             using ms = std::chrono::milliseconds;
 
@@ -16,6 +18,8 @@ namespace internal {
             // pipe[1] = write end
             int stdoutPipe[2];
             int stderrPipe[2];
+
+            bool pipeError = false;
 
             if (pipe(stdoutPipe) == -1) {
                 perror("pipe");
@@ -39,6 +43,7 @@ namespace internal {
                 run.process.process_id = child_pid;
                 run.process.native_exit_code = -1;
                 run.crash_type = Core::CrashType::None;
+                run.framework_message = "Fork failed";
             } else if (child_pid > 0) {
                 //parent   
 
@@ -50,9 +55,6 @@ namespace internal {
                 std::array<char, 1024> stdoutBuffer{};
                 std::array<char, 1024> stderrBuffer{};
 
-                ssize_t stdoutCount;
-                ssize_t stderrCount;
-
                 auto start = std::chrono::steady_clock::now();
                 int child_status = 0;
                 bool timed_out = false;
@@ -62,30 +64,33 @@ namespace internal {
 
                 while (true) {
                     //read over and over
-                    while ((stdoutCount = read(stdoutPipe[0], stdoutBuffer.data(), stdoutBuffer.size())) > 0)
-                    {
-                        run.output.stdout_text.append(stdoutBuffer.data(), stdoutCount);
-                    }
+                    pipeError |= drainPipe(stdoutPipe[0], run.output.stdout_text, stdoutBuffer);
+                    pipeError |= drainPipe(stderrPipe[0], run.output.stderr_text, stderrBuffer);
 
-                    while ((stderrCount = read(stderrPipe[0], stderrBuffer.data(), stderrBuffer.size())) > 0)
+                    while (true)
                     {
-                        run.output.stderr_text.append(stderrBuffer.data(), stderrCount);
+                        result = waitpid(child_pid, &child_status, WNOHANG);
+                        if (result == -1)
+                        {
+                            if (errno == EINTR)
+                            {
+                                continue;
+                            } else if (errno == ECHILD) {
+                                run.execution_status = Core::ExecutionStatus::InternalFrameworkError;
+                                run.crash_type = Core::CrashType::Unknown;
+                                auto end = std::chrono::steady_clock::now();
+                                run.execution_ms = std::chrono::duration_cast<ms>(end - start).count();
+                                run.framework_message = "Error with waiting on child process";
+                                return run;
+                            }
+                        }
+                        break;
                     }
-
-                    result = waitpid(child_pid, &child_status, WNOHANG);
-                    //check for ECHILD(result) and EINTR(result) for failures
 
                     if (result == child_pid) {
                         //read until no more output after child terminates
-                        while ((stdoutCount = read(stdoutPipe[0], stdoutBuffer.data(), stdoutBuffer.size())) > 0)
-                        {
-                            run.output.stdout_text.append(stdoutBuffer.data(), stdoutCount);
-                        }
-
-                        while ((stderrCount = read(stderrPipe[0], stderrBuffer.data(), stderrBuffer.size())) > 0)
-                        {
-                            run.output.stderr_text.append(stderrBuffer.data(), stderrCount);
-                        }
+                        pipeError |= drainPipe(stdoutPipe[0], run.output.stdout_text, stdoutBuffer);
+                        pipeError |= drainPipe(stderrPipe[0], run.output.stderr_text, stderrBuffer);
 
                         run.process.process_id = result;
                         break;
@@ -94,20 +99,40 @@ namespace internal {
                     elapsed = std::chrono::duration_cast<ms>(now - start).count();
 
                     if (elapsed > 100) { //fix the hardcode later
-                        kill(child_pid, SIGKILL);
+                        if (kill(child_pid, SIGKILL) == -1)
+                        {
+                            if (errno != ESRCH)
+                            {
+                                run.execution_status = Core::ExecutionStatus::InternalFrameworkError;
+                                run.crash_type = Core::CrashType::Unknown;
+                                run.framework_message = "Failed to terminate child process";
+                                run.execution_ms = elapsed;
+                                return run;
+                            }
+                        }
 
                         //read after timeout
-                        while ((stdoutCount = read(stdoutPipe[0], stdoutBuffer.data(), stdoutBuffer.size())) > 0)
-                        {
-                            run.output.stdout_text.append(stdoutBuffer.data(), stdoutCount);
-                        }
+                        pipeError |= drainPipe(stdoutPipe[0], run.output.stdout_text, stdoutBuffer);
+                        pipeError |= drainPipe(stderrPipe[0], run.output.stderr_text, stderrBuffer);
 
-                        while ((stderrCount = read(stderrPipe[0], stderrBuffer.data(), stderrBuffer.size())) > 0)
+                        while (true)
                         {
-                            run.output.stderr_text.append(stderrBuffer.data(), stderrCount);
+                            result = waitpid(child_pid, &child_status, 0);
+                            if (result == -1)
+                            {
+                                if (errno == EINTR)
+                                {
+                                    continue;
+                                } else if (errno == ECHILD) {
+                                    run.execution_status = Core::ExecutionStatus::InternalFrameworkError;
+                                    run.crash_type = Core::CrashType::Unknown;
+                                    run.execution_ms = elapsed;
+                                    run.framework_message = "Error with waiting on child process";
+                                    return run;
+                                }
+                            }
+                            break;
                         }
-
-                        result = waitpid(child_pid, &child_status, 0);
 
                         run.execution_status = Core::ExecutionStatus::TimedOut;
                         run.process.process_id = child_pid;
@@ -133,8 +158,6 @@ namespace internal {
                     } else {
 
                     }
-
-                    //if exit_status == 0 { test passed; } else { failed; } (Conceptually)
                 } else if (WIFSIGNALED(child_status)) {
                     int signal_status = WTERMSIG(child_status);
                     if (timed_out) {
@@ -145,9 +168,97 @@ namespace internal {
 
                     run.process.native_signal = signal_status;
 
-                    // AccessViolation, //nothing on the man pages
-                    // StackOverflow, //nothing on the man pages
-                    // FloatingPointException, //nothing on the man pages
+                    if (run.output.stderr_text.find("AddressSanitizer") != std::string::npos) {
+                        run.sanitizers.asan_detected = true;
+                        run.execution_status = Core::ExecutionStatus::SanitizerFailure;
+
+                        size_t pos = run.output.stderr_text.find("ERROR:");
+                        if (pos != std::string::npos)
+                        {
+                            size_t end = run.output.stderr_text.find('\n', pos);
+
+                            run.sanitizers.asan_msg = run.output.stderr_text.substr(pos, end - pos);
+                        }
+
+                        if (run.output.stderr_text.find("heap-buffer-overflow") != std::string::npos) {
+                            run.sanitizers.asan_err = Core::SanitizerError::HeapBufferOverflow;
+                        } else if (run.output.stderr_text.find("stack-buffer-overflow") != std::string::npos) {
+                            run.sanitizers.asan_err = Core::SanitizerError::StackBufferOverflow;
+                        } else if (run.output.stderr_text.find("use-after-free") != std::string::npos) {
+                            run.sanitizers.asan_err = Core::SanitizerError::UseAfterFree;
+                        } else if (run.output.stderr_text.find("double-free") != std::string::npos) {
+                            run.sanitizers.asan_err = Core::SanitizerError::DoubleFree;
+                        } else if (run.output.stderr_text.find("alloc-dealloc-mismatch") != std::string::npos) {
+                            run.sanitizers.asan_err = Core::SanitizerError::AllocDeallocMismatch;
+                        } else if (run.output.stderr_text.find("stack-use-after-return") != std::string::npos) {
+                            run.sanitizers.asan_err = Core::SanitizerError::StackUseAfterReturn;
+                        }
+                    }
+
+                    if (run.output.stderr_text.find("UndefinedBehaviorSanitizer") != std::string::npos
+                        || run.output.stderr_text.find("runtime error:") != std::string::npos)
+                    {
+                        run.sanitizers.ubsan_detected = true;
+                        run.execution_status = Core::ExecutionStatus::SanitizerFailure;
+
+                        size_t pos = run.output.stderr_text.find("ERROR:");
+                        if (pos != std::string::npos)
+                        {
+                            size_t end = run.output.stderr_text.find('\n', pos);
+
+                            run.sanitizers.ubsan_msg = run.output.stderr_text.substr(pos, end - pos);
+                        }
+
+                        if (run.output.stderr_text.find("signed integer overflow") != std::string::npos) {
+                            run.sanitizers.ubsan_err = Core::SanitizerError::SignedIntegerOverflow;
+                        } else if (run.output.stderr_text.find("invalid shift") != std::string::npos) {
+                            run.sanitizers.ubsan_err = Core::SanitizerError::InvalidShift;
+                        } else if (run.output.stderr_text.find("null dereference") != std::string::npos) {
+                            run.sanitizers.ubsan_err = Core::SanitizerError::NullDereference;
+                        } else if (run.output.stderr_text.find("misaligned pointer") != std::string::npos) {
+                            run.sanitizers.ubsan_err = Core::SanitizerError::MisalignedAccess;
+                        } else if (run.output.stderr_text.find("division by zero") != std::string::npos) {
+                            run.sanitizers.ubsan_err = Core::SanitizerError::DivideByZero;
+                        } else if (run.output.stderr_text.find("invalid enum") != std::string::npos) {
+                            run.sanitizers.ubsan_err = Core::SanitizerError::InvalidEnum;
+                        } else if (run.output.stderr_text.find("unreachable") != std::string::npos) {
+                            run.sanitizers.ubsan_err = Core::SanitizerError::Unreachable;
+                        }
+                    }
+
+                    if (run.output.stderr_text.find("ThreadSanitizer") != std::string::npos) {
+                        run.sanitizers.tsan_detected = true;
+                        run.execution_status = Core::ExecutionStatus::SanitizerFailure;
+
+                        size_t pos = run.output.stderr_text.find("ERROR:");
+                        if (pos != std::string::npos)
+                        {
+                            size_t end = run.output.stderr_text.find('\n', pos);
+
+                            run.sanitizers.tsan_msg = run.output.stderr_text.substr(pos, end - pos);
+                        }
+
+                        if (run.output.stderr_text.find("data race") != std::string::npos) {
+                            run.sanitizers.tsan_err = Core::SanitizerError::DataRace;
+                        }
+                    }
+
+                    if (run.output.stderr_text.find("LeakSanitizer") != std::string::npos) {
+                        run.sanitizers.lsan_detected = true;
+                        run.execution_status = Core::ExecutionStatus::SanitizerFailure;
+
+                        size_t pos = run.output.stderr_text.find("ERROR:");
+                        if (pos != std::string::npos)
+                        {
+                            size_t end = run.output.stderr_text.find('\n', pos);
+
+                            run.sanitizers.lsan_msg = run.output.stderr_text.substr(pos, end - pos);
+                        }
+
+                        if (run.output.stderr_text.find("memory leak") != std::string::npos) {
+                            run.sanitizers.lsan_err = Core::SanitizerError::MemoryLeak;
+                        }
+                    }
 
                     if (signal_status == SIGSEGV) {
                         run.crash_type = Core::CrashType::SegmentationFault;
@@ -182,20 +293,73 @@ namespace internal {
                 close(stdoutPipe[0]);
                 close(stderrPipe[0]);
 
-                dup2(stdoutPipe[1], STDOUT_FILENO);
-                dup2(stderrPipe[1], STDERR_FILENO);
+                if (dup2(stdoutPipe[1], STDOUT_FILENO) == -1) {
+                    std::cout.flush();
+                    std::cerr.flush();
+                    _exit(EXIT_FAILURE);
+                }
+
+                if (dup2(stderrPipe[1], STDERR_FILENO) == -1) {
+                    std::cout.flush();
+                    std::cerr.flush();
+                    _exit(EXIT_FAILURE);
+                }
+
                 close(stdoutPipe[1]);
                 close(stderrPipe[1]);
 
                 try {
                     func();
+
+                    //flush all buffers
+                    fflush(nullptr);
+
+                    //flush cout and cerr just in case
+                    std::cout.flush();
+                    std::cerr.flush();
+
                     _exit(EXIT_SUCCESS);
                 } catch (...) {
+                    //flush all buffers
+                    fflush(nullptr);
+
+                    //flush cout and cerr just in case
+                    std::cout.flush();
+                    std::cerr.flush();
+
                     _exit(EXIT_FAILURE);
                 }
             }
 
+            if (pipeError) {
+                run.execution_status = Core::ExecutionStatus::InternalFrameworkError;
+                run.crash_type = Core::CrashType::Unknown;
+                run.framework_message = "Failed to read from pipes";
+            }
+
             return run;
+        }
+
+        //Returns true if there was an error reading from the pipe, false otherwise
+        bool drainPipe(int pipefd, std::string& target, std::array<char, 1024>& buffer) {
+            ssize_t count = 0;
+            while (true) {
+                count = read(pipefd, buffer.data(), buffer.size());
+
+                if (count > 0) { target.append(buffer.data(), count); }
+                else if (count == 0) {
+                    // pipe closed
+                    break;
+                }
+                else
+                {
+                    if (errno == EINTR) { continue; }
+                    else if (errno == EAGAIN || errno == EWOULDBLOCK) { break; }
+                    else { return true; }
+                }
+            }
+
+            return false;
         }
     }
 }
