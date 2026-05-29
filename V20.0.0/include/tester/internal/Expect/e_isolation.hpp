@@ -30,7 +30,16 @@
 #define EXPECT_STDERR_MATCHES(func, content) internal::Expects::expectStderrMatches((func), (content) __FILE__, __LINE__)
 
 //Sanitizer tests
-
+#define EXPECT_ASAN_FAILURE(func) internal::Expects::expectAsanFailure((func), __FILE__, __LINE__)
+#define EXPECT_NASAN_FAILURE(func) internal::Expects::expectNoAsanFailure((func), __FILE__, __LINE__)
+#define EXPECT_UBSAN_FAILURE(func) internal::Expects::expectUbsanFailure((func), __FILE__, __LINE__)
+#define EXPECT_NUBSAN_FAILURE(func) internal::Expects::expectNoUbsanFailure((func), __FILE__, __LINE__)
+#define EXPECT_TSAN_FAILURE(func) internal::Expects::expectTsanFailure((func), __FILE__, __LINE__)
+#define EXPECT_NTSAN_FAILURE(func) internal::Expects::expectNoTsanFailure((func), __FILE__, __LINE__)
+#define EXPECT_LSAN_FAILURE(func) internal::Expects::expectLsanFailure((func), __FILE__, __LINE__)
+#define EXPECT_NLSAN_FAILURE(func) internal::Expects::expectNoLsanFailure((func), __FILE__, __LINE__)
+#define EXPECT_SAN_FAILURE(func) internal::Expects::expectSanFailure((func), __FILE__, __LINE__)
+#define EXPECT_NSAN_FAILURE(func) internal::Expects::expectNoSanFailure((func), __FILE__, __LINE__)
 
 //Timing/Concurrency tests
 
@@ -270,6 +279,150 @@ namespace internal {
             if (execRes.output.stderr_text != content) {
                 Core::FailureInfo fail({
                     std::string("Expected stderr to be match content, but it didn't. stderr: content: "),
+                    file,
+                    line 
+                });
+
+                Fail::e_fail(fail);
+            }
+        }
+
+        template <typename Func>
+        inline void expectAsanFailure(Func&& func, const char* file, const uint32_t line) {
+            Core::ExecutionResult execRes = impl_iso::asanFailure(func);
+            if (!execRes.sanitizers.asan_detected) {
+                Core::FailureInfo fail({
+                    std::string("Expected Address Sanitizer to fail, but it didn't"),
+                    file,
+                    line 
+                });
+
+                Fail::e_fail(fail);
+            }
+        }
+
+        template <typename Func>
+        inline void expectNoAsanFailure(Func&& func, const char* file, const uint32_t line) {
+            Core::ExecutionResult execRes = impl_iso::asanFailure(func);
+            if (execRes.sanitizers.asan_detected) {
+                Core::FailureInfo fail({
+                    std::string("Expected no Address Sanitizer failure, but there was"),
+                    file,
+                    line 
+                });
+
+                Fail::e_fail(fail);
+            }
+        }
+
+        template <typename Func>
+        inline void expectUbsanFailure(Func&& func, const char* file, const uint32_t line) {
+            Core::ExecutionResult execRes = impl_iso::ubsanFailure(func);
+            if (!execRes.sanitizers.ubsan_detected) {
+                Core::FailureInfo fail({
+                    std::string("Expected Undefined-Behavior Sanitizer to fail, but it didn't"),
+                    file,
+                    line 
+                });
+
+                Fail::e_fail(fail);
+            }
+        }
+
+        template <typename Func>
+        inline void expectNoUbsanFailure(Func&& func, const char* file, const uint32_t line) {
+            Core::ExecutionResult execRes = impl_iso::ubsanFailure(func);
+            if (execRes.sanitizers.asan_detected) {
+                Core::FailureInfo fail({
+                    std::string("Expected no Undefined-Behavior Sanitizer failure, but there was"),
+                    file,
+                    line 
+                });
+
+                Fail::e_fail(fail);
+            }
+        }
+
+        template <typename Func>
+        inline void expectTsanFailure(Func&& func, const char* file, const uint32_t line) {
+            Core::ExecutionResult execRes = impl_iso::tsanFailure(func);
+            if (!execRes.sanitizers.tsan_detected) {
+                Core::FailureInfo fail({
+                    std::string("Expected Thread Sanitizer to fail, but it didn't"),
+                    file,
+                    line 
+                });
+
+                Fail::e_fail(fail);
+            }
+        }
+
+        template <typename Func>
+        inline void expectNoTsanFailure(Func&& func, const char* file, const uint32_t line) {
+            Core::ExecutionResult execRes = impl_iso::tsanFailure(func);
+            if (execRes.sanitizers.tsan_detected) {
+                Core::FailureInfo fail({
+                    std::string("Expected no Thread Sanitizer failure, but there was"),
+                    file,
+                    line 
+                });
+
+                Fail::e_fail(fail);
+            }
+        }
+
+        template <typename Func>
+        inline void expectLsanFailure(Func&& func, const char* file, const uint32_t line) {
+            Core::ExecutionResult execRes = impl_iso::lsanFailure(func);
+            if (!execRes.sanitizers.lsan_detected) {
+                Core::FailureInfo fail({
+                    std::string("Expected Leak Sanitizer to fail, but it didn't"),
+                    file,
+                    line 
+                });
+
+                Fail::e_fail(fail);
+            }
+        }
+
+        template <typename Func>
+        inline void expectNoLsanFailure(Func&& func, const char* file, const uint32_t line) {
+            Core::ExecutionResult execRes = impl_iso::lsanFailure(func);
+            if (execRes.sanitizers.lsan_detected) {
+                Core::FailureInfo fail({
+                    std::string("Expected no Leak Sanitizer failure, but there was"),
+                    file,
+                    line 
+                });
+
+                Fail::e_fail(fail);
+            }
+        }
+
+        template <typename Func>
+        inline void expectSanFailure(Func&& func, const char* file, const uint32_t line) {
+            Core::ExecutionResult execRes = impl_iso::sanFailure(func);
+            if (!execRes.sanitizers.asan_detected && !execRes.sanitizers.ubsan_detected
+                && !execRes.sanitizers.tsan_detected && !execRes.sanitizers.lsan_detected) 
+            {
+                Core::FailureInfo fail({
+                    std::string("Expected a sanitizer to fail, but none did"),
+                    file,
+                    line 
+                });
+
+                Fail::e_fail(fail);
+            }
+        }
+
+        template <typename Func>
+        inline void expectNoSanFailure(Func&& func, const char* file, const uint32_t line) {
+            Core::ExecutionResult execRes = impl_iso::sanFailure(func);
+            if (execRes.sanitizers.asan_detected || execRes.sanitizers.ubsan_detected
+                || execRes.sanitizers.tsan_detected || execRes.sanitizers.lsan_detected) 
+            {
+                Core::FailureInfo fail({
+                    std::string("Expected no sanitizer failure, but there was"),
                     file,
                     line 
                 });

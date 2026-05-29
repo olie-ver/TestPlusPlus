@@ -33,6 +33,12 @@ namespace internal {
             Core::ExecutionResult result = isolateRun(func);
             return result;
         }
+
+        template<typename Func> 
+        inline Core::ExecutionResult sanFailure(Func&& func) {
+            Core::ExecutionResult result = isolateRun(func);
+            return result;
+        }
     }
 }
 

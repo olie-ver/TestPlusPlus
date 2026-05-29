@@ -104,6 +104,9 @@ namespace internal {
         template<typename Func> 
         inline Core::ExecutionResult lsanFailure(Func&& func);
 
+        template<typename Func> 
+        inline Core::ExecutionResult sanFailure(Func&& func);
+
         // ============================================================
         // Timing / Concurrency Assertions
         // ============================================================
