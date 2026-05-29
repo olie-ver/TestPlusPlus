@@ -112,16 +112,12 @@ namespace internal {
         // ============================================================
 
         //Passes if it runs longer than the passed in timeout
-        std::optional<Core::FailureInfo> 
-        timeout();
+        template<typename Func> 
+        inline Core::ExecutionResult timeout(Func&& func, int timeLimitMs);
 
         //Passes if it runs shorter than the passed in timeout
-        std::optional<Core::FailureInfo> 
-        completesWithin();
-
-        //Passes if there is a deadlock (inspect thread states?)
-        std::optional<Core::FailureInfo> 
-        deadlock();
+        template<typename Func> 
+        inline Core::ExecutionResult completesWithin(Func&& func, int timeLimitMs);
 
         // ============================================================
         // Generic / Advanced Assertions

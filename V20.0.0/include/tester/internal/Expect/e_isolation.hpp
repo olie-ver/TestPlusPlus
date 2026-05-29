@@ -42,7 +42,9 @@
 #define EXPECT_NSAN_FAILURE(func) internal::Expects::expectNoSanFailure((func), __FILE__, __LINE__)
 
 //Timing/Concurrency tests
-
+#define EXPECT_TIMEOUT(func, timeLimit) internal::Expects::expectTimeout((func), (timeLimit), __FILE__, __LINE__)
+#define EXPECT_COMPLETES_WITHIN(func, timeLimit) \
+    internal::Expects::expectCompletesWithin((func), (timeLimit), __FILE__, __LINE__)
 
 //Generic tests
 
@@ -423,6 +425,37 @@ namespace internal {
             {
                 Core::FailureInfo fail({
                     std::string("Expected no sanitizer failure, but there was"),
+                    file,
+                    line 
+                });
+
+                Fail::e_fail(fail);
+            }
+        }
+
+        //Timing Tests
+        template <typename Func>
+        inline void expectTimeout(Func&& func, const int timeLimitMs, const char* file, const uint32_t line) {
+            Core::ExecutionResult execRes = impl_iso::timeout(func, timeLimitMs);
+            if (execRes.execution_status != Core::ExecutionStatus::TimedOut) 
+            {
+                Core::FailureInfo fail({
+                    std::string("Expected func to timeout, but it didn't"),
+                    file,
+                    line 
+                });
+
+                Fail::e_fail(fail);
+            }
+        }
+
+        template <typename Func>
+        inline void expectCompletesWithin(Func&& func, const int timeLimitMs, const char* file, const uint32_t line) {
+            Core::ExecutionResult execRes = impl_iso::completesWithin(func, timeLimitMs);
+            if (execRes.execution_status == Core::ExecutionStatus::TimedOut) 
+            {
+                Core::FailureInfo fail({
+                    std::string("Expected func to complete within timeLimitMs, but it didn't"),
                     file,
                     line 
                 });

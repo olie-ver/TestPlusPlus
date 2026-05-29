@@ -9,8 +9,17 @@ namespace internal {
     namespace impl_iso {
         bool drainPipe(int pipefd, std::string& target, std::array<char, 1024>& buffer);
 
-        Core::ExecutionResult runIsolatedImpl(const std::function<void()>& func) {
+        Core::ExecutionResult runIsolatedImpl(const std::function<void()>& func, const int timeLimit) {
             using ms = std::chrono::milliseconds;
+
+            // int step;
+            // if (timeLimit < 100) {
+            //     step = 10;
+            // } else if (timeLimit < 1000) {
+            //     step = 100;
+            // } else {
+            //     timeLimit 
+            // }
 
             Core::ExecutionResult run;
 
@@ -98,7 +107,7 @@ namespace internal {
                     now = std::chrono::steady_clock::now();
                     elapsed = std::chrono::duration_cast<ms>(now - start).count();
 
-                    if (elapsed > 100) { //fix the hardcode later
+                    if (elapsed > timeLimit) { 
                         if (kill(child_pid, SIGKILL) == -1)
                         {
                             if (errno != ESRCH)

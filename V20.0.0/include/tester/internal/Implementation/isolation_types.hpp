@@ -9,18 +9,18 @@ namespace internal {
     namespace impl_iso {
         //The definition all platforms must implement to 
         //  be able to run tests in isolation
-        Core::ExecutionResult runIsolatedImpl(const std::function<void()>& func);
+        Core::ExecutionResult runIsolatedImpl(const std::function<void()>& func, const int timeLimits);
 
         /// @brief The core behind running an isolated test
-        /// @tparam Func a function to run
+        /// @tparam Func a function to runs
         /// @param func the function to run
         /// @return a TestExecutionResult
         template<typename Func>
-        inline Core::ExecutionResult isolateRun(Func&& func)
+        inline Core::ExecutionResult isolateRun(Func&& func, const int timeLimit = 10000)
         {
             return internal::impl_iso::runIsolatedImpl(
                 std::function<void()>(
-                    std::forward<Func>(func)
+                    std::forward<Func>(func, timeLimit)
                 )
             );
         }

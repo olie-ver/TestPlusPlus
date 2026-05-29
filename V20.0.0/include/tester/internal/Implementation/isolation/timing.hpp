@@ -10,19 +10,17 @@
 
 namespace internal {
     namespace impl_iso {
-        inline std::optional<Core::FailureInfo> 
-        timeout() {
-            return std::nullopt;
+        template<typename Func> 
+        inline Core::ExecutionResult timeout(Func&& func, int timeLimitMs) {
+            Core::ExecutionResult result = isolateRun(func, timeLimitMs);
+            return result;
         }
 
-        inline std::optional<Core::FailureInfo> 
-        completesWithin() {
-            return std::nullopt;
-        }
-
-        inline std::optional<Core::FailureInfo> 
-        deadlock() {
-            return std::nullopt;
+        //Passes if it runs shorter than the passed in timeout
+        template<typename Func> 
+        inline Core::ExecutionResult completesWithin(Func&& func, int timeLimitMs) {
+            Core::ExecutionResult result = isolateRun(func, timeLimitMs);
+            return result;
         }
     }
 }
