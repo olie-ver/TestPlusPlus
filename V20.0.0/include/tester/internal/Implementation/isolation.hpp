@@ -4,6 +4,7 @@
 #define ISO_H
 
 #include "../Core.hpp"
+#include "isolation_types.hpp"
 
 #include <optional>
 #include <string>
@@ -13,112 +14,140 @@ namespace internal {
         // ============================================================
         // Crash / Fatal Behavior Assertions
         // ============================================================
-        std::optional<const Core::FailureInfo> 
-        death();
 
-        std::optional<const Core::FailureInfo> 
-        segfault();
+        //fails if Execution Status != Completed
+        template<typename Func> 
+        Core::ExecutionResult death(Func&& func);
 
-        std::optional<const Core::FailureInfo> 
-        abort();
+        //passes if Crash Type == SegmentationFault
+        template<typename Func> 
+        Core::ExecutionResult segfault(Func&& func);
+
+        //Passes if Crash Type == Abort
+        template<typename Func> 
+        Core::ExecutionResult abort(Func&& func);
 
         //"Bad thing tests"
-        std::optional<const Core::FailureInfo> 
-        fatal();
+        //Passes if something fatal happens
+        template<typename Func> 
+        Core::ExecutionResult fatal(Func&& func);
 
-        std::optional<const Core::FailureInfo> 
-        nonFatal();
+        //Passes if nothing fatal happens
+        template<typename Func> 
+        Core::ExecutionResult nonFatal(Func&& func);
 
         // ============================================================
         // Process Exit Assertions
         // ============================================================
 
-        std::optional<const Core::FailureInfo> 
-        success();
+        //Passes if exit code == EXIT_SUCCESS
+        template<typename Func> 
+        Core::ExecutionResult success(Func&& func);
 
-        std::optional<const Core::FailureInfo> 
-        failure();
+        //Passes if exit code == EXIT_FAILURE
+        template<typename Func> 
+        Core::ExecutionResult failure(Func&& func);
 
-        std::optional<const Core::FailureInfo> 
-        nonzeroExit();
+        //Passes if exit code != 0
+        template<typename Func> 
+        Core::ExecutionResult nonzeroExit(Func&& func);
 
-        std::optional<const Core::FailureInfo> 
-        exitCode();
+        //Passes if exit code == (param) exit code
+        template<typename Func> 
+        Core::ExecutionResult exitCode(Func&& func);
 
-        std::optional<const Core::FailureInfo> 
-        completes();
+        //Passes if Execution Status == Completed
+        template<typename Func> 
+        Core::ExecutionResult completes(Func&& func);
 
         // ============================================================
         // Output Assertions
         // ============================================================
 
-        std::optional<const Core::FailureInfo> 
-        stdoutContains();
+        //Passes if stdout output contains (param) string
+        template<typename Func> 
+        Core::ExecutionResult stdoutContains(Func&& func);
 
-        std::optional<const Core::FailureInfo> 
-        stderrContains();
+        //Passes if stderr output contains (param) string
+        template<typename Func> 
+        Core::ExecutionResult stderrContains(Func&& func);
 
-        std::optional<const Core::FailureInfo> 
-        noStderr();
+        //Passes if there is no stderr output
+        template<typename Func> 
+        Core::ExecutionResult noStdout(Func&& func);
 
-        std::optional<const Core::FailureInfo> 
-        noStdout();
+        //Passes if there is no stdout output
+        template<typename Func> 
+        Core::ExecutionResult noStderr(Func&& func);
 
-        std::optional<const Core::FailureInfo> 
-        outputMatches();
+        //Passes if output == (param) output
+        template<typename Func> 
+        Core::ExecutionResult stdoutMatches(Func&& func);
+
+        //Passes if output == (param) output
+        template<typename Func> 
+        Core::ExecutionResult stderrMatches(Func&& func);
 
         // ============================================================
         // Sanitizer Assertions
         // ============================================================
 
-        std::optional<const Core::FailureInfo> 
-        asanFailure();
+        template<typename Func> 
+        Core::ExecutionResult asanFailure(Func&& func);
 
-        std::optional<const Core::FailureInfo> 
-        ubsanFailure();
+        template<typename Func> 
+        Core::ExecutionResult ubsanFailure(Func&& func);
 
-        std::optional<const Core::FailureInfo> 
-        tsanFailure();
+        template<typename Func> 
+        Core::ExecutionResult tsanFailure(Func&& func);
 
-        std::optional<const Core::FailureInfo> 
-        lsanFailure();
+        template<typename Func> 
+        Core::ExecutionResult lsanFailure(Func&& func);
+
+        template<typename Func> 
+        Core::ExecutionResult sanFailure(Func&& func);
 
         // ============================================================
         // Timing / Concurrency Assertions
         // ============================================================
 
-        std::optional<const Core::FailureInfo> 
-        timeout();
+        //Passes if it runs longer than the passed in timeout
+        template<typename Func> 
+        Core::ExecutionResult timeout(Func&& func, int timeLimitMs);
 
-        std::optional<const Core::FailureInfo> 
-        completesWithin();
-
-        std::optional<const Core::FailureInfo> 
-        deadlock();
+        //Passes if it runs shorter than the passed in timeout
+        template<typename Func> 
+        Core::ExecutionResult completesWithin(Func&& func, int timeLimitMs);
 
         // ============================================================
         // Generic / Advanced Assertions
         // ============================================================
 
-        std::optional<const Core::FailureInfo> 
-        processResult();
+        //Passes if the process result == (param) result
+        template<typename Func> 
+        Core::ExecutionResult executionStatus(Func&& func);
 
-        std::optional<const Core::FailureInfo> 
-        terminationSignal();
+        template<typename Func> 
+        Core::ExecutionResult crashType(Func&& func);
 
-        std::optional<const Core::FailureInfo> 
-        processKilled();
+        template<typename Func> 
+        Core::ExecutionResult terminationSignal(Func&& func);
 
-        std::optional<const Core::FailureInfo> 
-        coreDumped();
+        //Passes if the process was killed
+        template<typename Func> 
+        Core::ExecutionResult processKilled(Func&& func);
+
+        //Passes if the core was dumped
+        template<typename Func> 
+        Core::ExecutionResult coreDumped(Func&& func);
     }
 }
 
-#include "Implementation/isolation/exit.hpp"
-#include "Implementation/isolation/fatal.hpp"
-#include "Implementation/isolation/generic.hpp"
-#include "Implementation/isolation/output.hpp"
-#include "Implementation/isolation/sanitizer.hpp"
-#include "Implementation/isolation/timing.hpp"
+#include "isolation/exit.hpp"
+#include "isolation/fatal.hpp"
+#include "isolation/generic.hpp"
+#include "isolation/output.hpp"
+#include "isolation/sanitizer.hpp"
+#include "isolation/timing.hpp"
 
 #endif

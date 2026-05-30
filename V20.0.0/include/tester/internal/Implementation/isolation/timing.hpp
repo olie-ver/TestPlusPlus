@@ -6,23 +6,21 @@
 #include "../../Core.hpp"
 #include "../../Concepts.hpp"
 #include "../../Helpers.hpp"
-#include "isolation_unix.hpp"
+#include "../isolation_types.hpp"
 
 namespace internal {
     namespace impl_iso {
-        std::optional<const Core::FailureInfo> 
-        timeout() {
-
+        template<typename Func> 
+        inline Core::ExecutionResult timeout(Func&& func, int timeLimitMs) {
+            Core::ExecutionResult result = isolateRun(func, timeLimitMs);
+            return result;
         }
 
-        std::optional<const Core::FailureInfo> 
-        completesWithin() {
-
-        }
-
-        std::optional<const Core::FailureInfo> 
-        deadlock() {
-            
+        //Passes if it runs shorter than the passed in timeout
+        template<typename Func> 
+        inline Core::ExecutionResult completesWithin(Func&& func, int timeLimitMs) {
+            Core::ExecutionResult result = isolateRun(func, timeLimitMs);
+            return result;
         }
     }
 }

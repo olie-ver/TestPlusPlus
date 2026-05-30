@@ -7,7 +7,6 @@
 
 #include "../Fail.hpp"
 #include "../Concepts.hpp"
-// #include "../Implementation/cmp.hpp"
 
 #define EXPECT_EQ(a, b) internal::Expects::expectEquals((a), (b), __FILE__, __LINE__)
 #define EXPECT_NE(a, b) internal::Expects::expectNotEquals((a), (b), __FILE__, __LINE__)
@@ -27,7 +26,8 @@ namespace internal {
         /// @param line the line the function was called on
         template <typename A, typename B>
         requires Concepts::HasEQ<A, B>
-        inline void expectEquals(const A& a, const B& b, const char* file, const int line) {
+        inline void expectEquals(const A& a, const B& b, const char* file, const int line)
+        {
             auto result = impl_cmp::equals(a, b, file, line);
             if (result) {
                 Fail::e_fail(*result);

@@ -18,13 +18,13 @@ namespace internal {
                     switch (result.test_status) {
                         case Core::TestStatus::Passed:
                             std::cout << "[PASS] " << result.suiteName << " -> " << result.testName;
-                            std::cout << " (" << result.timing.total_ms << " ms" << ')' << std::endl;
+                            std::cout << " (" << result.execution_result.execution_ms << " ms" << ')' << std::endl;
                             passed++;
                             break;
                     
                         case Core::TestStatus::Failed:
                             std::cout << "[FAIL] " << result.suiteName << " -> " << result.testName;
-                            std::cout << " (" << result.timing.total_ms << " ms" << ')' << std::endl;
+                            std::cout << " (" << result.execution_result.execution_ms << " ms" << ')' << std::endl;
 
                             for (size_t j = 0; j < result.failures.size(); j++) {
                                 const Core::FailureInfo& fail = result.failures[j];
@@ -44,14 +44,14 @@ namespace internal {
                         case Core::TestStatus::Unknown:
                             std::cout << "[UNKNOWN] " << result.suiteName << " -> " 
                                 << result.testName;
-                            std::cout << " (" << result.timing.total_ms << " ms" << ')' << std::endl;
+                            std::cout << " (" << result.execution_result.execution_ms << " ms" << ')' << std::endl;
                             unknown++;
                             break;
 
                         case Core::TestStatus::ExpectedFailure:
                             std::cout << "[EXPECTED FAIL] " << result.suiteName << " -> " 
                                 << result.testName << std::endl;
-                            std::cout << " (" << result.timing.total_ms << " ms" << ')' << std::endl;
+                            std::cout << " (" << result.execution_result.execution_ms << " ms" << ')' << std::endl;
                             expectedFailed++;
                             break;
                     }
@@ -71,13 +71,13 @@ namespace internal {
                     switch (result.test_status) {
                         case Core::TestStatus::Passed:
                             std::cout << "[PASS] " << result.suiteName << " -> " << result.testName;
-                            std::cout << " (" << result.timing.total_ms << " ms" << ')' << std::endl;
+                            std::cout << " (" << result.execution_result.execution_ms << " ms" << ')' << std::endl;
                             passed++;
                             break;
                     
                         case Core::TestStatus::Failed:
                             std::cout << "[FAIL] " << result.suiteName << " -> " << result.testName;
-                            std::cout << " (" << result.timing.total_ms << " ms" << ')' << std::endl;
+                            std::cout << " (" << result.execution_result.execution_ms << " ms" << ')' << std::endl;
                             failed++;
                             break;
 
@@ -89,14 +89,14 @@ namespace internal {
                         case Core::TestStatus::Unknown:
                             std::cout << "[UNKNOWN] " << result.suiteName << " -> " 
                                 << result.testName;
-                            std::cout << " (" << result.timing.total_ms << " ms" << ')' << std::endl;
+                            std::cout << " (" << result.execution_result.execution_ms << " ms" << ')' << std::endl;
                             unknown++;
                             break;
                         
                         case Core::TestStatus::ExpectedFailure:
                             std::cout << "[EXPECTED FAIL] " << result.suiteName << " -> " 
                                 << result.testName;
-                            std::cout << " (" << result.timing.total_ms << " ms" << ')' << std::endl;
+                            std::cout << " (" << result.execution_result.execution_ms << " ms" << ')' << std::endl;
                             expectedFailed++;
                             break;
                     }
@@ -115,7 +115,7 @@ namespace internal {
                     switch (result.test_status) {
                         case Core::TestStatus::Passed: 
                             std::cout << "[PASS] " << result.suiteName << " -> " << result.testName;
-                            std::cout << " (" << result.timing.total_ms << " ms" << ')' << std::endl;
+                            std::cout << " (" << result.execution_result.execution_ms << " ms" << ')' << std::endl;
                             passed++;
                             break;
                         case Core::TestStatus::Failed:
@@ -149,7 +149,7 @@ namespace internal {
                             break;
                         case Core::TestStatus::Failed:
                             std::cout << "[FAIL] " << result.suiteName << " -> " << result.testName;
-                            std::cout << " (" << result.timing.total_ms << " ms" << ')' << std::endl;
+                            std::cout << " (" << result.execution_result.execution_ms << " ms" << ')' << std::endl;
 
                             for (size_t j = 0; j < result.failures.size(); j++) {
                                 const Core::FailureInfo& fail = result.failures[j];
@@ -187,7 +187,7 @@ namespace internal {
                             break;
                         case Core::TestStatus::Failed:
                             std::cout << "[FAIL] " << result.suiteName << " -> " << result.testName;
-                            std::cout << " (" << result.timing.total_ms << " ms" << ')' << std::endl;
+                            std::cout << " (" << result.execution_result.execution_ms << " ms" << ')' << std::endl;
                             failed++;
                             break;
                         case Core::TestStatus::Skipped:

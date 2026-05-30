@@ -34,6 +34,7 @@ namespace internal {
             LaunchFailed, //CreateProcess/fork failure
             CommunicationFailure, //pipe/socket broke
             InternalFrameworkError, //framework bug
+            SanitizerFailure, //sanitizer failure
             Cancelled //future parallel cancellation support
         };
 
@@ -52,7 +53,6 @@ namespace internal {
             Abort,
             DivideByZero,
             IllegalInstruction,
-            StackOverflow,
             BusError,
             FloatingPointException,
             Trap,
@@ -64,47 +64,28 @@ namespace internal {
         static std::string CrashStrings[] = 
             {
                 "None", "Seg Fault", "Access Violation", "Abort", "Divide By Zero",
-                "Illegal Instruction", "Stack Overflow", "Bus Error", "Floating Point Exception",
+                "Illegal Instruction", "Bus Error", "Floating Point Exception",
                 "Trap", "Killed", "Unknown"
             };
-
-        /// @brief An AssertionSummary struct
-        /// Contains: passed/failed and warnings
-        struct AssertionSummary
-        {
-            uint64_t passed;
-            uint64_t failed;
-            uint64_t warnings;
-        };
-
-        /// @brief A TimingInfo struct
-        /// Contains: set up time, execution time, teardown time, total time (all ms)
-        struct TimingInfo
-        {
-            uint64_t setup_ms;
-            uint64_t execution_ms;
-            uint64_t teardown_ms;
-            uint64_t total_ms;
-        };
 
         /// @brief A ProcessInfo struct
         /// Contains: process id, the native exit code, the native signal, if the core was dumped
         struct ProcessInfo
         {
-            uint32_t process_id;
-            int native_exit_code;
-            int native_signal;
-            bool core_dumped;
+            pid_t process_id = -1;
+            int native_exit_code = -1;
+            int native_signal = -1;
+            bool core_dumped = false;
         };
 
         /// @brief A struct that captures output
         /// Contains: stdout-output, stderr-output, whether or not either output was truncated
         struct OutputCapture
         {
-            std::string stdout_text;
-            std::string stderr_text;
-            bool stdout_truncated;
-            bool stderr_truncated;
+            std::string stdout_text = "";
+            std::string stderr_text = "";
+            bool stdout_truncated = false;
+            bool stderr_truncated = false;
         };
 
         /// @brief A struct containing failure information
@@ -126,37 +107,62 @@ namespace internal {
             Process
         };
 
-        /// @brief An execution strategy
-        enum class ExecutionStrategy
-        {
-            Sequential,
-            Parallel
-        };
+        enum class SanitizerError {
+            None,
 
-        /// @brief Struct containing retry info
-        struct RetryInfo
-        {
-            uint32_t attempt;
-            uint32_t max_attempts;
-            bool flaky_pass;
+            HeapBufferOverflow,
+            StackBufferOverflow,
+            UseAfterFree,
+            DoubleFree,
+            AllocDeallocMismatch,
+            StackUseAfterReturn,
+
+            SignedIntegerOverflow,
+            InvalidShift,
+            NullDereference,
+            MisalignedAccess,
+            DivideByZero,
+            InvalidEnum,
+            Unreachable,
+
+            DataRace,
+
+            MemoryLeak,
+
+            Unknown
         };
 
         /// @brief Sanitizer information
         struct SanitizerInfo
         {
-            bool asan_detected;
-            bool ubsan_detected;
-            bool tsan_detected;
-            bool lsan_detected;
+            bool asan_detected = false;
+            SanitizerError asan_err = SanitizerError::None;
+            std::string asan_msg = "";
+
+            bool ubsan_detected = false;
+            SanitizerError ubsan_err = SanitizerError::None;
+            std::string ubsan_msg = "";
+
+            bool tsan_detected = false;
+            SanitizerError tsan_err = SanitizerError::None;
+            std::string tsan_msg = "";
+
+            bool lsan_detected = false;
+            SanitizerError lsan_err = SanitizerError::None;
+            std::string lsan_msg = "";
         };
 
-        /// @brief Environment information on what ran the test
-        struct EnvironmentInfo
+        struct ExecutionResult
         {
-            std::string hostname;
-            std::string os_name;
-            std::string architecture;
-            uint32_t thread_id;
+            ExecutionStatus execution_status = ExecutionStatus::Completed;
+            CrashType crash_type = CrashType::None;
+
+            uint64_t execution_ms;
+            ProcessInfo process;
+            OutputCapture output;
+            SanitizerInfo sanitizers;
+
+            std::string framework_message = "";
         };
 
         /// @brief The final struct for a test's execution results
@@ -166,19 +172,11 @@ namespace internal {
             std::string testName;
 
             TestStatus test_status;
-            ExecutionStatus execution_status;
-            CrashType crash_type;
-            IsolationMode isolation_mode;
-            ExecutionStrategy execution_strategy;
-            AssertionSummary assertions;
-            TimingInfo timing;
-            ProcessInfo process;
-            OutputCapture output;
-            RetryInfo retry;
-            SanitizerInfo sanitizers;
-            EnvironmentInfo environment;
+            ExecutionResult execution_result;
+
+            IsolationMode isolation_mode = IsolationMode::None;
             std::vector<FailureInfo> failures;
-            std::string framework_message;
+            std::vector<ExecutionResult> execution_results; //need 1 ExecutionResult for each test
         };
 
         /// @brief The types of time units for timeout

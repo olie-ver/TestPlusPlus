@@ -13,7 +13,14 @@ namespace internal {
             const char* file, const uint32_t line)
         {
             if (!cond) {
-                return Core::FailureInfo("Expected: " + std::string(expr) + " to be true", file, line);
+                return Core::FailureInfo(
+                    "Expected: " + std::string(expr) + " to be true", //message
+                    file, //file
+                    line, //line
+                    expr, //expression
+                    "true", //expected
+                    "false" //actual
+                );
             }
 
             return std::nullopt;
@@ -23,7 +30,14 @@ namespace internal {
             const char* file, const uint32_t line)
         {
             if (cond) {
-                return Core::FailureInfo("Expected: " + std::string(expr) + " to be false", file, line);
+                return Core::FailureInfo(
+                    "Expected: " + std::string(expr) + " to be false", //message
+                    file, //file
+                    line, //line
+                    expr, //expression
+                    "false", //expected
+                    "true" //actual
+                );
             }
 
             return std::nullopt;

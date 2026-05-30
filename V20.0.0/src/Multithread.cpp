@@ -28,10 +28,7 @@ namespace internal {
                     skip.testName = test.test_name;
                     skip.test_status = Core::TestStatus::Skipped;
 
-                    skip.timing.setup_ms = 0.0;
-                    skip.timing.execution_ms = 0.0;
-                    skip.timing.teardown_ms = 0.0;
-                    skip.timing.total_ms = 0.0;
+                    skip.execution_result.execution_ms = 0.0;
 
                     results[index] = skip;
                 } else {

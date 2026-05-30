@@ -76,7 +76,7 @@ namespace internal::Renderer {
             stream << "\"suiteName\": \"" << Helpers::escapeJson(suiteName) << "\",\n\t\t\t\t\t";
             stream << "\"testName\": \"" << Helpers::escapeJson(test.testName) << "\",\n\t\t\t\t\t";
             stream << "\"status\": \"" << Core::StatusStrings[(int)test.test_status] << "\",\n\t\t\t\t\t";
-            stream << "\"total_ms\": " << test.timing.total_ms << ",\n\t\t\t\t\t";
+            stream << "\"total_ms\": " << test.execution_result.execution_ms << ",\n\t\t\t\t\t";
             stream << "\"failures\": ";
 
             if (includeFailures) {

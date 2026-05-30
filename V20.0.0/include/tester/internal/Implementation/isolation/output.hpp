@@ -6,33 +6,44 @@
 #include "../../Core.hpp"
 #include "../../Concepts.hpp"
 #include "../../Helpers.hpp"
-#include "isolation_unix.hpp"
+#include "../isolation_types.hpp"
 
 namespace internal {
     namespace impl_iso {
-        std::optional<const Core::FailureInfo> 
-        stdoutContains() {
-            
+        template<typename Func> 
+        inline Core::ExecutionResult stdoutContains(Func&& func) {
+            Core::ExecutionResult result = isolateRun(func);
+            return result;
         }
 
-        std::optional<const Core::FailureInfo> 
-        stderrContains() {
-
+        template<typename Func> 
+        inline Core::ExecutionResult stderrContains(Func&& func) {
+            Core::ExecutionResult result = isolateRun(func);
+            return result;
         }
 
-        std::optional<const Core::FailureInfo> 
-        noStderr() {
-
+        template<typename Func> 
+        inline Core::ExecutionResult noStdout(Func&& func) {
+            Core::ExecutionResult result = isolateRun(func);
+            return result;
         }
 
-        std::optional<const Core::FailureInfo> 
-        noStdout() {
-
+        template<typename Func> 
+        inline Core::ExecutionResult noStderr(Func&& func) {
+            Core::ExecutionResult result = isolateRun(func);
+            return result;
         }
 
-        std::optional<const Core::FailureInfo> 
-        outputMatches() {
+        template<typename Func> 
+        inline Core::ExecutionResult stdoutMatches(Func&& func) {
+            Core::ExecutionResult result = isolateRun(func);
+            return result;
+        }
 
+        template<typename Func> 
+        inline Core::ExecutionResult stderrMatches(Func&& func) {
+            Core::ExecutionResult result = isolateRun(func);
+            return result;
         }
     }
 }

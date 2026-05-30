@@ -6,28 +6,32 @@
 #include "../../Core.hpp"
 #include "../../Concepts.hpp"
 #include "../../Helpers.hpp"
-#include "isolation_unix.hpp"
+#include "../isolation_types.hpp"
 
 namespace internal {
     namespace impl_iso {
-        std::optional<const Core::FailureInfo> 
-        processResult() {
-
+        template<typename Func> 
+        inline Core::ExecutionResult executionStatus(Func&& func) {
+            Core::ExecutionResult result = isolateRun(func);
+            return result;
         }
 
-        std::optional<const Core::FailureInfo> 
-        terminationSignal() {
-
+        template<typename Func> 
+        inline Core::ExecutionResult crashType(Func&& func) {
+            Core::ExecutionResult result = isolateRun(func);
+            return result;
         }
 
-        std::optional<const Core::FailureInfo> 
-        processKilled() {
-
+        template<typename Func> 
+        inline Core::ExecutionResult terminationSignal(Func&& func) {
+            Core::ExecutionResult result = isolateRun(func);
+            return result;
         }
 
-        std::optional<const Core::FailureInfo> 
-        coreDumped() {
-            
+        template<typename Func> 
+        inline Core::ExecutionResult processKilled(Func&& func) {
+            Core::ExecutionResult result = isolateRun(func);
+            return result;
         }
     }
 }

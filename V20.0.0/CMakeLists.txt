@@ -1,3 +1,5 @@
+# Need to make a modification so that it compiles relative to this directory so __FILE__ doesn't print full path?
+
 cmake_minimum_required(VERSION 3.20)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
@@ -7,10 +9,27 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 
 project(tester LANGUAGES CXX)
 
+option(ENABLE_SANITIZERS "Enable sanitizers" OFF)
+
+if(ENABLE_SANITIZERS)
+    message(STATUS "Sanitizers enabled")
+
+    add_compile_options(
+        -fsanitize=address
+        -fsanitize=undefined
+        -fno-omit-frame-pointer
+        -g
+    )
+
+    add_link_options(
+        -fsanitize=address
+        -fsanitize=undefined
+    )
+endif()
+
 find_package(Threads REQUIRED)
 
 add_library(tester
-    # src/Main.cpp
     src/Multithread.cpp
     src/ProcessArgs.cpp
     src/RenderConsole.cpp
@@ -18,6 +37,7 @@ add_library(tester
     src/RenderJson.cpp
     src/RenderXml.cpp
     src/Runner.cpp
+    src/platform/unix/isolation_unix.cpp
 )
 
 set_target_properties(tester PROPERTIES
@@ -52,21 +72,23 @@ endif()
 
 add_executable(runTests
     src/Main.cpp
-    tests/_dataStructs.hpp
-    tests/assert.cpp
-    tests/bool.cpp
-    tests/cmp.cpp
-    tests/failingTests.cpp
-    tests/flt.cpp
-    tests/iterable.cpp
-    tests/meta.cpp
-    tests/null.cpp
-    tests/predicate.cpp
-    tests/set.cpp
-    tests/short.cpp
-    tests/string.cpp
-    tests/throws.cpp
-    tests/timeout.cpp
+    # tests/_dataStructs.hpp
+    # tests/assert.cpp
+    # tests/bool.cpp
+    # tests/cmp.cpp
+    # tests/failingTests.cpp
+    # tests/flt.cpp
+    # tests/iterable.cpp
+    # tests/meta.cpp
+    # tests/null.cpp
+    # tests/predicate.cpp
+    # tests/set.cpp
+    # tests/short.cpp
+    # tests/string.cpp
+    # tests/throws.cpp
+    # tests/timeout.cpp
+    # tests/isolation.cpp
+    tests/sanitizer.cpp
 )
 
 target_link_libraries(runTests PRIVATE tester)
