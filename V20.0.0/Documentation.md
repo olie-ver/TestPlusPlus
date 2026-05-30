@@ -15,6 +15,8 @@ You may consider this code open-source to be downloaded, modified, and released 
         3. [Skipping Tests](#skipping-tests)
         4. [Specifying Tests](#test-specific)
         5. [JSON Output](#json-output)
+        6. [XML Output](#xml-output)
+        7. [stdout/stderr Output](#stdoutstderr-output)
 2. [Testing](#testing)
     1. [Registering Tests](#registering-tests)
     2. [Different Types Of Tests](#different-types-of-tests)
@@ -607,6 +609,17 @@ On this level, only suites and tests that fail are rendered, with all failure me
 ```
 
 Note that you can combine to have JSON and XML output by adding both flags
+
+#### stdout/stderr Output
+To specify what length you want to capture stdout and stderr output from [Isolation Tests](#isolation-tests) use the following flags:
+
+1. `--truncatestdout=`
+2. `--truncstdout=`
+3. `--truncatestderr=`
+4. `--truncstderr=`
+5. `--truncate=`
+
+Following by a nonnegative integer. Inputting a value of `0` reverts to the default behavior of printing out the full subprocess's `stdout` and `stderr` output. `--truncate=` truncates both `stdout` and `stderr` output to the same length. Truncating does not affect JSON and XML output and when printing JSON and/or XML, the FULL `stdout` and `stderr` output will be recorded. This flag ONLY affects CONSOLE rendering.
 
 ## Testing
 

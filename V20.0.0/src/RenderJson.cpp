@@ -22,6 +22,23 @@
                                 file: file,
                                 line: line
                             }
+                        ],
+                        executionResults: [
+                            {
+                                executionStatus: status,
+                                crashType: type,
+                                msToRun: timeToRun,
+                                pid: pid,
+                                nativeExitCode: exitCode,
+                                nativeSignal: signal,
+                                aSan: true/false,
+                                ubsan: true/false,
+                                tsan: true/false,
+                                lsan: true/false,
+                                stdout: stdoutOutput (NO TRUNCATION)
+                                stderr: stderrOutput (NO TRUNCATION)
+                                frameworkMessage: 
+                            }
                         ]
                     },
                 ]
@@ -66,6 +83,46 @@ namespace internal::Renderer {
             stream << "\n\t\t\t\t\t]";
         }
 
+        void renderExecutionResults(std::fstream& stream, const Core::TestResult& test) {
+            if (test.execution_results.empty()) {
+                return;
+            }
+
+            bool first = true;
+
+            for (const auto& res : test.execution_results) {
+                if (!first) {
+                    stream << ",\n\t\t\t\t\t\t";
+                }
+
+                first = false;
+
+                stream << "{\n\t\t\t\t\t\t\t";
+                stream << "\"executionStatus\": \"" 
+                    << Core::ExecutionStrings[(int)res.execution_status]  << "\",\n\t\t\t\t\t\t\t";
+                stream << "\"crashType\": \"" 
+                    << Core::CrashStrings[(int)res.crash_type] << "\",\n\t\t\t\t\t\t\t";
+                stream << "\"timeToRun\": " << res.execution_ms << ",\n\t\t\t\t\t\t";
+                stream << "\"pid\": " << res.process.process_id << ",\n\t\t\t\t\t\t";
+                stream << "\"nativeExitCode\": " << res.process.native_exit_code << ",\n\t\t\t\t\t\t";
+                stream << "\"nativeSignal\": " << res.process.native_signal << ",\n\t\t\t\t\t\t";
+                stream << "\"aSan\": " << res.sanitizers.asan_detected << ",\n\t\t\t\t\t\t";
+                stream << "\"ubSan\": " << res.sanitizers.ubsan_detected << ",\n\t\t\t\t\t\t";
+                stream << "\"tSan\": " << res.sanitizers.tsan_detected << ",\n\t\t\t\t\t\t";
+                stream << "\"lSan\": " << res.sanitizers.lsan_detected << ",\n\t\t\t\t\t\t";
+                stream << "\"stdout\": \"" << Helpers::escapeJson(res.output.stdout_text)
+                    << "\",\n\t\t\t\t\t\t\t";
+                stream << "\"stderr\": \"" << Helpers::escapeJson(res.output.stderr_text)
+                    << "\",\n\t\t\t\t\t\t\t";
+                stream << "\"frameworkMessage\": \"" << Helpers::escapeJson(res.framework_message)
+                    << "\"\n\t\t\t\t\t\t\t";
+
+                stream << "}";
+            }
+
+            stream << "\n\t\t\t\t\t]";
+        }
+
         void renderTest(
             std::fstream& stream,
             const std::string& suiteName,
@@ -76,7 +133,7 @@ namespace internal::Renderer {
             stream << "\"suiteName\": \"" << Helpers::escapeJson(suiteName) << "\",\n\t\t\t\t\t";
             stream << "\"testName\": \"" << Helpers::escapeJson(test.testName) << "\",\n\t\t\t\t\t";
             stream << "\"status\": \"" << Core::StatusStrings[(int)test.test_status] << "\",\n\t\t\t\t\t";
-            stream << "\"total_ms\": " << test.execution_result.execution_ms << ",\n\t\t\t\t\t";
+            stream << "\"total_ms\": " << test.execution_ms << ",\n\t\t\t\t\t";
             stream << "\"failures\": ";
 
             if (includeFailures) {
@@ -85,6 +142,8 @@ namespace internal::Renderer {
             else {
                 stream << "[]";
             }
+
+            renderExecutionResults(stream, test);
 
             stream << "\n\t\t\t\t}";
         }

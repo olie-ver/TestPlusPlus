@@ -17,12 +17,10 @@ namespace internal {
             Passed,
             Failed,
             Skipped,
-            Unknown,
-            ExpectedFailure
         };
 
         /// @brief A simple mapping from TestStatus => string representation
-        static std::string StatusStrings[] = {"Passed", "Failed", "Skipped", "Unknown", "Expected Failure"};
+        static std::string StatusStrings[] = {"Passed", "Failed", "Skipped"};
 
         /// @brief The types of statuses a test can have after execution
         enum class ExecutionStatus
@@ -75,7 +73,6 @@ namespace internal {
             pid_t process_id = -1;
             int native_exit_code = -1;
             int native_signal = -1;
-            bool core_dumped = false;
         };
 
         /// @brief A struct that captures output
@@ -172,11 +169,11 @@ namespace internal {
             std::string testName;
 
             TestStatus test_status;
-            ExecutionResult execution_result;
+            uint64_t execution_ms;
 
             IsolationMode isolation_mode = IsolationMode::None;
             std::vector<FailureInfo> failures;
-            std::vector<ExecutionResult> execution_results; //need 1 ExecutionResult for each test
+            std::vector<ExecutionResult> execution_results;
         };
 
         /// @brief The types of time units for timeout

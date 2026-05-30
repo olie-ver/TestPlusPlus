@@ -75,6 +75,7 @@ namespace internal {
                 });
                 Fail::e_fail(fail);
             }
+            Runner::TEST_STACK.back().execution_results.push_back(execRes);
         }
 
         template<typename Func>
@@ -88,6 +89,7 @@ namespace internal {
                 });
                 Fail::e_fail(fail);
             }
+            Runner::TEST_STACK.back().execution_results.push_back(execRes);
         }
 
         template<typename Func>
@@ -101,6 +103,7 @@ namespace internal {
                 });
                 Fail::e_fail(fail);
             }
+            Runner::TEST_STACK.back().execution_results.push_back(execRes);
         }
 
         template<typename Func>
@@ -117,6 +120,7 @@ namespace internal {
 
                 Fail::e_fail(fail);
             }
+            Runner::TEST_STACK.back().execution_results.push_back(execRes);
         }
 
         template<typename Func>
@@ -136,6 +140,7 @@ namespace internal {
 
                 Fail::e_fail(fail);
             }
+            Runner::TEST_STACK.back().execution_results.push_back(execRes);
         }
 
         //Exit Tests
@@ -154,6 +159,7 @@ namespace internal {
 
                 Fail::e_fail(fail);
             }
+            Runner::TEST_STACK.back().execution_results.push_back(execRes);
         }
 
         template<typename Func>
@@ -170,6 +176,7 @@ namespace internal {
 
                 Fail::e_fail(fail);
             }
+            Runner::TEST_STACK.back().execution_results.push_back(execRes);
         }
 
         template<typename Func>
@@ -185,6 +192,7 @@ namespace internal {
 
                 Fail::e_fail(fail);
             }
+            Runner::TEST_STACK.back().execution_results.push_back(execRes);
         }
 
         template<typename Func>
@@ -203,6 +211,7 @@ namespace internal {
 
                 Fail::e_fail(fail);
             }
+            Runner::TEST_STACK.back().execution_results.push_back(execRes);
         }
 
         template<typename Func>
@@ -221,6 +230,7 @@ namespace internal {
 
                 Fail::e_fail(fail);
             }
+            Runner::TEST_STACK.back().execution_results.push_back(execRes);
         }
 
         //Output Tests
@@ -240,6 +250,7 @@ namespace internal {
 
                 Fail::e_fail(fail);
             }
+            Runner::TEST_STACK.back().execution_results.push_back(execRes);
         }
 
         template <typename Func>
@@ -256,6 +267,7 @@ namespace internal {
 
                 Fail::e_fail(fail);
             }
+            Runner::TEST_STACK.back().execution_results.push_back(execRes);
         }
 
         template <typename Func>
@@ -273,6 +285,7 @@ namespace internal {
 
                 Fail::e_fail(fail);
             }
+            Runner::TEST_STACK.back().execution_results.push_back(execRes);
         }
 
         template <typename Func>
@@ -290,6 +303,7 @@ namespace internal {
 
                 Fail::e_fail(fail);
             }
+            Runner::TEST_STACK.back().execution_results.push_back(execRes);
         }
 
           template <typename Func>
@@ -306,6 +320,7 @@ namespace internal {
 
                 Fail::e_fail(fail);
             }
+            Runner::TEST_STACK.back().execution_results.push_back(execRes);
         }
 
         template <typename Func>
@@ -322,6 +337,7 @@ namespace internal {
 
                 Fail::e_fail(fail);
             }
+            Runner::TEST_STACK.back().execution_results.push_back(execRes);
         }
 
         template <typename Func>
@@ -336,6 +352,7 @@ namespace internal {
 
                 Fail::e_fail(fail);
             }
+            Runner::TEST_STACK.back().execution_results.push_back(execRes);
         }
 
         template <typename Func>
@@ -351,6 +368,7 @@ namespace internal {
 
                 Fail::e_fail(fail);
             }
+            Runner::TEST_STACK.back().execution_results.push_back(execRes);
         }
 
         template <typename Func>
@@ -365,6 +383,7 @@ namespace internal {
 
                 Fail::e_fail(fail);
             }
+            Runner::TEST_STACK.back().execution_results.push_back(execRes);
         }
 
         template <typename Func>
@@ -380,6 +399,7 @@ namespace internal {
 
                 Fail::e_fail(fail);
             }
+            Runner::TEST_STACK.back().execution_results.push_back(execRes);
         }
 
         template <typename Func>
@@ -394,6 +414,7 @@ namespace internal {
 
                 Fail::e_fail(fail);
             }
+            Runner::TEST_STACK.back().execution_results.push_back(execRes);
         }
 
         template <typename Func>
@@ -409,6 +430,7 @@ namespace internal {
 
                 Fail::e_fail(fail);
             }
+            Runner::TEST_STACK.back().execution_results.push_back(execRes);
         }
 
         template <typename Func>
@@ -423,6 +445,7 @@ namespace internal {
 
                 Fail::e_fail(fail);
             }
+            Runner::TEST_STACK.back().execution_results.push_back(execRes);
         }
 
         template <typename Func>
@@ -438,6 +461,7 @@ namespace internal {
 
                 Fail::e_fail(fail);
             }
+            Runner::TEST_STACK.back().execution_results.push_back(execRes);
         }
 
         template <typename Func>
@@ -454,6 +478,7 @@ namespace internal {
 
                 Fail::e_fail(fail);
             }
+            Runner::TEST_STACK.back().execution_results.push_back(execRes);
         }
 
         template <typename Func>
@@ -470,6 +495,7 @@ namespace internal {
 
                 Fail::e_fail(fail);
             }
+            Runner::TEST_STACK.back().execution_results.push_back(execRes);
         }
 
         //Timing Tests
@@ -487,6 +513,7 @@ namespace internal {
 
                 Fail::e_fail(fail);
             }
+            Runner::TEST_STACK.back().execution_results.push_back(execRes);
         }
 
         template <typename Func>
@@ -503,6 +530,7 @@ namespace internal {
 
                 Fail::e_fail(fail);
             }
+            Runner::TEST_STACK.back().execution_results.push_back(execRes);
         }
 
         //Generic Tests
@@ -523,6 +551,7 @@ namespace internal {
 
                 Fail::e_fail(fail);
             }
+            Runner::TEST_STACK.back().execution_results.push_back(execRes);
         }
 
         template <typename Func>
@@ -542,6 +571,7 @@ namespace internal {
 
                 Fail::e_fail(fail);
             }
+            Runner::TEST_STACK.back().execution_results.push_back(execRes);
         }
 
         template <typename Func>
@@ -562,6 +592,7 @@ namespace internal {
 
                 Fail::e_fail(fail);
             }
+            Runner::TEST_STACK.back().execution_results.push_back(execRes);
         }
 
         template <typename Func>
@@ -579,6 +610,7 @@ namespace internal {
 
                 Fail::e_fail(fail);
             }
+            Runner::TEST_STACK.back().execution_results.push_back(execRes);
         }
     }
 }

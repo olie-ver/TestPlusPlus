@@ -11,6 +11,21 @@
             <testcase name="AdditionWorks"/>
             <testcase name="DivisionFails">
                 <failure message="Expected 4 but got 5"/>
+                <executionResult 
+                    executionStatus="STATUS"
+                    crashType="TYPE"
+                    msToRun="ms"
+                    pid="pid"
+                    nativeExitCode="code"
+                    nativeSignal="signal"
+                    asan="true"
+                    ubsan="true"
+                    tsan="true"
+                    lsan="true"
+                    stdout="stdout output NO TRUNCATION"
+                    stderr="stderr output NO TRUNCATION"
+                    frameworkMessage="frameworkMessage"
+                />
             </testcase>
         </testsuite>
     </testsuites>
@@ -46,14 +61,6 @@ namespace internal::Renderer {
                     case Core::TestStatus::Skipped:
                         stats.skipped++;
                         break;
-                    
-                    case Core::TestStatus::Unknown:
-                        stats.unknown++;
-                        break;
-
-                    case Core::TestStatus::ExpectedFailure:
-                        stats.expectedFail++;
-                        break;
                 }
             }
 
@@ -66,6 +73,30 @@ namespace internal::Renderer {
                        << "message=\"" << Helpers::escapeXml(failure.message) << "\" "
                        << "file=\"" << Helpers::escapeXml(failure.file) << "\" "
                        << "line=\"" << failure.line << "\"/>\n";
+            }
+        }
+
+        void renderExecutionResults(std::ostream& stream, const Core::TestResult& test) {
+            if (test.execution_results.empty()) {
+                return;
+            }
+
+            for (const auto& res : test.execution_results) {
+                stream << "\t\t\t<executionResult\n";
+                stream << "\t\t\t\texecutionStatus=\"" << Core::ExecutionStrings[(int)res.execution_status] << "\"\n";
+                stream << "\t\t\t\tcrashType=\"" << Core::CrashStrings[(int)res.crash_type] << "\"\n";
+                stream << "\t\t\t\tmsToRun=\"" << res.execution_ms << "\"\n";
+                stream << "\t\t\t\tpid=\"" << res.process.process_id << "\"\n";
+                stream << "\t\t\t\tnativeExitCode=\"" << res.process.native_exit_code << "\"\n";
+                stream << "\t\t\t\tnativeSignal=\"" << res.process.native_signal << "\"\n";
+                stream << "\t\t\t\tasan=\"" << res.sanitizers.asan_detected << "\"\n";
+                stream << "\t\t\t\tubsan=\"" << res.sanitizers.ubsan_detected << "\"\n";
+                stream << "\t\t\t\ttsan=\"" << res.sanitizers.tsan_detected << "\"\n";
+                stream << "\t\t\t\tlsan=\"" << res.sanitizers.lsan_detected << "\"\n";
+                stream << "\t\t\t\tstdout=\"" << Helpers::escapeXml(res.output.stdout_text) << "\"\n";
+                stream << "\t\t\t\tstderr=\"" << Helpers::escapeXml(res.output.stderr_text) << "\"\n";
+                stream << "\t\t\t\tframeworkMessage=\"" << Helpers::escapeXml(res.framework_message) << "\"\n";
+                stream << "\t\t\t/>\n";
             }
         }
 
@@ -83,13 +114,22 @@ namespace internal::Renderer {
                        << "status=\"" << status << "\">\n";
 
                 renderFailures(stream, test);
+                renderExecutionResults(stream, test);
 
                 stream << "\t\t</testcase>\n";
             }
             else {
-                stream << "\t\t<testcase "
+                if (test.execution_results.empty()) {
+                    stream << "\t\t<testcase "
                        << "name=\"" << Helpers::escapeXml(test.testName) << "\" "
                        << "status=\"" << status << "\"/>\n";
+                } else {
+                    stream << "\t\t<testcase "
+                        "name=\"" << Helpers::escapeXml(test.testName) << "\" "
+                       << "status=\"" << status << "\"\n";
+                    renderExecutionResults(stream, test);
+                    stream << "\t\t</testcase>\n";
+                }
             }
         }
 
