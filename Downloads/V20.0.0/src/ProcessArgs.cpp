@@ -15,22 +15,22 @@ int getNumThreads(const std::string &arg)
     return std::max(std::min(std::stoi(arg, &pos), max_threads), 1);
 }
 
-internal::Core::Verbosity getVerbFlag(const std::string &arg)
+internal::Renderer::Verbosity getVerbFlag(const std::string &arg)
 {
     if (arg == "minimum") {
-        return internal::Core::Verbosity::Minimum;
+        return internal::Renderer::Verbosity::Minimum;
     } else if (arg == "passonly" || arg == "pass_only") {
-        return internal::Core::Verbosity::PassOnly;
+        return internal::Renderer::Verbosity::PassOnly;
     } else if (arg == "failonly" || arg == "fail_only"
         || arg == "failonlyall" || arg == "fail_only_all") 
     {
-        return internal::Core::Verbosity::FailOnlyAll;
+        return internal::Renderer::Verbosity::FailOnlyAll;
     } else if (arg == "failonlymin" || arg == "fail_only_min")
     {
-        return internal::Core::Verbosity::FailOnlyMin;
+        return internal::Renderer::Verbosity::FailOnlyMin;
     }
 
-    return internal::Core::Verbosity::Default;
+    return internal::Renderer::Verbosity::Default;
 }
 
 void getSkip(const std::string& arg, std::unordered_set<std::string>& suites)
@@ -66,6 +66,9 @@ void renderUsage(char* bad_flag) {
     std::cerr << "\tTest Only Suites: --testonly= or --test_only= or --to= or t_o=\n" << std::endl;
     std::cerr << "\t JSON Output: --json PATH_TO_FILE" << std::endl;
     std::cerr << "\t XML Output: --junit PATH_TO_FILE or --xml PATH_TO_FILE" << std::endl;
+    std::cerr << "\t stdout output length: --truncatestdout= or truncstdout" << std::endl;
+    std::cerr << "\t stderr output length: --truncatestderr= or truncstderr" << std::endl;
+    std::cerr << "\t stdout and stderr output length (1024 chars): --truncate" << std::endl;
     std::cerr << "Supported verbosity flags: ";
     std::cerr << "default, minimum, passonly, failonly, failonlymin" << std::endl;
     std::cerr << "Suites being skipped must be separated by ',' with NO space in between" << std::endl;

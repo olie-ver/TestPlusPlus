@@ -7,7 +7,6 @@
 
 #include "../Runner.hpp"
 #include "../Helpers.hpp"
-// #include "../Implementation/throws.hpp"
 
 #define EXPECT_THROWS_1_ARGS(func) internal::Expects::expectThrows([&]() {(func);}, #func, __FILE__, __LINE__)
 #define EXPECT_THROWS_2_ARGS(func, ex) internal::Expects::expectThrows<ex>([&]() {(func);}, #func, __FILE__, __LINE__)

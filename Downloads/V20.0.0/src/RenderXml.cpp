@@ -11,6 +11,21 @@
             <testcase name="AdditionWorks"/>
             <testcase name="DivisionFails">
                 <failure message="Expected 4 but got 5"/>
+                <executionResult 
+                    executionStatus="STATUS"
+                    crashType="TYPE"
+                    msToRun="ms"
+                    pid="pid"
+                    nativeExitCode="code"
+                    nativeSignal="signal"
+                    asan="true"
+                    ubsan="true"
+                    tsan="true"
+                    lsan="true"
+                    stdout="stdout output NO TRUNCATION"
+                    stderr="stderr output NO TRUNCATION"
+                    frameworkMessage="frameworkMessage"
+                />
             </testcase>
         </testsuite>
     </testsuites>
@@ -26,13 +41,15 @@ namespace internal::Renderer {
             int passed = 0;
             int failed = 0;
             int skipped = 0;
+            int unknown = 0;
+            int expectedFail = 0;
         };
 
         SuiteStats calculateStats(const TestList& tests) {
             SuiteStats stats;
 
             for (const auto& test : tests) {
-                switch (test.status) {
+                switch (test.test_status) {
                     case Core::TestStatus::Passed:
                         stats.passed++;
                         break;
@@ -59,27 +76,60 @@ namespace internal::Renderer {
             }
         }
 
+        void renderExecutionResults(std::ostream& stream, const Core::TestResult& test) {
+            if (test.execution_results.empty()) {
+                return;
+            }
+
+            for (const auto& res : test.execution_results) {
+                stream << "\t\t\t<executionResult\n";
+                stream << "\t\t\t\texecutionStatus=\"" << Core::ExecutionStrings[(int)res.execution_status] << "\"\n";
+                stream << "\t\t\t\tcrashType=\"" << Core::CrashStrings[(int)res.crash_type] << "\"\n";
+                stream << "\t\t\t\tmsToRun=\"" << res.execution_ms << "\"\n";
+                stream << "\t\t\t\tpid=\"" << res.process.process_id << "\"\n";
+                stream << "\t\t\t\tnativeExitCode=\"" << res.process.native_exit_code << "\"\n";
+                stream << "\t\t\t\tnativeSignal=\"" << res.process.native_signal << "\"\n";
+                stream << "\t\t\t\tasan=\"" << res.sanitizers.asan_detected << "\"\n";
+                stream << "\t\t\t\tubsan=\"" << res.sanitizers.ubsan_detected << "\"\n";
+                stream << "\t\t\t\ttsan=\"" << res.sanitizers.tsan_detected << "\"\n";
+                stream << "\t\t\t\tlsan=\"" << res.sanitizers.lsan_detected << "\"\n";
+                stream << "\t\t\t\tstdout=\"" << Helpers::escapeXml(res.output.stdout_text) << "\"\n";
+                stream << "\t\t\t\tstderr=\"" << Helpers::escapeXml(res.output.stderr_text) << "\"\n";
+                stream << "\t\t\t\tframeworkMessage=\"" << Helpers::escapeXml(res.framework_message) << "\"\n";
+                stream << "\t\t\t/>\n";
+            }
+        }
+
         void renderTestcase(
             std::ostream& stream,
             const Core::TestResult& test,
             bool includeFailures
         ) {
-            const std::string& status = Core::StatusStrings[(int)test.status];
+            const std::string& status = Core::StatusStrings[(int)test.test_status];
 
-            if (includeFailures && test.status == Core::TestStatus::Failed) {
+            if (includeFailures && test.test_status == Core::TestStatus::Failed) {
 
                 stream << "\t\t<testcase "
                        << "name=\"" << Helpers::escapeXml(test.testName) << "\" "
                        << "status=\"" << status << "\">\n";
 
                 renderFailures(stream, test);
+                renderExecutionResults(stream, test);
 
                 stream << "\t\t</testcase>\n";
             }
             else {
-                stream << "\t\t<testcase "
+                if (test.execution_results.empty()) {
+                    stream << "\t\t<testcase "
                        << "name=\"" << Helpers::escapeXml(test.testName) << "\" "
                        << "status=\"" << status << "\"/>\n";
+                } else {
+                    stream << "\t\t<testcase "
+                        "name=\"" << Helpers::escapeXml(test.testName) << "\" "
+                       << "status=\"" << status << "\"\n";
+                    renderExecutionResults(stream, test);
+                    stream << "\t\t</testcase>\n";
+                }
             }
         }
 
@@ -106,7 +156,9 @@ namespace internal::Renderer {
                        << "tests=\"" << tests.size() << "\" "
                        << "successes=\"" << stats.passed << "\" "
                        << "failures=\"" << stats.failed << "\" "
-                       << "skips=\"" << stats.skipped << "\">\n";
+                       << "skips=\"" << stats.skipped << "\" "
+                       << "unknowns=\"" << stats.unknown << "\" "
+                       << "expected_failure\"" << stats.expectedFail << "\">\n";
 
                 for (const auto& test : tests) {
 
@@ -171,7 +223,7 @@ namespace internal::Renderer {
                 return stats.passed > 0;
             },
             [](const Core::TestResult& test) {
-                return test.status == Core::TestStatus::Passed;
+                return test.test_status == Core::TestStatus::Passed;
             },
             false
         );
@@ -187,7 +239,7 @@ namespace internal::Renderer {
                 return stats.failed > 0;
             },
             [](const Core::TestResult& test) {
-                return test.status == Core::TestStatus::Failed;
+                return test.test_status == Core::TestStatus::Failed;
             },
             true
         );
@@ -203,7 +255,7 @@ namespace internal::Renderer {
                 return stats.failed > 0;
             },
             [](const Core::TestResult& test) {
-                return test.status == Core::TestStatus::Failed;
+                return test.test_status == Core::TestStatus::Failed;
             },
             false
         );
