@@ -73,7 +73,7 @@ namespace internal {
                     file,
                     line
                 });
-                Fail::e_fail(fail);
+                Fail::a_fail(fail);
             }
         }
 
@@ -86,7 +86,7 @@ namespace internal {
                     file,
                     line
                 });
-                Fail::e_fail(fail);
+                Fail::a_fail(fail);
             }
         }
 
@@ -99,7 +99,7 @@ namespace internal {
                     file,
                     line
                 });
-                Fail::e_fail(fail);
+                Fail::a_fail(fail);
             }
         }
 
@@ -115,7 +115,7 @@ namespace internal {
                     line
                 });
 
-                Fail::e_fail(fail);
+                Fail::a_fail(fail);
             }
         }
 
@@ -134,7 +134,7 @@ namespace internal {
                     line 
                 });
 
-                Fail::e_fail(fail);
+                Fail::a_fail(fail);
             }
         }
 
@@ -152,7 +152,7 @@ namespace internal {
                     line 
                 });
 
-                Fail::e_fail(fail);
+                Fail::a_fail(fail);
             }
         }
 
@@ -168,7 +168,7 @@ namespace internal {
                     line 
                 });
 
-                Fail::e_fail(fail);
+                Fail::a_fail(fail);
             }
         }
 
@@ -183,7 +183,7 @@ namespace internal {
                     line 
                 });
 
-                Fail::e_fail(fail);
+                Fail::a_fail(fail);
             }
         }
 
@@ -201,7 +201,7 @@ namespace internal {
                     line 
                 });
 
-                Fail::e_fail(fail);
+                Fail::a_fail(fail);
             }
         }
 
@@ -219,7 +219,7 @@ namespace internal {
                     line 
                 });
 
-                Fail::e_fail(fail);
+                Fail::a_fail(fail);
             }
         }
 
@@ -237,7 +237,7 @@ namespace internal {
                     line 
                 });
 
-                Fail::e_fail(fail);
+                Fail::a_fail(fail);
             }
         }
 
@@ -252,7 +252,7 @@ namespace internal {
                     line 
                 });
 
-                Fail::e_fail(fail);
+                Fail::a_fail(fail);
             }
         }
 
@@ -268,7 +268,7 @@ namespace internal {
                     line 
                 });
 
-                Fail::e_fail(fail);
+                Fail::a_fail(fail);
             }
         }
 
@@ -284,7 +284,7 @@ namespace internal {
                     line 
                 });
 
-                Fail::e_fail(fail);
+                Fail::a_fail(fail);
             }
         }
 
@@ -299,7 +299,7 @@ namespace internal {
                     line 
                 });
 
-                Fail::e_fail(fail);
+                Fail::a_fail(fail);
             }
         }
 
@@ -314,7 +314,7 @@ namespace internal {
                     line 
                 });
 
-                Fail::e_fail(fail);
+                Fail::a_fail(fail);
             }
         }
 
@@ -328,7 +328,7 @@ namespace internal {
                     line 
                 });
 
-                Fail::e_fail(fail);
+                Fail::a_fail(fail);
             }
         }
 
@@ -343,7 +343,7 @@ namespace internal {
                     line 
                 });
 
-                Fail::e_fail(fail);
+                Fail::a_fail(fail);
             }
         }
 
@@ -357,7 +357,7 @@ namespace internal {
                     line 
                 });
 
-                Fail::e_fail(fail);
+                Fail::a_fail(fail);
             }
         }
 
@@ -372,7 +372,7 @@ namespace internal {
                     line 
                 });
 
-                Fail::e_fail(fail);
+                Fail::a_fail(fail);
             }
         }
 
@@ -386,7 +386,7 @@ namespace internal {
                     line 
                 });
 
-                Fail::e_fail(fail);
+                Fail::a_fail(fail);
             }
         }
 
@@ -401,7 +401,7 @@ namespace internal {
                     line 
                 });
 
-                Fail::e_fail(fail);
+                Fail::a_fail(fail);
             }
         }
 
@@ -415,7 +415,7 @@ namespace internal {
                     line 
                 });
 
-                Fail::e_fail(fail);
+                Fail::a_fail(fail);
             }
         }
 
@@ -430,7 +430,7 @@ namespace internal {
                     line 
                 });
 
-                Fail::e_fail(fail);
+                Fail::a_fail(fail);
             }
         }
 
@@ -446,7 +446,7 @@ namespace internal {
                     line 
                 });
 
-                Fail::e_fail(fail);
+                Fail::a_fail(fail);
             }
         }
 
@@ -462,7 +462,7 @@ namespace internal {
                     line 
                 });
 
-                Fail::e_fail(fail);
+                Fail::a_fail(fail);
             }
         }
 
@@ -479,7 +479,7 @@ namespace internal {
                     line 
                 });
 
-                Fail::e_fail(fail);
+                Fail::a_fail(fail);
             }
         }
 
@@ -495,7 +495,7 @@ namespace internal {
                     line 
                 });
 
-                Fail::e_fail(fail);
+                Fail::a_fail(fail);
             }
         }
 
@@ -515,7 +515,7 @@ namespace internal {
                     line 
                 });
 
-                Fail::e_fail(fail);
+                Fail::a_fail(fail);
             }
         }
 
@@ -534,7 +534,7 @@ namespace internal {
                     line 
                 });
 
-                Fail::e_fail(fail);
+                Fail::a_fail(fail);
             }
         }
 
@@ -554,7 +554,7 @@ namespace internal {
                     line 
                 });
 
-                Fail::e_fail(fail);
+                Fail::a_fail(fail);
             }
         }
 
@@ -571,7 +571,7 @@ namespace internal {
                     line 
                 });
 
-                Fail::e_fail(fail);
+                Fail::a_fail(fail);
             }
         }
     }
