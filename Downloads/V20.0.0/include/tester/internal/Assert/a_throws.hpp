@@ -7,7 +7,6 @@
 
 #include "../Runner.hpp"
 #include "../Helpers.hpp"
-// #include "../Implementation/throws.hpp"
 
 #define ASSERT_THROWS_1_ARGS(func) internal::Assert::assertThrows([&]() {(func);}, #func, __FILE__, __LINE__)
 #define ASSERT_THROWS_2_ARGS(func, ex) internal::Assert::assertThrows<ex>([&]() {(func);}, #func, __FILE__, __LINE__)

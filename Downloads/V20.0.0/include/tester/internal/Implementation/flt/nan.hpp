@@ -14,11 +14,11 @@ namespace internal {
     namespace impl_flt {
         template <typename T>
         requires(std::is_floating_point<T>::value)
-        inline std::optional<const Core::Failure> 
-            isNaN(const T& val, const char* file, int line) 
+        inline std::optional<const Core::FailureInfo> 
+            isNaN(const T& val, const char* file, uint32_t line) 
         {
             if (!std::isnan(val)) {
-                return Core::Failure({
+                return Core::FailureInfo({
                     std::string("Expected val to be NaN") + "\n      val = " + Helpers::toString(val),
                     file,
                     line
@@ -30,11 +30,11 @@ namespace internal {
 
         template <typename T>
         requires(std::is_floating_point<T>::value)
-        inline std::optional<const Core::Failure> 
-            isNotNaN(const T& val, const char* file, int line)
+        inline std::optional<const Core::FailureInfo> 
+            isNotNaN(const T& val, const char* file, uint32_t line)
         {
             if (std::isnan(val)) {
-                return Core::Failure({
+                return Core::FailureInfo({
                     "Expected val to not be NaN \n      val = NaN",
                     file,
                     line

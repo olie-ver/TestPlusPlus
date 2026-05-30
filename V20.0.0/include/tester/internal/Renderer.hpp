@@ -27,7 +27,7 @@ namespace internal {
         class ConsoleRenderer : public ITestRenderer {
             public:
                 ConsoleRenderer(const std::string jsonFile = "", const std::string junitFile = "", 
-                    Verbosity verbosity = Verbosity::Default, const int stdoutSize, const int stderrSize) 
+                    Verbosity verbosity = Verbosity::Default, const int stdoutSize = 0, const int stderrSize = 0) 
                     : verb(verbosity), jsonFile(jsonFile), junitFile(junitFile), stdoutSize(stdoutSize),
                         stderrSize(stderrSize) {};
 

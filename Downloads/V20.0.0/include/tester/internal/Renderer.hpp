@@ -9,6 +9,15 @@
 namespace internal {
     /// @brief A rendering namespace to render the output from running tests
     namespace Renderer {
+        /// @brief Flags for renderer verbosity
+        enum class Verbosity {
+            Default,
+            Minimum,
+            PassOnly,
+            FailOnlyAll,
+            FailOnlyMin
+        };
+
         class ITestRenderer {
             public:
                 virtual ~ITestRenderer() = default;
@@ -18,15 +27,22 @@ namespace internal {
         class ConsoleRenderer : public ITestRenderer {
             public:
                 ConsoleRenderer(const std::string jsonFile = "", const std::string junitFile = "", 
-                    Core::Verbosity verbosity = Core::Verbosity::Default) 
-                    : verb(verbosity), jsonFile(jsonFile), junitFile(junitFile) {};
+                    Verbosity verbosity = Verbosity::Default, const int stdoutSize = 0, const int stderrSize = 0) 
+                    : verb(verbosity), jsonFile(jsonFile), junitFile(junitFile), stdoutSize(stdoutSize),
+                        stderrSize(stderrSize) {};
 
                 void render(Core::TestRun& result) override;
 
             private:
-                Core::Verbosity verb;
+                Verbosity verb;
                 const std::string jsonFile;
                 const std::string junitFile;
+                int passed = 0;
+                int failed = 0;
+                int skipped = 0;
+                
+                int stdoutSize = 0;
+                int stderrSize = 0;
                 
                 void renderDefaultJson(Core::TestRun& result);
                 void renderMinimumJson(Core::TestRun& result);

@@ -15,6 +15,8 @@ You may consider this code open-source to be downloaded, modified, and released 
         3. [Skipping Tests](#skipping-tests)
         4. [Specifying Tests](#test-specific)
         5. [JSON Output](#json-output)
+        6. [XML Output](#xml-output)
+        7. [stdout/stderr Output](#stdoutstderr-output)
 2. [Testing](#testing)
     1. [Registering Tests](#registering-tests)
     2. [Different Types Of Tests](#different-types-of-tests)
@@ -164,6 +166,73 @@ You may consider this code open-source to be downloaded, modified, and released 
     4. [Expect Throws](#expect_throws)
     5. [Expect Does Not Throw](#expect_does_not_throw)
     6. [Expect Throws With Message](#expect_throws_msg)
+13. [Isolation Tests](#isolation-tests)
+    1. [Types of Execution Statuses](#types-of-execution-statuses)
+    2. [Types of Crash Types](#types-of-crash-types)
+    3. [Assert Death](#assert_death)
+    4. [Assert Segmentation Fault](#assert_segfault)
+    5. [Assert Abort](#assert_abort)
+    6. [Assert Fatal](#assert_fatal)
+    7. [Assert Nonfatal](#assert_nonfatal)
+    8. [Assert Success](#assert_success)
+    9. [Assert Failure](#assert_failure)
+    10. [Assert Nonzero Exit](#assert_nonzero_exit)
+    11. [Assert Exit Code](#assert_exitcode)
+    12. [Assert Completes](#assert_completes)
+    13. [Assert stdout Contains](#assert_stdout_contains)
+    14. [Assert stderr Contains](#assert_stderr_contains)
+    15. [Assert No stdout](#assert_no_stdout)
+    16. [Assert No stderr](#assert_no_stderr)
+    17. [Assert stdout Matches](#assert_stdout_matches)
+    18. [Assert stderr Matches](#assert_stderr_matches)
+    19. [Assert Address Sanitizer Failure](#assert_asan_failure)
+    20. [Assert No Address Sanitizer Failure](#assert_nasan_failure)
+    21. [Assert Undefined-Behavior Sanitizer Failure](#assert_ubsan_failure)
+    22. [Assert No Undefined-Behavior Sanitizer Failure](#assert_nubsan_failure)
+    23. [Assert Thread Sanitizer Failure](#assert_tsan_failure)
+    24. [Assert No Thread Sanitizer Failure](#assert_ntsan_failure)
+    25. [Assert Leak Sanitizer Failure](#assert_lsan_failure)
+    26. [Assert No Leak Sanitizer Failure](#assert_nlsan_failure)
+    27. [Assert Sanitizer Failure](#assert_san_failure)
+    28. [Assert No Sanitizer Failure](#assert_nsan_failure)
+    29. [Assert Timeout](#assert_timeout)
+    30. [Assert Completes Within](#assert_completes_within)
+    31. [Assert Execution Status](#assert_status)
+    32. [Assert Crash Type](#assert_crash_type)
+    33. [Assert Signal](#assert_signal)
+    34. [Assert Killed](#assert_killed)
+    35. [Expect Death](#expect_death)
+    36. [Expect Segmentation Fault](#expect_segfault)
+    37. [Expect Abort](#expect_abort)
+    38. [Expect Fatal](#expect_fatal)
+    39. [Expect Nonfatal](#expect_nonfatal)
+    40. [Expect Success](#expect_success)
+    41. [Expect Failure](#expect_failure)
+    42. [Expect Nonzero Exit](#expect_nonzero_exit)
+    43. [Expect Exit Code](#expect_exitcode)
+    44. [Expect Completes](#expect_completes)
+    45. [Expect stdout Contains](#expect_stdout_contains)
+    46. [Expect stderr Contains](#expect_stderr_contains)
+    47. [Expect No stdout](#expect_no_stdout)
+    48. [Expect No stderr](#expect_no_stderr)
+    49. [Expect stdout Matches](#expect_stdout_matches)
+    50. [Expect stderr Matches](#expect_stderr_matches)
+    51. [Expect Address Sanitizer Failure](#expect_asan_failure)
+    52. [Expect No Address Sanitizer Failure](#expect_nasan_failure)
+    53. [Expect Undefined-Behavior Sanitizer Failure](#expect_ubsan_failure)
+    54. [Expect No Undefined-Behavior Sanitizer Failure](#expect_nubsan_failure)
+    55. [Expect Thread Sanitizer Failure](#expect_tsan_failure)
+    56. [Expect No Thread Sanitizer Failure](#expect_ntsan_failure)
+    57. [Expect Leak Sanitizer Failure](#expect_lsan_failure)
+    58. [Expect No Leak Sanitizer Failure](#expect_nlsan_failure)
+    59. [Expect Sanitizer Failure](#expect_san_failure)
+    60. [Expect No Sanitizer Failure](#expect_nsan_failure)
+    61. [Expect Timeout](#expect_timeout)
+    62. [Expect Completes Within](#expect_completes_within)
+    63. [Expect Execution Status](#expect_status)
+    64. [Expect Crash Type](#expect_crash_type)
+    65. [Expect Signal](#expect_signal)
+    66. [Expect Killed](#expect_killed)
 
 ## Adding To Your Projects
 
@@ -540,6 +609,17 @@ On this level, only suites and tests that fail are rendered, with all failure me
 ```
 
 Note that you can combine to have JSON and XML output by adding both flags
+
+#### stdout/stderr Output
+To specify what length you want to capture stdout and stderr output from [Isolation Tests](#isolation-tests) use the following flags:
+
+1. `--truncatestdout=`
+2. `--truncstdout=`
+3. `--truncatestderr=`
+4. `--truncstderr=`
+5. `--truncate=`
+
+Following by a nonnegative integer. Inputting a value of `0` reverts to the default behavior of printing out the full subprocess's `stdout` and `stderr` output. `--truncate=` truncates both `stdout` and `stderr` output to the same length. Truncating does not affect JSON and XML output and when printing JSON and/or XML, the FULL `stdout` and `stderr` output will be recorded. This flag ONLY affects CONSOLE rendering.
 
 ## Testing
 
@@ -3331,3 +3411,292 @@ D_TEST(expect_throws_with_message) {
     EXPECT_THROWS_MSG(throwString, "hi"); //passes
 }
 ```
+
+## Isolation Tests
+Isolation tests are tests that are to be run in isolation. As of now, only UNIX systems are supported for this type of testing (sorry Windows users, but I don't even have anything to compile or test it with. But since this IS open-source, I'll leave implementing Windows process isolation to the user). They are good for checking code beyond typical pass/fail behavior, namely how they run. It is also advised to run potentially dangerous code inside an isolation test. Because these tests run in a separate, they have a safeguard built in to be able to run for a maximum of 10 seconds (10000ms).
+
+WARNING: These tests are VERY low level in execution, and their ability to perform depends on things such as compilation, content detection etc. These tests, ESPECIALLY the sanitizer tests should be operated with a grain of salt and accuracy/usefulness is not guaranteed. However, I am still pushing to main.
+
+1. [Types of Execution Statuses](#types-of-execution-statuses)
+2. [Types of Crash Types](#types-of-crash-types)
+3. [Assert Death](#assert_death)
+4. [Assert Segmentation Fault](#assert_segfault)
+5. [Assert Abort](#assert_abort)
+6. [Assert Fatal](#assert_fatal)
+7. [Assert Nonfatal](#assert_nonfatal)
+8. [Assert Success](#assert_success)
+9. [Assert Failure](#assert_failure)
+10. [Assert Nonzero Exit](#assert_nonzero_exit)
+11. [Assert Exit Code](#assert_exitcode)
+12. [Assert Completes](#assert_completes)
+13. [Assert stdout Contains](#assert_stdout_contains)
+14. [Assert stderr Contains](#assert_stderr_contains)
+15. [Assert No stdout](#assert_no_stdout)
+16. [Assert No stderr](#assert_no_stderr)
+17. [Assert stdout Matches](#assert_stdout_matches)
+18. [Assert stderr Matches](#assert_stderr_matches)
+19. [Assert Address Sanitizer Failure](#assert_asan_failure)
+20. [Assert No Address Sanitizer Failure](#assert_nasan_failure)
+21. [Assert Undefined-Behavior Sanitizer Failure](#assert_ubsan_failure)
+22. [Assert No Undefined-Behavior Sanitizer Failure](#assert_nubsan_failure)
+23. [Assert Thread Sanitizer Failure](#assert_tsan_failure)
+24. [Assert No Thread Sanitizer Failure](#assert_ntsan_failure)
+25. [Assert Leak Sanitizer Failure](#assert_lsan_failure)
+26. [Assert No Leak Sanitizer Failure](#assert_nlsan_failure)
+27. [Assert Sanitizer Failure](#assert_san_failure)
+28. [Assert No Sanitizer Failure](#assert_nsan_failure)
+29. [Assert Timeout](#assert_timeout)
+30. [Assert Completes Within](#assert_completes_within)
+31. [Assert Execution Status](#assert_status)
+32. [Assert Crash Type](#assert_crash_type)
+33. [Assert Signal](#assert_signal)
+34. [Assert Killed](#assert_killed)
+35. [Expect Death](#expect_death)
+36. [Expect Segmentation Fault](#expect_segfault)
+37. [Expect Abort](#expect_abort)
+38. [Expect Fatal](#expect_fatal)
+39. [Expect Nonfatal](#expect_nonfatal)
+40. [Expect Success](#expect_success)
+41. [Expect Failure](#expect_failure)
+42. [Expect Nonzero Exit](#expect_nonzero_exit)
+43. [Expect Exit Code](#expect_exitcode)
+44. [Expect Completes](#expect_completes)
+45. [Expect stdout Contains](#expect_stdout_contains)
+46. [Expect stderr Contains](#expect_stderr_contains)
+47. [Expect No stdout](#expect_no_stdout)
+48. [Expect No stderr](#expect_no_stderr)
+49. [Expect stdout Matches](#expect_stdout_matches)
+50. [Expect stderr Matches](#expect_stderr_matches)
+51. [Expect Address Sanitizer Failure](#expect_asan_failure)
+52. [Expect No Address Sanitizer Failure](#expect_nasan_failure)
+53. [Expect Undefined-Behavior Sanitizer Failure](#expect_ubsan_failure)
+54. [Expect No Undefined-Behavior Sanitizer Failure](#expect_nubsan_failure)
+55. [Expect Thread Sanitizer Failure](#expect_tsan_failure)
+56. [Expect No Thread Sanitizer Failure](#expect_ntsan_failure)
+57. [Expect Leak Sanitizer Failure](#expect_lsan_failure)
+58. [Expect No Leak Sanitizer Failure](#expect_nlsan_failure)
+59. [Expect Sanitizer Failure](#expect_san_failure)
+60. [Expect No Sanitizer Failure](#expect_nsan_failure)
+61. [Expect Timeout](#expect_timeout)
+62. [Expect Completes Within](#expect_completes_within)
+63. [Expect Execution Status](#expect_status)
+64. [Expect Crash Type](#expect_crash_type)
+65. [Expect Signal](#expect_signal)
+66. [Expect Killed](#expect_killed)
+
+### Types of Execution Statuses
+
+NOTRUN - The test wasn't run
+COMPLETED - The test completed normally
+CRASHED - The test crashed
+TIMEDOUT - The test ran for too long
+LAUNCHFAIL - fork() failed
+COMFAIL - Reading from stdout/stderr/creating a pipe failed
+FRAMEWORKERR - There was an internal framework error
+SANFAIL - There was a sanitizer failure
+
+### Types of Crash Types
+
+NOCRASH - The test didn't crash
+SEGFAULT - The test had a segmentation fault
+ACCESSVIOLATION - The test had an access violation
+ABORT - The test was aborted
+ZERODIV - The test tried to divide by zero
+ILLINSTR - The test tried to run an illegal instruction
+BUSERR - There was a bus error
+FLOATPOINT - There was a floating point exception
+TRAP - There was a trap
+KILLED - The test was killed
+UNKNOWN - The test crashed for an unknown reason
+
+### ASSERT_DEATH()
+`ASSERT_DEATH(func)` takes in one parameter: a function. It passes if the subprocess exits with a status of `COMPLETED` and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+
+### ASSERT_SEGFAULT()
+`ASSERT_SEGFAULT(func)` takes in one parameter: a function. It passes if the subprocess exits with a crash type of `SEGFAULT` and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+
+### ASSERT_ABORT()
+`ASSERT_ABORT(func)` takes in one parameter: a function. It passes if the subprocess exits with a crash type of `ABORT` and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+
+### ASSERT_FATAL()
+`ASSERT_FATAL(func)` takes in one parameter: a function. It passes if the subprocess exits with a status of `COMPLETED` and a crash type of `NONE` and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+
+### ASSERT_NONFATAL()
+`ASSERT_NONFATAL(func)` takes in one parameter: a function. It passes if the subprocess exits with a status that isn't `COMPLETED` or a crash type that isn't none `NONE` and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+
+### ASSERT_SUCCESS()
+`ASSERT_SUCCESS(func)` takes in one parameter: a function. It passes if the subprocess exits with exit code `EXIT_SUCCESS` and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+
+### ASSERT_FAILURE()
+`ASSERT_FAILURE(func)` takes in one parameter: a function. It passes if the subprocess exits with exit code `EXIT_FAILURE` and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+
+### ASSERT_NONZERO_EXIT()
+`ASSERT_NONZERO_EXIT(func)` takes in one parameter: a function. It passes if the subprocess exits with a nonzero exit code and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+
+### ASSERT_EXITCODE()
+`ASSERT_NONZERO_EXIT(func, code)` takes in two parameters: a function, and an integer exit code. It passes if the subprocess exits with an exit code equal to `code` and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+
+### ASSERT_COMPLETES()
+`ASSERT_COMPLETES(func)` takes in one parameter: a function. It passes if the subprocess exits with a status of `COMPLETED` and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+
+### ASSERT_STDOUT_CONTAINS()
+`ASSERT_STDOUT_CONTAINS(func, content)` takes in two parameters: a function, and a string of content. It passes if the subprocess's `stdout` output contains `content` and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+
+### ASSERT_STDERR_CONTAINS()
+`ASSERT_STDERR_CONTAINS(func, content)` takes in two parameters: a function, and a string of content. It passes if the subprocess's `stderr` output contains `content` and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+
+### ASSERT_NO_STDOUT()
+`ASSERT_NO_STDOUT(func)` takes in one parameter: a function. It passes if the subprocess's `stdout` output is empty and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+
+### ASSERT_NO_STDERR()
+`ASSERT_NO_STDERR(func)` takes in one parameter: a function. It passes if the subprocess's `stderr` output is empty and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+
+### ASSERT_STDOUT_MATCHES()
+`ASSERT_STDOUT_MATCHES(func, content)` takes in two parameters: a function, and a string of content. It passes if the subprocess's `stderr` output matches `content` exactly and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+
+### ASSERT_STDERR_MATCHES()
+`ASSERT_STDERR_CONTAINS(func, content)` takes in two parameters: a function, and a string of content. It passes if the subprocess's `stderr` output matches `content` exactly and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+
+### ASSERT_ASAN_FAILURE()
+`ASSERT_ASAN_FAILURE(func)` takes in one parameter: a function. It passes if the Address Sanitizer reports an error and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+
+### ASSERT_NASAN_FAILURE()
+`ASSERT_NASAN_FAILURE(func)` takes in one parameter: a function. It passes if the Address Sanitizer does not report an error and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+
+### ASSERT_UBSAN_FAILURE()
+`ASSERT_UBSAN_FAILURE(func)` takes in one parameter: a function. It passes if the Undefined-Behavior Sanitizer reports an error and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+
+### ASSERT_NUBSAN_FAILURE()
+`ASSERT_NUBSAN_FAILURE(func)` takes in one parameter: a function. It passes if the Undefined-Behavior Sanitizer does not report an error and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+
+### ASSERT_TSAN_FAILURE()
+`ASSERT_TSAN_FAILURE(func)` takes in one parameter: a function. It passes if the Thread Sanitizer reports an error and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+
+### ASSERT_NTSAN_FAILURE()
+`ASSERT_NTSAN_FAILURE(func)` takes in one parameter: a function. It passes if the Thread Sanitizer does not report an error and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+
+### ASSERT_LSAN_FAILURE()
+`ASSERT_LSAN_FAILURE(func)` takes in one parameter: a function. It passes if the Leak Sanitizer reports an error and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+
+### ASSERT_NLSAN_FAILURE()
+`ASSERT_NLSAN_FAILURE(func)` takes in one parameter: a function. It passes if the Leak Sanitizer does not report an error and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+
+### ASSERT_SAN_FAILURE()
+`ASSERT_SAN_FAILURE(func)` takes in one parameter: a function. It passes if the any Sanitizer reports an error and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+
+### ASSERT_NSAN_FAILURE()
+`ASSERT_NSAN_FAILURE(func)` takes in one parameter: a function. It passes if the no Sanitizer does not report an error and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+
+### ASSERT_TIMEOUT()
+`ASSERT_TIMEOUT(func, timeoutMs)` takes in two parameters: a function, and an amount of time in milliseconds. It passes if the subprocess takes longer to complete than `timeoutMs` and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+
+### ASSERT_COMPLETES_WITHIN()
+`ASSERT_COMPLETES_WITHIN(func, timeoutMs)` takes in two parameters: a function, and an amount of time in milliseconds. It passes if the subprocess finishes in less time than `timeoutMs` and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+
+### ASSERT_STATUS()
+`ASSERT_STATUS(func, status)` takes in two parameters: a function, and an [Execution Status](#types-of-execution-statuses). It passes if the subprocess finishes with an Execution Status that matches `status` and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+
+### ASSERT_CRASH_TYPE()
+`ASSERT_CRASH_TYPE(func, type)` takes in two parameters: a function, and a [Crash Type](#types-of-crash-types). It passes if the subprocess finishes with a Crash Type that matches `type` and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+
+### ASSERT_SIGNAL()
+`ASSERT_SIGNAL(func, signal)` takes in two parameters: a function, and an exit signal. It passes if the subprocess finishes with a NATIVE (for if Windows process isolation is ever added) execution signal that matches `signal` and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+
+### ASSERT_KILLED()
+`ASSERT_KILLED(func)` takes in one parameter: a function. It passes if the subprocess finishes with Crash Type `KILLED` and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+
+### EXPECT_DEATH()
+`EXPECT_DEATH(func)` takes in one parameter: a function. It passes if the subprocess exits with a status of `COMPLETED` and fails otherwise.
+
+### EXPECT_SEGFAULT()
+`EXPECT_SEGFAULT(func)` takes in one parameter: a function. It passes if the subprocess exits with a crash type of `SEGFAULT` and fails otherwise.
+
+### EXPECT_ABORT()
+`EXPECT_ABORT(func)` takes in one parameter: a function. It passes if the subprocess exits with a crash type of `ABORT` and fails otherwise.
+
+### EXPECT_FATAL()
+`EXPECT_FATAL(func)` takes in one parameter: a function. It passes if the subprocess exits with a status of `COMPLETED` and a crash type of `NONE` and fails otherwise.
+
+### EXPECT_NONFATAL()
+`EXPECT_NONFATAL(func)` takes in one parameter: a function. It passes if the subprocess exits with a status that isn't `COMPLETED` or a crash type that isn't none `NONE` and fails otherwise.
+
+### EXPECT_SUCCESS()
+`EXPECT_SUCCESS(func)` takes in one parameter: a function. It passes if the subprocess exits with exit code `EXIT_SUCCESS` and fails otherwise.
+
+### EXPECT_FAILURE()
+`EXPECT_FAILURE(func)` takes in one parameter: a function. It passes if the subprocess exits with exit code `EXIT_FAILURE` and fails otherwise.
+
+### EXPECT_NONZERO_EXIT()
+`EXPECT_NONZERO_EXIT(func)` takes in one parameter: a function. It passes if the subprocess exits with a nonzero exit code and fails otherwise.
+
+### EXPECT_EXITCODE()
+`EXPECT_NONZERO_EXIT(func, code)` takes in two parameters: a function, and an integer exit code. It passes if the subprocess exits with an exit code equal to `code` and fails otherwise.
+
+### EXPECT_COMPLETES()
+`EXPECT_COMPLETES(func)` takes in one parameter: a function. It passes if the subprocess exits with a status of `COMPLETED` and fails otherwise.
+
+### EXPECT_STDOUT_CONTAINS()
+`EXPECT_STDOUT_CONTAINS(func, content)` takes in two parameters: a function, and a string of content. It passes if the subprocess's `stdout` output contains `content` and fails otherwise.
+
+### EXPECT_STDERR_CONTAINS()
+`EXPECT_STDERR_CONTAINS(func, content)` takes in two parameters: a function, and a string of content. It passes if the subprocess's `stderr` output contains `content` and fails otherwise.
+
+### EXPECT_NO_STDOUT()
+`EXPECT_NO_STDOUT(func)` takes in one parameter: a function. It passes if the subprocess's `stdout` output is empty and fails otherwise.
+
+### EXPECT_NO_STDERR()
+`EXPECT_NO_STDERR(func)` takes in one parameter: a function. It passes if the subprocess's `stderr` output is empty and fails otherwise.
+
+### EXPECT_STDOUT_MATCHES()
+`EXPECT_STDOUT_MATCHES(func, content)` takes in two parameters: a function, and a string of content. It passes if the subprocess's `stderr` output matches `content` exactly and fails otherwise.
+
+### EXPECT_STDERR_MATCHES()
+`EXPECT_STDERR_CONTAINS(func, content)` takes in two parameters: a function, and a string of content. It passes if the subprocess's `stderr` output matches `content` exactly and fails otherwise.
+
+### EXPECT_ASAN_FAILURE()
+`EXPECT_ASAN_FAILURE(func)` takes in one parameter: a function. It passes if the Address Sanitizer reports an error and fails otherwise.
+
+### EXPECT_NASAN_FAILURE()
+`EXPECT_NASAN_FAILURE(func)` takes in one parameter: a function. It passes if the Address Sanitizer does not report an error and fails otherwise.
+
+### EXPECT_UBSAN_FAILURE()
+`EXPECT_UBSAN_FAILURE(func)` takes in one parameter: a function. It passes if the Undefined-Behavior Sanitizer reports an error and fails otherwise.
+
+### EXPECT_NUBSAN_FAILURE()
+`EXPECT_NUBSAN_FAILURE(func)` takes in one parameter: a function. It passes if the Undefined-Behavior Sanitizer does not report an error and fails otherwise.
+
+### EXPECT_TSAN_FAILURE()
+`EXPECT_TSAN_FAILURE(func)` takes in one parameter: a function. It passes if the Thread Sanitizer reports an error and fails otherwise.
+
+### EXPECT_NTSAN_FAILURE()
+`EXPECT_NTSAN_FAILURE(func)` takes in one parameter: a function. It passes if the Thread Sanitizer does not report an error and fails otherwise.
+
+### EXPECT_LSAN_FAILURE()
+`EXPECT_LSAN_FAILURE(func)` takes in one parameter: a function. It passes if the Leak Sanitizer reports an error and fails otherwise.
+
+### EXPECT_NLSAN_FAILURE()
+`EXPECT_NLSAN_FAILURE(func)` takes in one parameter: a function. It passes if the Leak Sanitizer does not report an error and fails otherwise.
+
+### EXPECT_SAN_FAILURE()
+`EXPECT_SAN_FAILURE(func)` takes in one parameter: a function. It passes if the any Sanitizer reports an error and fails otherwise.
+
+### EXPECT_NSAN_FAILURE()
+`EXPECT_NSAN_FAILURE(func)` takes in one parameter: a function. It passes if the no Sanitizer does not report an error and fails otherwise.
+
+### EXPECT_TIMEOUT()
+`EXPECT_TIMEOUT(func, timeoutMs)` takes in two parameters: a function, and an amount of time in milliseconds. It passes if the subprocess takes longer to complete than `timeoutMs` and fails otherwise.
+
+### EXPECT_COMPLETES_WITHIN()
+`EXPECT_COMPLETES_WITHIN(func, timeoutMs)` takes in two parameters: a function, and an amount of time in milliseconds. It passes if the subprocess finishes in less time than `timeoutMs` and fails otherwise.
+
+### EXPECT_STATUS()
+`EXPECT_STATUS(func, status)` takes in two parameters: a function, and an [Execution Status](#types-of-execution-statuses). It passes if the subprocess finishes with an Execution Status that matches `status` and fails otherwise.
+
+### EXPECT_CRASH_TYPE()
+`EXPECT_CRASH_TYPE(func, type)` takes in two parameters: a function, and a [Crash Type](#types-of-crash-types). It passes if the subprocess finishes with a Crash Type that matches `type` and fails otherwise.
+
+### EXPECT_SIGNAL()
+`EXPECT_SIGNAL(func, signal)` takes in two parameters: a function, and an exit signal. It passes if the subprocess finishes with a NATIVE (for if Windows process isolation is ever added) execution signal that matches `signal` and fails otherwise.
+
+### EXPECT_KILLED()
+`EXPECT_KILLED(func)` takes in one parameter: a function. It passes if the subprocess finishes with Crash Type `KILLED` and fails otherwise.

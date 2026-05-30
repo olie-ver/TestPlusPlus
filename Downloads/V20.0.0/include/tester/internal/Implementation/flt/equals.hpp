@@ -14,13 +14,13 @@ namespace internal {
     namespace impl_flt {
         template <typename A, typename B, typename T1>
         requires Concepts::CommonFloat<A, B, T1, T1>
-        inline std::optional<const Core::Failure> 
-            absolutelyEqual(const A& a, const B& b, const T1& abs_tol, const char* file, int line) 
+        inline std::optional<const Core::FailureInfo> 
+            absolutelyEqual(const A& a, const B& b, const T1& abs_tol, const char* file, uint32_t line) 
         {
             if (std::isnan(a)) {
-                return Core::Failure("First parameter is NaN", file, line);
+                return Core::FailureInfo("First parameter is NaN", file, line);
             } else if (std::isnan(b)) {
-                return Core::Failure("Second parameter is NaN", file, line);
+                return Core::FailureInfo("Second parameter is NaN", file, line);
             }
 
             using T = std::common_type_t<A, B, T1>;
@@ -30,7 +30,7 @@ namespace internal {
             T absTol = static_cast<T>(abs_tol);
 
             if (std::abs(aa - bb) > std::abs(absTol)) {
-                return Core::Failure({
+                return Core::FailureInfo({
                     std::string("Expected |a - b| <= |abs_tol|") 
                         + "\n      a = " + Helpers::toString(aa) 
                         + "\n      b = " + Helpers::toString(bb) 
@@ -45,13 +45,13 @@ namespace internal {
 
         template <typename A, typename B, typename T1, typename T2>
         requires Concepts::CommonFloat<A, B, T1, T2>
-        inline std::optional<const Core::Failure> 
-            nearlyEqual(const A& a, const B& b, const T1& abs_tol, const T2& rel_tol, const char* file, int line) 
+        inline std::optional<const Core::FailureInfo> 
+            nearlyEqual(const A& a, const B& b, const T1& abs_tol, const T2& rel_tol, const char* file, uint32_t line) 
         {
             if (std::isnan(a)) {
-                return Core::Failure("First parameter is NaN", file, line);
+                return Core::FailureInfo("First parameter is NaN", file, line);
             } else if (std::isnan(b)) {
-                return Core::Failure("Second parameter is NaN", file, line);
+                return Core::FailureInfo("Second parameter is NaN", file, line);
             }
 
             using T = std::common_type_t<A, B, T1, T2>;
@@ -64,7 +64,7 @@ namespace internal {
             if (std::abs(aa - bb) > std::max(std::abs(absTol), 
                     std::abs(relTol) * std::max(std::abs(aa), std::abs(bb)))) 
             {
-                return Core::Failure({
+                return Core::FailureInfo({
                     std::string("Expected |a - b| <= max(abs_tol, rel_tol * max(|a|, |b|))") 
                         + "\n      a = " + Helpers::toString(aa) 
                         + "\n      b = " + Helpers::toString(bb) 
@@ -80,13 +80,13 @@ namespace internal {
 
         template <typename A, typename B, typename T1>
         requires Concepts::CommonFloat<A, B, T1, T1>
-        std::optional<const Core::Failure>
-            relativelyEqual(const A& a, const B& b, const T1& rel_tol, const char* file, int line) 
+        std::optional<const Core::FailureInfo>
+            relativelyEqual(const A& a, const B& b, const T1& rel_tol, const char* file, uint32_t line) 
         {
             if (std::isnan(a)) {
-                return Core::Failure("First parameter is NaN", file, line);
+                return Core::FailureInfo("First parameter is NaN", file, line);
             } else if (std::isnan(b)) {
-                return Core::Failure("Second parameter is NaN", file, line);
+                return Core::FailureInfo("Second parameter is NaN", file, line);
             }
             
             using T = std::common_type_t<A, B, T1>;
@@ -96,7 +96,7 @@ namespace internal {
             T relTol = static_cast<T>(rel_tol);
 
             if (std::abs(aa - bb) > std::abs(relTol) * std::max(std::abs(aa), std::abs(bb))) {
-                return Core::Failure({
+                return Core::FailureInfo({
                     std::string("Expected |a - b| <= rel_tol * max(|a|, |b|)") 
                         + "\n      a = " + Helpers::toString(aa) 
                         + "\n      b = " + Helpers::toString(bb) 

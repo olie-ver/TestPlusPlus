@@ -10,19 +10,19 @@ namespace internal {
 
             if (jsonFile != "") {
                 switch (verb) {
-                    case Core::Verbosity::Default:
+                    case Verbosity::Default:
                         renderDefaultJson(testRun);
                         break;
-                    case Core::Verbosity::Minimum:
+                    case Verbosity::Minimum:
                         renderMinimumJson(testRun);
                         break;
-                    case Core::Verbosity::PassOnly:
+                    case Verbosity::PassOnly:
                         renderPassOnlyJson(testRun);
                         break;
-                    case Core::Verbosity::FailOnlyMin:
+                    case Verbosity::FailOnlyMin:
                         renderFailMinJson(testRun);
                         break;
-                    case Core::Verbosity::FailOnlyAll:
+                    case Verbosity::FailOnlyAll:
                         renderFailAllJson(testRun);
                         break;
                 }
@@ -30,19 +30,19 @@ namespace internal {
 
             if (junitFile != "") {
                 switch (verb) {
-                    case Core::Verbosity::Default:
+                    case Verbosity::Default:
                         renderDefaultXml(testRun);
                         break;
-                    case Core::Verbosity::Minimum:
+                    case Verbosity::Minimum:
                         renderMinimumXml(testRun);
                         break;
-                    case Core::Verbosity::PassOnly:
+                    case Verbosity::PassOnly:
                         renderPassOnlyXml(testRun);
                         break;
-                    case Core::Verbosity::FailOnlyMin:
+                    case Verbosity::FailOnlyMin:
                         renderFailMinXml(testRun);
                         break;
-                    case Core::Verbosity::FailOnlyAll:
+                    case Verbosity::FailOnlyAll:
                         renderFailAllXml(testRun);
                         break;
                 }
@@ -52,33 +52,33 @@ namespace internal {
                 return;
             }
 
-            std::cout << "Running " << testRun.total << " tests..." << std::endl;
+            std::cout << "Ran " << testRun.total << " tests..." << std::endl;
  
             std::cout << std::endl;
 
             switch (verb) {
-                case Core::Verbosity::Default:
+                case Verbosity::Default:
                     renderDefault(testRun);
                     break;
-                case Core::Verbosity::Minimum:
+                case Verbosity::Minimum:
                     renderMinimum(testRun);
                     break;
-                case Core::Verbosity::PassOnly:
+                case Verbosity::PassOnly:
                     renderPassOnly(testRun);
                     break;
-                case Core::Verbosity::FailOnlyMin:
+                case Verbosity::FailOnlyMin:
                     renderFailMin(testRun);
                     break;
-                case Core::Verbosity::FailOnlyAll:
+                case Verbosity::FailOnlyAll:
                     renderFailAll(testRun);
                     break;
             }
 
             std::cout << std::string(50, '-') << std::endl;
             std::cout << "Total: " << testRun.total;
-            std::cout << " | Passed: " << testRun.passed;
-            std::cout << " | Failed: " << testRun.failed;
-            std::cout << " | Skipped: " << testRun.skipped << std::endl;
+            std::cout << " | Passed: " << passed;
+            std::cout << " | Failed: " << failed;
+            std::cout << " | Skipped: " << skipped << std::endl;
             std::cout << "Time: " << testRun.totalMs << " ms" << std::endl;
         }
     }

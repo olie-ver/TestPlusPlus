@@ -5,7 +5,6 @@
 
 #include "../PCH/impl_pch.hpp"
 
-// #include "../Implementation/bool.hpp"
 #include "../Fail.hpp"
 
 #define ASSERT_TRUE(cond) internal::Assert::assertTrue((cond), #cond, __FILE__, __LINE__)

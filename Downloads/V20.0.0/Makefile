@@ -2,7 +2,7 @@ CXX = g++
 CXXFLAGS = -std=c++20 -Wall -Wextra -I./include
 
 SRC_DIR = src
-TEST_DIR = yourTests
+TEST_DIR = tests
 BUILD_DIR = build
 RUN_DIR = build/bin
 
@@ -23,7 +23,7 @@ run:
 	./$(TARGET) --v=default
 
 test:
-	./$(TARGET) --v=minimum
+	./$(TARGET) --v=failOnly --skip=timeout
 
 json: 
 	./$(TARGET) --v=default --skip=timeout --json output.json
