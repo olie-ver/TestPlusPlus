@@ -19,6 +19,9 @@ int main(int argc, char** argv) {
     std::string jsonFile = "";
     std::string jUnitFile = "";
 
+    int stdoutSize = 0;
+    int stderrSize = 0;
+
     // process the arguments
     for (int i = 1; i < argc; i++) {
         std::string flag(argv[i]);
@@ -98,6 +101,35 @@ int main(int argc, char** argv) {
             } else {
                 std::cerr << "Missing .xml file path after --junit/--xml flag" << std::endl;
             }
+        } else if (flag == "--truncatestdout=" || flag == "--truncstdout=") {
+            std::string arg = flag.substr(flag.find('=') + 1);
+
+            try {
+                size_t pos{};
+                stdoutSize = std::stoi(arg, &pos);
+            } catch (std::invalid_argument const& ex) {
+                std::cerr << "std::invalid_argument::what(): " << ex.what() << '\n';
+                return EXIT_FAILURE;
+            } catch (std::out_of_range const& ex) {
+                std::cerr << "std::out_of_range::what(): " << ex.what() << '\n';
+                return EXIT_FAILURE;
+            }
+        } else if (flag == "--truncatestderr=" || flag == "--truncstderr=") {
+            std::string arg = flag.substr(flag.find('=') + 1);
+
+            try {
+                size_t pos{};
+                stderrSize = std::stoi(arg, &pos);
+            } catch (std::invalid_argument const& ex) {
+                std::cerr << "std::invalid_argument::what(): " << ex.what() << '\n';
+                return EXIT_FAILURE;
+            } catch (std::out_of_range const& ex) {
+                std::cerr << "std::out_of_range::what(): " << ex.what() << '\n';
+                return EXIT_FAILURE;
+            }
+        } else if (flag == "--truncate") {
+            stdoutSize = 1024;
+            stderrSize = 1024;
         } else {
             renderUsage(argv[i]);
             return EXIT_FAILURE;
@@ -108,7 +140,7 @@ int main(int argc, char** argv) {
 
     internal::Runner::runAllRegisteredTests(testRun, num_threads, timeout, unit);
 
-    internal::Renderer::ConsoleRenderer renderer(jsonFile, jUnitFile, verbFlag);
+    internal::Renderer::ConsoleRenderer renderer(jsonFile, jUnitFile, verbFlag, stdoutSize, stderrSize);
 
     renderer.render(testRun);
     return EXIT_SUCCESS;

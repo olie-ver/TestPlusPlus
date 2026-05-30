@@ -144,7 +144,7 @@ namespace internal {
                 test.test();
                 clock::time_point end_time = clock::now();
 
-                CURRENT_TEST.execution_result.execution_ms =  std::chrono::duration_cast<ms>(end_time - start_time).count();
+                CURRENT_TEST.execution_ms =  std::chrono::duration_cast<ms>(end_time - start_time).count();
 
                 if (!CURRENT_TEST.failures.empty()) {
                     CURRENT_TEST.test_status =  Core::TestStatus::Failed;
@@ -156,7 +156,7 @@ namespace internal {
             } catch (...) { //we don't care what error gets thrown, we end the test
                 clock::time_point end_time = clock::now();
 
-                CURRENT_TEST.execution_result.execution_ms =  std::chrono::duration_cast<ms>(end_time - start_time).count();
+                CURRENT_TEST.execution_ms =  std::chrono::duration_cast<ms>(end_time - start_time).count();
 
                 CURRENT_TEST.test_status =  Core::TestStatus::Failed;
 

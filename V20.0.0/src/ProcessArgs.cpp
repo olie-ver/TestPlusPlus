@@ -66,6 +66,9 @@ void renderUsage(char* bad_flag) {
     std::cerr << "\tTest Only Suites: --testonly= or --test_only= or --to= or t_o=\n" << std::endl;
     std::cerr << "\t JSON Output: --json PATH_TO_FILE" << std::endl;
     std::cerr << "\t XML Output: --junit PATH_TO_FILE or --xml PATH_TO_FILE" << std::endl;
+    std::cerr << "\t stdout output length: --truncatestdout= or truncstdout" << std::endl;
+    std::cerr << "\t stderr output length: --truncatestderr= or truncstderr" << std::endl;
+    std::cerr << "\t stdout and stderr output length (1024 chars): --truncate" << std::endl;
     std::cerr << "Supported verbosity flags: ";
     std::cerr << "default, minimum, passonly, failonly, failonlymin" << std::endl;
     std::cerr << "Suites being skipped must be separated by ',' with NO space in between" << std::endl;

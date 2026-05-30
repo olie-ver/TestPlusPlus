@@ -27,8 +27,9 @@ namespace internal {
         class ConsoleRenderer : public ITestRenderer {
             public:
                 ConsoleRenderer(const std::string jsonFile = "", const std::string junitFile = "", 
-                    Verbosity verbosity = Verbosity::Default) 
-                    : verb(verbosity), jsonFile(jsonFile), junitFile(junitFile) {};
+                    Verbosity verbosity = Verbosity::Default, const int stdoutSize, const int stderrSize) 
+                    : verb(verbosity), jsonFile(jsonFile), junitFile(junitFile), stdoutSize(stdoutSize),
+                        stderrSize(stderrSize) {};
 
                 void render(Core::TestRun& result) override;
 
@@ -39,8 +40,9 @@ namespace internal {
                 int passed = 0;
                 int failed = 0;
                 int skipped = 0;
-                int unknown = 0;
-                int expectedFailed = 0;
+                
+                int stdoutSize = 0;
+                int stderrSize = 0;
                 
                 void renderDefaultJson(Core::TestRun& result);
                 void renderMinimumJson(Core::TestRun& result);
