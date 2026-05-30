@@ -66,46 +66,46 @@ namespace internal {
 
         //Passes if stdout output contains (param) string
         template<typename Func> 
-        inline Core::ExecutionResult stdoutContains(Func&& func);
+        Core::ExecutionResult stdoutContains(Func&& func);
 
         //Passes if stderr output contains (param) string
         template<typename Func> 
-        inline Core::ExecutionResult stderrContains(Func&& func);
+        Core::ExecutionResult stderrContains(Func&& func);
 
         //Passes if there is no stderr output
         template<typename Func> 
-        inline Core::ExecutionResult noStdout(Func&& func);
+        Core::ExecutionResult noStdout(Func&& func);
 
         //Passes if there is no stdout output
         template<typename Func> 
-        inline Core::ExecutionResult noStderr(Func&& func);
+        Core::ExecutionResult noStderr(Func&& func);
 
         //Passes if output == (param) output
         template<typename Func> 
-        inline Core::ExecutionResult stdoutMatches(Func&& func);
+        Core::ExecutionResult stdoutMatches(Func&& func);
 
         //Passes if output == (param) output
         template<typename Func> 
-        inline Core::ExecutionResult stderrMatches(Func&& func);
+        Core::ExecutionResult stderrMatches(Func&& func);
 
         // ============================================================
         // Sanitizer Assertions
         // ============================================================
 
         template<typename Func> 
-        inline Core::ExecutionResult asanFailure(Func&& func);
+        Core::ExecutionResult asanFailure(Func&& func);
 
         template<typename Func> 
-        inline Core::ExecutionResult ubsanFailure(Func&& func);
+        Core::ExecutionResult ubsanFailure(Func&& func);
 
         template<typename Func> 
-        inline Core::ExecutionResult tsanFailure(Func&& func);
+        Core::ExecutionResult tsanFailure(Func&& func);
 
         template<typename Func> 
-        inline Core::ExecutionResult lsanFailure(Func&& func);
+        Core::ExecutionResult lsanFailure(Func&& func);
 
         template<typename Func> 
-        inline Core::ExecutionResult sanFailure(Func&& func);
+        Core::ExecutionResult sanFailure(Func&& func);
 
         // ============================================================
         // Timing / Concurrency Assertions
@@ -113,31 +113,33 @@ namespace internal {
 
         //Passes if it runs longer than the passed in timeout
         template<typename Func> 
-        inline Core::ExecutionResult timeout(Func&& func, int timeLimitMs);
+        Core::ExecutionResult timeout(Func&& func, int timeLimitMs);
 
         //Passes if it runs shorter than the passed in timeout
         template<typename Func> 
-        inline Core::ExecutionResult completesWithin(Func&& func, int timeLimitMs);
+        Core::ExecutionResult completesWithin(Func&& func, int timeLimitMs);
 
         // ============================================================
         // Generic / Advanced Assertions
         // ============================================================
 
         //Passes if the process result == (param) result
-        std::optional<Core::FailureInfo> 
-        processResult();
+        template<typename Func> 
+        Core::ExecutionResult executionStatus(Func&& func);
 
-        //Passes if the termination signal == (param) termination signal
-        std::optional<Core::FailureInfo> 
-        terminationSignal();
+        template<typename Func> 
+        Core::ExecutionResult crashType(Func&& func);
+
+        template<typename Func> 
+        Core::ExecutionResult terminationSignal(Func&& func);
 
         //Passes if the process was killed
-        std::optional<Core::FailureInfo> 
-        processKilled();
+        template<typename Func> 
+        Core::ExecutionResult processKilled(Func&& func);
 
         //Passes if the core was dumped
-        std::optional<Core::FailureInfo> 
-        coreDumped();
+        template<typename Func> 
+        Core::ExecutionResult coreDumped(Func&& func);
     }
 }
 

@@ -10,24 +10,28 @@
 
 namespace internal {
     namespace impl_iso {
-        inline std::optional<Core::FailureInfo> 
-        processResult() {
-            return std::nullopt;
+        template<typename Func> 
+        inline Core::ExecutionResult executionStatus(Func&& func) {
+            Core::ExecutionResult result = isolateRun(func);
+            return result;
         }
 
-        inline std::optional<Core::FailureInfo> 
-        terminationSignal() {
-            return std::nullopt;
+        template<typename Func> 
+        inline Core::ExecutionResult crashType(Func&& func) {
+            Core::ExecutionResult result = isolateRun(func);
+            return result;
         }
 
-        inline std::optional<Core::FailureInfo> 
-        processKilled() {
-            return std::nullopt;
+        template<typename Func> 
+        inline Core::ExecutionResult terminationSignal(Func&& func) {
+            Core::ExecutionResult result = isolateRun(func);
+            return result;
         }
 
-        inline std::optional<Core::FailureInfo> 
-        coreDumped() {
-            return std::nullopt;
+        template<typename Func> 
+        inline Core::ExecutionResult processKilled(Func&& func) {
+            Core::ExecutionResult result = isolateRun(func);
+            return result;
         }
     }
 }

@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef E_ISO_H
-#define E_ISO_H
+#ifndef A_ISO_H
+#define A_ISO_H
 
 #include "../Core.hpp"
 #include "../Fail.hpp"
@@ -11,60 +11,60 @@
 #include <algorithm>
 
 //Fatal tests
-#define EXPECT_DEATH(func) internal::Expects::expectDeath((func), #func, __FILE__, __LINE__)
-#define EXPECT_SEGFAULT(func) internal::Expects::expectSegFault((func), #func, __FILE__, __LINE__)
-#define EXPECT_ABORT(func) internal::Expects::expectAbort((func), #func, __FILE__, __LINE__)
-#define EXPECT_FATAL(func) internal::Expects::expectFatal((func), #func, __FILE__, __LINE__)
-#define EXPECT_NONFATAL(func) internal::Expects::expectNonFatal((func), #func, __FILE__, __LINE__)
+#define ASSERT_DEATH(func) internal::Assert::assertDeath((func), #func, __FILE__, __LINE__)
+#define ASSERT_SEGFAULT(func) internal::Assert::assertSegFault((func), #func, __FILE__, __LINE__)
+#define ASSERT_ABORT(func) internal::Assert::assertAbort((func), #func, __FILE__, __LINE__)
+#define ASSERT_FATAL(func) internal::Assert::assertFatal((func), #func, __FILE__, __LINE__)
+#define ASSERT_NONFATAL(func) internal::Assert::assertNonFatal((func), #func, __FILE__, __LINE__)
 
 //Exit tests
-#define EXPECT_SUCCESS(func) internal::Expects::expectSuccess((func), #func, __FILE__, __LINE__)
-#define EXPECT_FAILURE(func) internal::Expects::expectFailure((func), #func, __FILE__, __LINE__)
-#define EXPECT_NONZERO_EXIT(func) internal::Expects::expectNonzeroExit((func), #func, __FILE__, __LINE__)
-#define EXPECT_EXITCODE(func, code) internal::Expects::expectExitCode((func), #func, code, __FILE__, __LINE__)
-#define EXPECT_COMPLETES(func) internal::Expects::expectCompletes((func), #func, __FILE__, __LINE__)
+#define ASSERT_SUCCESS(func) internal::Assert::assertSuccess((func), #func, __FILE__, __LINE__)
+#define ASSERT_FAILURE(func) internal::Assert::assertFailure((func), #func, __FILE__, __LINE__)
+#define ASSERT_NONZERO_EXIT(func) internal::Assert::assertNonzeroExit((func), #func, __FILE__, __LINE__)
+#define ASSERT_EXITCODE(func, code) internal::Assert::assertExitCode((func), #func, code, __FILE__, __LINE__)
+#define ASSERT_COMPLETES(func) internal::Assert::assertCompletes((func), #func, __FILE__, __LINE__)
 
 //Output tests
-#define EXPECT_STDOUT_CONTAINS(func, content) internal::Expects::expectStdoutContains((func), (content), __FILE__, __LINE__)
-#define EXPECT_STDERR_CONTAINS(func, content) internal::Expects::expectStderrContains((func), (content), __FILE__, __LINE__)
-#define EXPECT_NO_STDOUT(func) internal::Expects::expectNoStdout((func), __FILE__, __LINE__)
-#define EXPECT_NO_STDERR(func) internal::Expects::expectNoStderr((func), __FILE__, __LINE__)
-#define EXPECT_STDOUT_MATCHES(func, content) internal::Expects::expectStdoutMatches((func), (content) __FILE__, __LINE__)
-#define EXPECT_STDERR_MATCHES(func, content) internal::Expects::expectStderrMatches((func), (content) __FILE__, __LINE__)
+#define ASSERT_STDOUT_CONTAINS(func, content) internal::Assert::assertStdoutContains((func), (content), __FILE__, __LINE__)
+#define ASSERT_STDERR_CONTAINS(func, content) internal::Assert::assertStderrContains((func), (content), __FILE__, __LINE__)
+#define ASSERT_NO_STDOUT(func) internal::Assert::assertNoStdout((func), __FILE__, __LINE__)
+#define ASSERT_NO_STDERR(func) internal::Assert::assertNoStderr((func), __FILE__, __LINE__)
+#define ASSERT_STDOUT_MATCHES(func, content) internal::Assert::assertStdoutMatches((func), (content) __FILE__, __LINE__)
+#define ASSERT_STDERR_MATCHES(func, content) internal::Assert::assertStderrMatches((func), (content) __FILE__, __LINE__)
 
 //Sanitizer tests
-#define EXPECT_ASAN_FAILURE(func) internal::Expects::expectAsanFailure((func), __FILE__, __LINE__)
-#define EXPECT_NASAN_FAILURE(func) internal::Expects::expectNoAsanFailure((func), __FILE__, __LINE__)
-#define EXPECT_UBSAN_FAILURE(func) internal::Expects::expectUbsanFailure((func), __FILE__, __LINE__)
-#define EXPECT_NUBSAN_FAILURE(func) internal::Expects::expectNoUbsanFailure((func), __FILE__, __LINE__)
-#define EXPECT_TSAN_FAILURE(func) internal::Expects::expectTsanFailure((func), __FILE__, __LINE__)
-#define EXPECT_NTSAN_FAILURE(func) internal::Expects::expectNoTsanFailure((func), __FILE__, __LINE__)
-#define EXPECT_LSAN_FAILURE(func) internal::Expects::expectLsanFailure((func), __FILE__, __LINE__)
-#define EXPECT_NLSAN_FAILURE(func) internal::Expects::expectNoLsanFailure((func), __FILE__, __LINE__)
-#define EXPECT_SAN_FAILURE(func) internal::Expects::expectSanFailure((func), __FILE__, __LINE__)
-#define EXPECT_NSAN_FAILURE(func) internal::Expects::expectNoSanFailure((func), __FILE__, __LINE__)
+#define ASSERT_ASAN_FAILURE(func) internal::Assert::assertAsanFailure((func), __FILE__, __LINE__)
+#define ASSERT_NASAN_FAILURE(func) internal::Assert::assertNoAsanFailure((func), __FILE__, __LINE__)
+#define ASSERT_UBSAN_FAILURE(func) internal::Assert::assertUbsanFailure((func), __FILE__, __LINE__)
+#define ASSERT_NUBSAN_FAILURE(func) internal::Assert::assertNoUbsanFailure((func), __FILE__, __LINE__)
+#define ASSERT_TSAN_FAILURE(func) internal::Assert::assertTsanFailure((func), __FILE__, __LINE__)
+#define ASSERT_NTSAN_FAILURE(func) internal::Assert::assertNoTsanFailure((func), __FILE__, __LINE__)
+#define ASSERT_LSAN_FAILURE(func) internal::Assert::assertLsanFailure((func), __FILE__, __LINE__)
+#define ASSERT_NLSAN_FAILURE(func) internal::Assert::assertNoLsanFailure((func), __FILE__, __LINE__)
+#define ASSERT_SAN_FAILURE(func) internal::Assert::assertSanFailure((func), __FILE__, __LINE__)
+#define ASSERT_NSAN_FAILURE(func) internal::Assert::assertNoSanFailure((func), __FILE__, __LINE__)
 
 //Timing/Concurrency tests
-#define EXPECT_TIMEOUT(func, timeLimit) internal::Expects::expectTimeout((func), (timeLimit), __FILE__, __LINE__)
-#define EXPECT_COMPLETES_WITHIN(func, timeLimit) \
-    internal::Expects::expectCompletesWithin((func), (timeLimit), __FILE__, __LINE__)
+#define ASSERT_TIMEOUT(func, timeLimit) internal::Assert::assertTimeout((func), (timeLimit), __FILE__, __LINE__)
+#define ASSERT_COMPLETES_WITHIN(func, timeLimit) \
+    internal::Assert::assertCompletesWithin((func), (timeLimit), __FILE__, __LINE__)
 
 //Generic tests
 
-#define EXPECT_STATUS(func, status) internal::Expects::expectStatus((func), (status), __FILE__, __LINE__)
-#define EXPECT_CRASH_TYPE(func, crash_type) \
-    internal::Expects::expectCrashType((func), (crash_type), __FILE__, __LINE__)
+#define ASSERT_STATUS(func, status) internal::Assert::assertStatus((func), (status), __FILE__, __LINE__)
+#define ASSERT_CRASH_TYPE(func, crash_type) \
+    internal::Assert::assertCrashType((func), (crash_type), __FILE__, __LINE__)
 
-#define EXPECT_SIGNAL(func, signal) \
-    internal::Expects::expectTerminationSignal((func), (signal), __FILE__, __LINE__)
-#define EXPECT_KILLED(func) internal::Expects::expectKilled((func), __FILE__, __LINE__)
+#define ASSERT_SIGNAL(func, signal) \
+    internal::Assert::assertTerminationSignal((func), (signal), __FILE__, __LINE__)
+#define ASSERT_KILLED(func) internal::Assert::assertKilled((func), __FILE__, __LINE__)
 
 namespace internal {
-    namespace Expects {
+    namespace Assert {
         //Fatal Tests
 
         template<typename Func>
-        inline void expectDeath(Func&& func, const char* funcName, const char* file, const uint32_t line) {
+        inline void assertDeath(Func&& func, const char* funcName, const char* file, const uint32_t line) {
             //need to store execution result
             Core::ExecutionResult execRes = impl_iso::death(func);
             if (execRes.execution_status != Core::ExecutionStatus::Completed) {
@@ -78,7 +78,7 @@ namespace internal {
         }
 
         template<typename Func>
-        inline void expectSegFault(Func&& func, const char* funcName, const char* file, const uint32_t line) {
+        inline void assertSegFault(Func&& func, const char* funcName, const char* file, const uint32_t line) {
             Core::ExecutionResult execRes = impl_iso::segfault(func);
             if (execRes.crash_type != Core::CrashType::SegmentationFault) {
                 Core::FailureInfo fail({
@@ -91,7 +91,7 @@ namespace internal {
         }
 
         template<typename Func>
-        inline void expectAbort(Func&& func, const char* funcName, const char* file, const uint32_t line) {
+        inline void assertAbort(Func&& func, const char* funcName, const char* file, const uint32_t line) {
             Core::ExecutionResult execRes = impl_iso::abort(func);
             if (execRes.crash_type != Core::CrashType::Abort) {
                 Core::FailureInfo fail({
@@ -104,7 +104,7 @@ namespace internal {
         }
 
         template<typename Func>
-        inline void expectFatal(Func&& func, const char* funcName, const char* file, const uint32_t line) {
+        inline void assertFatal(Func&& func, const char* funcName, const char* file, const uint32_t line) {
             Core::ExecutionResult execRes = impl_iso::fatal(func);
             if (execRes.execution_status == Core::ExecutionStatus::Completed 
                 && execRes.crash_type == Core::CrashType::None)
@@ -120,7 +120,7 @@ namespace internal {
         }
 
         template<typename Func>
-        inline void expectNonFatal(Func&& func, const char* funcName, const char* file, const uint32_t line) {
+        inline void assertNonFatal(Func&& func, const char* funcName, const char* file, const uint32_t line) {
             Core::ExecutionResult execRes = impl_iso::nonFatal(func);
             if (execRes.execution_status != Core::ExecutionStatus::Completed 
                 && execRes.crash_type != Core::CrashType::None)
@@ -141,7 +141,7 @@ namespace internal {
         //Exit Tests
 
         template<typename Func>
-        inline void expectSuccess(Func&& func, const char* funcName, const char* file, const uint32_t line) {
+        inline void assertSuccess(Func&& func, const char* funcName, const char* file, const uint32_t line) {
             Core::ExecutionResult execRes = impl_iso::success(func);
             if (execRes.process.native_exit_code != EXIT_SUCCESS) {
                 Core::FailureInfo fail({
@@ -157,7 +157,7 @@ namespace internal {
         }
 
         template<typename Func>
-        inline void expectFailure(Func&& func, const char* funcName, const char* file, const uint32_t line) {
+        inline void assertFailure(Func&& func, const char* funcName, const char* file, const uint32_t line) {
             Core::ExecutionResult execRes = impl_iso::failure(func);
             if (execRes.process.native_exit_code != EXIT_FAILURE) {
                 Core::FailureInfo fail({
@@ -173,7 +173,7 @@ namespace internal {
         }
 
         template<typename Func>
-        inline void expectNonzeroExit(Func&& func, const char* funcName, const char* file, const uint32_t line) {
+        inline void assertNonzeroExit(Func&& func, const char* funcName, const char* file, const uint32_t line) {
             Core::ExecutionResult execRes = impl_iso::nonzeroExit(func);
             if (execRes.process.native_exit_code == 0) {
                 Core::FailureInfo fail({
@@ -188,7 +188,7 @@ namespace internal {
         }
 
         template<typename Func>
-        inline void expectExitCode(Func&& func, const char* funcName, const int code, 
+        inline void assertExitCode(Func&& func, const char* funcName, const int code, 
             const char* file, const uint32_t line)
         {
             Core::ExecutionResult execRes = impl_iso::nonzeroExit(func);
@@ -206,7 +206,7 @@ namespace internal {
         }
 
         template<typename Func>
-        inline void expectCompletes(Func&& func, const char* funcName,
+        inline void assertCompletes(Func&& func, const char* funcName,
             const char* file, const uint32_t line)
         {
             Core::ExecutionResult execRes = impl_iso::completes(func);
@@ -225,7 +225,7 @@ namespace internal {
 
         //Output Tests
         template <typename Func>
-        inline void expectStdoutContains(Func&& func, const std::string& content, 
+        inline void assertStdoutContains(Func&& func, const std::string& content, 
             const char* file, const uint32_t line)
         {
             Core::ExecutionResult execRes = impl_iso::stdoutContains(func);
@@ -242,7 +242,7 @@ namespace internal {
         }
 
         template <typename Func>
-        inline void expectStderrContains(Func&& func, const std::string& content, const char* file, const uint32_t line) {
+        inline void assertStderrContains(Func&& func, const std::string& content, const char* file, const uint32_t line) {
             Core::ExecutionResult execRes = impl_iso::stderrContains(func);
             if (execRes.output.stderr_text.find(content) == std::string::npos) {
                 Core::FailureInfo fail({
@@ -257,7 +257,7 @@ namespace internal {
         }
 
         template <typename Func>
-        inline void expectNoStdout(Func&& func, const char* file, const uint32_t line) {
+        inline void assertNoStdout(Func&& func, const char* file, const uint32_t line) {
             Core::ExecutionResult execRes = impl_iso::noStdout(func);
             if (!execRes.output.stdout_text.empty()) {
                 Core::FailureInfo fail({
@@ -273,7 +273,7 @@ namespace internal {
         }
 
         template <typename Func>
-        inline void expectNoStderr(Func&& func, const char* file, const uint32_t line) {
+        inline void assertNoStderr(Func&& func, const char* file, const uint32_t line) {
             Core::ExecutionResult execRes = impl_iso::noStderr(func);
             if (!execRes.output.stderr_text.empty()) {
                 Core::FailureInfo fail({
@@ -289,7 +289,7 @@ namespace internal {
         }
 
           template <typename Func>
-        inline void expectStdoutMatches(Func&& func, const std::string& content, const char* file, const uint32_t line) {
+        inline void assertStdoutMatches(Func&& func, const std::string& content, const char* file, const uint32_t line) {
             Core::ExecutionResult execRes = impl_iso::noStdout(func);
             if (execRes.output.stdout_text != content) {
                 Core::FailureInfo fail({
@@ -304,7 +304,7 @@ namespace internal {
         }
 
         template <typename Func>
-        inline void expectStderrMatches(Func&& func, const std::string& content, const char* file, const uint32_t line) {
+        inline void assertStderrMatches(Func&& func, const std::string& content, const char* file, const uint32_t line) {
             Core::ExecutionResult execRes = impl_iso::noStderr(func);
             if (execRes.output.stderr_text != content) {
                 Core::FailureInfo fail({
@@ -319,7 +319,7 @@ namespace internal {
         }
 
         template <typename Func>
-        inline void expectAsanFailure(Func&& func, const char* file, const uint32_t line) {
+        inline void assertAsanFailure(Func&& func, const char* file, const uint32_t line) {
             Core::ExecutionResult execRes = impl_iso::asanFailure(func);
             if (!execRes.sanitizers.asan_detected) {
                 Core::FailureInfo fail({
@@ -333,7 +333,7 @@ namespace internal {
         }
 
         template <typename Func>
-        inline void expectNoAsanFailure(Func&& func, const char* file, const uint32_t line) {
+        inline void assertNoAsanFailure(Func&& func, const char* file, const uint32_t line) {
             Core::ExecutionResult execRes = impl_iso::asanFailure(func);
             if (execRes.sanitizers.asan_detected) {
                 Core::FailureInfo fail({
@@ -348,7 +348,7 @@ namespace internal {
         }
 
         template <typename Func>
-        inline void expectUbsanFailure(Func&& func, const char* file, const uint32_t line) {
+        inline void assertUbsanFailure(Func&& func, const char* file, const uint32_t line) {
             Core::ExecutionResult execRes = impl_iso::ubsanFailure(func);
             if (!execRes.sanitizers.ubsan_detected) {
                 Core::FailureInfo fail({
@@ -362,7 +362,7 @@ namespace internal {
         }
 
         template <typename Func>
-        inline void expectNoUbsanFailure(Func&& func, const char* file, const uint32_t line) {
+        inline void assertNoUbsanFailure(Func&& func, const char* file, const uint32_t line) {
             Core::ExecutionResult execRes = impl_iso::ubsanFailure(func);
             if (execRes.sanitizers.asan_detected) {
                 Core::FailureInfo fail({
@@ -377,7 +377,7 @@ namespace internal {
         }
 
         template <typename Func>
-        inline void expectTsanFailure(Func&& func, const char* file, const uint32_t line) {
+        inline void assertTsanFailure(Func&& func, const char* file, const uint32_t line) {
             Core::ExecutionResult execRes = impl_iso::tsanFailure(func);
             if (!execRes.sanitizers.tsan_detected) {
                 Core::FailureInfo fail({
@@ -391,7 +391,7 @@ namespace internal {
         }
 
         template <typename Func>
-        inline void expectNoTsanFailure(Func&& func, const char* file, const uint32_t line) {
+        inline void assertNoTsanFailure(Func&& func, const char* file, const uint32_t line) {
             Core::ExecutionResult execRes = impl_iso::tsanFailure(func);
             if (execRes.sanitizers.tsan_detected) {
                 Core::FailureInfo fail({
@@ -406,7 +406,7 @@ namespace internal {
         }
 
         template <typename Func>
-        inline void expectLsanFailure(Func&& func, const char* file, const uint32_t line) {
+        inline void assertLsanFailure(Func&& func, const char* file, const uint32_t line) {
             Core::ExecutionResult execRes = impl_iso::lsanFailure(func);
             if (!execRes.sanitizers.lsan_detected) {
                 Core::FailureInfo fail({
@@ -420,7 +420,7 @@ namespace internal {
         }
 
         template <typename Func>
-        inline void expectNoLsanFailure(Func&& func, const char* file, const uint32_t line) {
+        inline void assertNoLsanFailure(Func&& func, const char* file, const uint32_t line) {
             Core::ExecutionResult execRes = impl_iso::lsanFailure(func);
             if (execRes.sanitizers.lsan_detected) {
                 Core::FailureInfo fail({
@@ -435,7 +435,7 @@ namespace internal {
         }
 
         template <typename Func>
-        inline void expectSanFailure(Func&& func, const char* file, const uint32_t line) {
+        inline void assertSanFailure(Func&& func, const char* file, const uint32_t line) {
             Core::ExecutionResult execRes = impl_iso::sanFailure(func);
             if (!execRes.sanitizers.asan_detected && !execRes.sanitizers.ubsan_detected
                 && !execRes.sanitizers.tsan_detected && !execRes.sanitizers.lsan_detected) 
@@ -451,7 +451,7 @@ namespace internal {
         }
 
         template <typename Func>
-        inline void expectNoSanFailure(Func&& func, const char* file, const uint32_t line) {
+        inline void assertNoSanFailure(Func&& func, const char* file, const uint32_t line) {
             Core::ExecutionResult execRes = impl_iso::sanFailure(func);
             if (execRes.sanitizers.asan_detected || execRes.sanitizers.ubsan_detected
                 || execRes.sanitizers.tsan_detected || execRes.sanitizers.lsan_detected) 
@@ -468,7 +468,7 @@ namespace internal {
 
         //Timing Tests
         template <typename Func>
-        inline void expectTimeout(Func&& func, const int timeLimitMs, const char* file, const uint32_t line) {
+        inline void assertTimeout(Func&& func, const int timeLimitMs, const char* file, const uint32_t line) {
             Core::ExecutionResult execRes = impl_iso::timeout(func, timeLimitMs);
             if (execRes.execution_status != Core::ExecutionStatus::TimedOut) 
             {
@@ -484,7 +484,7 @@ namespace internal {
         }
 
         template <typename Func>
-        inline void expectCompletesWithin(Func&& func, const int timeLimitMs, const char* file, const uint32_t line) {
+        inline void assertCompletesWithin(Func&& func, const int timeLimitMs, const char* file, const uint32_t line) {
             Core::ExecutionResult execRes = impl_iso::completesWithin(func, timeLimitMs);
             if (execRes.execution_status == Core::ExecutionStatus::TimedOut) 
             {
@@ -501,7 +501,7 @@ namespace internal {
 
         //Generic Tests
         template <typename Func>
-        inline void expectStatus(Func&& func, const Core::ExecutionStatus status, 
+        inline void assertStatus(Func&& func, const Core::ExecutionStatus status, 
             const char* file, const uint32_t line)
         {
             Core::ExecutionResult execRes = impl_iso::executionStatus(func);
@@ -520,7 +520,7 @@ namespace internal {
         }
 
         template <typename Func>
-        inline void expectCrashType(Func&& func, const Core::CrashType type, 
+        inline void assertCrashType(Func&& func, const Core::CrashType type, 
             const char* file, const uint32_t line)
         {
             Core::ExecutionResult execRes = impl_iso::executionStatus(func);
@@ -539,7 +539,7 @@ namespace internal {
         }
 
         template <typename Func>
-        inline void expectTerminationSignal(Func&& func, const int signal, 
+        inline void assertTerminationSignal(Func&& func, const int signal, 
             const char* file, const uint32_t line)
         {
             Core::ExecutionResult execRes = impl_iso::executionStatus(func);
@@ -559,7 +559,7 @@ namespace internal {
         }
 
         template <typename Func>
-        inline void expectKilled(Func&& func, const int signal, 
+        inline void assertKilled(Func&& func, const int signal, 
             const char* file, const uint32_t line)
         {
             Core::ExecutionResult execRes = impl_iso::executionStatus(func);

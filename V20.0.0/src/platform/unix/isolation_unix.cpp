@@ -12,14 +12,7 @@ namespace internal {
         Core::ExecutionResult runIsolatedImpl(const std::function<void()>& func, const int timeLimit) {
             using ms = std::chrono::milliseconds;
 
-            // int step;
-            // if (timeLimit < 100) {
-            //     step = 10;
-            // } else if (timeLimit < 1000) {
-            //     step = 100;
-            // } else {
-            //     timeLimit 
-            // }
+            int timeStep = timeLimit / 10;
 
             Core::ExecutionResult run;
 
@@ -32,13 +25,13 @@ namespace internal {
 
             if (pipe(stdoutPipe) == -1) {
                 perror("pipe");
-                run.execution_status = Core::ExecutionStatus::InternalFrameworkError;
+                run.execution_status = Core::ExecutionStatus::CommunicationFailure;
                 run.crash_type = Core::CrashType::Unknown;
                 run.framework_message = "stdout pipe failed";
                 return run;
             } else if (pipe(stderrPipe) == -1) {
                 perror("pipe");
-                run.execution_status = Core::ExecutionStatus::InternalFrameworkError;
+                run.execution_status = Core::ExecutionStatus::CommunicationFailure;
                 run.crash_type = Core::CrashType::Unknown;
                 run.framework_message = "stderr pipe failed";
                 return run;
@@ -150,7 +143,7 @@ namespace internal {
                         break;
                     }
 
-                    std::this_thread::sleep_for(std::chrono::milliseconds(10));
+                    std::this_thread::sleep_for(std::chrono::milliseconds(timeStep));
                 }
 
                 //close pipes once AFTER loop terminates instead of inside
@@ -341,7 +334,7 @@ namespace internal {
             }
 
             if (pipeError) {
-                run.execution_status = Core::ExecutionStatus::InternalFrameworkError;
+                run.execution_status = Core::ExecutionStatus::CommunicationFailure;
                 run.crash_type = Core::CrashType::Unknown;
                 run.framework_message = "Failed to read from pipes";
             }
