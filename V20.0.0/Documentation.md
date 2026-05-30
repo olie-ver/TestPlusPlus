@@ -3402,6 +3402,8 @@ D_TEST(expect_throws_with_message) {
 ## Isolation Tests
 Isolation tests are tests that are to be run in isolation. As of now, only UNIX systems are supported for this type of testing (sorry Windows users, but I don't even have anything to compile or test it with. But since this IS open-source, I'll leave implementing Windows process isolation to the user). They are good for checking code beyond typical pass/fail behavior, namely how they run. It is also advised to run potentially dangerous code inside an isolation test. Because these tests run in a separate, they have a safeguard built in to be able to run for a maximum of 10 seconds (10000ms).
 
+WARNING: These tests are VERY low level in execution, and their ability to perform depends on things such as compilation, content detection etc. These tests, ESPECIALLY the sanitizer tests should be operated with a grain of salt and accuracy/usefulness is not guaranteed. However, I am still pushing to main.
+
 1. [Types of Execution Statuses](#types-of-execution-statuses)
 2. [Types of Crash Types](#types-of-crash-types)
 3. [Assert Death](#assert_death)
