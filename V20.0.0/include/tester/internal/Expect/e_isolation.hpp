@@ -214,7 +214,7 @@ namespace internal {
                 Core::FailureInfo fail({
                     std::string("Expected function: ") + funcName + " to complete" 
                     ", but it exited with status: "
-                    + Core::ExecutionStrings((int)execRes.execution_status),
+                    + Core::ExecutionStrings[(int)execRes.execution_status],
                     file,
                     line 
                 });
@@ -230,9 +230,10 @@ namespace internal {
         {
             Core::ExecutionResult execRes = impl_iso::stdoutContains(func);
             if (execRes.output.stdout_text.find(content) == std::string::npos) {
+                size_t maxSize = 1024;
                 Core::FailureInfo fail({
                     std::string("Expected stdout to contain: \"") + content + "\", but it didn't.\n" 
-                    "stdout: " + execRes.output.stdout_text.substr(0, min(1024, execRes.output.stdout_text.size())),
+                    "stdout: " + execRes.output.stdout_text.substr(0, std::min(maxSize, execRes.output.stdout_text.size())),
                     file,
                     line 
                 });
@@ -245,9 +246,10 @@ namespace internal {
         inline void expectStderrContains(Func&& func, const std::string& content, const char* file, const uint32_t line) {
             Core::ExecutionResult execRes = impl_iso::stderrContains(func);
             if (execRes.output.stderr_text.find(content) == std::string::npos) {
+                size_t maxSize = 1024;
                 Core::FailureInfo fail({
                     std::string("Expected stderr to contain: \"") + content + "\", but it didn't.\n" 
-                    "stderr: " + execRes.output.stderr_text.substr(0, min(1024, execRes.output.stderr_text.size())),
+                    "stderr: " + execRes.output.stderr_text.substr(0, std::min(maxSize, execRes.output.stderr_text.size())),
                     file,
                     line 
                 });
@@ -260,10 +262,11 @@ namespace internal {
         inline void expectNoStdout(Func&& func, const char* file, const uint32_t line) {
             Core::ExecutionResult execRes = impl_iso::noStdout(func);
             if (!execRes.output.stdout_text.empty()) {
+                size_t maxSize = 1024;
                 Core::FailureInfo fail({
                     std::string("Expected stdout to be empty, but it wasn't.\"")
                     + "stdout: " 
-                    + execRes.output.stdout_text.substr(0, min(1024, execRes.output.stdout_text.size())),
+                    + execRes.output.stdout_text.substr(0, std::min(maxSize, execRes.output.stdout_text.size())),
                     file,
                     line 
                 });
@@ -276,10 +279,11 @@ namespace internal {
         inline void expectNoStderr(Func&& func, const char* file, const uint32_t line) {
             Core::ExecutionResult execRes = impl_iso::noStderr(func);
             if (!execRes.output.stderr_text.empty()) {
+                size_t maxSize = 1024;
                 Core::FailureInfo fail({
                     std::string("Expected stderr to be empty, but it wasn't.\"")
                     + "stderr: "
-                    + execRes.output.stderr_text.substr(0, min(1024, execRes.output.stderr_text.size())),
+                    + execRes.output.stderr_text.substr(0, std::min(maxSize, execRes.output.stderr_text.size())),
                     file,
                     line 
                 });
@@ -292,9 +296,10 @@ namespace internal {
         inline void expectStdoutMatches(Func&& func, const std::string& content, const char* file, const uint32_t line) {
             Core::ExecutionResult execRes = impl_iso::noStdout(func);
             if (execRes.output.stdout_text != content) {
+                size_t maxSize = 1024;
                 Core::FailureInfo fail({
                     std::string("Expected stdout to match: \"") + content + "\", but it didn't.\n" 
-                    "stdout: " + execRes.output.stdout_text.substr(0, min(1024, execRes.output.stdout_text.size())),
+                    "stdout: " + execRes.output.stdout_text.substr(0, std::min(maxSize, execRes.output.stdout_text.size())),
                     file,
                     line 
                 });
@@ -307,9 +312,10 @@ namespace internal {
         inline void expectStderrMatches(Func&& func, const std::string& content, const char* file, const uint32_t line) {
             Core::ExecutionResult execRes = impl_iso::noStderr(func);
             if (execRes.output.stderr_text != content) {
+                size_t maxSize = 1024;
                 Core::FailureInfo fail({
                     std::string("Expected stderr to match: \"") + content + "\", but it didn't.\n" 
-                    "stderr: " + execRes.output.stderr_text.substr(0, min(1024, execRes.output.stderr_text.size())),
+                    "stderr: " + execRes.output.stderr_text.substr(0, std::min(maxSize, execRes.output.stderr_text.size())),
                     file,
                     line 
                 });
@@ -549,7 +555,7 @@ namespace internal {
                     std::string("Expected func to have native signal: ")
                     + Helpers::toString(signal)
                     + "\n but it had native signal: " 
-                    + Helpers::toString(execRes.process.native_signal)
+                    + Helpers::toString(execRes.process.native_signal),
                     file,
                     line 
                 });
