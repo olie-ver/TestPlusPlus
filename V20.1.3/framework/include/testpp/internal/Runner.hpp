@@ -13,8 +13,8 @@
 
 #define STR(x) #x
 
-#define UNIQUE_NAME(base, line) base##_##line
-#define MAKE_UNIQUE(base, line) UNIQUE_NAME(base, line)
+#define TESTPP_UNIQUE_NAME(base, line) base##_##line
+#define MAKE_UNIQUE(base, line) TESTPP_UNIQUE_NAME(base, line)
 
 #define TEST_IMPL(suite_name, test_name, line) \
     void suite_name##_##test_name(); \

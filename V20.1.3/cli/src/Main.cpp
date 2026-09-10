@@ -17,7 +17,11 @@ int main(int argc, char** argv) {
 
     std::filesystem::path run = installRoot / "run";
     std::filesystem::path var = installRoot / "var";
-    std::filesystem::path user_exec = run / "bin" / "testpp_generated";
+    #if defined(_WIN32) || defined(_WIN64)
+        std::filesystem::path user_exec = run / "bin" / "Release" / "testpp_generated.exe";
+    #else
+        std::filesystem::path user_exec = run / "bin" / "testpp_generated";
+    #endif
     std::filesystem::path user_conf = run / "config_flags.conf";
     std::filesystem::path user_cxx = run / "config_cxx.conf";
     std::filesystem::path cmake_template = var / "CMakeLists.txt.in";

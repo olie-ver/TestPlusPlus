@@ -68,17 +68,6 @@ target_include_directories(testpp
 
 target_link_libraries(testpp PUBLIC Threads::Threads)
 
-if (MSVC)
-    target_compile_options(testpp PRIVATE /W4)
-else()
-    target_compile_options(testpp PRIVATE
-        -Wall
-        -Wextra
-        -pedantic
-        -Winvalid-pch
-    )
-endif()
-
 add_library(testpp_main STATIC
     src/Main.cpp
 )
