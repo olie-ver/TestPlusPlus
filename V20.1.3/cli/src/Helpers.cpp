@@ -176,13 +176,7 @@ namespace tppHelpers {
         #if defined(_WIN32) || defined(_WIN64)
             for(size_t i = 0; i < install_str.size(); i++) {
                 if (install_str[i] == '\\') {
-                    install_str.insert(i, '\\');
-                    i++;
-                }
-            }
-            for(size_t i = 0; i < imploded_str.size(); i++) {
-                if (imploded_str[i] == '\\') {
-                    imploded_str.insert(i, '\\');
+                    install_str.insert(i, 1, '\\');
                     i++;
                 }
             }
