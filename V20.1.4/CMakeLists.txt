@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.20)
 
 project (
     testpp
-    VERSION 20.1.3
+    VERSION 20.1.4
     LANGUAGES CXX
 )
 

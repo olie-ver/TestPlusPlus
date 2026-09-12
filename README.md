@@ -5,13 +5,6 @@ systems is largely untested. It is completely open source and free to use.
 It is currently built using C++20, and usage with other languages/C++ standards 
 has not yet been tested.
 
-## Notes:
-Right now Test++ V20.1.3 is being tested for compilation and running on Windows. 
-The current V20.1.3 folder has code for being tested on Windows, but the 
-V20.1.3.zip does NOT contain this code. If it is able to be installed on a 
-fresh Windows system, this code will be then retested for Macs and then turned into 
-V20.1.4.
-
 # Installation
 
 In order to use Test++ as a CLI tool, you will need CMake installed on your system.
@@ -32,10 +25,10 @@ To uninstall, run
 brew uninstall testpp
 ```
 
-## Manual Installation
+## Manual Installation (Mac)
 
-In order to manually install Test++, go to the Downloads folder and download the V20.1.2.zip file.
-Extract the files. Open a new terminal inside the V20.1.2 folder and then run the following commands:
+In order to manually install Test++, go to the Downloads folder and download the V20.1.4.zip file.
+Extract the files. Open a new terminal inside the V20.1.4 folder and then run the following commands:
 
 ```bash
 cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
@@ -43,7 +36,22 @@ cmake --build build --parallel
 sudo cmake --install build
 ```
 
-Then to register the `testpp` command in your system, you can run:
+Then to register the `testpp` command in your Mac system, you can run:
 ```bash
 echo 'export PATH="$HOME/testpp-install/bin:$PATH"' >> ~/.zshrc
 ```
+
+## Manual Installation (Windows)
+
+In order to manually install Test++, go to the Downloads folder and download the V20.1.4.zip file.
+Extract the files. Open a new terminal inside the V20.1.4 folder and then run the following commands:
+
+```bash
+cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
+cmake --build build --parallel --config Release
+sudo cmake --install build --config Release
+```
+
+For Windows, you can register the `testpp` command by going to your 
+Environment Variables, finding the PATH variable and then adding in a 
+new environment variable to `C:\Program Files (x86)\testpp\bin`.

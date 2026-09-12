@@ -8,7 +8,7 @@
 #include <sstream>
 #include <iterator>
 
-#define VERSION "Test++ V20.1.3"
+#define VERSION "Test++ V20.1.4"
 
 #define DEFAULT_FLAGS "default_flag.conf"
 
