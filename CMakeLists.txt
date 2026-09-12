@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.20)
 
 project (
     testpp
-    VERSION 20.1.3
+    VERSION 20.1.4
     LANGUAGES CXX
 )
 
@@ -16,19 +16,23 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# // Source - https://stackoverflow.com/a/41361741
-# // Posted by Angew is no longer proud of SO, modified by community. See post 'Timeline' for change history
-# // Retrieved 2026-08-04, License - CC BY-SA 3.0
-
 if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE Release)
 endif()
 
-set(CMAKE_CXX_FLAGS "-Wall -Wextra")
-set(CMAKE_CXX_FLAGS_DEBUG "-g")
-set(CMAKE_CXX_FLAGS_RELEASE "-O3")
+if (MSVC)
+    add_compile_options(/W4)
+else()
+    add_compile_options(
+        -Wall
+        -Wextra
+        -Wpedantic
+        -Werror
+    )
 
-# end of SO code
+    set(CMAKE_CXX_FLAGS_DEBUG "-g")
+    set(CMAKE_CXX_FLAGS_RELEASE "-O3")
+endif()
 
 add_subdirectory(framework)
 add_subdirectory(cli)

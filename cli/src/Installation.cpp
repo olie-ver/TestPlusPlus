@@ -3,6 +3,8 @@
 
 #ifdef __APPLE__
     #include <mach-o/dyld.h>
+#elif defined(_WIN32) || defined(_WIN64)
+    #include <windows.h>
 #endif
 
 namespace tppCLI {
@@ -21,7 +23,10 @@ namespace tppCLI {
             std::filesystem::path exe = std::filesystem::canonical("/proc/self/exe");
             return exe.parent_path().parent_path();
         #elif defined(_WIN32) || defined(_WIN64)
-            return std::filesystem::path(std::getenv("USERPROFILE")) / ".testpp";
+            wchar_t buffer[MAX_PATH];
+            GetModuleFileNameW(NULL, buffer, MAX_PATH);
+            std::filesystem::path exePath(buffer);
+            return exePath.parent_path().parent_path();
         #endif
     }
 }

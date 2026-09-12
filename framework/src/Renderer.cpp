@@ -80,7 +80,7 @@ namespace internal {
             std::cout << "Time: " << testRun.totalMs << " ms" << std::endl;
         }
 
-        void stream(const std::string_view& msg) {
+        void streamMsg(const std::string_view& msg) {
             static std::mutex m;
 
             std::lock_guard lock(m);

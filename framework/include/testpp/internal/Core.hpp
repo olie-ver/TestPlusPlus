@@ -12,6 +12,7 @@
 
 #if defined(_WIN32)
     #include <sys/types.h> 
+    typedef int pid_t;
 #endif
 
 /// @brief An internal namespace. Using anything from within is not advised
@@ -222,7 +223,7 @@ namespace internal {
             std::map<std::string, std::vector<TestResult>> results;
 
             int total = 0;
-            double totalMs = 0.0;
+            long long totalMs = 0;
         };
 
         /// @brief Hashes a Test struct

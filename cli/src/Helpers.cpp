@@ -6,6 +6,10 @@
 #include <fstream>
 #include <sstream>
 
+#if defined(_WIN32) || defined(_WIN64)
+    #include <algorithm>
+#endif
+
 namespace tppHelpers {
     void printDiagnostics(const char* VERSION, 
         const std::filesystem::path& installRoot, 
@@ -23,7 +27,7 @@ namespace tppHelpers {
 
         if (user_exec_exists) {
             std::cout << "True\n";
-            std::cout << "Test Executable Path: " << user_exec.c_str() << "\n\n";
+            std::cout << "Test Executable Path: " << user_exec.string() << "\n\n";
         } else {
             std::cout << "False\n\n";
         }
@@ -166,16 +170,28 @@ namespace tppHelpers {
             imploded << files[i] << "\n\t";
         }
 
+        std::string install_str = install_prefix.string();
+        std::string imploded_str = imploded.str();
+
+        #if defined(_WIN32) || defined(_WIN64)
+            for(size_t i = 0; i < install_str.size(); i++) {
+                if (install_str[i] == '\\') {
+                    install_str.insert(i, 1, '\\');
+                    i++;
+                }
+            }
+        #endif
+
         generate_executable.replace(
             generate_executable.find(installReplace),
             installReplace.size(),
-            install_prefix.string()
+            install_str
         );
 
         generate_executable.replace(
             generate_executable.find(replace),
             replace.size(),
-            imploded.str()
+            imploded_str
         );
 
         generate_executable.replace(
@@ -207,7 +223,11 @@ namespace tppHelpers {
             return false;
         }
 
-        std::string build = "cmake --build \"" + build_dir + "\"";
+        #if defined(_WIN32) || defined(_WIN64)
+            std::string build = "cmake --build \"" + build_dir + "\" --config Release";
+        #else
+            std::string build = "cmake --build \"" + build_dir + "\"";
+        #endif
 
         int buildResult = std::system(build.c_str());
 

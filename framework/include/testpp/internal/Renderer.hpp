@@ -21,7 +21,7 @@ namespace internal {
 
         inline bool shouldStream = false;
 
-        void stream(const std::string_view& msg);
+        void streamMsg(const std::string_view& msg);
 
         class ITestRenderer {
             public:
@@ -43,7 +43,7 @@ namespace internal {
                 const std::string jsonFile;
                 const std::string junitFile;
 
-                bool stream = false;
+                bool willStream = false;
 
                 int passed = 0;
                 int failed = 0;

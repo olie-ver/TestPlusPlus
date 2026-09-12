@@ -30,12 +30,12 @@ namespace internal {
                     skip.testName = test.test_name;
                     skip.test_status = Core::TestStatus::Skipped;
 
-                    skip.execution_ms = 0.0;
+                    skip.execution_ms = 0;
 
                     results[index] = skip;
 
                     if (Renderer::shouldStream) {
-                        Renderer::stream(
+                        Renderer::streamMsg(
                             '[' + std::to_string(index + 1) + '/' +
                             std::to_string(size) +
                             "][SKIPPED]: " +
@@ -47,7 +47,7 @@ namespace internal {
                     running = test;
 
                     if (Renderer::shouldStream) {
-                        Renderer::stream(
+                        Renderer::streamMsg(
                             '[' + std::to_string(index + 1) + '/' +
                             std::to_string(size) +
                             "][STARTED]: " +
@@ -60,7 +60,7 @@ namespace internal {
                     results[index] = runTest(test);
 
                     if (Renderer::shouldStream) {
-                        Renderer::stream(
+                        Renderer::streamMsg(
                             '[' + std::to_string(index + 1) + '/' +
                             std::to_string(size) +
                             "][ENDED]: " +
@@ -84,7 +84,7 @@ namespace internal {
             return std::thread([&time, &finished, &running, &num_threads, &timeUnit, &start_time]() {
                 while (!finished.load()) {
                     clock::time_point now = clock::now();
-                    int elapsed = std::chrono::duration_cast<ms>(now - start_time).count();
+                    long long elapsed = std::chrono::duration_cast<ms>(now - start_time).count();
 
                     if (elapsed >= time) {
                         std::cerr << "\nGLOBAL TEST TIMEOUT EXCEEDED (" << time << ' '
