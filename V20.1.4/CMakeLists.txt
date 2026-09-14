@@ -44,7 +44,6 @@ install(TARGETS
     testpp_main
     EXPORT testppTargets
     ARCHIVE DESTINATION lib
-    PATTERN ".DS_Store" EXCLUDE
 )
 
 #install the include folder into include
@@ -58,7 +57,6 @@ install(
 install(TARGETS
     testpp_cli
     RUNTIME DESTINATION bin
-    PATTERN ".DS_Store" EXCLUDE
 )
 
 #install the default config and CMake template into var
@@ -69,7 +67,6 @@ install(
         resources/default_flag.conf
         resources/CMakeLists.txt.in
     DESTINATION var
-    PATTERN ".DS_Store" EXCLUDE
 )
 
 #ensure that the user has a config file upon installation in the run/ folder
@@ -77,22 +74,16 @@ install(
     FILES resources/default_flag.conf
     DESTINATION run
     RENAME config_flags.conf
-    PATTERN ".DS_Store" EXCLUDE
 )
 
 install (
     FILES resources/default_cxx.conf
     DESTINATION run
     RENAME config_cxx.conf
-    PATTERN ".DS_Store" EXCLUDE
 )
 
 #Create and install empty directories for runtime
-install(
-    DIRECTORY 
-    DESTINATION run
-    PATTERN ".DS_Store" EXCLUDE
-)
+install(DIRECTORY DESTINATION run)
 
 #TODO: Want to have no dependency on a build directory in the future
 # install(DIRECTORY DESTINATION run/build)
@@ -103,7 +94,6 @@ install(
     FILE testppTargets.cmake
     NAMESPACE testpp::
     DESTINATION lib/cmake/testpp
-    PATTERN ".DS_Store" EXCLUDE
 )
 
 #generate the package config
@@ -126,5 +116,4 @@ install(
         "${CMAKE_CURRENT_BINARY_DIR}/testppConfig.cmake"
         "${CMAKE_CURRENT_BINARY_DIR}/testppConfigVersion.cmake"
     DESTINATION lib/cmake/testpp
-    PATTERN ".DS_Store" EXCLUDE
 )
