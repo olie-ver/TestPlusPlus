@@ -41,6 +41,11 @@ Then to register the `testpp` command in your Mac system, you can run:
 echo 'export PATH="$HOME/testpp-install/bin:$PATH"' >> ~/.zshrc
 ```
 
+## Installer (Windows ARM)
+
+Go into the installer/installs folder and run the TestPlusPlus-20.1.4-win-arm64.exe file. This will automatically 
+install Test++, the VC++ runtime (if needed) and register the `testpp` command automatically.
+
 ## Manual Installation (Windows)
 
 In order to manually install Test++, go to the Downloads folder and download the V20.1.4.zip file.
