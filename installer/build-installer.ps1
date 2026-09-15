@@ -9,7 +9,7 @@ $TestPPDir = (Resolve-Path $TestPPDir).Path
 $InstallerScript = Join-Path $InstallerDir "testpp.iss"
 $StagingDir = Join-Path $TestPPDir "staging"
 
-$InnoSetup = "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe"
+$InnoSetup = "C:\Program Files\Inno Setup 7\ISCC.exe"
 
 $Architectures = @(
     @{
