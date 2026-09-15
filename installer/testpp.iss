@@ -1,26 +1,48 @@
 #define AppVersion "20.1.4"
 
+#ifndef Arch
+  #define Arch "x64"
+#endif
+
 [Setup]
 AppName=Test++
 AppVersion={#AppVersion}
 AppPublisher=Oliver Lie
 AppPublisherURL=https://github.com/olie-ver/TestPlusPlus
-AppSupportURL=https://github.com/olie-ver/TestPlusPlus/issues
-AppUpdatesURL=https://github.com/olie-ver/TestPlusPlus/releases
+AppSupportURL=https://github.com/olie-ver/TestPlusPlus
+AppUpdatesURL=https://github.com/olie-ver/TestPlusPlus
 UninstallDisplayName=Test++
 
 DefaultDirName={autopf}\testpp
-ArchitecturesAllowed=arm64
-ArchitecturesInstallIn64BitMode=arm64
+
+#if Arch == "x86"
+  ArchitecturesAllowed=x86
+#elif Arch == "x64"
+    ArchitecturesAllowed=x64
+ArchitecturesInstallIn64BitMode=x64
+#elif Arch == "arm64"
+  ArchitecturesAllowed=arm64
+  ArchitecturesInstallIn64BitMode=arm64
+#else
+  #error "Unsupported architecture. Use x86, x64, or arm64."
+#endif
+
 DisableProgramGroupPage=yes
 ChangesEnvironment=yes
 
 OutputDir=installs
-OutputBaseFilename=TestPlusPlus-{#AppVersion}-win-arm64
+OutputBaseFilename=TestPlusPlus-{#AppVersion}-win-{#Arch}
 
 [Files]
 Source: "..\V{#AppVersion}\staging\*"; DestDir: "{app}"; Flags: recursesubdirs createallsubdirs
-Source: "VC_redist.arm64.exe"; DestDir: "{tmp}"; Flags: deleteafterinstall
+
+#if Arch == "x86"
+  Source: "VC_redist.x86.exe"; DestDir: "{tmp}"; Flags: deleteafterinstall
+#elif Arch == "x64"
+  Source: "VC_redist.x64.exe"; DestDir: "{tmp}"; Flags: deleteafterinstall
+#elif Arch == "arm64"
+  Source: "VC_redist.arm64.exe"; DestDir: "{tmp}"; Flags: deleteafterinstall
+#endif
 
 [Registry]
 Root: HKLM; Subkey: "SYSTEM\CurrentControlSet\Control\Session Manager\Environment"; \
@@ -28,7 +50,13 @@ Root: HKLM; Subkey: "SYSTEM\CurrentControlSet\Control\Session Manager\Environmen
     Check: NeedsAddPath(ExpandConstant('{app}\bin')); Flags: preservestringtype
 
 [Run]
-Filename: "{tmp}\vc_redist.arm64.exe"; \
+#if Arch == "x86"
+  Filename: "{tmp}\vc_redist.x86.exe"; \
+#elif Arch == "x64"
+  Filename: "{tmp}\vc_redist.x64.exe"; \
+#elif Arch == "arm64"
+  Filename: "{tmp}\vc_redist.arm64.exe"; \
+#endif
     Parameters: "/install /quiet /norestart"; \
     StatusMsg: "Installing Microsoft Visual C++ Redistributable..."; \
     Check: ShouldInstallVCRedist(); \
@@ -59,7 +87,13 @@ var
 begin
   Result := not RegQueryStringValue(
     HKEY_LOCAL_MACHINE,
+#if Arch == "x86"
+    'SOFTWARE\Microsoft\VisualStudio\14.0\VC\Runtimes\x86',
+#elif Arch == "x64"
+    'SOFTWARE\Microsoft\VisualStudio\14.0\VC\Runtimes\x64',
+#elif Arch == "arm64"
     'SOFTWARE\Microsoft\VisualStudio\14.0\VC\Runtimes\arm64',
+#endif
     'Version',
     InstalledVersion
   );
