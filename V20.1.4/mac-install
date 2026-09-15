@@ -1,0 +1,32 @@
+#!/bin/bash
+
+cmake -S . -B build-mac-arm64 \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_OSX_ARCHITECTURES=arm64
+
+cmake --build build-mac-arm64 --parallel
+
+cmake --install build-mac-arm64 \
+    --prefix staging
+
+rm -rf staging-clean
+
+mkdir staging-clean
+
+ditto --noextattr --noqtn staging staging-clean
+
+rm -f TestPlusPlus-20.1.4-mac-arm64.pkg
+
+pkgbuild \
+    --root staging \
+    --install-location /usr/local \
+    --identifier com.olie.testpp \
+    --version 20.1.4 \
+    --scripts ../installer \
+    ../installer/installs/TestPlusPlus-20.1.4-mac-arm64.pkg
+
+rm -rf build-mac-arm64
+rm -rf staging
+rm -rf staging-clean
+
+exit 0

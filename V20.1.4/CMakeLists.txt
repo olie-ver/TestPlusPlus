@@ -85,9 +85,6 @@ install (
 #Create and install empty directories for runtime
 install(DIRECTORY DESTINATION run)
 
-#TODO: Want to have no dependency on a build directory in the future
-# install(DIRECTORY DESTINATION run/build)
-
 #install Test++ as a package
 install(
     EXPORT testppTargets

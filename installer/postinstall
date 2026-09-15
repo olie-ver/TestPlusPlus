@@ -1,0 +1,22 @@
+#!/bin/bash
+
+RUN_DIR="/usr/local/run"
+
+# Determine the user who initiated the installation.
+INSTALL_USER="${USER}"
+
+# If Installer ran as root, use the console/login user instead.
+if [ "$INSTALL_USER" = "root" ]; then
+    INSTALL_USER=$(/usr/bin/stat -f "%Su" /dev/console)
+fi
+
+# Get that user's primary group.
+INSTALL_GROUP=$(/usr/bin/id -gn "$INSTALL_USER")
+
+# Make Test++'s runtime directory writable by the installing user.
+if [ -d "$RUN_DIR" ]; then
+    /usr/sbin/chown "$INSTALL_USER:$INSTALL_GROUP" "$RUN_DIR"
+    /bin/chmod 755 "$RUN_DIR"
+fi
+
+exit 0
