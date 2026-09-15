@@ -44,11 +44,11 @@ Root: HKLM; Subkey: "SYSTEM\CurrentControlSet\Control\Session Manager\Environmen
     Check: NeedsAddPath(ExpandConstant('{app}\bin')); Flags: preservestringtype
 
 [Run]
-Filename: "{tmp}\{#VCRedist}";
-Parameters: "/install /quiet /norestart";
-StatusMsg: "Installing Microsoft Visual C++ Redistributable...";
-Check: ShouldInstallVCRedist();
-Flags: waituntilterminated
+Filename: "{tmp}\{#VCRedist}"; \
+    Parameters: "/install /quiet /norestart"; \
+    StatusMsg: "Installing Microsoft Visual C++ Redistributable..."; \
+    Check: ShouldInstallVCRedist(); \
+    Flags: waituntilterminated
 
 [Code]
 
