@@ -72,13 +72,13 @@ install(
 #ensure that the user has a config file upon installation in the run/ folder
 install(
     FILES resources/default_flag.conf
-    DESTINATION run
+    DESTINATION run/testpp
     RENAME config_flags.conf
 )
 
 install (
     FILES resources/default_cxx.conf
-    DESTINATION run
+    DESTINATION run/testpp
     RENAME config_cxx.conf
 )
 

@@ -15,7 +15,7 @@
 int main(int argc, char** argv) {
     std::filesystem::path installRoot = tppCLI::GetInstallPrefix();
 
-    std::filesystem::path run = installRoot / "run";
+    std::filesystem::path run = installRoot / "run" / "testpp";
     std::filesystem::path var = installRoot / "var";
     #if defined(_WIN32) || defined(_WIN64)
         std::filesystem::path user_exec = run / "bin" / "Release" / "testpp_generated.exe";

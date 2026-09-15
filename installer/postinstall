@@ -1,6 +1,6 @@
 #!/bin/bash
 
-RUN_DIR="/usr/local/run"
+RUN_DIR="/usr/local/run/testpp"
 
 # Determine the user who initiated the installation.
 INSTALL_USER="${USER}"
