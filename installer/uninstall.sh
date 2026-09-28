@@ -38,6 +38,9 @@ do
     rmdir "$dir" 2>/dev/null || true
 done
 
+rm -rf "$PREFIX/include/testpp"
+rm -rf "$PREFIX/lib/cmake/testpp"
+
 # Remove the package receipt.
 pkgutil --forget "$PACKAGE_ID" >/dev/null
 
