@@ -28,4 +28,5 @@ target_link_libraries(
     testpp_generated
     PRIVATE
         testpp::testpp_main
+        @USER_LIBS@
 )

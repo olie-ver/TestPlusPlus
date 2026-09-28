@@ -1,4 +1,6 @@
-#include "CLI.hpp" 
+#include "../headers/CLI.hpp" 
+#include "../headers/Data.hpp"
+
 #include <algorithm>
 #include <fstream>
 #include <iostream>
@@ -14,58 +16,40 @@ namespace tppCLI {
             std::string flag(argv[i]);
             std::transform(flag.begin(), flag.end(), flag.begin(), [](unsigned char c) { return std::tolower(c); });
 
-            if (flag.find("--v=") != std::string::npos 
-                || flag.find("--verbosity=") != std::string::npos)
-            {
+            if (std::any_of(verbArgs.begin(), verbArgs.end(), [&flag](std::string_view flagType){ return flag.starts_with(flagType); })) {
                 std::string arg = flag.substr(flag.find('=') + 1);
 
-                if (arg == "minimum" || arg == "passonly" || arg == "pass_only" ||
-                    arg == "failonly" || arg == "fail_only" || arg == "failonlyall" || 
-                    arg == "fail_only_all" || arg == "failonlymin" || arg == "fail_only_min" ||
-                    arg == "default") 
-                {
+                if (std::find(validArgs.begin(), validArgs.end(), arg) != validFlags.end()) {
                     config.verbosity = arg;
                 } else {
-                    std::cerr << "unknown verbosity flag: " << arg << "\n";
-                    std::cerr << "supported verbosity flags are: minimum, passonly, pass_only, failonly"
-                                 ",\n fail_only, failonlyall, fail_only_all, failonlymin, fail_only_min"
-                                 ",\n and default";
+                    std::cerr << "Unknown verbosity flag: " << arg << "\nSupported verbosity flags are:\n";
+
+                    for (size_t i = 0; i < validArgs.size(); i++) {
+                        std::cerr << validArgs[i] << '\n';
+                    }
+                    
                     std::abort();  
                 }
-            } else if (flag.find("--numthreads=") != std::string::npos
-                || flag.find("--threads=") != std::string::npos
-                || flag.find("--t=") != std::string::npos)
-            {
+            } else if (std::any_of(threadArgs.begin(), threadArgs.end(), [&flag](std::string_view flagType){ return flag.starts_with(flagType); })) {
                 std::string arg = flag.substr(flag.find('=') + 1);
-            
+
                 try {
                     config.num_threads = stoi(arg, &pos);
-                } catch (std::invalid_argument const& ex) {
-                    std::cerr << "std::invalid_argument::what(): " << ex.what() << '\n';
-                    std::abort();
-                } catch (std::out_of_range const& ex) {
-                    std::cerr << "std::out_of_range::what(): " << ex.what() << '\n';
+                } catch (const std::exception& ex) {
+                    std::cerr << "Caught std::exception " << ex.what() << '\n';
                     std::abort();
                 }
-            } else if (flag.find("--s=") != std::string::npos 
-                || flag.find("--skip=") != std::string::npos)
-            {
+            } else if (std::any_of(skipArgs.begin(), skipArgs.end(), [&flag](std::string_view flagType){ return flag.starts_with(flagType); })) {
                 std::string originalFlag(argv[i]);
                 std::string arg = originalFlag.substr(originalFlag.find('=') + 1);
 
                 config.skipSuites = arg;
-            } else if (flag.find("--testonly=") != std::string::npos
-                || flag.find("--test_only=") != std::string::npos
-                || flag.find("--t_o=") != std::string::npos 
-                || flag.find("--to=") != std::string::npos)
-            {
+            } else if (std::any_of(testArgs.begin(), testArgs.end(), [&flag](std::string_view flagType){ return flag.starts_with(flagType); })) {
                 std::string originalFlag(argv[i]);
                 std::string arg = originalFlag.substr(originalFlag.find('=') + 1);
                 
                 config.testOnlySuites = arg;
-            } else if (flag.find("--timeout") != std::string::npos 
-                && flag.find('=') != std::string::npos)
-            {
+            } else if (std::any_of(timeArgs.begin(), timeArgs.end(), [&flag](std::string_view flagType){ return flag.starts_with(flagType); })) {
                 if (flag.find("_ms=") != std::string::npos) {
                     config.time_unit = "ms";
                 }
@@ -78,11 +62,8 @@ namespace tppCLI {
                         std::cerr << "timeout duration must be nonnegative" << std::endl;
                         std::abort();
                     }
-                } catch (std::invalid_argument const& ex) {
-                    std::cerr << "std::invalid_argument::what(): " << ex.what() << '\n';
-                    std::abort();
-                } catch (std::out_of_range const& ex) {
-                    std::cerr << "std::out_of_range::what(): " << ex.what() << '\n';
+                } catch (const std::exception& ex) {
+                    std::cerr << "Caught std::exception " << ex.what() << '\n';
                     std::abort();
                 }
             } else if (flag == "--json") {
@@ -118,11 +99,8 @@ namespace tppCLI {
                         std::cerr << "stdout output length must be nonnegative" << std::endl;
                         std::abort();
                     }
-                } catch (std::invalid_argument const& ex) {
-                    std::cerr << "std::invalid_argument::what(): " << ex.what() << '\n';
-                    std::abort();
-                } catch (std::out_of_range const& ex) {
-                    std::cerr << "std::out_of_range::what(): " << ex.what() << '\n';
+                } catch (const std::exception& ex) {
+                    std::cerr << "Caught std::exception " << ex.what() << '\n';
                     std::abort();
                 }
             } else if (flag.find("--stderrsize=") != std::string::npos 
@@ -132,14 +110,11 @@ namespace tppCLI {
                 try {
                     config.stderrSize = std::stoi(arg, &pos);
                     if (config.stderrSize < 0) {
-                        std::cerr << "stderr output length must be nonnegative" << std::endl;
+                        std::cerr << "stdout output length must be nonnegative" << std::endl;
                         std::abort();
                     }
-                } catch (std::invalid_argument const& ex) {
-                    std::cerr << "std::invalid_argument::what(): " << ex.what() << '\n';
-                    std::abort();
-                } catch (std::out_of_range const& ex) {
-                    std::cerr << "std::out_of_range::what(): " << ex.what() << '\n';
+                } catch (const std::exception& ex) {
+                    std::cerr << "Caught std::exception " << ex.what() << '\n';
                     std::abort();
                 }
             } else if (flag == "--truncate") {
@@ -200,58 +175,39 @@ namespace tppCLI {
 
         while (file >> flag)
         {
-            if (flag.find("--v=") != std::string::npos
-                || flag.find("--verbosity=") != std::string::npos)
-            {
+            if (flag.find("--v=") != std::string::npos || flag.find("--verbosity=") != std::string::npos) {
                 config.verbosity = flag.substr(flag.find('=') + 1);
             }
-            else if (flag.find("--numthreads=") != std::string::npos)
-            {
+            else if (flag.find("--numthreads=") != std::string::npos) {
                 config.num_threads = std::stoi(flag.substr(flag.find('=') + 1), &pos);
             }
-            else if (flag.find("--skip=") != std::string::npos)
-            {
+            else if (flag.find("--skip=") != std::string::npos) {
                 config.skipSuites = flag.substr(flag.find('=') + 1);
             }
-            else if (flag.find("--testonly=") != std::string::npos)
-            {
+            else if (flag.find("--testonly=") != std::string::npos) {
                 config.testOnlySuites = flag.substr(flag.find('=') + 1);
             }
-            else if (flag.find("--timeout") != std::string::npos
-                    && flag.find('=') != std::string::npos)
-            {
-                config.time_unit =
-                    (flag.find("_ms=") != std::string::npos) ? "ms" : "sec";
-
+            else if (flag.find("--timeout") != std::string::npos && flag.find('=') != std::string::npos) {
+                config.time_unit = (flag.find("_ms=") != std::string::npos) ? "ms" : "sec";
                 config.timeout = std::stoi(flag.substr(flag.find('=') + 1), &pos);
             }
-            else if (flag == "--json")
-            {
+            else if (flag == "--json") {
                 file >> config.jsonFile;
             }
-            else if (flag == "--junit")
-            {
+            else if (flag == "--junit" || flag == "--xml") {
                 file >> config.jUnitFile;
             }
-            else if (flag == "--xml")
-            {
-                file >> config.jUnitFile;
-            }
-            else if (flag.find("--stdoutsize=") != std::string::npos)
-            {
+            else if (flag.find("--stdoutsize=") != std::string::npos) {
                 config.stdoutSize = std::stoi(flag.substr(flag.find('=') + 1), &pos);
             }
-            else if (flag.find("--stderrsize=") != std::string::npos)
-            {
+            else if (flag.find("--stderrsize=") != std::string::npos) {
                 config.stderrSize = std::stoi(flag.substr(flag.find('=') + 1), &pos);
             }
-            else if (flag == "--truncate")
-            {
+            else if (flag == "--truncate") {
                 config.stdoutSize = 1024;
                 config.stderrSize = 1024;
             }
-            else if (flag == "--stream")
-            {
+            else if (flag == "--stream") {
                 config.stream = true;
             }
         }

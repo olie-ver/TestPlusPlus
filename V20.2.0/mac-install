@@ -15,15 +15,15 @@ mkdir staging-clean
 
 ditto --noextattr --noqtn staging staging-clean
 
-rm -f TestPlusPlus-20.1.4-mac-arm64.pkg
+rm -f TestPlusPlus-20.2.0-mac-arm64.pkg
 
 pkgbuild \
     --root staging \
     --install-location /usr/local \
     --identifier com.olie.testpp \
-    --version 20.1.4 \
+    --version 20.2.0 \
     --scripts ../installer \
-    ../installer/installs/TestPlusPlus-20.1.4-mac-arm64.pkg
+    ../installer/installs/TestPlusPlus-20.2.0-mac-arm64.pkg
 
 rm -rf build-mac-arm64
 rm -rf staging

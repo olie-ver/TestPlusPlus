@@ -1,4 +1,4 @@
-#include "CLI.hpp"
+#include "../headers/CLI.hpp"
 #include <iostream>
 
 #ifdef __APPLE__

@@ -1,5 +1,5 @@
-#include "CLI.hpp"
-#include "Helpers.hpp"
+#include "../headers/CLI.hpp"
+#include "../headers/Helpers.hpp"
 
 #include <iostream>
 #include <cstdlib>
@@ -8,7 +8,7 @@
 #include <sstream>
 #include <iterator>
 
-#define VERSION "Test++ V20.1.4"
+#define VERSION "Test++ V20.2.0"
 
 #define DEFAULT_FLAGS "default_flag.conf"
 
@@ -112,16 +112,20 @@ int main(int argc, char** argv) {
             std::ofstream cxx_stream(user_cxx.c_str(), std::ios::trunc);
             std::string flags = "Flags: ";
             std::string std = "Standard: ";
+            std::string libs = "Libraries: ";
             for (int i = 2; i < argc; i++) {
                 if (std::string_view(argv[i]).find("-std=c++") != std::string_view::npos) {
                     std += argv[i];
+                } else if (std::string_view(argv[i]).find("-lib=") != std::string_view::npos) {
+                    libs += argv[i];
                 } else {
                     flags += argv[i];
                     flags += " ";
                 }
             }
             cxx_stream << flags << '\n';
-            cxx_stream << std;
+            cxx_stream << std << '\n';
+            cxx_stream << libs;
             return EXIT_SUCCESS;
         }
     }

@@ -1,10 +1,11 @@
 #pragma once
 
-#ifndef CLI_H
-#define CLI_H
+#ifndef TESTPP_CLI_H
+#define TESTPP_CLI_H
 
 #include <filesystem>
 #include <vector>
+#include <unordered_set>
 #include <string>
 
 namespace tppCLI {
@@ -31,6 +32,7 @@ namespace tppCLI {
     struct CXX {
         std::string flags = "";
         std::string standard = "20";
+        std::string libraries = "";
     };
 
     //Creates a Config struct from the arguments you pass in and does validate them

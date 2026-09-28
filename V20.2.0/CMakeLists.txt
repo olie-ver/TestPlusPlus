@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.20)
 
 project (
     testpp
-    VERSION 20.1.4
+    VERSION 20.2.0
     LANGUAGES CXX
 )
 
@@ -21,17 +21,18 @@ if(NOT CMAKE_BUILD_TYPE)
 endif()
 
 if (MSVC)
-    add_compile_options(/W4)
+    add_compile_options(
+        /W4 
+        /O2
+    )
 else()
     add_compile_options(
         -Wall
         -Wextra
         -Wpedantic
         -Werror
+        -O3
     )
-
-    set(CMAKE_CXX_FLAGS_DEBUG "-g")
-    set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 endif()
 
 add_subdirectory(framework)

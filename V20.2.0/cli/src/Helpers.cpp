@@ -1,5 +1,5 @@
-#include "Helpers.hpp"
-#include "CLI.hpp"
+#include "../headers/Helpers.hpp"
+#include "../headers/CLI.hpp"
 
 #include <iostream>
 #include <vector>
@@ -98,7 +98,7 @@ namespace tppHelpers {
                 for (const auto& entry :
                     std::filesystem::recursive_directory_iterator(p))
                 {
-                    if (entry.path().extension() == ".cpp")
+                    if (entry.path().extension() == ".cpp" || entry.path().extension() == ".cc")
                     {
                         files.push_back(std::filesystem::absolute(entry.path()));
                     }
@@ -110,41 +110,44 @@ namespace tppHelpers {
     }
 
     void printHelp() {
-        std::cout << "help:\n";
-        std::cout << "commands:\n";
-        std::cout << "\ttestpp --help - prints out information on how to use Test++\n";
-        std::cout << "\ttestpp --version - prints out the version of Test++\n";
-        std::cout << "\ttestpp --diagnostics - prints our information about your version of Test++"
-                            " as well as your settings\n\n";
+        std::cout << 
+        "help:\n"
+        "commands:\n"
+        "\ttestpp --help - prints out information on how to use Test++\n"
+        "\ttestpp --version - prints out the version of Test++\n"
+        "\ttestpp --diagnostics - prints out information about your version of Test++"
+        " as well as your settings\n\n"
 
-        std::cout << "\ttestpp - runs the last built executable, if there is one\n";
-        std::cout << "\ttestpp [files/directories] - adds files to the generated executable and runs it\n";
-        std::cout << "\ttestpp [flags] - runs the last built executable under the specified flags\n";
-        std::cout << "\ttestpp [pattern] - a combination of the above two commands where [pattern] is"
-                                         " a set of files/directories and flags\n\n";
+        "\ttestpp - runs the last built executable, if there is one\n"
+        "\ttestpp [files/directories] - adds files to the generated executable and runs it\n"
+        "\ttestpp [flags] - runs the last built executable under the specified flags\n"
+        "\ttestpp [pattern] - a combination of the above two commands where [pattern] is"
+                                         " a set of files/directories and flags\n\n"
 
-        std::cout << "\ttestpp --reset - resets both your configuration and compiler flag settings\n";
-        std::cout << "\ttestpp --reset-flags - resets only your configuration settings\n";
-        std::cout << "\ttestpp --reset-cxx - resets only your compiler flag settings\n";
+        "\ttestpp --reset - resets both your configuration and compiler flag settings\n"
+        "\ttestpp --reset-flags - resets only your configuration settings\n"
+        "\ttestpp --reset-cxx - resets only your compiler flag settings\n"
 
-        std::cout << "\ttestpp config [flags] - configures your Test++ settings\n";
-        std::cout << "\ttestpp cxx_flags [compiler_flags] - configures your Test++ compiler flags."
-                            "\n\t\tType them in as if you were passing them directly to the compiler\n\n";
+        "\ttestpp config [flags] - configures your Test++ settings\n"
+        "\ttestpp cxx_flags [compiler_flags] - configures your Test++ compiler flags."
+                            "\n\t\tType them in as if you were passing them directly to the compiler\n\n"
         
-        std::cout << "Supported [flags]:\n";
-        std::cout << "\tVerbosity: --v= or --verbosity=\n";
-        std::cout << "\tThreads: --t= or --numthreads= or --threads=\n";
-        std::cout << "\tTimeout: --timeout= or --timeout_sec= or --timeout_ms=\n";
-        std::cout << "\tSkip Suites: --s= or --skip=\n";
-        std::cout << "\tTest Only Suites: --testonly= or --test_only= or --to= or t_o=\n\n";
-        std::cout << "\tJSON Output: --json PATH_TO_FILE\n";
-        std::cout << "\tXML Output: --junit PATH_TO_FILE or --xml PATH_TO_FILE\n";
-        std::cout << "\tstdout output length: --stdoutsize= or --stdout=\n";
-        std::cout << "\tstderr output length: --stderrsize= or --stderr=\n";
-        std::cout << "\tstdout and stderr output length (1024 chars): --truncate\n";
-        std::cout << "\tStream Progress: --stream\n";
-        std::cout << "\nSuites being skipped must be separated by ',' with NO space in between\n";
-        std::cout << "\nSupported verbosity flags: default, minimum, passonly, failonly, failonlymin\n";
+        "Supported [flags]:\n"
+        "\tVerbosity: --v= or --verbosity=\n"
+        "\tThreads: --t= or --numthreads= or --threads=\n"
+        "\tTimeout: --timeout= or --timeout_sec= or --timeout_ms=\n"
+        "\tSkip Suites: --s= or --skip=\n"
+        "\tTest Only Suites: --testonly= or --test_only= or --to= or t_o=\n\n"
+        "\tJSON Output: --json PATH_TO_FILE\n"
+        "\tXML Output: --junit PATH_TO_FILE or --xml PATH_TO_FILE\n"
+        "\tstdout output length: --stdoutsize= or --stdout=\n"
+        "\tstderr output length: --stderrsize= or --stderr=\n"
+        "\tstdout and stderr output length (1024 chars): --truncate\n"
+        "\tStream Progress: --stream\n"
+        "\nSuites being skipped must be separated by ',' with NO space in between\n"
+        "\nSupported verbosity flags: default, minimum, passonly, failonly, failonlymin\n"
+
+        << std::flush;
     }
 
     void generateCMake(
@@ -159,6 +162,7 @@ namespace tppHelpers {
         const std::string replace = "@USER_SOURCES@";
         const std::string cxxReplace = "@USER_CXX_FLAGS@";
         const std::string stdReplace = "@CXX_STANDARD@";
+        const std::string libReplace = "@USER_LIBS@";
 
         std::ifstream readCmakeTemplate(cmake_template);
         std::stringstream cmake;
@@ -172,6 +176,18 @@ namespace tppHelpers {
 
         std::string install_str = install_prefix.string();
         std::string imploded_str = imploded.str();
+
+        imploded.clear();
+        size_t pos;
+        std::string libraries = cxxFlags.libraries;
+        std::string lib;
+        while ((pos = cxxFlags.libraries.find(',')) != std::string::npos) {
+            lib = libraries.substr(0, pos);
+            imploded << lib << '\n\t';
+            libraries.erase(0UL, pos + 1);
+        }
+        imploded << libraries;
+        std::string lib_str = imploded.str();
 
         #if defined(_WIN32) || defined(_WIN64)
             for(size_t i = 0; i < install_str.size(); i++) {
@@ -204,6 +220,12 @@ namespace tppHelpers {
             generate_executable.find(stdReplace),
             stdReplace.size(),
             cxxFlags.standard
+        );
+
+        generate_executable.replace(
+            generate_executable.find(libReplace),
+            libReplace.size(),
+            lib_str
         );
 
         std::ofstream out(write_loc);

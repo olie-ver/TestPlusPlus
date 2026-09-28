@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef CLI_HELPERS_H
-#define CLI_HELPERS_H
+#ifndef TESTPP_CLI_HELPERS_H
+#define TESTPP_CLI_HELPERS_H
 
 #include "CLI.hpp"
 
