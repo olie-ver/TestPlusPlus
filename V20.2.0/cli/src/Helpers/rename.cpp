@@ -21,14 +21,22 @@ namespace testppCLI {
 
         std::filesystem::path renameFrom{GetInstallRoot() / "run" / "testpp" / argv[2]};
         std::filesystem::path renameTo(GetInstallRoot() / "run" / "testpp" / argv[3]);
+
+        if (std::filesystem::exists(renameTo)) {
+            std::cerr << "Executable \"" << argv[3] << "\" already exists.";
+            abort();
+        }
+
         std::filesystem::rename(renameFrom, renameTo);
 
         //read in the last executable
-        std::fstream fstream{GetInstallRoot() / "var" / "last_exec.conf", std::ios::trunc};
+        std::ifstream ifstream{GetInstallRoot() / "var" / "last_exec.conf"};
         std::string lastExec;
-        getline(fstream, lastExec);
-        if (lastExec == renameFrom) {
-            fstream << renameTo;
+        getline(ifstream, lastExec);
+        if (lastExec == argv[2]) {
+            std::ofstream ofstream(GetInstallRoot() / "var" / "last_exec.conf", std::ios::trunc);
+            ofstream.write(name.data(), name.length());
+            ofstream.close();
         }
     }
 }

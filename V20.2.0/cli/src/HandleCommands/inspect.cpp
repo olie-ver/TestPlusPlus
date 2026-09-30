@@ -14,6 +14,9 @@ namespace testppCLI {
                 abort();
             }
 
+            std::cout << "Executable Name: ";
+            std::cout << curExecDir.filename() << "\n\n";
+
             std::cout << "Configuration Flags:";
             Config conf = Config::Deserialize(curExecDir / "flags.conf");
 
@@ -62,13 +65,13 @@ namespace testppCLI {
             CXX cxx = CXX::Deserialize(curExecDir / "cxx.conf");
 
             std::cout << "\n\ncxx_flags: " << cxx.flags;
-            std::cout << "\ncxx standard: " << "-std=c++" << cxx.standard;
+            std::cout << "\ncxx standard: " << "-std=c++" << std::to_string(cxx.standard);
             std::cout << "\nlink libraries: " << cxx.linkLibs;
 
             Metadata meta = Metadata::Deserialize(curExecDir / "meta.data");
             std::cout << "\n\nMetadata:";
             std::cout << "\nNeeds Compile: " << meta.compile;
-            std::cout << "\nSource Files: " << meta.files;
+            std::cout << "\nSource Files: " << meta.files << std::endl;
         } else if (argc == 3) {
             std::filesystem::path curExecDir{GetInstallRoot() / "run" / "testpp" / argv[2]};
             if (!std::filesystem::exists(curExecDir)) {
@@ -76,6 +79,9 @@ namespace testppCLI {
                 abort();
             }
 
+            std::cout << "Executable Name: ";
+            std::cout << curExecDir.filename() << "\n\n";
+
             std::cout << "Configuration Flags:";
             Config conf = Config::Deserialize(curExecDir / "flags.conf");
 
@@ -124,13 +130,13 @@ namespace testppCLI {
             CXX cxx = CXX::Deserialize(curExecDir / "cxx.conf");
 
             std::cout << "\n\ncxx_flags: " << cxx.flags;
-            std::cout << "\ncxx standard: " << "-std=c++" << cxx.standard;
+            std::cout << "\ncxx standard: " << "-std=c++" << std::to_string(cxx.standard);
             std::cout << "\nlink libraries: " << cxx.linkLibs;
 
             Metadata meta = Metadata::Deserialize(curExecDir / "meta.data");
             std::cout << "\n\nMetadata:";
             std::cout << "\nNeeds Compile: " << meta.compile;
-            std::cout << "\nSource Files: " << meta.files;
+            std::cout << "\nSource Files: " << meta.files << std::endl;
         } else {
             std::cerr << "Invalid usage. Expected usage is: \"testpp --inspect [name]\" where [name is optional]\n";
             abort();

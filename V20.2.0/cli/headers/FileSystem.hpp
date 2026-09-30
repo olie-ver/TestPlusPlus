@@ -49,6 +49,8 @@ namespace testppCLI {
     /// @return true if the name belongs to an executable directory, false otherwise
     bool IsExec(std::string_view name);
 
+    bool IsFlag(std::string_view name);
+
     /// @brief Gets the Metadata associated with the associated name
     /// @param name the name of the executable
     /// @return the Metadata of the executable

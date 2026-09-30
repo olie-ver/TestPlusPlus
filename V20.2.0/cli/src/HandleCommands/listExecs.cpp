@@ -14,7 +14,7 @@ namespace testppCLI {
         size_t numExecutables{0};
         for (const auto& iter : std::filesystem::directory_iterator(run)) {
             if (std::filesystem::is_directory(iter.path())) {
-                std::cout << iter.path().filename() << '\n';
+                std::cout << '\t' << iter.path().filename() << '\n';
                 numExecutables++;
             }
         }

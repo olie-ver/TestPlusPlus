@@ -25,14 +25,12 @@ namespace testppCLI {
 
         std::filesystem::path defaultPathConfig{installRoot / "var" / "last_exec.conf"};
 
-        std::fstream fstream{defaultPathConfig, std::ios::binary};
-        std::filesystem::path newPath{run / second_arg / second_arg};
-        std::string path;
-        path.reserve(50);
-        path += '\"';
-        path += newPath.string();
-        path += '\"';
-        fstream.write(reinterpret_cast<const char*>(&path), sizeof(path));
+        std::ofstream ofstream(defaultPathConfig, std::ios::trunc);
+        std::string path{second_arg};
+        ofstream.write(path.data(), path.length());
+        ofstream.close();
+
+        std::cout << "Set active executable to: \"" << second_arg << "\"\n";
     }
 
     void createExec(int argc, char** argv) {
@@ -52,12 +50,18 @@ namespace testppCLI {
         std::filesystem::path var{installRoot / "var"};
         std::filesystem::path run{installRoot / "run" / "testpp"};
         std::filesystem::path newExecDir{run / second_arg};
+
+        if (std::filesystem::exists(newExecDir)) {
+            std::cerr << "Executable " << newExecDir.filename() << " already exists.";
+            abort();
+        }
         
         std::filesystem::create_directory(newExecDir);
-        std::filesystem::copy_file(var / "CMakeLists.txt.in", newExecDir / "CmakeLists.txt.in");
         std::filesystem::copy_file(var / "default_meta.data", newExecDir / "meta.data");
         std::filesystem::copy_file(run / "global_flags.conf", newExecDir / "flags.conf");
         std::filesystem::copy_file(run / "global_cxx.conf", newExecDir / "cxx.conf");
+
+        std::cout << "Created new executable: " << newExecDir.filename() << '\n';
 
         std::vector<const char*> newArgv{"testpp", "--set-exec", argv[2], nullptr};
 
@@ -85,6 +89,7 @@ namespace testppCLI {
     }
 
     bool IsExec(std::string_view name) {
+        std::cout << "IsExec() name: " << name << '\n';
         for (size_t i = 0; i < commands.size(); i++) {
             if (name.starts_with(commands[i])) {
                 return false;
@@ -92,5 +97,15 @@ namespace testppCLI {
         }
         std::filesystem::path path(GetInstallRoot() / "run" / "testpp" / name);
         return std::filesystem::exists(path / name) && std::filesystem::is_directory(path);
+    }
+
+    bool IsFlag(std::string_view name) {
+        for (size_t i = 0; i < commands.size(); i++) {
+            if (name.starts_with(commands[i])) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

@@ -7,12 +7,12 @@
 
 namespace testppCLI {
     void diagnostics() {
-        std::cout << "Version: " << VERSION << "\n\n";
+        std::cout << "Test++ Version: " << VERSION << "\n\n";
         std::cout << "Installation Root: " << GetInstallRoot() << "\n\n";
 
         listExecs();
 
-        std::cout << "Global Configuration Flags:";
+        std::cout << "\nGlobal Configuration Flags:";
         Config conf = Config::Deserialize(GetInstallRoot() / "run" / "testpp" / "global_flags.conf");
 
         std::cout << "\n\tnum_threads = " << conf.num_threads;
@@ -60,7 +60,7 @@ namespace testppCLI {
         CXX cxx = CXX::Deserialize(GetInstallRoot() / "run" / "testpp" / "global_cxx.conf");
 
         std::cout << "\n\ncxx_flags: " << cxx.flags;
-        std::cout << "\ncxx standard: " << "-std=c++" << cxx.standard;
-        std::cout << "\nlink libraries: " << cxx.linkLibs;
+        std::cout << "\ncxx standard: " << "-std=c++" << std::to_string(cxx.standard);
+        std::cout << "\nlink libraries: " << cxx.linkLibs << std::endl;
     }
 }

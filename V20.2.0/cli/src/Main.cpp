@@ -11,6 +11,8 @@
 
 #define DEFAULT_FLAGS "default_flag.conf"
 
+//Forgot to add in --delete and --delete [name]
+
 int main(int argc, char** argv) {
     std::filesystem::path last_exec_dir = testppCLI::GetLastExec();
     std::string last_exec_name{last_exec_dir.filename()};
@@ -81,7 +83,21 @@ int main(int argc, char** argv) {
             testppCLI::defaultCxx();
         } else if (first_arg == "--default-link") {
             testppCLI::defaultLink();
+        } else if (first_arg == "--inspect") {
+            std::cout << "INSPECTING\n";
+            testppCLI::inspect(argc, argv);
+            return EXIT_SUCCESS;
         } else {
+            //THIS PATH IS REALLY REALLY BUGGY FOR SOME REASON
+
+            //If the first arg is a flag instead of a name, print the usage and return exit failure
+            if (testppCLI::IsFlag(first_arg)) {
+                std::cerr << "Incorrect usage of flag: " << first_arg << "\n\n";
+                testppCLI::help();
+
+                return EXIT_FAILURE;
+            }
+
             //If first arg is an executable name, check if it exists first
             if (testppCLI::IsExec(first_arg)) {
                 std::cout << "IS EXEC\n";
@@ -182,9 +198,9 @@ int main(int argc, char** argv) {
                 } else if (first_arg == "--default-link") {
                     testppCLI::globalDefaultLink();
                 }
-            }
 
-            return EXIT_SUCCESS;
+                return EXIT_SUCCESS;
+            }
         }
 
         // 3 ARG COMMANDS
@@ -192,6 +208,7 @@ int main(int argc, char** argv) {
             testppCLI::setExec(argc, argv);
             return EXIT_SUCCESS;
         } else if (first_arg == "--new") {
+            std::cout << "CREATING NEW EXEC\n";
             testppCLI::createExec(argc, argv);
             return EXIT_SUCCESS;
         } else if (first_arg == "--inspect") {
@@ -216,7 +233,6 @@ int main(int argc, char** argv) {
 
         //Check if the second argument is a name
         //If so, run that executable, otherwise run the default one
-        
         std::string_view second{argv[2]};
         int start = 2;
         if (testppCLI::IsExec(second)) {
@@ -250,183 +266,11 @@ int main(int argc, char** argv) {
         //Now build the run command and run it
         testppCLI::Config config = testppCLI::Config::Deserialize(last_exec_dir / "flags.conf");
         std::stringstream stream;
-        stream << '\"' << (last_exec_dir / second) << '\"' << config;
+        stream << '\"' << (last_exec_dir / second) << '\"' << config; //Needs the user's arguments in front of their config
 
         std::cout << stream.str() << '\n';
 
         return std::system(stream.str().c_str());
     }
 
-
-//     std::filesystem::path installRoot = tppCLI::GetInstallPrefix();
-
-//     std::filesystem::path run = installRoot / "run" / "testpp";
-//     std::filesystem::path var = installRoot / "var";
-//     #if defined(_WIN32) || defined(_WIN64)
-//         std::filesystem::path user_exec = run / "bin" / "Release" / "testpp_generated.exe";
-//     #else
-//         std::filesystem::path user_exec = run / "bin" / "testpp_generated";
-//     #endif
-//     std::filesystem::path user_conf = run / "config_flags.conf";
-//     std::filesystem::path user_cxx = run / "config_cxx.conf";
-//     std::filesystem::path cmake_template = var / "CMakeLists.txt.in";
-
-//     std::filesystem::remove(run / "CMakeCache.txt");
-
-//     if (!std::filesystem::exists(user_conf)) {
-//         //If there isn't a configuration file, copy over the default 
-//         std::filesystem::copy_file(var / DEFAULT_FLAGS, user_conf);
-//     }
-
-//     if (!std::filesystem::exists(user_cxx)) {
-//         //If there isn't a cxx file, copy over the default 
-//         std::filesystem::copy_file(var / "default_cxx.conf", user_cxx);
-//     }
-
-//     std::ifstream readConfig(user_conf);
-//     std::stringstream configSettings;
-//     configSettings << readConfig.rdbuf();
-
-//     const tppCLI::CXX& cxx = tppCLI::getCXX(user_cxx);
-
-//     if (argc == 1) {
-//         if (!std::filesystem::exists(user_exec)) {
-//             std::cout << "No tests to run" << std::endl;
-//             return EXIT_SUCCESS;
-//         }
-
-//         std::string cmd = '\"' + user_exec.string() + '\"' + " " + configSettings.str();
-
-//         return std::system(cmd.c_str());
-//     }
-
-//     if (argc == 2) {
-//         std::string_view first{argv[1]};
-
-//         if (std::find(tppCLI::flags.begin(), tppCLI::flags.end(), first) == tppCLI::flags.end()) {
-//             tppCLI::usage(first);
-//             return EXIT_FAILURE;
-//         }
-
-//         if (first == "--help" || first == "--h") {
-//             tppCLI::help();
-//         } else if (first == "--diagnostics" || first == "--d") {
-//             tppCLI::diagnostics();
-//         } else if (first == "--version" || first == "--v") {
-//             tppCLI::version();
-//         } 
-        
-//         if (std::find(tppCLI::resetFlags.begin(), tppCLI::resetFlags.end(), first) == tppCLI::resetFlags.end()) {
-//             tppCLI::usage(first);
-//             return EXIT_FAILURE;
-//         }
-        
-//         if (first == "--reset") {
-//             tppCLI::reset();
-//         } else if (first == "--reset-flags") {
-//             tppCLI::reset_flags();
-//         } else if (first == "--reset-cxx") {
-//             tppCLI::reset_cxx();
-//         }
-
-//         return EXIT_SUCCESS;
-//     }
-
-//     if (argc >= 2) {
-//         std::string first_arg{argv[1]};
-
-//         // if (first_arg == "--reset") {
-//         //     std::filesystem::copy_file(var / DEFAULT_FLAGS, user_conf, 
-//         //         std::filesystem::copy_options::overwrite_existing);
-
-//         //     std::filesystem::copy_file(var / "default_cxx.conf", user_cxx,
-//         //         std::filesystem::copy_options::overwrite_existing);
-    
-//         //     return EXIT_SUCCESS;
-//         // }
-
-//         // if (first_arg == "--reset-flags") {
-//         //     std::filesystem::copy_file(var / DEFAULT_FLAGS, user_conf, 
-//         //         std::filesystem::copy_options::overwrite_existing);
-//         //     return EXIT_SUCCESS;
-//         // }
-
-//         // if (first_arg == "--reset-cxx") {
-//         //     std::filesystem::copy_file(var / "default_cxx.conf", user_cxx,
-//         //         std::filesystem::copy_options::overwrite_existing);
-    
-//         //     return EXIT_SUCCESS;
-//         // }
-
-//         if (first_arg == "config") {
-//             //config the file then return
-//             tppCLI::CreateConfig(user_conf, argc, argv);
-//             return EXIT_SUCCESS;
-//         }
-
-//         if (first_arg == "cxx_flags") {
-//             //write to the cxx flag file then return
-//             std::ofstream cxx_stream(user_cxx.c_str(), std::ios::trunc);
-//             std::string flags = "Flags: ";
-//             std::string std = "Standard: ";
-//             std::string libs = "Libraries: ";
-//             for (int i = 2; i < argc; i++) {
-//                 if (std::string_view(argv[i]).find("-std=c++") != std::string_view::npos) {
-//                     std += argv[i];
-//                 } else if (std::string_view(argv[i]).find("-lib=") != std::string_view::npos) {
-//                     libs += argv[i];
-//                 } else {
-//                     flags += argv[i];
-//                     flags += " ";
-//                 }
-//             }
-//             cxx_stream << flags << '\n';
-//             cxx_stream << std << '\n';
-//             cxx_stream << libs;
-//             return EXIT_SUCCESS;
-//         }
-//     }
-
-//     //gather files and args
-//     std::vector<std::string> args{" "};
-
-//     std::vector<std::filesystem::path> files;
-
-//     tppHelpers::getFilesAndArgs(argc, argv, args, files);
-
-//     //if no files were specifed, rerun the generated executable
-//     //  under any flags that were given
-//     if (files.size() == 0) {
-//         if (!std::filesystem::exists(user_exec)) {
-//             std::cout << "No tests to run" << std::endl;
-//             return EXIT_SUCCESS;
-//         }
-
-//         std::stringstream argStream;
-
-//         for (size_t i = 0; i < args.size(); i++) {
-//             argStream << args[i] << " ";
-//         }
-
-//         std::string run_command = '\"' + user_exec.string() + '\"' + " " + configSettings.str() + argStream.str();
-//         return std::system(run_command.c_str());
-//     }
-
-//     tppHelpers::generateCMake(installRoot, run / "CMakeLists.txt", cmake_template, files, cxx);
-
-//     if (!tppHelpers::configureAndBuild(run)) {
-//         return EXIT_FAILURE;
-//     }
-
-//     std::stringstream argStream;
-
-//     for (size_t i = 0; i < args.size(); i++) {
-//         argStream << args[i] << " ";
-//     }
-
-//     //Run command is "user_exec" configSettings arguments
-//     // arguments override any configSettings so it's all good to just add them in front
-//     std::string run_command = '\"' + user_exec.string() + '\"' + " " + configSettings.str() + argStream.str();
-
-//     return std::system(run_command.c_str());
 }
