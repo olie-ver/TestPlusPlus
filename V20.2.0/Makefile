@@ -11,6 +11,12 @@ install:
 run: 
 	install/bin/testpp
 
+print:
+	install/bin/testpp --help
+	install/bin/testpp --diagnostics
+	install/bin/testpp --version
+	install/bin/testpp --list
+
 test:
 	install/bin/testpp /Users/oliverlie/Documents/GitHub/TestPlusPlus/V20.2.0/tests/src/assert.cpp
 

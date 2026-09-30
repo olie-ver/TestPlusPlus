@@ -92,6 +92,7 @@ int main(int argc, char** argv) {
                     return EXIT_FAILURE;
                 }
 
+                //If it is an executable, then set it to be the one that will be run
                 last_exec_name = first_arg;
             } else {
                 std::cout << "IS NOT EXEC\n";
