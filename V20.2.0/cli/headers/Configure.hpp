@@ -28,21 +28,20 @@ namespace testppCLI {
             ms
         };
 
-        int num_threads = 1;
-        int timeout = 0;
-        std::string jsonFile = "";
-        std::string jUnitFile = "";
-
-        std::string verbosity = "default";
+        uint64_t num_threads = 1;
+        uint64_t timeout = 0;
+        uint64_t stdoutSize = 0;
+        uint64_t stderrSize = 0;
+        uint8_t stream = false;
         TimeUnit timeUnit = sec;
 
-        std::string skipSuites = "";
-        std::string testOnlySuites = "";
+        std::string jsonFile;
+        std::string jUnitFile;
 
-        int stdoutSize = 0;
-        int stderrSize = 0;
+        std::string verbosity = "default";
 
-        bool stream = false;
+        std::string skipSuites;
+        std::string testOnlySuites;
     };
 
     /// @brief A struct containing the user's compiler preferences including language standard,
@@ -60,9 +59,9 @@ namespace testppCLI {
         /// @return The CXX containing all data and methods of what was serialized
         static CXX Deserialize(const std::filesystem::path& path);
 
-        size_t standard = 20;
-        std::string flags = "";
-        std::string linkLibs = "";
+        uint8_t standard = 20;
+        std::string flags;
+        std::string linkLibs;
     };
 
     /// @brief Sets the user's default executable to the executable at argv[2]

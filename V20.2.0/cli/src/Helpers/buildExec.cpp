@@ -9,8 +9,8 @@ namespace testppCLI {
     void buildExec(std::string_view name) {
         std::filesystem::path execDir{GetInstallRoot() / "run" / "testpp" / name};
 
-        std::stringstream stream{"cmake -S \""};
-        stream << execDir << "\" -B \"" << execDir << '\"';
+        std::stringstream stream;
+        stream << "cmake -S \"" << execDir << "\" -B \"" << execDir << '"';
 
         int configResult = std::system(stream.str().c_str());
 
@@ -19,14 +19,16 @@ namespace testppCLI {
             abort();
         }
 
-        stream.clear();
+        stream.str(std::string());
         #if defined(_WIN32) || defined(_WIN64) 
-            stream << "--build \"" << execDir << "\" --config Release";
+            stream << "cmake --build \"" << execDir << "\" --config Release";
         #else
-            stream << "--build \"" << execDir << '\"';
+            stream << "cmake --build \"" << execDir << '\"';
         #endif
 
         int buildResult = std::system(stream.str().c_str());
+
+        std::cout << "Build test executable at: " << stream.str() << '\n';
 
         if (buildResult != 0) {
             std::cerr << "Failed to build test executable: " << stream.str() << '\n';

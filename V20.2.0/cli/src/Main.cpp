@@ -13,20 +13,24 @@
 
 int main(int argc, char** argv) {
     std::filesystem::path last_exec_dir = testppCLI::GetLastExec();
-    std::string last_exec_name{last_exec_dir.parent_path().filename()};
-    if (last_exec_dir.empty()) {
-        std::cout << "No test executable has been made yet" << std::endl;
-        return EXIT_SUCCESS;
-    } 
+    std::string last_exec_name{last_exec_dir.filename()};
 
-    std::cout << last_exec_dir << std::endl;
+    std::cout << "last_exec_dir: " << last_exec_dir << '\n';
+    std::cout << "last_exec_name: " << last_exec_name << '\n';
 
     std::filesystem::path install_root = testppCLI::GetInstallRoot();
     std::filesystem::path var = install_root / "var";
-    std::filesystem::path run = install_root / "run";
+    std::filesystem::path run = install_root / "run" / "testpp";
 
+    //get the last executable and run it with the user's settings
     if (argc == 1) {
-        //get the last executable and run it with the user's settings
+        std::cout << "argc == 1 => Last exec dir: ";
+        std::cout << last_exec_dir << std::endl;
+
+        if (!std::filesystem::exists(last_exec_dir / last_exec_name)) {
+            std::cout << "No test executable has been made yet" << std::endl;
+            return EXIT_SUCCESS;
+        } 
 
         //Get the associated metadata, check if it needs to be compiled
         //If so, rebuild the CMakeLists and run it
@@ -41,9 +45,11 @@ int main(int argc, char** argv) {
         
         testppCLI::Config config = testppCLI::Config::Deserialize((last_exec_dir / "flags.conf"));
         std::stringstream cmd;
-        cmd << '\"' << (last_exec_dir / last_exec_name) << "\" " << config;
+        cmd  << (last_exec_dir / last_exec_name) << ' ' << config;
 
+        std::cout << "Command: ";
         std::cout << cmd.str().c_str() << std::endl;
+
         return system(cmd.str().c_str());
     }
 
@@ -76,19 +82,38 @@ int main(int argc, char** argv) {
         } else if (first_arg == "--default-link") {
             testppCLI::defaultLink();
         } else {
-            //first_arg is an executable name
-            if (!std::filesystem::exists(run / first_arg / first_arg)) {
-                std::cerr << "No test executable exists inside the directory: " << (run / first_arg) 
-                    << ". Please create one by using \"testpp [name] [files] [args]\".\n";
-                return EXIT_FAILURE;
+            //If first arg is an executable name, check if it exists first
+            if (testppCLI::IsExec(first_arg)) {
+                std::cout << "IS EXEC\n";
+                if (!std::filesystem::exists(run / first_arg / first_arg)) {
+                    std::cerr << "No test executable exists inside the directory: " << (run / first_arg) 
+                        << ".\nPlease create one by using \"testpp [name] [files] [args]\".\n"
+                        << "Where [name] is an optional parameter";
+                    return EXIT_FAILURE;
+                }
+
+                last_exec_name = first_arg;
+            } else {
+                std::cout << "IS NOT EXEC\n";
+                std::cout << "Deserializing at: " << (last_exec_dir / "meta.data") << '\n';
+                //otherwise take the file, add it to the Metadata, build the CMake and the executable
+                testppCLI::Metadata meta = testppCLI::Metadata::Deserialize(last_exec_dir / "meta.data");
+                meta.compile = false;
+                meta.files = first_arg;
+                meta.Serialize(last_exec_dir / "meta.data");
+
+                testppCLI::buildCMake(last_exec_name);
+                testppCLI::buildExec(last_exec_name);
             }
 
-            testppCLI::Config config = testppCLI::Config::Deserialize((run / first_arg / "flags.conf"));
+            testppCLI::Config config = testppCLI::Config::Deserialize((run /last_exec_name / "flags.conf"));
 
             std::stringstream cmd;
-            cmd << '\"' << (run / first_arg / first_arg) << "\" " << config;
+            cmd << '\"' << (run / last_exec_name / "bin" / "testpp_generated") << "\" " << config;
 
+            std::cout << "Command (2 args):\n";
             std::cout << cmd.str().c_str() << std::endl;
+
             return system(cmd.str().c_str());
         }
 
@@ -199,7 +224,7 @@ int main(int argc, char** argv) {
             start += 1;
         }
 
-                //If there are no files, but the configuration changed, then reconstruct the cmake and recompile the executable
+        //If there are no files, but the configuration changed, then reconstruct the cmake and recompile the executable
         //If there are files, reconstruct the cmake, change the metadata and recompile the executable
         std::vector<std::filesystem::path> files;
         std::vector<std::string> args;

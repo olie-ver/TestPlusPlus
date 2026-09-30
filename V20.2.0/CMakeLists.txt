@@ -72,6 +72,24 @@ install(
     DESTINATION var
 )
 
+install(
+    FILES resources/default_cxx.conf
+    DESTINATION run/testpp/testpp_default
+    RENAME cxx.conf    
+)
+
+install(
+    FILES resources/default_flag.conf
+    DESTINATION run/testpp/testpp_default
+    RENAME flags.conf
+)
+
+install(
+    FILES resources/default_meta.data
+    DESTINATION run/testpp/testpp_default
+    RENAME meta.data
+)
+
 #ensure that the user has a config file upon installation in the run/ folder
 install(
     FILES resources/default_flag.conf

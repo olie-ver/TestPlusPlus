@@ -1,6 +1,8 @@
 #include "../../headers/Configure.hpp"
 #include "../../headers/Helpers.hpp"
 
+#include <iostream>
+
 namespace testppCLI {
     std::ostream& operator<< (std::ostream& stream, const Config& config) {
         //verbosity
@@ -19,12 +21,14 @@ namespace testppCLI {
 
         //jsonfile
         if (!config.jsonFile.empty()) {
-            stream << "json " << config.jsonFile << ' ';
+            stream << "--json " << config.jsonFile << ' ';
         }
+
+        std::cout << "JSONFILE LENGTH: " << config.jsonFile.length() << '\n';
 
         //xml
         if (!config.jUnitFile.empty()) {
-            stream << "xml " << config.jUnitFile << ' ';
+            stream << "--xml " << config.jUnitFile << ' ';
         }
 
         //skip

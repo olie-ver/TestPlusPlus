@@ -90,7 +90,7 @@ namespace testppCLI {
                 return false;
             }
         }
-        std::filesystem::path path{GetInstallRoot() / "run" / "testpp" / name};
-        return std::filesystem::exists(path);
+        std::filesystem::path path(GetInstallRoot() / "run" / "testpp" / name);
+        return std::filesystem::exists(path / name) && std::filesystem::is_directory(path);
     }
 }

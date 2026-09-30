@@ -41,11 +41,7 @@ namespace testppCLI {
         std::getline(reader, line);
         std::filesystem::path lastExec{GetInstallRoot() / "run" / "testpp" / line};
 
-        if (std::filesystem::exists(lastExec)) {
-            return lastExec;
-        } else {
-            return "";
-        }
+        return lastExec;
     }
 
     Metadata GetMetadata(std::string_view name) {

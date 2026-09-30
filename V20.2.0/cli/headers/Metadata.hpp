@@ -10,6 +10,8 @@ namespace testppCLI {
         /// @brief Allows the user to pass Config to std::cout <<
         friend std::ostream& operator<< (std::ostream& stream, const Metadata& meta);
 
+        friend bool operator== (const Metadata& lhs, const Metadata& rhs);
+
         /// @brief Serializes a Config to the specified filepath
         /// @param path the path where the Config should go to
         void Serialize(const std::filesystem::path& path);
@@ -19,7 +21,7 @@ namespace testppCLI {
         /// @return The Config containing all data and methods of what was serialized
         static Metadata Deserialize(const std::filesystem::path& path);
 
-        bool compile = true;
+        uint8_t compile = true;
         std::string files = "";
     };
 }

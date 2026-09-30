@@ -9,9 +9,9 @@ D_TEST(configure) {
     testppCLI::Config conf;
     std::cout << conf << std::endl;
 
-    conf.Serialize("DEFAULT_CONFIG_SERIALIZATION.conf");
+    conf.Serialize("default_flag.conf");
 
-    testppCLI::Config deserialized = testppCLI::Config::Deserialize("DEFAULT_CONFIG_SERIALIZATION.conf");
+    testppCLI::Config deserialized = testppCLI::Config::Deserialize("default_flag.conf");
 
     std::cout << conf << std::endl;
 }
@@ -20,14 +20,23 @@ D_TEST(cxx) {
     testppCLI::CXX cxx;
     std::cout << cxx << std::endl;
 
-    cxx.Serialize("DEFAULT_CXX_SERIALIZE.conf");
+    cxx.Serialize("default_cxx.conf");
 
-    testppCLI::CXX deserialized = testppCLI::CXX::Deserialize("DEFAULT_CXX_SERIALIZE.conf");
+    testppCLI::CXX deserialized = testppCLI::CXX::Deserialize("default_cxx.conf");
 
     std::cout << cxx << std::endl;
 }
 
 D_TEST(metadata) {
     testppCLI::Metadata meta;
-    meta.Serialize("DEFAULT_METADATA.data");
+    meta.Serialize("default_meta.data");
+
+    testppCLI::Metadata deserialized = testppCLI::Metadata::Deserialize("default_meta.data");
+    ASSERT_EQ(meta, deserialized);
+
+    // deserialized.files = "tests/src/assert.cpp";
+    // deserialized.Serialize("CHANGED_METADATA.data");
+
+    // testppCLI::Metadata changed = testppCLI::Metadata::Deserialize("CHANGED_METADATA.data");
+    // ASSERT_EQ(deserialized, changed);
 }

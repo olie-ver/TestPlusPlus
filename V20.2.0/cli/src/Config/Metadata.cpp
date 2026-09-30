@@ -15,16 +15,34 @@ namespace testppCLI {
         return stream;
     }
 
+    bool operator== (const Metadata& lhs, const Metadata& rhs) {
+        return lhs.compile == rhs.compile && lhs.files == rhs.files;
+    }
+
     void Metadata::Serialize(const std::filesystem::path& path) {
         std::ofstream file(path, std::ios::binary | std::ios::trunc);
-        file.write(reinterpret_cast<const char*>(this), sizeof(*this));
+
+        file.write(reinterpret_cast<const char*>(&compile), sizeof(compile));
+
+        uint64_t size = files.size();
+        file.write(reinterpret_cast<const char*>(&size), sizeof(size));
+
+        file.write(files.data(), size);
     }
 
     Metadata Metadata::Deserialize(const std::filesystem::path& path) {
         Metadata data;
 
         std::ifstream file(path, std::ios::binary);
-        file.read(reinterpret_cast<char*>(&data), sizeof(data));
+
+        file.read(reinterpret_cast<char*>(&data.compile), sizeof(data.compile));
+
+        uint64_t size;
+        file.read(reinterpret_cast<char*>(&size), sizeof(size));
+
+        data.files.resize(size);
+        file.read(data.files.data(), size);
+
         return data;
     }
 }
