@@ -30,7 +30,7 @@ else()
         -Wall
         -Wextra
         -Wpedantic
-        -Werror
+        # -Werror
         -O3
     )
 endif()
@@ -61,12 +61,14 @@ install(TARGETS
 )
 
 #install the default config and CMake template into var
-#if either or these are deleted => "now that wasn't very smart of you now was it?"
+#if any of these are deleted => "now that wasn't very smart of you now was it?"
 install(
     FILES
+        resources/CMakeLists.txt.in
         resources/default_cxx.conf
         resources/default_flag.conf
-        resources/CMakeLists.txt.in
+        resources/default_meta.data
+        resources/last_exec.conf
     DESTINATION var
 )
 
@@ -74,13 +76,13 @@ install(
 install(
     FILES resources/default_flag.conf
     DESTINATION run/testpp
-    RENAME config_flags.conf
+    RENAME global_flags.conf
 )
 
 install (
     FILES resources/default_cxx.conf
     DESTINATION run/testpp
-    RENAME config_cxx.conf
+    RENAME global_cxx.conf
 )
 
 #Create and install empty directories for runtime

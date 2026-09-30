@@ -1,5 +1,6 @@
-#include "../headers/CLI.hpp"
-#include <iostream>
+#include "../../headers/Metadata.hpp"
+
+#include "../../headers/FileSystem.hpp"
 
 #ifdef __APPLE__
     #include <mach-o/dyld.h>
@@ -7,8 +8,10 @@
     #include <windows.h>
 #endif
 
-namespace tppCLI {
-    std::filesystem::path GetInstallPrefix() {
+#include <fstream>
+
+namespace testppCLI {
+    std::filesystem::path GetInstallRoot() {
         #ifdef __APPLE__
             uint32_t size = 0;
             _NSGetExecutablePath(nullptr, &size);
@@ -28,5 +31,25 @@ namespace tppCLI {
             std::filesystem::path exePath(buffer);
             return exePath.parent_path().parent_path();
         #endif
+    }
+
+    std::filesystem::path GetLastExec() {
+        std::filesystem::path filePath{GetInstallRoot() / "var" / "last_exec.conf"};
+        std::ifstream reader{filePath};
+
+        std::string line;
+        std::getline(reader, line);
+        std::filesystem::path lastExec{GetInstallRoot() / "run" / "testpp" / line};
+
+        if (std::filesystem::exists(lastExec)) {
+            return lastExec;
+        } else {
+            return "";
+        }
+    }
+
+    Metadata GetMetadata(std::string_view name) {
+        std::filesystem::path metadata{GetInstallRoot() / "run" / "testpp" / name / "meta.data"};
+        return Metadata::Deserialize(metadata);
     }
 }

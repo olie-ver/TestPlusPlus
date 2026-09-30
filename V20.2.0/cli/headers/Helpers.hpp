@@ -3,32 +3,26 @@
 #ifndef TESTPP_CLI_HELPERS_H
 #define TESTPP_CLI_HELPERS_H
 
-#include "CLI.hpp"
+#include "Configure.hpp"
 
-namespace tppHelpers {
-    void printDiagnostics(const char* VERSION, 
-        const std::filesystem::path& installRoot, 
-        const std::filesystem::path& user_exec,
-        const tppCLI::CXX& user_cxx,
-        const tppCLI::Config& settings
-    );
+#include <string>
+#include <vector>
 
-    void printHelp();
+namespace testppCLI {
+    std::vector<std::string> split(std::string s, const std::string& delimiter);
+    std::string implode(const std::vector<std::filesystem::path>& strs, const std::string& glue);
+    
+    void configConf(Config& conf, int argc, char** argv);
+    void configCxx(CXX& cxx, int argc, char** argv);
+    void configLibs(CXX& cxx, int argc, char** argv);
 
-    void getFilesAndArgs(int argc, char** argv,
-        std::vector<std::string>& args, 
-        std::vector<std::filesystem::path>& files
-    );
+    void rename(int argc, char** argv);
 
-    void generateCMake(
-        const std::filesystem::path& install_prefix,
-        const std::filesystem::path& write_loc,
-        const std::filesystem::path& cmake_template, 
-        const std::vector<std::filesystem::path>& files,
-        const tppCLI::CXX& cxxFlags
-    );
+    void buildCMake(std::string_view path);
+    void buildExec(std::string_view name);
+    std::string replace(const std::string& s, const std::string& delimiter, const std::string& replace);
 
-    bool configureAndBuild(const std::filesystem::path& run);
+    void getFilesAndArgs(int start, int argc, char** argv, std::vector<std::filesystem::path>& files, std::vector<std::string>& args);
 }
 
 #endif

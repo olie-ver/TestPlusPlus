@@ -10,7 +10,7 @@ install:
 	rm -rf build
 
 run: 
-	install/bin/testpp --diagnostics
+	install/bin/testpp
 
 test:
 	install/bin/testpp tests/src/assert.cpp
