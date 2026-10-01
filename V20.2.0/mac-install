@@ -22,7 +22,7 @@ pkgbuild \
     --install-location /usr/local \
     --identifier com.olie.testpp \
     --version 20.2.0 \
-    --scripts ../installer \
+    --scripts ../installer/postinstall \
     ../installer/installs/TestPlusPlus-20.2.0-mac-arm64.pkg
 
 rm -rf build-mac-arm64
