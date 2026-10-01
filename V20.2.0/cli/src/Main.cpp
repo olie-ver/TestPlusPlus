@@ -15,18 +15,12 @@ int main(int argc, char** argv) {
     std::filesystem::path last_exec_dir = testppCLI::GetLastExec();
     std::string last_exec_name{last_exec_dir.filename()};
 
-    // std::cout << "last_exec_dir: " << last_exec_dir << '\n';
-    // std::cout << "last_exec_name: " << last_exec_name << '\n';
-
     std::filesystem::path install_root = testppCLI::GetInstallRoot();
     std::filesystem::path var = install_root / "var";
     std::filesystem::path run = install_root / "run" / "testpp";
 
     //get the last executable and run it with the user's settings
     if (argc == 1) {
-        std::cout << "argc == 1 => Last exec dir: ";
-        std::cout << last_exec_dir << std::endl;
-
         if (!std::filesystem::exists(last_exec_dir / last_exec_name)) {
             std::cout << "No test executable has been made yet" << std::endl;
             return EXIT_SUCCESS;
@@ -46,9 +40,6 @@ int main(int argc, char** argv) {
         testppCLI::Config config = testppCLI::Config::Deserialize((last_exec_dir / "flags.conf"));
         std::stringstream cmd;
         cmd  << (last_exec_dir / last_exec_name) << ' ' << config;
-
-        std::cout << "Command: ";
-        std::cout << cmd.str().c_str() << std::endl;
 
         return system(cmd.str().c_str());
     }
@@ -132,9 +123,6 @@ int main(int argc, char** argv) {
 
             std::stringstream cmd;
             cmd << '\"' << (run / last_exec_name / "bin" / "testpp_generated") << "\" " << config;
-
-            std::cout << "Command (2 args):\n";
-            std::cout << cmd.str().c_str() << std::endl;
 
             return system(cmd.str().c_str());
         }
@@ -251,16 +239,6 @@ int main(int argc, char** argv) {
         std::vector<std::string> args;
         testppCLI::getFilesAndArgs(start, argc, argv, files, args);
 
-        std::cout << "FILES:\n";
-        for (const auto& file : files) {
-            std::cout << file << '\n';
-        }
-
-        std::cout << "ARGS:\n";
-        for (const auto& arg : args) {
-            std::cout << arg << '\n';
-        }
-
         std::string argStr{testppCLI::implode(args, " ")};
         argStr.push_back(' ');
 
@@ -286,7 +264,7 @@ int main(int argc, char** argv) {
         std::stringstream stream;
         stream << '\"' << (last_exec_dir / "bin" / "testpp_generated") << "\" " << argStr << config; //Needs the user's arguments in front of their config
 
-        std::cout << "Command: " << stream.str() << '\n';
+        std::cout << "Run command: " << stream.str() << '\n';
 
         return std::system(stream.str().c_str());
     }

@@ -126,7 +126,6 @@ namespace testppCLI {
         }
     }
 
-    //Lowkey kind of buggy
     bool IsExec(std::string_view name) {
         std::filesystem::path execs{GetInstallRoot() / "run" / "testpp"};
 

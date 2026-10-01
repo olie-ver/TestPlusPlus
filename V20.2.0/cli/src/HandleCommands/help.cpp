@@ -21,10 +21,20 @@ namespace testppCLI {
         "\ttestpp --reset - resets both your configuration and compiler flag settings\n"
         "\ttestpp --reset-flags - resets only your configuration settings\n"
         "\ttestpp --reset-cxx - resets only your compiler flag settings\n"
+        "\ttestpp --reset-link - resets only your linked libraries\n"
+        "\t - Add \"--g\" or \"--global\" to the beginning or the end to these commands to run this command globally\n\n"
 
-        "\ttestpp config [flags] - configures your Test++ settings\n"
-        "\ttestpp cxx_flags [compiler_flags] - configures your Test++ compiler flags."
+        "\ttestpp --default - resets both your configuration and compiler flag settings to the default settings\n"
+        "\ttestpp --default-flags - resets only your configuration settings to the default settings\n"
+        "\ttestpp --default-cxx - resets only your compiler flag settings to the default settings\n"
+        "\ttestpp --default-link - resets only your linked libraries to the default settings\n"
+        "\t - Add \"--g\" or \"--global\" to the beginning or the end to these commands to run this command globally\n\n"
+
+        "\ttestpp --config [flags] - configures your Test++ settings\n"
+        "\ttestpp --cxx [compiler_flags] - configures your current Test++ compiler flags."
                             "\n\t\tType them in as if you were passing them directly to the compiler\n\n"
+        "\ttestpp --link [libs] - configures your current Test++ libraries and frameworks to PRIVATELY link against\n"
+        "\t - Add \"--g\" or \"--global\" to the beginning or the end to these commands to run this command globally\n\n"
         
         "Supported [flags]:\n"
         "\tVerbosity: --v= or --verbosity=\n"

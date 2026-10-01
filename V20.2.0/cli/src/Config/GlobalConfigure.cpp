@@ -10,14 +10,12 @@ namespace testppCLI {
         std::filesystem::path installRoot{GetInstallRoot()};
         std::filesystem::path run{installRoot / "run" / "testpp"};
 
-        std::cout << "begin: " << begin << "end: " << end << '\n';
         std::vector<char*> newArgv;
         newArgv.reserve(end - begin + 2);
         newArgv.push_back(argv[0]);
         newArgv.push_back(argv[1]);
         for (; begin < end; begin++) {
             newArgv.push_back(argv[begin]);
-            std::cout << "argv[begin]: " << argv[begin] << '\n';
         }
         newArgv.push_back(nullptr);
         int argc = newArgv.size() - 1;
