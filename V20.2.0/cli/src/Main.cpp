@@ -8,12 +8,13 @@
 
 #include <iostream>
 #include <sstream>
+#include <string_view>
 
 #define DEFAULT_FLAGS "default_flag.conf"
 
 int main(int argc, char** argv) {
     std::filesystem::path last_exec_dir = testppCLI::GetLastExec();
-    std::string last_exec_name{last_exec_dir.filename()};
+    std::string last_exec_name{last_exec_dir.filename().string()};
 
     std::filesystem::path install_root = testppCLI::GetInstallRoot();
     std::filesystem::path var = install_root / "var";
@@ -21,7 +22,11 @@ int main(int argc, char** argv) {
 
     //get the last executable and run it with the user's settings
     if (argc == 1) {
-        if (!std::filesystem::exists(last_exec_dir / last_exec_name)) {
+        #if defined(_WIN32) || defined(_WIN64)
+            if (!std::filesystem::exists(last_exec_dir / "testp_generated.exe")) {
+        #else
+            if (!std::filesystem::exists(last_exec_dir / "testp_generated")) {
+        #endif
             std::cout << "No test executable has been made yet" << std::endl;
             return EXIT_SUCCESS;
         } 
@@ -94,7 +99,11 @@ int main(int argc, char** argv) {
             //If it's a name => rerun the executable
 
             if (testppCLI::IsExec(first_arg)) {
-                if (!std::filesystem::exists(run / first_arg / "bin" / "testpp_generated")) {
+                #if defined(_WIN32) || defined(_WIN64)
+                    if (!std::filesystem::exists(run / first_arg / "bin" / "testpp_generated.exe")) {
+                #else
+                    if (!std::filesystem::exists(run / first_arg / "bin" / "testpp_generated")) {
+                #endif
                     std::cerr << "No test executable exists inside the directory: " << (run / first_arg) 
                         << ".\nPlease create one by using \"testpp [name] [files] [args]\".\n"
                         << "Where [name] is an optional parameter";
@@ -231,7 +240,7 @@ int main(int argc, char** argv) {
         if (testppCLI::IsExec(first_arg)) {
             start = 2; //If the first arg is a name, then the structure is: testpp [name] [files and args]
             last_exec_dir = (run / first_arg).string();
-            last_exec_name = last_exec_dir.filename();
+            last_exec_name = last_exec_dir.filename().string();
         }
 
         //Now gather the files and arguments
@@ -262,7 +271,11 @@ int main(int argc, char** argv) {
 
         testppCLI::Config config = testppCLI::Config::Deserialize(last_exec_dir / "flags.conf");
         std::stringstream stream;
-        stream << '\"' << (last_exec_dir / "bin" / "testpp_generated") << "\" " << argStr << config; //Needs the user's arguments in front of their config
+        #if defined(_WIN32) || defined(_WIN64)
+            stream << '\"' << (last_exec_dir / "bin" / "testpp_generated.exe") << "\" " << argStr << config; //Needs the user's arguments in front of their config
+        #else 
+            stream << '\"' << (last_exec_dir / "bin" / "testpp_generated") << "\" " << argStr << config; //Needs the user's arguments in front of their config
+        #endif
 
         std::cout << "Run command: " << stream.str() << '\n';
 

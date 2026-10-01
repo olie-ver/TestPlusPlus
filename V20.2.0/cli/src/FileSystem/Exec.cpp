@@ -71,7 +71,7 @@ namespace testppCLI {
         std::vector<const char*> newArgv{"testpp", "--set-exec", argv[2], nullptr};
 
         //set the path to the new executable path, even though it's not yet constructed
-        setExec(newArgv.size() - 1,  const_cast<char**>(newArgv.data()));
+        setExec(static_cast<int>(newArgv.size() - 1),  const_cast<char**>(newArgv.data()));
     }
 
     void deleteExec(int argc, char** argv) {
@@ -115,7 +115,7 @@ namespace testppCLI {
                 std::vector<const char*> newArgv{"testpp", "--new", "testpp_default", nullptr};
 
                 //Create testpp_default as the new active executable
-                createExec(newArgv.size() - 1,  const_cast<char**>(newArgv.data()));
+                createExec(static_cast<int>(newArgv.size() - 1),  const_cast<char**>(newArgv.data()));
             } else {
                 std::ofstream ofstream(installRoot / "var" / "last_exec.conf", std::ios::trunc);
                 ofstream.write("testpp_default", 14);

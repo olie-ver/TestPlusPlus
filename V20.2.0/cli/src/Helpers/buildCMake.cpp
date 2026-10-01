@@ -20,7 +20,7 @@ namespace testppCLI {
 
         CXX cxx = CXX::Deserialize(execDir / "cxx.conf");
 
-        const std::string& srcFiles = replace(metadata.files, " ", "\n\t");
+        std::string srcFiles = replace(metadata.files, " ", "\n\t");
         const std::string& flags = replace(cxx.flags, " ", "\n\t");
         const std::string& libs = replace(cxx.linkLibs, "\" ", "\"\n\t");
 
@@ -41,10 +41,30 @@ namespace testppCLI {
         filecontents.replace(stdPos, stdReplace.length(), std::to_string(cxx.standard));
 
         size_t srcPos = filecontents.find(srcReplace);
+
+        #if defined(_WIN32) || defined(_WIN64)
+            for(size_t i = 0; i < srcFiles.size(); i++) {
+                if (srcFiles[i] == '\\') {
+                    srcFiles.insert(i, 1, '\\');
+                    i++;
+                }
+            }
+        #endif
+
         filecontents.replace(srcPos, srcReplace.length(), srcFiles);
 
         size_t installPos = filecontents.find(installReplace);
-        filecontents.replace(installPos, installReplace.length(), GetInstallRoot());
+
+        std::string install_str = GetInstallRoot().string();
+        #if defined(_WIN32) || defined(_WIN64)
+            for(size_t i = 0; i < install_str.size(); i++) {
+                if (install_str[i] == '\\') {
+                    install_str.insert(i, 1, '\\');
+                    i++;
+                }
+            }
+        #endif
+        filecontents.replace(installPos, installReplace.length(), install_str);
 
         size_t projectPos = filecontents.find(projectReplace);
         filecontents.replace(projectPos, projectReplace.length(), name);

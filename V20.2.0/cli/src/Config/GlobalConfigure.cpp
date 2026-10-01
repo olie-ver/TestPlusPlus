@@ -18,7 +18,7 @@ namespace testppCLI {
             newArgv.push_back(argv[begin]);
         }
         newArgv.push_back(nullptr);
-        int argc = newArgv.size() - 1;
+        int argc = static_cast<int>(newArgv.size() - 1);
 
         for (const auto& iter : std::filesystem::directory_iterator(run)) {
             if (std::filesystem::is_directory(iter.path())) {
@@ -47,7 +47,7 @@ namespace testppCLI {
             newArgv.push_back(argv[begin]);
         }
         newArgv.push_back(nullptr);
-        int argc = newArgv.size() - 1;
+        int argc = static_cast<int>(newArgv.size() - 1);
 
         for (const auto& iter : std::filesystem::directory_iterator(run)) {
             if (std::filesystem::is_directory(iter.path())) {
@@ -79,7 +79,7 @@ namespace testppCLI {
             newArgv.push_back(argv[begin]);
         }
         newArgv.push_back(nullptr);
-        int argc = newArgv.size() - 1;
+        int argc = static_cast<int>(newArgv.size() - 1);
 
         for (const auto& iter : std::filesystem::directory_iterator(run)) {
             if (std::filesystem::is_directory(iter.path())) {

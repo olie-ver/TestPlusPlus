@@ -5,6 +5,7 @@
 
 #include "Metadata.hpp"
 
+#include <array>
 #include <filesystem>
 #include <string_view>
 

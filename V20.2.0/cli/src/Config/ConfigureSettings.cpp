@@ -4,6 +4,7 @@
 
 #include <filesystem>
 #include <iostream>
+#include <string_view>
 
 namespace testppCLI {
     void configureFlags(int argc, char** argv) {
