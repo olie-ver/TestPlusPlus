@@ -23,9 +23,9 @@ int main(int argc, char** argv) {
     //get the last executable and run it with the user's settings
     if (argc == 1) {
         #if defined(_WIN32) || defined(_WIN64)
-            if (!std::filesystem::exists(last_exec_dir / "testp_generated.exe")) {
+            if (!std::filesystem::exists(last_exec_dir / "testpp_generated.exe")) {
         #else
-            if (!std::filesystem::exists(last_exec_dir / "testp_generated")) {
+            if (!std::filesystem::exists(last_exec_dir / "testpp_generated")) {
         #endif
             std::cout << "No test executable has been made yet" << std::endl;
             return EXIT_SUCCESS;
