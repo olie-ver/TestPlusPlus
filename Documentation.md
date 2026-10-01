@@ -1,5 +1,6 @@
-# C++ Unit Tester V20.1.3
-A C++ Unit Tester for C++20 written by Oliver Lie. Even as a more or less stable release, I still make no guarantees that future versions will work the same, and implementations could change.
+# C++ Unit Tester V20.2.0
+Documentation guide for Test++ V20.2.0. Even as a more or less stable release, I still make no 
+guarantees that future versions will work the same, and implementations could change.
 
 ### License/Conditions of Usage
 This software is released under the MIT license.
@@ -26,6 +27,19 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
+## Changes
+
+This update to Test++ brings was focused on upgrading the CLI. You are now able to:
+1. Set up libraries to link against your test executable
+2. Create multiple testing executables in case you want multiple.
+    If you never use this feature, then Test++ remains nearly the same as V20.1.4
+3. Globally configure the runtime flags, the compiler flags, and linked libraries
+4. Customize each executable's runtime flags, compiler flags, and linked libraries
+5. Updated diagnostics and a new inspect command
+6. Reset your configurations to the default using the default family of commands
+
+See the chapter on [cli usage](#cli-usage) for more information
+
 ## Table of Contents
 1. [Adding To Your Projects](#adding-to-your-projects)
     1. [Installation](#installation)
@@ -41,6 +55,28 @@ SOFTWARE.
         6. [JSON Output](#json-output)
         7. [XML Output](#xml-output)
         8. [stdout/stderr Output](#stdoutstderr-output)
+    5. [New CLI Commands](#new-cli-commands)
+        1. [Version](#check-the-test-version)
+        2. [Help](#help)
+        3. [Diagnostics](#diagnostics)
+        4. [Create a New Executable](#--new-name-create-a-new-executable)
+        5. [Rename an Executable](#--rename-name-rename-an-executable)
+        6. [Delete an Executable](#--delete-name-delete-an-executable)
+        7. [Switch Executables](#--set-name-switch-to-an-executable)
+        8. [Inspect an Executable](#--inspect-name-inspect-an-executable)
+        9. [List all Executables](#--list-list-all-executables)
+        10. [Run a Specific Executable](#testpp-name-run-a-specific-executable)
+        11. [Configure the Current Executable's Runtime Flags](#--config-flags-configure-the-current-executables-runtime-flags)
+        12. [Configure the Current Executable's Compiler Flags](#--cxx-flags-configure-the-current-executables-compiler-flags)
+        13. [Configure the Current Executable's Linked Libraries](#--link-libs-configure-the-current-executables-linked-libraries)
+        14. [Reset the Current Executable's Configuration to the Global](#--reset-reset-the-current-executables-configuration-to-the-global)
+        15. [Reset the Current Executable's Runtime Configuration to the Global](#--reset-flags-reset-the-current-executables-runtime-configuration-to-the-global)
+        16. [Reset the Current Executable's Compiler Configuration to the Global](#--reset-cxx-reset-the-current-executables-compiler-configuration-to-the-global)
+        17. [Reset the Current Executable's Library Configuration to the Global](#--reset-link-reset-the-current-executables-library-configuration-to-the-global)
+        18. [Reset the Current Executable's Configuration to the Default](#--default-reset-the-current-executables-configuration-to-the-default)
+        19. [Reset the Current Executable's Runtime Configuration to the Default](#--default-flags-reset-the-current-executables-runtime-configuration-to-the-default)
+        20. [Reset the Current Executable's Compiler Configuration to the Default](#--default-cxx-reset-the-current-executables-compiler-configuration-to-the-default)
+        21. [Reset the Current Executable's Library Configuration to the Default](#--default-link-reset-the-current-executables-library-configuration-to-the-default)
 2. [Testing](#testing)
     1. [Registering Tests](#registering-tests)
     2. [Different Types Of Tests](#different-types-of-tests)
@@ -667,6 +703,101 @@ To specify what length you want to capture stdout and stderr output from [Isolat
 5. `--truncate=`
 
 Following by a nonnegative integer. Inputting a value of `0` reverts to the default behavior of printing out the full subprocess's `stdout` and `stderr` output. `--truncate=` truncates both `stdout` and `stderr` output to the same length. Truncating does not affect JSON and XML output and when printing JSON and/or XML, the FULL `stdout` and `stderr` output will be recorded. This flag ONLY affects CONSOLE rendering.
+
+### New CLI Commands
+
+#### Check the Test++ Version
+Run `testpp --v` or `testpp --version` to check the version of the installed Test++ package.
+
+#### Help
+Run `testpp --h` or `testpp --help` to see how to use Test++.
+
+#### Diagnostics
+Run `testpp --d` or `testpp --diagnostics` to see global Test++ configurations as well as information about Test++ such as installation
+location, version, and the names of executables.
+
+#### --new [name]: Create a New Executable
+Create a new testing executable by using the `--new [name]` command, where [name] cannot be a flag used by Test++ to run, or the name 
+of an existing executable. For a good rule of thumb, just don't start your test executable names with "--" and you'll be fine. When you 
+create a new executable, Test++ will immediately switch to use that new executable. If this command fails, then nothing will happen.
+
+#### --rename [name]: Rename an Executable
+Rename an executable by using the `--rename [renameFrom] [renameTo]` command. [renameTo] cannot be an invalid name, and it also can't be the name of 
+an already existing executable. If this command fails, then nothing will happen.
+
+#### --delete [name]: Delete an Executable
+Delete an executable by using the `--delete [name]` command, where [name] is the name of an executable. Deleting all your executables will 
+result in the creation of the default testing executable folder to be created with no testing executable inside. This is to avoid the framework
+from ever being in an invalid state. If this command fails, then nothing will happen.
+
+#### --set [name]: Switch to an Executable
+To switch to an executable, use the `--set [name]` or `--set-exec [name]` commands, where [name] is the name of an executable. This will set 
+that executable to be the default executable to be ran. If this command fails, then nothing will happen.
+
+#### --inspect [name]: Inspect an Executable
+To inspect a specific executable, use the `--inspect [name]` command where [name] is an optional parameter representing the name of an executable.
+Not including the [name] parameter will inspect the current default executable. This will print executable-specific information, such as this executable's
+configuration flags, compiler flags, and linked libraries, as well as whether or not it needs to be recompiled when ran.
+
+#### --list: List all Executables
+To list all created executables, use the `--list` command. 
+
+#### testpp [name]: Run a Specific Executable
+To run a specific executable without switching, use the `testpp [name] [files and args]` command, where [name] is the name of an executable. 
+If there is no constructed executable, this command will build one in the folder with that name. 
+
+#### --config [flags]: Configure the Current Executable's Runtime Flags
+To configure the current executable, use the `--config [flags]` command where [flags] are Test++ flags and values (--verbosity=, --numthreads=, etc.). 
+To make this configuration global, you can start the command with `--g` or `--global`, as in, `testpp --g config [flags]`, or you can end the command 
+with `--g` or `--global`, as in, `testpp config [flags] --g`. Setting a flag's value globally will update every single test executable's value for that 
+flag.
+
+#### --cxx [flags]: Configure the Current Executable's Compiler Flags
+To configure the current executable's compiler flags and standard, use the `--cxx [flags]` command where [flags] are compiler flags. Type them in 
+as you would into gcc, clang, or MSVC. You can only set the flags, not change them. Ie, if you type in `testpp --cxx -Wall -O3`, but then want to remove
+-Wall, you need to type in `testpp --cxx -O3`. To make this configuration global, you can start the command with `--g` or `--global`, as in, 
+`testpp --g cxx [flags]`, or you can end the command with `--g` or `--global`, as in, `testpp cxx [flags] --g`. Setting a flag's value globally
+will update every single test executable's value for that flag.
+
+#### --link [libs]: Configure the Current Executable's Linked Libraries
+To configure the current executable's linked libraries, use the `--link [libs]` command where [libs] are libraries and frameworks. Type them in 
+as you would into gcc, clang, or MSVC, however, I recommend surrounding each library/framework in DOUBLE quotations.You can only set the flags, 
+not change them. Ie, if you type in `testpp --link "-framework CoreAudio" "-framework wxWidgets"`, but then want to remove CoreAudio, you need to type in 
+`testpp --link "-framework wxWidgets"`. To make this configuration global, you can start the command with `--g` or `--global`, as in, 
+`testpp --g link [flags]`, or you can end the command with `--g` or `--global`, as in, `testpp link [flags] --g`. Setting a flag's value globally
+will update every single test executable's value for that flag.
+
+#### --reset: Reset the Current Executable's Configuration to the Global
+To reset the current executable's configuration to the global configuration, use `--reset`. If you want to make this effect global, use 
+`--g` or `--global` before or after `--reset`: `--g --reset` or `--reset --g`.
+
+#### --reset-flags: Reset the Current Executable's Runtime Configuration to the Global
+To reset the current executable's runtime flags to the global configuration, use `--reset-flags`. If you want to make this effect global, use 
+`--g` or `--global` before or after `--reset-flags`: `--g --reset` or `--reset-flags --g`. This will leave the cxx and link flags untouched.
+
+#### --reset-cxx: Reset the Current Executable's Compiler Configuration to the Global
+To reset the current executable's compiler configuration to the global configuration, use `--reset-cxx`. If you want to make this effect global, use 
+`--g` or `--global` before or after `--reset-cxx`: `--g --reset-cxx` or `--reset-cxx --g`. This will leave the runtime flags and link flags untouched.
+
+#### --reset-link: Reset the Current Executable's Library Configuration to the Global
+To reset the current executable's library configuration to the global configuration, use `--reset-link`. If you want to make this effect global, use 
+`--g` or `--global` before or after `--reset-libs`: `--g --reset-link` or `--reset-link --g`. This will leave the runtime flags and compiler flags untouched.
+
+#### --default: Reset the Current Executable's Configuration to the Default
+To reset the current executable's configuration to the default configuration, use `--default`. If you want to make this effect global, use 
+`--g` or `--global` before or after `--default`: `--g --default` or `--default --g`.
+
+#### --default-flags: Reset the Current Executable's Runtime Configuration to the Default
+To reset the current executable's runtime flags to the default configuration, use `--default-flags`. If you want to make this effect global, use 
+`--g` or `--global` before or after `--default-flags`: `--g --default` or `--default-flags --g`. This will leave the cxx and link flags untouched.
+
+#### --default-cxx: Reset the Current Executable's Compiler Configuration to the Default
+To reset the current executable's compiler configuration to the default configuration, use `--default-cxx`. If you want to make this effect global, use 
+`--g` or `--global` before or after `--default-cxx`: `--g --default-cxx` or `--default-cxx --g`. This will leave the runtime flags and link flags untouched.
+
+#### --default-link: Reset the Current Executable's Library Configuration to the Default
+To reset the current executable's library configuration to the default configuration, use `--default-link`. If you want to make this effect global, use 
+`--g` or `--global` before or after `--default-link`: `--g --default-link` or `--default-link --g`. This will leave the runtime flags and compiler flags untouched.
 
 ## Testing
 

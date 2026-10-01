@@ -1,9 +1,0 @@
-{
-    "cmake.sourceDirectory": "/Users/oliverlie/Documents/GitHub/C++ Unit Tester/V20.0.4",
-    "cSpell.words": [
-        "asan",
-        "lsan",
-        "tsan",
-        "ubsan"
-    ]
-}

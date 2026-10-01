@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.20)
 
 project (
     testpp
-    VERSION 20.1.4
+    VERSION 20.2.0
     LANGUAGES CXX
 )
 
@@ -21,17 +21,18 @@ if(NOT CMAKE_BUILD_TYPE)
 endif()
 
 if (MSVC)
-    add_compile_options(/W4)
+    add_compile_options(
+        /W4 
+        /O2
+    )
 else()
     add_compile_options(
         -Wall
         -Wextra
         -Wpedantic
-        -Werror
+        # -Werror
+        -O3
     )
-
-    set(CMAKE_CXX_FLAGS_DEBUG "-g")
-    set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 endif()
 
 add_subdirectory(framework)
@@ -50,6 +51,7 @@ install(TARGETS
 install(
     DIRECTORY framework/include/
     DESTINATION include
+    PATTERN ".DS_Store" EXCLUDE
 )
 
 #install the CLI into bin
@@ -59,33 +61,50 @@ install(TARGETS
 )
 
 #install the default config and CMake template into var
-#if either or these are deleted => "now that wasn't very smart of you now was it?"
+#if any of these are deleted => "now that wasn't very smart of you now was it?"
 install(
     FILES
+        resources/CMakeLists.txt.in
         resources/default_cxx.conf
         resources/default_flag.conf
-        resources/CMakeLists.txt.in
+        resources/default_meta.data
+        resources/last_exec.conf
     DESTINATION var
+)
+
+install(
+    FILES resources/default_cxx.conf
+    DESTINATION run/testpp/testpp_default
+    RENAME cxx.conf    
+)
+
+install(
+    FILES resources/default_flag.conf
+    DESTINATION run/testpp/testpp_default
+    RENAME flags.conf
+)
+
+install(
+    FILES resources/default_meta.data
+    DESTINATION run/testpp/testpp_default
+    RENAME meta.data
 )
 
 #ensure that the user has a config file upon installation in the run/ folder
 install(
     FILES resources/default_flag.conf
-    DESTINATION run
-    RENAME config_flags.conf
+    DESTINATION run/testpp
+    RENAME global_flags.conf
 )
 
 install (
     FILES resources/default_cxx.conf
-    DESTINATION run
-    RENAME config_cxx.conf
+    DESTINATION run/testpp
+    RENAME global_cxx.conf
 )
 
 #Create and install empty directories for runtime
 install(DIRECTORY DESTINATION run)
-
-#TODO: Want to have no dependency on a build directory in the future
-# install(DIRECTORY DESTINATION run/build)
 
 #install Test++ as a package
 install(
