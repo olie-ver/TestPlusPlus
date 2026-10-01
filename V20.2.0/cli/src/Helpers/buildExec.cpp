@@ -28,8 +28,6 @@ namespace testppCLI {
 
         int buildResult = std::system(stream.str().c_str());
 
-        std::cout << "Build test executable at: " << stream.str() << '\n';
-
         if (buildResult != 0) {
             std::cerr << "Failed to build test executable: " << stream.str() << '\n';
         }
