@@ -23,9 +23,9 @@ int main(int argc, char** argv) {
     //get the last executable and run it with the user's settings
     if (argc == 1) {
         #if defined(_WIN32) || defined(_WIN64)
-            if (!std::filesystem::exists(last_exec_dir / "testpp_generated.exe")) {
+            if (!std::filesystem::exists(last_exec_dir / "bin" / "Release" / "testpp_generated.exe")) {
         #else
-            if (!std::filesystem::exists(last_exec_dir / "testpp_generated")) {
+            if (!std::filesystem::exists(last_exec_dir / "bin" / "testpp_generated")) {
         #endif
             std::cout << "No test executable has been made yet" << std::endl;
             return EXIT_SUCCESS;
@@ -100,7 +100,7 @@ int main(int argc, char** argv) {
 
             if (testppCLI::IsExec(first_arg)) {
                 #if defined(_WIN32) || defined(_WIN64)
-                    if (!std::filesystem::exists(run / first_arg / "bin" / "testpp_generated.exe")) {
+                    if (!std::filesystem::exists(run / first_arg / "bin" / "Release" / "testpp_generated.exe")) {
                 #else
                     if (!std::filesystem::exists(run / first_arg / "bin" / "testpp_generated")) {
                 #endif
@@ -131,7 +131,11 @@ int main(int argc, char** argv) {
             testppCLI::Config config = testppCLI::Config::Deserialize((run /last_exec_name / "flags.conf"));
 
             std::stringstream cmd;
-            cmd << '\"' << (run / last_exec_name / "bin" / "testpp_generated") << "\" " << config;
+            #if defined(_WIN32) || defined(_WIN64)
+                cmd << '\"' << (run / last_exec_name / "bin" / "Release" /"testpp_generated.exe") << "\" " << config;
+            #else
+                cmd << '\"' << (run / last_exec_name / "bin" / "testpp_generated") << "\" " << config;
+            #endif
 
             return system(cmd.str().c_str());
         }
@@ -272,7 +276,7 @@ int main(int argc, char** argv) {
         testppCLI::Config config = testppCLI::Config::Deserialize(last_exec_dir / "flags.conf");
         std::stringstream stream;
         #if defined(_WIN32) || defined(_WIN64)
-            stream << '\"' << (last_exec_dir / "bin" / "testpp_generated.exe") << "\" " << argStr << config; //Needs the user's arguments in front of their config
+            stream << '\"' << (last_exec_dir / "bin" / "Release" / "testpp_generated.exe") << "\" " << argStr << config; //Needs the user's arguments in front of their config
         #else 
             stream << '\"' << (last_exec_dir / "bin" / "testpp_generated") << "\" " << argStr << config; //Needs the user's arguments in front of their config
         #endif
