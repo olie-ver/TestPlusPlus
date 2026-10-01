@@ -1,0 +1,137 @@
+cmake_minimum_required(VERSION 3.20)
+
+project (
+    testpp
+    VERSION 20.2.0
+    LANGUAGES CXX
+)
+
+include(CMakePackageConfigHelpers)
+
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+if(NOT CMAKE_BUILD_TYPE)
+  set(CMAKE_BUILD_TYPE Release)
+endif()
+
+if (MSVC)
+    add_compile_options(
+        /W4 
+        /O2
+    )
+else()
+    add_compile_options(
+        -Wall
+        -Wextra
+        -Wpedantic
+        # -Werror
+        -O3
+    )
+endif()
+
+add_subdirectory(framework)
+add_subdirectory(cli)
+# add_subdirectory(tests)
+
+#install the framework into lib
+install(TARGETS
+    testpp
+    testpp_main
+    EXPORT testppTargets
+    ARCHIVE DESTINATION lib
+)
+
+#install the include folder into include
+install(
+    DIRECTORY framework/include/
+    DESTINATION include
+    PATTERN ".DS_Store" EXCLUDE
+)
+
+#install the CLI into bin
+install(TARGETS
+    testpp_cli
+    RUNTIME DESTINATION bin
+)
+
+#install the default config and CMake template into var
+#if any of these are deleted => "now that wasn't very smart of you now was it?"
+install(
+    FILES
+        resources/CMakeLists.txt.in
+        resources/default_cxx.conf
+        resources/default_flag.conf
+        resources/default_meta.data
+        resources/last_exec.conf
+    DESTINATION var
+)
+
+install(
+    FILES resources/default_cxx.conf
+    DESTINATION run/testpp/testpp_default
+    RENAME cxx.conf    
+)
+
+install(
+    FILES resources/default_flag.conf
+    DESTINATION run/testpp/testpp_default
+    RENAME flags.conf
+)
+
+install(
+    FILES resources/default_meta.data
+    DESTINATION run/testpp/testpp_default
+    RENAME meta.data
+)
+
+#ensure that the user has a config file upon installation in the run/ folder
+install(
+    FILES resources/default_flag.conf
+    DESTINATION run/testpp
+    RENAME global_flags.conf
+)
+
+install (
+    FILES resources/default_cxx.conf
+    DESTINATION run/testpp
+    RENAME global_cxx.conf
+)
+
+#Create and install empty directories for runtime
+install(DIRECTORY DESTINATION run)
+
+#install Test++ as a package
+install(
+    EXPORT testppTargets
+    FILE testppTargets.cmake
+    NAMESPACE testpp::
+    DESTINATION lib/cmake/testpp
+)
+
+#generate the package config
+configure_package_config_file(
+    cmake/testppConfig.cmake.in
+    "${CMAKE_CURRENT_BINARY_DIR}/testppConfig.cmake"
+    INSTALL_DESTINATION lib/cmake/testpp
+)
+
+#generate the version file
+write_basic_package_version_file(
+    "${CMAKE_CURRENT_BINARY_DIR}/testppConfigVersion.cmake"
+    VERSION ${PROJECT_VERSION}
+    COMPATIBILITY SameMajorVersion
+)
+
+#install them
+install(
+    FILES
+        "${CMAKE_CURRENT_BINARY_DIR}/testppConfig.cmake"
+        "${CMAKE_CURRENT_BINARY_DIR}/testppConfigVersion.cmake"
+    DESTINATION lib/cmake/testpp
+)

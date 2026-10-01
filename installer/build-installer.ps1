@@ -1,6 +1,6 @@
 $ErrorActionPreference = "Stop"
 
-$Version = "20.1.4"
+$Version = "20.2.0"
 
 $InstallerDir = $PSScriptRoot
 $TestPPDir = Join-Path $InstallerDir "..\V$Version"
