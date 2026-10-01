@@ -46,6 +46,11 @@ namespace testppCLI {
             abort();
         }
 
+        if (IsFlag(second_arg)) {
+            std::cerr << "Filename started with a reserved string.\n";
+            abort();
+        }
+
         std::filesystem::path installRoot{GetInstallRoot()};
         std::filesystem::path var{installRoot / "var"};
         std::filesystem::path run{installRoot / "run" / "testpp"};
@@ -121,15 +126,17 @@ namespace testppCLI {
         }
     }
 
+    //Lowkey kind of buggy
     bool IsExec(std::string_view name) {
-        std::cout << "IsExec() name: " << name << '\n';
-        for (size_t i = 0; i < commands.size(); i++) {
-            if (name.starts_with(commands[i])) {
-                return false;
+        std::filesystem::path execs{GetInstallRoot() / "run" / "testpp"};
+
+        for (const auto& iter : std::filesystem::directory_iterator(execs)) {
+            if (iter.path().filename() == name) {
+                return true;
             }
         }
-        std::filesystem::path path(GetInstallRoot() / "run" / "testpp" / name);
-        return std::filesystem::exists(path / name) && std::filesystem::is_directory(path);
+
+        return false;
     }
 
     bool IsFlag(std::string_view name) {

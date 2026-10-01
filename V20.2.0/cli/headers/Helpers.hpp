@@ -11,6 +11,7 @@
 namespace testppCLI {
     std::vector<std::string> split(std::string s, const std::string& delimiter);
     std::string implode(const std::vector<std::filesystem::path>& strs, const std::string& glue);
+    std::string implode(const std::vector<std::string>& strs, const std::string& glue);
     
     void configConf(Config& conf, int argc, char** argv);
     void configCxx(CXX& cxx, int argc, char** argv);

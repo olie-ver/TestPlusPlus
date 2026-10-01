@@ -88,7 +88,6 @@ int main(int argc, char** argv) {
             testppCLI::deleteExec(argc, argv);
             return EXIT_SUCCESS;
         } else {
-            //THIS PATH IS REALLY REALLY BUGGY FOR SOME REASON
 
             //If the first arg is a flag instead of a name, print the usage and return exit failure
             if (testppCLI::IsFlag(first_arg)) {
@@ -98,29 +97,35 @@ int main(int argc, char** argv) {
                 return EXIT_FAILURE;
             }
 
-            //If first arg is an executable name, check if it exists first
+            //If it's a flag => don't allow
+            //If it's a file or a folder => add to the metadata
+            //   build CMake and run
+            //If it's a name => rerun the executable
+
             if (testppCLI::IsExec(first_arg)) {
-                std::cout << "IS EXEC\n";
-                if (!std::filesystem::exists(run / first_arg / first_arg)) {
+                if (!std::filesystem::exists(run / first_arg / "bin" / "testpp_generated")) {
                     std::cerr << "No test executable exists inside the directory: " << (run / first_arg) 
                         << ".\nPlease create one by using \"testpp [name] [files] [args]\".\n"
                         << "Where [name] is an optional parameter";
                     return EXIT_FAILURE;
                 }
 
-                //If it is an executable, then set it to be the one that will be run
+                //If there is an executable, then set it to be the one that will be run
                 last_exec_name = first_arg;
             } else {
-                std::cout << "IS NOT EXEC\n";
-                std::cout << "Deserializing at: " << (last_exec_dir / "meta.data") << '\n';
-                //otherwise take the file, add it to the Metadata, build the CMake and the executable
-                testppCLI::Metadata meta = testppCLI::Metadata::Deserialize(last_exec_dir / "meta.data");
-                meta.compile = false;
-                meta.files = first_arg;
-                meta.Serialize(last_exec_dir / "meta.data");
+                if (std::filesystem::is_regular_file(first_arg) || std::filesystem::is_directory(first_arg)) {
+                    std::vector<std::filesystem::path> files;
+                    std::vector<std::string> args;
+                    testppCLI::getFilesAndArgs(1, argc, argv, files, args);
 
-                testppCLI::buildCMake(last_exec_name);
-                testppCLI::buildExec(last_exec_name);
+                    testppCLI::Metadata meta = testppCLI::Metadata::Deserialize(last_exec_dir / "meta.data");
+                    meta.compile = false;
+                    meta.files = testppCLI::implode(files, " ");
+                    meta.Serialize(last_exec_dir / "meta.data");
+
+                    testppCLI::buildCMake(last_exec_name);
+                    testppCLI::buildExec(last_exec_name);
+                }
             }
 
             testppCLI::Config config = testppCLI::Config::Deserialize((run /last_exec_name / "flags.conf"));
@@ -234,44 +239,54 @@ int main(int argc, char** argv) {
             return EXIT_SUCCESS;
         }
 
-        //Check if the second argument is a name
-        //If so, run that executable, otherwise run the default one
-        std::string_view second{argv[2]};
-        int start = 2;
-        if (testppCLI::IsExec(second)) {
-            //If the second argument is a name, change the path to be the folder containing the executable with that name
-            last_exec_dir = (run / second).string();
-            start += 1;
+        int start = 1; //By default, the first argument is either a file or a run flag, eg: testpp [files and args]
+        if (testppCLI::IsExec(first_arg)) {
+            start = 2; //If the first arg is a name, then the structure is: testpp [name] [files and args]
+            last_exec_dir = (run / first_arg).string();
+            last_exec_name = last_exec_dir.filename();
         }
 
-        //If there are no files, but the configuration changed, then reconstruct the cmake and recompile the executable
-        //If there are files, reconstruct the cmake, change the metadata and recompile the executable
+        //Now gather the files and arguments
         std::vector<std::filesystem::path> files;
         std::vector<std::string> args;
         testppCLI::getFilesAndArgs(start, argc, argv, files, args);
 
-        testppCLI::Metadata execMeta = testppCLI::Metadata::Deserialize(last_exec_dir / "meta.data");
-        if (files.size() == 0 && execMeta.compile) {
-            execMeta.compile = false;
-            execMeta.Serialize(last_exec_dir / "meta.data");
-
-            testppCLI::buildCMake(second);
-            testppCLI::buildExec(second);
-        } else if (files.size() != 0) {
-            execMeta.compile = false;
-            execMeta.files = testppCLI::implode(files, " ");
-            execMeta.Serialize(last_exec_dir / "meta.data");
-
-            testppCLI::buildCMake(second);
-            testppCLI::buildExec(second);
+        std::cout << "FILES:\n";
+        for (const auto& file : files) {
+            std::cout << file << '\n';
         }
 
-        //Now build the run command and run it
+        std::cout << "ARGS:\n";
+        for (const auto& arg : args) {
+            std::cout << arg << '\n';
+        }
+
+        std::string argStr{testppCLI::implode(args, " ")};
+        argStr.push_back(' ');
+
+        std::cout << "Getting metadata from: " << (last_exec_dir / "meta.data") << '\n';
+        testppCLI::Metadata metadata = testppCLI::Metadata::Deserialize(last_exec_dir / "meta.data");
+        if (files.size() == 0) {
+            if (metadata.compile) {
+                metadata.compile = false;
+                metadata.Serialize(last_exec_dir / "meta.data");
+
+                testppCLI::buildCMake(last_exec_name);
+                testppCLI::buildExec(last_exec_name);
+            }
+        } else {
+            metadata.compile = false;
+            metadata.files = testppCLI::implode(files, " ");
+            metadata.Serialize(last_exec_dir / "meta.data");
+            testppCLI::buildCMake(last_exec_name);
+            testppCLI::buildExec(last_exec_name);
+        }
+
         testppCLI::Config config = testppCLI::Config::Deserialize(last_exec_dir / "flags.conf");
         std::stringstream stream;
-        stream << '\"' << (last_exec_dir / second) << '\"' << config; //Needs the user's arguments in front of their config
+        stream << '\"' << (last_exec_dir / "bin" / "testpp_generated") << "\" " << argStr << config; //Needs the user's arguments in front of their config
 
-        std::cout << stream.str() << '\n';
+        std::cout << "Command: " << stream.str() << '\n';
 
         return std::system(stream.str().c_str());
     }

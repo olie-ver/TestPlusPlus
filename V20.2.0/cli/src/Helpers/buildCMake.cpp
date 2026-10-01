@@ -10,6 +10,7 @@
 namespace testppCLI {
     void buildCMake(std::string_view name) {
         Metadata metadata = GetMetadata(name);
+        std::cout << metadata << '\n';
 
         std::filesystem::path execDir{GetInstallRoot() / "run" / "testpp" / name};
         std::filesystem::path defaultCmake{GetInstallRoot() / "var" / "CMakeLists.txt.in"};
@@ -24,10 +25,9 @@ namespace testppCLI {
 
         const std::string& srcFiles = replace(metadata.files, " ", "\n\t");
         const std::string& flags = replace(cxx.flags, " ", "\n\t");
-
-        //Because libs tend to have spaces in them (think "-framework CoreAudio"), needs a way to preserve the space and 
-        //  wrap them in quotes
         const std::string& libs = replace(cxx.linkLibs, "\" ", "\"\n\t");
+
+        std::cout << "SOURCE FILES: " << srcFiles << std::endl;
 
         const std::string projectReplace = "@PROJECT_NAME@";
         const std::string installReplace = "@INSTALL_PREFIX@";

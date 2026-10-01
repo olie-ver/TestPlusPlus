@@ -1,7 +1,10 @@
 #include "../../headers/Helpers.hpp"
 
+#include <iostream>
+
 namespace testppCLI {
     void getFilesAndArgs(int start, int argc, char** argv, std::vector<std::filesystem::path>& files, std::vector<std::string>& args) {
+        std::cout << "grabbing files and args\n";
         for (; start < argc; start++) {
             std::filesystem::path path{argv[start]};
 

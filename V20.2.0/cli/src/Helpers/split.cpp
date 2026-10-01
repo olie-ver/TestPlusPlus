@@ -26,4 +26,13 @@ namespace testppCLI {
         }
         return imploded;
     }
+
+    std::string implode(const std::vector<std::string>& strs, const std::string& glue) {
+        std::string imploded;
+        for (size_t i = 0; i < strs.size(); i++) {
+            imploded += strs[i];
+            imploded += glue;
+        }
+        return imploded;
+    }
 }
