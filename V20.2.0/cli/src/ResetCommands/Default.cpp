@@ -12,19 +12,15 @@ namespace testppCLI {
         std::filesystem::path curExecDir{GetLastExec()};
         std::filesystem::path var{GetInstallRoot() / "var"};
 
-        CXX dCxx{CXX::Deserialize(var / "default_cxx.conf")};
-
-        CXX curCxx{CXX::Deserialize(curExecDir / "cxx.conf")};
-        curCxx.flags = dCxx.flags;
-        curCxx.standard = dCxx.standard;
-        curCxx.linkLibs = dCxx.linkLibs;
-        curCxx.Serialize(curExecDir / "cxx.conf");
+        std::filesystem::remove(curExecDir / "cxx.conf");
+        std::filesystem::copy_file(var / "default_cxx.conf", curExecDir / "cxx.conf");
     }
 
     void defaultFlags() {
         std::filesystem::path curExecDir{GetLastExec()};
         std::filesystem::path var{GetInstallRoot() / "var"};
 
+        std::filesystem::remove(curExecDir / "flags.conf");
         std::filesystem::copy_file(var / "default_flag.conf", curExecDir / "flags.conf");
     }
 

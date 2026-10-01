@@ -11,14 +11,12 @@
 
 #define DEFAULT_FLAGS "default_flag.conf"
 
-//Forgot to add in --delete and --delete [name]
-
 int main(int argc, char** argv) {
     std::filesystem::path last_exec_dir = testppCLI::GetLastExec();
     std::string last_exec_name{last_exec_dir.filename()};
 
-    std::cout << "last_exec_dir: " << last_exec_dir << '\n';
-    std::cout << "last_exec_name: " << last_exec_name << '\n';
+    // std::cout << "last_exec_dir: " << last_exec_dir << '\n';
+    // std::cout << "last_exec_name: " << last_exec_name << '\n';
 
     std::filesystem::path install_root = testppCLI::GetInstallRoot();
     std::filesystem::path var = install_root / "var";

@@ -15,17 +15,14 @@ namespace testppCLI {
         std::filesystem::path run{installRoot / "run" / "testpp"};
         std::filesystem::path var{installRoot / "var"};
 
-        CXX gCxx = CXX::Deserialize(run / "global_cxx.conf");
+        std::filesystem::path gCxx{run / "global_cxx.conf"};
 
         for (const auto& iter : std::filesystem::directory_iterator(run)) {
             if (std::filesystem::is_directory(iter.path())) {
                 std::filesystem::path cxxPath{iter.path() / "cxx.conf"};
-                CXX lCxx = CXX::Deserialize(cxxPath);
-                lCxx.flags = gCxx.flags;
-                lCxx.standard = gCxx.standard;
-                lCxx.linkLibs = gCxx.linkLibs;
 
-                lCxx.Serialize(cxxPath);
+                std::filesystem::remove(cxxPath);
+                std::filesystem::copy_file(gCxx, cxxPath);
             }
         }
     }
@@ -37,6 +34,7 @@ namespace testppCLI {
         for (const auto& iter : std::filesystem::directory_iterator(run)) {
             if (std::filesystem::is_directory(iter.path())) {
                 std::filesystem::path flagPath{iter.path() / "flags.conf"};
+                std::filesystem::remove(flagPath);
                 std::filesystem::copy_file(run / "global_flags.conf", flagPath);
             }
         }

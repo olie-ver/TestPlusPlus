@@ -53,7 +53,7 @@ namespace testppCLI {
 
     std::ostream& operator<< (std::ostream& stream, const CXX& cxx) {
         //C++ standard:
-        stream << "--std=c++" << cxx.standard << ' ';
+        stream << "--std=c++" << std::to_string(cxx.standard) << ' ';
 
         //Compiler flags
         stream << cxx.flags << ' ';
