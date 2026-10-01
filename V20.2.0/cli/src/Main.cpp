@@ -150,11 +150,11 @@ int main(int argc, char** argv) {
             std::string_view second{argv[2]};
 
             if (second == "--config") {
-                testppCLI::globalConfigureFlags(argc, argv);
+                testppCLI::globalConfigureFlags(3, argc, argv); //testpp --g --config [arg at index 3]
             } else if (second == "--cxx") {
-                testppCLI::globalConfigureCXX(argc, argv);
+                testppCLI::globalConfigureCXX(3, argc, argv);
             } else if (second == "--link") {
-                testppCLI::globalConfigureLink(argc, argv);
+                testppCLI::globalConfigureLink(3, argc, argv);
             } else if (second == "--reset") {
                 testppCLI::globalReset();
             } else if (second == "--reset-flags") {
@@ -178,11 +178,12 @@ int main(int argc, char** argv) {
             std::string_view last{argv[argc - 1]};
             if (last == "--g" || last == "--global") {
                 if (first_arg == "--config") {
-                    testppCLI::globalConfigureFlags(argc, argv);
+                    //Needs a start and an end position
+                    testppCLI::globalConfigureFlags(2, argc - 1, argv); //testpp --config [arg at index 2] 
                 } else if (first_arg == "--cxx") {
-                    testppCLI::globalConfigureCXX(argc, argv);
+                    testppCLI::globalConfigureCXX(2, argc - 1, argv);
                 } else if (first_arg == "--link") {
-                    testppCLI::globalConfigureLink(argc, argv);
+                    testppCLI::globalConfigureLink(2, argc - 1, argv);
                 } else if (first_arg == "--reset") {
                     testppCLI::globalReset();
                 } else if (first_arg == "--reset-flags") {
@@ -210,7 +211,6 @@ int main(int argc, char** argv) {
             testppCLI::setExec(argc, argv);
             return EXIT_SUCCESS;
         } else if (first_arg == "--new") {
-            std::cout << "CREATING NEW EXEC\n";
             testppCLI::createExec(argc, argv);
             return EXIT_SUCCESS;
         } else if (first_arg == "--inspect") {

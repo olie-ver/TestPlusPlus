@@ -5,9 +5,6 @@
 #include <filesystem>
 #include <iostream>
 
-//Either a configuration of a (de)serialization bug
-
-//When configuring cxx stuff, need to set the metadata's compile flag to true
 namespace testppCLI {
     void configureFlags(int argc, char** argv) {
         const std::filesystem::path& lastExec{GetLastExec()};
@@ -35,8 +32,6 @@ namespace testppCLI {
             abort();
         }
 
-        std::cout << "Serializing at: " << lastExec << '\n';
-
         std::filesystem::path lastExecDir{lastExec};
         CXX cxx = CXX::Deserialize(lastExecDir / "cxx.conf");
 
@@ -47,6 +42,10 @@ namespace testppCLI {
         std::cout << "cxx after: " << cxx << '\n';
 
         cxx.Serialize(lastExecDir / "cxx.conf");
+
+        Metadata meta = Metadata::Deserialize(lastExecDir / "meta.data");
+        meta.compile = true;
+        meta.Serialize(lastExecDir / "meta.data");
     }
 
     void configureLink(int argc, char** argv) {
@@ -66,5 +65,9 @@ namespace testppCLI {
         std::cout << "cxx after: " << cxx << '\n';
 
         cxx.Serialize(lastExecDir / "cxx.conf");
+
+        Metadata meta = Metadata::Deserialize(lastExecDir / "meta.data");
+        meta.compile = true;
+        meta.Serialize(lastExecDir / "meta.data");
     }
 }

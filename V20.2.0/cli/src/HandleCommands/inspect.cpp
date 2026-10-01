@@ -11,7 +11,7 @@ namespace testppCLI {
         if (argc == 2) {
             curExecDir = GetLastExec();
         } else if (argc == 3) {
-            std::filesystem::path curExecDir{GetInstallRoot() / "run" / "testpp" / argv[2]};
+            curExecDir = GetInstallRoot() / "run" / "testpp" / argv[2];
         } else {
             std::cerr << "Invalid usage. Expected usage is: \"testpp --inspect [name]\" where [name is optional]\n";
             abort();
@@ -28,7 +28,7 @@ namespace testppCLI {
         std::cout << "Configuration Flags:";
         Config conf = Config::Deserialize(curExecDir / "flags.conf");
 
-        std::cout << "\n\tnum_threads = " << conf.num_threads;
+        std::cout << "\n\tnumthreads = " << conf.num_threads;
         std::cout << "\n\tverbosity = " << conf.verbosity;
         std::cout << "\n\ttimeout = " << conf.timeout;
         std::cout << "\n\ttime_unit = " << conf.timeUnit;

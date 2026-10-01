@@ -5,60 +5,99 @@
 #include <filesystem>
 #include <iostream>
 
-//When configuring cxx stuff, need to set the metadata's compile flag to true
 namespace testppCLI {
-    void globalConfigureFlags(int argc, char** argv) {
+    void globalConfigureFlags(int begin, int end, char** argv) {
         std::filesystem::path installRoot{GetInstallRoot()};
         std::filesystem::path run{installRoot / "run" / "testpp"};
+
+        std::cout << "begin: " << begin << "end: " << end << '\n';
+        std::vector<char*> newArgv;
+        newArgv.reserve(end - begin + 2);
+        newArgv.push_back(argv[0]);
+        newArgv.push_back(argv[1]);
+        for (; begin < end; begin++) {
+            newArgv.push_back(argv[begin]);
+            std::cout << "argv[begin]: " << argv[begin] << '\n';
+        }
+        newArgv.push_back(nullptr);
+        int argc = newArgv.size() - 1;
 
         for (const auto& iter : std::filesystem::directory_iterator(run)) {
             if (std::filesystem::is_directory(iter.path())) {
                 std::filesystem::path flags{iter.path() / "flags.conf"};
                 
                 Config config = Config::Deserialize(flags);
-                configConf(config, argc, argv);
+                configConf(config, argc, newArgv.data());
                 config.Serialize(flags);
             }
         }
 
         Config globalConfig = Config::Deserialize(run / "global_flags.conf");
-        configConf(globalConfig, argc, argv);
+        configConf(globalConfig, argc, newArgv.data());
         globalConfig.Serialize(run / "global_flags.conf");
     }
     
-    void globalConfigureCXX(int argc, char** argv) {
+    void globalConfigureCXX(int begin, int end, char** argv) {
         std::filesystem::path installRoot{GetInstallRoot()};
         std::filesystem::path run{installRoot / "run" / "testpp"};
+
+        std::vector<char*> newArgv;
+        newArgv.reserve(end - begin + 2);
+        newArgv.push_back(argv[0]);
+        newArgv.push_back(argv[1]);
+        for (; begin < end; begin++) {
+            newArgv.push_back(argv[begin]);
+        }
+        newArgv.push_back(nullptr);
+        int argc = newArgv.size() - 1;
 
         for (const auto& iter : std::filesystem::directory_iterator(run)) {
             if (std::filesystem::is_directory(iter.path())) {
                 std::filesystem::path cxxPath{iter.path() / "cxx.conf"};
                 CXX cxx = CXX::Deserialize(cxxPath);
-                configCxx(cxx, argc, argv);
+                configCxx(cxx, argc, newArgv.data());
                 cxx.Serialize(iter.path() / "cxx.conf");
+
+                Metadata meta = Metadata::Deserialize(iter.path() / "meta.data");
+                meta.compile = true;
+                meta.Serialize(iter.path() / "meta.data");
             }
         }
 
         CXX globalCXX = CXX::Deserialize(run / "global_cxx.conf");
-        configCxx(globalCXX, argc, argv);
+        configCxx(globalCXX, argc, newArgv.data());
         globalCXX.Serialize(run / "global_cxx.conf");
     }
 
-    void globalConfigureLink(int argc, char** argv) {
+    void globalConfigureLink(int begin, int end, char** argv) {
         std::filesystem::path installRoot{GetInstallRoot()};
         std::filesystem::path run{installRoot / "run" / "testpp"};
+
+        std::vector<char*> newArgv;
+        newArgv.reserve(end - begin + 2);
+        newArgv.push_back(argv[0]);
+        newArgv.push_back(argv[1]);
+        for (; begin < end; begin++) {
+            newArgv.push_back(argv[begin]);
+        }
+        newArgv.push_back(nullptr);
+        int argc = newArgv.size() - 1;
 
         for (const auto& iter : std::filesystem::directory_iterator(run)) {
             if (std::filesystem::is_directory(iter.path())) {
                 std::filesystem::path cxxPath{iter.path() / "cxx.conf"};
                 CXX cxx = CXX::Deserialize(cxxPath);
-                configLibs(cxx, argc, argv);
+                configLibs(cxx, argc, newArgv.data());
                 cxx.Serialize(iter.path() / "cxx.conf");
+
+                Metadata meta = Metadata::Deserialize(iter.path() / "meta.data");
+                meta.compile = true;
+                meta.Serialize(iter.path() / "meta.data");
             }
         }
 
         CXX globalCXX = CXX::Deserialize(run / "global_cxx.conf");
-        configLibs(globalCXX, argc, argv);
+        configLibs(globalCXX, argc, newArgv.data());
         globalCXX.Serialize(run / "global_cxx.conf");
     }
 }

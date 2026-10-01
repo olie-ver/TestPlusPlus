@@ -68,6 +68,9 @@ namespace testppCLI {
                 config.stderrSize = 1024;
             } else if (arg == "--stream") {
                 config.stream = !config.stream;
+            } else {
+                std::cerr << "Unknown config flag: " << arg << std::endl;
+                abort();
             }
         }
     }
@@ -99,8 +102,9 @@ namespace testppCLI {
 
         for (int i = 2; i < argc; i++) {
             std::string arg{argv[i]};
+            libs += '\"';
             libs += arg;
-            libs += ' ';
+            libs += "\" ";
         }
         cxx.linkLibs = libs;
     } 

@@ -90,19 +90,22 @@ namespace testppCLI {
     void configureLink(int argc, char** argv);
 
     /// @brief Globally configures the flags of all executables
-    /// @param argc the number of CLI args
+    /// @param begin the index to start parsing argv
+    /// @param end the index to stop parsing argv
     /// @param argv the CLI args
-    void globalConfigureFlags(int argc, char** argv);
+    void globalConfigureFlags(int begin, int end, char** argv);
 
     /// @brief Globally configures the compiler flags of all executables
-    /// @param argc the number of CLI args
+    /// @param begin the index to start parsing argv
+    /// @param end the index to stop parsing argv
     /// @param argv the CLI args
-    void globalConfigureCXX(int argc, char** argv);
+    void globalConfigureCXX(int begin, int end, char** argv);
 
     /// @brief Globally configures the libraries the current executable will be linked against
-    /// @param argc the number of CLI args
+    /// @param begin the index to start parsing argv
+    /// @param end the index to stop parsing argv
     /// @param argv the CLI args
-    void globalConfigureLink(int argc, char** argv);
+    void globalConfigureLink(int begin, int end, char** argv);
 }
 
 #endif

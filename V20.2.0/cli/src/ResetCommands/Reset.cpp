@@ -22,6 +22,8 @@ namespace testppCLI {
         cxx.Serialize(curExecDir / "cxx.conf");
     }
 
+    //Can't actually copy the files over because they already exists. Therefore it needs to 
+    //  be either a delete and copy, or a truncation and rewrite
     void resetFlags() {
         std::filesystem::path curExecDir{GetLastExec()};
         std::filesystem::path run{GetInstallRoot() / "run" / "testpp"};

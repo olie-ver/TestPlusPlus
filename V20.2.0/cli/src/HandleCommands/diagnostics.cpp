@@ -15,7 +15,7 @@ namespace testppCLI {
         std::cout << "\nGlobal Configuration Flags:";
         Config conf = Config::Deserialize(GetInstallRoot() / "run" / "testpp" / "global_flags.conf");
 
-        std::cout << "\n\tnum_threads = " << conf.num_threads;
+        std::cout << "\n\tnumthreads = " << conf.num_threads;
         std::cout << "\n\tverbosity = " << conf.verbosity;
         std::cout << "\n\ttimeout = " << conf.timeout;
         std::cout << "\n\ttime_unit = " << conf.timeUnit;

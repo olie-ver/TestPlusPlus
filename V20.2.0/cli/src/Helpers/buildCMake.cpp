@@ -24,8 +24,12 @@ namespace testppCLI {
 
         const std::string& srcFiles = replace(metadata.files, " ", "\n\t");
         const std::string& flags = replace(cxx.flags, " ", "\n\t");
-        const std::string& libs = replace(cxx.linkLibs, " ", "\n\t");
 
+        //Because libs tend to have spaces in them (think "-framework CoreAudio"), needs a way to preserve the space and 
+        //  wrap them in quotes
+        const std::string& libs = replace(cxx.linkLibs, "\" ", "\"\n\t");
+
+        const std::string projectReplace = "@PROJECT_NAME@";
         const std::string installReplace = "@INSTALL_PREFIX@";
         const std::string srcReplace = "@USER_SOURCES@";
         const std::string stdReplace = "@CXX_STANDARD@";
@@ -46,6 +50,9 @@ namespace testppCLI {
 
         size_t installPos = filecontents.find(installReplace);
         filecontents.replace(installPos, installReplace.length(), GetInstallRoot());
+
+        size_t projectPos = filecontents.find(projectReplace);
+        filecontents.replace(projectPos, projectReplace.length(), name);
 
         std::ofstream out{execDir / "CMakeLists.txt"};
         out << filecontents;
