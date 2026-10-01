@@ -20,10 +20,10 @@ namespace testppCLI {
         }
 
         std::filesystem::path renameFrom{GetInstallRoot() / "run" / "testpp" / argv[2]};
-        std::filesystem::path renameTo(GetInstallRoot() / "run" / "testpp" / argv[3]);
+        std::filesystem::path renameTo(GetInstallRoot() / "run" / "testpp" / name);
 
         if (std::filesystem::exists(renameTo)) {
-            std::cerr << "Executable \"" << argv[3] << "\" already exists.";
+            std::cerr << "Executable \"" << name << "\" already exists.";
             abort();
         }
 
@@ -38,5 +38,7 @@ namespace testppCLI {
             ofstream.write(name.data(), name.length());
             ofstream.close();
         }
+
+        std::cout << "Renamed executable \"" << argv[2] << "\" to \"" << name << "\"\n";
     }
 }

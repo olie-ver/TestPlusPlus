@@ -69,9 +69,24 @@ namespace testppCLI {
         setExec(newArgv.size() - 1,  const_cast<char**>(newArgv.data()));
     }
 
-    void deleteExec(std::string_view name) {
-        if (name.find("../") == std::string_view::npos) {
-            std::cerr << "Filepath contained \"../\". Please do not try to delete random files and folders.\n";
+    void deleteExec(int argc, char** argv) {
+        std::string name;
+
+        if (argc == 2) {
+            name = GetLastExec().filename().string();
+        } else {
+            if (argc != 3) {
+                std::cerr << "Incorrect usage. Expected \"testpp --delete [name]\" where [name] is optional\n";
+                abort();
+            }
+
+            name = argv[2];
+        }
+
+        std::cout << "deleteExec() name: " << name << '\n';
+
+        if (name.find("../") != std::string::npos) {
+            std::cerr << "Executable name contained \"../\". Please do not try to delete random files and folders.\n";
             abort();
         }
 
@@ -79,12 +94,30 @@ namespace testppCLI {
         std::filesystem::path run{installRoot / "run" / "testpp"};
         if (!std::filesystem::exists(run / name)) {
             std::cerr << "No executable with the name: " << name << '\n';
-        } else if (!std::filesystem::is_directory(run / name)) {
-            std::cerr << "The provided name is not an executable directory." 
-                "Please enter the name of the executable you want to delete instead of its path\n";
             abort();
-        } else {
-            std::filesystem::remove(run / name);
+        }
+
+        std::filesystem::remove_all(run / name);
+
+        std::cout << "Deleted executable \"" << name << "\"\n";
+
+        //Not switching the default executable properly, needs a stronger test other than "no more directories"
+
+        //If we deleted the active executable
+        if (name == GetLastExec().filename().string()) {
+            //And if there is no default executable
+            if (!std::filesystem::exists(installRoot / "run" / "testpp" / "testpp_default")) {
+                std::vector<const char*> newArgv{"testpp", "--new", "testpp_default", nullptr};
+
+                //Create testpp_default as the new active executable
+                createExec(newArgv.size() - 1,  const_cast<char**>(newArgv.data()));
+            } else {
+                std::ofstream ofstream(installRoot / "var" / "last_exec.conf", std::ios::trunc);
+                ofstream.write("testpp_default", 14);
+                ofstream.close();
+
+                std::cout << "Set active executable: \"testpp_default\"\n";
+            }
         }
     }
 

@@ -84,8 +84,10 @@ int main(int argc, char** argv) {
         } else if (first_arg == "--default-link") {
             testppCLI::defaultLink();
         } else if (first_arg == "--inspect") {
-            std::cout << "INSPECTING\n";
             testppCLI::inspect(argc, argv);
+            return EXIT_SUCCESS;
+        } else if (first_arg == "--delete") {
+            testppCLI::deleteExec(argc, argv);
             return EXIT_SUCCESS;
         } else {
             //THIS PATH IS REALLY REALLY BUGGY FOR SOME REASON
@@ -213,6 +215,9 @@ int main(int argc, char** argv) {
             return EXIT_SUCCESS;
         } else if (first_arg == "--inspect") {
             testppCLI::inspect(argc, argv);
+            return EXIT_SUCCESS;
+        } else if (first_arg == "--delete") {
+            testppCLI::deleteExec(argc, argv);
             return EXIT_SUCCESS;
         }
         

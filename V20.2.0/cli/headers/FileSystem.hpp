@@ -42,7 +42,7 @@ namespace testppCLI {
 
     /// @brief Deletes an executable folder if it exists
     /// @param name The name of the executable that should be deleted
-    void deleteExec(std::string_view name);
+    void deleteExec(int argc, char** argv);
 
     /// @brief Checks if the name belongs to an executable directory
     /// @param name The name of the executable directory that should be checked for

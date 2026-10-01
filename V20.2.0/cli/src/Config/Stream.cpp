@@ -24,8 +24,6 @@ namespace testppCLI {
             stream << "--json " << config.jsonFile << ' ';
         }
 
-        std::cout << "JSONFILE LENGTH: " << config.jsonFile.length() << '\n';
-
         //xml
         if (!config.jUnitFile.empty()) {
             stream << "--xml " << config.jUnitFile << ' ';
