@@ -25,10 +25,15 @@ To uninstall, run
 brew uninstall testpp
 ```
 
+## Package Installer (Mac Silicon)
+Go into the installer folder and find the installs folder. From there, you will see a Mac Arm installer in both the 
+20.1.4 and 20.2.0 folders. Pick the one you want (but I recommend the 20.2.0 version) and run the installer. To uninstall, 
+find the uninstall.sh file from the installs folder. Download and run it, and it will uninstall Test++ from your system. 
+
 ## Manual Installation (Mac)
 
-In order to manually install Test++, go to the Downloads folder and download the V20.1.4.zip file.
-Extract the files. Open a new terminal inside the V20.1.4 folder and then run the following commands:
+In order to manually install Test++, go to the Downloads folder and download the V20.2.0.zip file.
+Extract the files. Open a new terminal inside the V20.2.0 folder and then run the following commands:
 
 ```bash
 cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
@@ -43,13 +48,13 @@ echo 'export PATH="$HOME/testpp-install/bin:$PATH"' >> ~/.zshrc
 
 ## Installer (Windows ARM)
 
-Go into the installer/installs folder and run the TestPlusPlus-20.1.4-win-arm64.exe file. This will automatically 
+Go into the installer/installs folder and run the TestPlusPlus-20.2.0-win-arm64.exe file. This will automatically 
 install Test++, the VC++ runtime (if needed) and register the `testpp` command automatically.
 
 ## Manual Installation (Windows)
 
-In order to manually install Test++, go to the Downloads folder and download the V20.1.4.zip file.
-Extract the files. Open a new terminal inside the V20.1.4 folder and then run the following commands:
+In order to manually install Test++, go to the Downloads folder and download the V20.2.0.zip file.
+Extract the files. Open a new terminal inside the V20.2.0 folder and then run the following commands:
 
 ```bash
 cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
