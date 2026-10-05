@@ -25,6 +25,14 @@ To uninstall, run
 brew uninstall testpp
 ```
 
+<<<<<<< Updated upstream
+=======
+## Package Installer (Mac Silicon)
+Go into the installer folder and find the installs folder. From there, you will see a Mac Arm installer in 20.*.* folders. 
+Pick the one you want (but I recommend the 20.2.1 version) and run the installer. To uninstall, 
+find the uninstall.sh file from the installs folder. Download and run it, and it will uninstall Test++ from your system. 
+
+>>>>>>> Stashed changes
 ## Manual Installation (Mac)
 
 In order to manually install Test++, go to the Downloads folder and download the V20.1.4.zip file.

@@ -1,5 +1,5 @@
-# C++ Unit Tester V20.2.0
-Documentation guide for Test++ V20.2.0. Even as a more or less stable release, I still make no 
+# C++ Unit Tester V20.2.1
+Documentation guide for Test++ V20.2.1. Even as a more or less stable release, I still make no 
 guarantees that future versions will work the same, and implementations could change.
 
 ### License/Conditions of Usage

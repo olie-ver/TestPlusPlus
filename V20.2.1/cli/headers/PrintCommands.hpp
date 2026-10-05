@@ -3,7 +3,7 @@
 #ifndef TESTPP_PRINT_COMMANDS_H
 #define TESTPP_PRINT_COMMANDS_H
 
-#define VERSION "20.2.0"
+#define VERSION "20.2.1"
 
 #include <array>
 #include <string_view>
