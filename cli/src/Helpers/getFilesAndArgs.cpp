@@ -7,12 +7,12 @@ namespace testppCLI {
 
             if (std::filesystem::is_regular_file(path)) {
                 if (path.extension() == ".cpp" || path.extension() == ".cc" || path.extension() == ".c++") {
-                    files.push_back(path);
+                    files.push_back(std::filesystem::absolute(path));
                 } 
             } else if (std::filesystem::is_directory(path)) {
                 for (const auto& entry : std::filesystem::recursive_directory_iterator(path)) {
                     if (entry.path().extension() == ".cpp" || entry.path().extension() == ".cc" || entry.path().extension() == ".c++") {
-                        files.push_back(entry.path());
+                        files.push_back(std::filesystem::absolute(entry.path()));
                     }
                 }
             } else {
