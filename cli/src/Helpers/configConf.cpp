@@ -108,4 +108,27 @@ namespace testppCLI {
         }
         cxx.linkLibs = libs;
     } 
+
+    void configInclude(CXX& cxx, int argc, char** argv) {
+        std::string includePaths;
+
+        for (int i = 2; i < argc; i++) {
+            std::filesystem::path arg{argv[i]};
+            if (std::filesystem::is_directory(arg)) {
+                for (const auto& iter : std::filesystem::recursive_directory_iterator(arg)) {
+                    if (iter.path().extension() == ".cmake") {
+                        includePaths += '\"';
+                        includePaths += std::filesystem::absolute(iter.path()).string();
+                        includePaths += "\" ";
+                    }
+                }
+            } else if (arg.extension() == ".cmake") {
+                includePaths += '\"';
+                includePaths += std::filesystem::absolute(arg).string();
+                includePaths += "\" ";
+            }
+        }
+
+        cxx.include = includePaths;
+    }
 }

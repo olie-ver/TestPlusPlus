@@ -76,4 +76,22 @@ namespace testppCLI {
             }
         }
     }
+
+    void globalResetInclude() {
+        std::filesystem::path installRoot{GetInstallRoot()};
+        std::filesystem::path run{installRoot / "run" / "testpp"};
+        std::filesystem::path var{installRoot / "var"};
+
+        CXX gCxx = CXX::Deserialize(run / "global_cxx.conf");
+
+        for (const auto& iter : std::filesystem::directory_iterator(run)) {
+            if (std::filesystem::is_directory(iter.path())) {
+                std::filesystem::path cxxPath{iter.path() / "cxx.conf"};
+                CXX lCxx = CXX::Deserialize(cxxPath);
+                lCxx.include = gCxx.include;
+
+                lCxx.Serialize(cxxPath);
+            }
+        }
+    }
 }

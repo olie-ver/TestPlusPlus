@@ -86,6 +86,10 @@ namespace testppCLI {
         uint64_t libSize = linkLibs.length();
         file.write(reinterpret_cast<char*>(&libSize), sizeof(libSize));
         file.write(linkLibs.data(), libSize);
+
+        uint64_t includeSize = include.length();
+        file.write(reinterpret_cast<char*>(&includeSize), sizeof(includeSize));
+        file.write(include.data(), includeSize);
     }
 
     CXX CXX::Deserialize(const std::filesystem::path& path) {
@@ -103,6 +107,11 @@ namespace testppCLI {
         file.read(reinterpret_cast<char*>(&libSize), sizeof(libSize));
         cxx.linkLibs.resize(libSize);
         file.read(cxx.linkLibs.data(), libSize);
+
+        uint64_t includeSize;
+        file.read(reinterpret_cast<char*>(&includeSize), sizeof(includeSize));
+        cxx.include.resize(includeSize);
+        file.read(cxx.include.data(), includeSize);
 
         return cxx;
     }

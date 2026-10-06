@@ -46,4 +46,14 @@ namespace testppCLI {
         curCxx.linkLibs = dCxx.linkLibs;
         curCxx.Serialize(curExecDir / "cxx.conf");
     }
+
+    void defaultInclude() {
+        std::filesystem::path curExecDir{GetLastExec()};
+        std::filesystem::path var{GetInstallRoot() / "var"};
+        CXX dCxx{CXX::Deserialize(var / "default_cxx.conf")};
+
+        CXX curCxx{CXX::Deserialize(curExecDir / "cxx.conf")};
+        curCxx.include = dCxx.include;
+        curCxx.Serialize(curExecDir / "cxx.conf");
+    }
 }

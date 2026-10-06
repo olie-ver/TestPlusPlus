@@ -19,6 +19,9 @@ namespace testppCLI {
     /// @brief Resets the linked library flags to the global settings
     void resetLink();
 
+    /// @brief Resets the include paths of to the global settings
+    void resetInclude();
+
     /// @brief Resets all argument flags, compiler flags, and linked library flags to the global settings GLOBALLY
     void globalReset();
 
@@ -30,6 +33,9 @@ namespace testppCLI {
 
     /// @brief Resets all linked library flags to the global settings GLOBALLY
     void globalResetLink();
+
+    /// @brief Resets all include paths to the global settings GLOBALLY
+    void globalResetInclude();
 
     /// @brief Resets all argument flags, compiler flags, and linked library flags to the DEFAULT settings
     void defaultReset();
@@ -43,6 +49,9 @@ namespace testppCLI {
     /// @brief Resets all linked library flags to the DEFAULT settings
     void defaultLink();
 
+    /// @brief Resets all include paths to the DEFAULT settings
+    void defaultInclude();
+
     /// @brief Resets all argument flags, compiler flags, and linked library flags to the DEFAULT settings GLOBALLY
     void globalDefaultReset();
 
@@ -54,6 +63,9 @@ namespace testppCLI {
 
     /// @brief Resets all linked library flags to the DEFAULT settings GLOBALLY
     void globalDefaultLink();
+
+    /// @brief Resets all include paths to the DEFAULT settings GLOBALLY
+    void globalDefaultInclude();
 }
 
 #endif

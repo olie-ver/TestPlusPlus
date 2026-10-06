@@ -23,9 +23,18 @@ namespace testppCLI {
         std::string srcFiles = replace(metadata.files, " ", "\n\t");
         const std::string& flags = replace(cxx.flags, " ", "\n\t");
         const std::string& libs = replace(cxx.linkLibs, "\" ", "\"\n\t");
+        const std::vector<std::string>& includes = split(cxx.include, "\" ");
+        std::string includePaths;
+
+        for (size_t i = 0; i < includes.size(); i++) {
+            includePaths += "include(";
+            includePaths += includes[i];
+            includePaths += "\")\n";
+        }
 
         const std::string projectReplace = "@PROJECT_NAME@";
         const std::string installReplace = "@INSTALL_PREFIX@";
+        const std::string includeReplace = "@USER_INCLUDES@";
         const std::string srcReplace = "@USER_SOURCES@";
         const std::string stdReplace = "@CXX_STANDARD@";
         const std::string flagReplace = "@USER_CXX_FLAGS@";
@@ -52,6 +61,20 @@ namespace testppCLI {
         #endif
 
         filecontents.replace(srcPos, srcReplace.length(), srcFiles);
+
+
+        size_t includePos = filecontents.find(includeReplace);
+
+        #if defined(_WIN32) || defined(_WIN64)
+            for (size_t i = 0; i < includePaths.length(); i++) {
+                if (includePaths[i] == '\\') {
+                    includePaths.insert(i, 1, '\\');
+                    i++;
+                }
+            }
+        #endif
+        // filecontents.replace(includePos, includeReplace.length(), includePaths);
+        filecontents.replace(includePos, includeReplace.length(), "");
 
         size_t installPos = filecontents.find(installReplace);
 

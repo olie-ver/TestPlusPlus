@@ -13,7 +13,10 @@ namespace testppCLI {
             tokens.push_back(token);
             s.erase(0, pos + delimiter.length());
         }
-        tokens.push_back(s);
+
+        if (!s.empty()) {
+            tokens.push_back(s);
+        }
 
         return tokens;
     }

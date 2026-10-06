@@ -16,6 +16,7 @@ namespace testppCLI {
     void configConf(Config& conf, int argc, char** argv);
     void configCxx(CXX& cxx, int argc, char** argv);
     void configLibs(CXX& cxx, int argc, char** argv);
+    void configInclude(CXX& cxx, int argc, char** argv);
 
     void rename(int argc, char** argv);
 

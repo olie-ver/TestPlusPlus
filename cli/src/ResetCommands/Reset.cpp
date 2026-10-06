@@ -19,6 +19,7 @@ namespace testppCLI {
         cxx.flags = gCxx.flags;
         cxx.standard = gCxx.standard;
         cxx.linkLibs = gCxx.linkLibs;
+        cxx.include = gCxx.include;
         cxx.Serialize(curExecDir / "cxx.conf");
     }
 
@@ -51,6 +52,17 @@ namespace testppCLI {
         CXX gCxx = CXX::Deserialize(run / "global_cxx.conf");
 
         cxx.linkLibs = gCxx.linkLibs;
+        cxx.Serialize(curExecDir / "cxx.conf");
+    }
+
+    void resetInclude() {
+        std::filesystem::path curExecDir{GetLastExec()};
+        std::filesystem::path run{GetInstallRoot() / "run" / "testpp"};
+
+        CXX cxx = CXX::Deserialize(curExecDir / "cxx.conf");
+        CXX gCxx = CXX::Deserialize(run / "global_cxx.conf");
+
+        cxx.include = gCxx.include;
         cxx.Serialize(curExecDir / "cxx.conf");
     }
 }

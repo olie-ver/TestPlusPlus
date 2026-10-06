@@ -10,7 +10,7 @@
 #include <string_view>
 
 namespace testppCLI {
-    constinit static std::array<std::string_view, 53> commands{
+    constinit static std::array<std::string_view, 50> commands{
         "--v=", "--verbosity=", 
         "--t=", "--threads=", "--numthreads=", 
         "--timeout=", "--timeout_sec=", "--timeout_ms=",
@@ -24,11 +24,10 @@ namespace testppCLI {
         "--diagnostics", "--d",
         "--version", "--v",
         "--list", "--l",
-        "--reset", "--reset-flags", "--reset-cxx", "--reset-link",
-        "--default", "--default-flags", "--default-cxx", "--default-link",
+        "--reset", "--reset-flags", "--reset-cxx", "--reset-link", "--reset-include",
+        "--default", "--default-flags", "--default-cxx", "--default-link", "--default-include"
         "--g", "--global",
-        "--config", "--cxx", "--link", 
-        "--default", "--default-flags", "--default-cxx", "--default-link",
+        "--config", "--cxx", "--link", "--include" 
         "--set-exec", "--set",
         "--new", "--inspect", "--rename"
     };

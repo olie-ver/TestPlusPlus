@@ -69,6 +69,8 @@ int main(int argc, char** argv) {
             testppCLI::resetCxx();
         } else if (first_arg == "--reset-link") {
             testppCLI::resetLink();
+        } else if (first_arg == "--reset-include") {
+            testppCLI::resetInclude();
         } else if (first_arg == "--default") {
             testppCLI::defaultReset();
         } else if (first_arg == "--default-flags") {
@@ -77,12 +79,12 @@ int main(int argc, char** argv) {
             testppCLI::defaultCxx();
         } else if (first_arg == "--default-link") {
             testppCLI::defaultLink();
+        } else if (first_arg == "--default-include") {
+            testppCLI::defaultInclude();
         } else if (first_arg == "--inspect") {
             testppCLI::inspect(argc, argv);
-            return EXIT_SUCCESS;
         } else if (first_arg == "--delete") {
             testppCLI::deleteExec(argc, argv);
-            return EXIT_SUCCESS;
         } else {
 
             //If the first arg is a flag instead of a name, print the usage and return exit failure
@@ -159,6 +161,8 @@ int main(int argc, char** argv) {
                 testppCLI::globalConfigureCXX(3, argc, argv);
             } else if (second == "--link") {
                 testppCLI::globalConfigureLink(3, argc, argv);
+            } else if (second == "--include") {
+                testppCLI::globalConfigureInclude(3, argc, argv);
             } else if (second == "--reset") {
                 testppCLI::globalReset();
             } else if (second == "--reset-flags") {
@@ -167,6 +171,8 @@ int main(int argc, char** argv) {
                 testppCLI::globalResetCxx();
             } else if (second == "--reset-link") {
                 testppCLI::globalResetLink();
+            } else if (second == "--reset-include") {
+                testppCLI::globalResetInclude();
             } else if (second == "--default") {
                 testppCLI::globalDefaultReset();
             } else if (second == "--default-flags") {
@@ -175,6 +181,8 @@ int main(int argc, char** argv) {
                 testppCLI::globalDefaultCxx();
             } else if (second == "--default-link") {
                 testppCLI::globalDefaultLink();
+            } else if (second == "--default-include") {
+                testppCLI::globalDefaultInclude();
             }
 
             return EXIT_SUCCESS;
@@ -188,6 +196,8 @@ int main(int argc, char** argv) {
                     testppCLI::globalConfigureCXX(2, argc - 1, argv);
                 } else if (first_arg == "--link") {
                     testppCLI::globalConfigureLink(2, argc - 1, argv);
+                } else if (first_arg == "--include") {
+                    testppCLI::globalConfigureInclude(2, argc - 1, argv);
                 } else if (first_arg == "--reset") {
                     testppCLI::globalReset();
                 } else if (first_arg == "--reset-flags") {
@@ -196,6 +206,8 @@ int main(int argc, char** argv) {
                     testppCLI::globalResetCxx();
                 } else if (first_arg == "--reset-link") {
                     testppCLI::globalResetLink();
+                } else if (first_arg == "--reset-include") {
+                    testppCLI::globalResetInclude();
                 } else if (first_arg == "--default") {
                     testppCLI::globalDefaultReset();
                 } else if (first_arg == "--default-flags") {
@@ -204,6 +216,8 @@ int main(int argc, char** argv) {
                     testppCLI::globalDefaultCxx();
                 } else if (first_arg == "--default-link") {
                     testppCLI::globalDefaultLink();
+                } else if (first_arg == "--default-include") {
+                    testppCLI::globalDefaultInclude();
                 }
 
                 return EXIT_SUCCESS;
@@ -234,6 +248,9 @@ int main(int argc, char** argv) {
             return EXIT_SUCCESS;
         } else if (first_arg == "--link") {
             testppCLI::configureLink(argc, argv);
+            return EXIT_SUCCESS;
+        } else if (first_arg == "--include") {
+            testppCLI::configureInclude(argc, argv);
             return EXIT_SUCCESS;
         } else if (first_arg == "--rename") {
             testppCLI::rename(argc, argv);

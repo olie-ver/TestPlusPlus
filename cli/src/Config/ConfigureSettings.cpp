@@ -71,4 +71,27 @@ namespace testppCLI {
         meta.compile = true;
         meta.Serialize(lastExecDir / "meta.data");
     }
+
+    void configureInclude(int argc, char** argv) {
+        const std::filesystem::path& lastExec{GetLastExec()};
+        if (lastExec.empty()) {
+            std::cerr << "Default executable does not exist. Please switch to a different one or create a new one.\n";
+            abort();
+        }
+
+        std::filesystem::path lastExecDir{lastExec};
+        CXX cxx = CXX::Deserialize(lastExecDir / "cxx.conf");
+
+        std::cout << "cxx before: " << cxx << '\n';
+
+        configInclude(cxx, argc, argv);
+
+        std::cout << "cxx after: " << cxx << '\n';
+
+        cxx.Serialize(lastExecDir / "cxx.conf");
+
+        Metadata meta = Metadata::Deserialize(lastExecDir / "meta.data");
+        meta.compile = true;
+        meta.Serialize(lastExecDir / "meta.data");
+    }
 }

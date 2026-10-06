@@ -61,6 +61,12 @@ namespace testppCLI {
         //Link Libraries
         stream << cxx.linkLibs << ' ';
 
+        stream << "Include paths:\n";
+        std::vector<std::string> includePaths{split(cxx.include, " ")};
+        for (size_t i = 0; i < includePaths.size(); i++) {
+            stream << '\t' << includePaths[i] << '\n';
+        } 
+
         return stream;
     }
 }

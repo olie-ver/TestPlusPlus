@@ -62,6 +62,7 @@ namespace testppCLI {
         uint8_t standard = 20;
         std::string flags;
         std::string linkLibs;
+        std::string include;
     };
 
     /// @brief Sets the user's default executable to the executable at argv[2]
@@ -89,6 +90,11 @@ namespace testppCLI {
     /// @param argv the CLI args
     void configureLink(int argc, char** argv);
 
+    /// @brief Configures the include paths the current executable will have
+    /// @param argc the number of CLI args
+    /// @param argv the CLI args
+    void configureInclude(int argc, char** argv);
+
     /// @brief Globally configures the flags of all executables
     /// @param begin the index to start parsing argv
     /// @param end the index to stop parsing argv
@@ -106,6 +112,12 @@ namespace testppCLI {
     /// @param end the index to stop parsing argv
     /// @param argv the CLI args
     void globalConfigureLink(int begin, int end, char** argv);
+
+    /// @brief Globally configures the include paths of the current executable
+    /// @param begin the index to start parsing argv
+    /// @param end the index to stop parsing argv
+    /// @param argv the CLI args
+    void globalConfigureInclude(int begin, int end, char** argv);
 }
 
 #endif

@@ -1,5 +1,5 @@
-# C++ Unit Tester V20.2.1
-Documentation guide for Test++ V20.2.1. Even as a more or less stable release, I still make no 
+# C++ Unit Tester V20.2.2
+Documentation guide for Test++ V20.2.2. Even as a more or less stable release, I still make no 
 guarantees that future versions will work the same, and implementations could change.
 
 ### License/Conditions of Usage
@@ -748,15 +748,15 @@ If there is no constructed executable, this command will build one in the folder
 
 #### --config [flags]: Configure the Current Executable's Runtime Flags
 To configure the current executable, use the `--config [flags]` command where [flags] are Test++ flags and values (--verbosity=, --numthreads=, etc.). 
-To make this configuration global, you can start the command with `--g` or `--global`, as in, `testpp --g config [flags]`, or you can end the command 
-with `--g` or `--global`, as in, `testpp config [flags] --g`. Setting a flag's value globally will update every single test executable's value for that 
+To make this configuration global, you can start the command with `--g` or `--global`, as in, `testpp --g --config [flags]`, or you can end the command 
+with `--g` or `--global`, as in, `testpp --config [flags] --g`. Setting a flag's value globally will update every single test executable's value for that 
 flag.
 
 #### --cxx [flags]: Configure the Current Executable's Compiler Flags
 To configure the current executable's compiler flags and standard, use the `--cxx [flags]` command where [flags] are compiler flags. Type them in 
 as you would into gcc, clang, or MSVC. You can only set the flags, not change them. Ie, if you type in `testpp --cxx -Wall -O3`, but then want to remove
 -Wall, you need to type in `testpp --cxx -O3`. To make this configuration global, you can start the command with `--g` or `--global`, as in, 
-`testpp --g cxx [flags]`, or you can end the command with `--g` or `--global`, as in, `testpp cxx [flags] --g`. Setting a flag's value globally
+`testpp --g --cxx [flags]`, or you can end the command with `--g` or `--global`, as in, `testpp --cxx [paths] --g`. Setting a flag's value globally
 will update every single test executable's value for that flag.
 
 #### --link [libs]: Configure the Current Executable's Linked Libraries
@@ -764,8 +764,33 @@ To configure the current executable's linked libraries, use the `--link [libs]` 
 as you would into gcc, clang, or MSVC, however, I recommend surrounding each library/framework in DOUBLE quotations.You can only set the flags, 
 not change them. Ie, if you type in `testpp --link "-framework CoreAudio" "-framework wxWidgets"`, but then want to remove CoreAudio, you need to type in 
 `testpp --link "-framework wxWidgets"`. To make this configuration global, you can start the command with `--g` or `--global`, as in, 
-`testpp --g link [flags]`, or you can end the command with `--g` or `--global`, as in, `testpp link [flags] --g`. Setting a flag's value globally
+`testpp --g --link [flags]`, or you can end the command with `--g` or `--global`, as in, `testpp link [flags] --g`. Setting a flag's value globally
+will update every single test executable's value for that flag. 
+
+Please note that setting a library to link against in of itself may not be enough for CMake to find it, and that setting the includes path 
+may be necessary.
+
+#### --include [paths]: Configure the Current Executable's Include Paths
+To configure the current executable's include paths, use the `--include [paths]` command where [paths] are `.cmake` files. Type them in 
+as you would into gcc, clang, or MSVC, however, I recommend surrounding each library/framework in DOUBLE quotations.You can only set the flags, 
+not change them. Ie, if you type in `testpp --include "somepath.cmake" "another.cmake"`, but then want to remove it `somepath.cmake`, you need to type in 
+`testpp --include "another.cmake"`. To make this configuration global, you can start the command with `--g` or `--global`, as in, 
+`testpp --g --include [paths]`, or you can end the command with `--g` or `--global`, as in, `testpp --link [paths] --g`. Setting a flag's value globally
 will update every single test executable's value for that flag.
+
+Example:
+Suppose in my project I created my own library that I want to test. We will call this library "Ourlib." Test++ uses CMake as the underlying tool
+to customize and configure compilations. Unless we install Ourlib with CMake (and sometimes not even then), CMake won't be able to find Ourlib to 
+link against. Ie, the command `testpp --link Ourlib` won't be enough. Instead, when we compile Ourlib, we need to export a file with the `.cmake` 
+extension. We can do it like so:
+
+```bash
+export(TARGETS Ourlib FILE Path/to/OurlibTarget.cmake)
+```
+
+Then, we can run the command `testpp --include "Path/to/OurlibTarget.cmake"` and then recompile our testing executable. Now CMake can take 
+that `.cmake` file, read it, and understand what Ourlib is so that `testpp --link Ourlib` works as we'd expect it to. 
+
 
 #### --reset: Reset the Current Executable's Configuration to the Global
 To reset the current executable's configuration to the global configuration, use `--reset`. If you want to make this effect global, use 
@@ -781,7 +806,11 @@ To reset the current executable's compiler configuration to the global configura
 
 #### --reset-link: Reset the Current Executable's Library Configuration to the Global
 To reset the current executable's library configuration to the global configuration, use `--reset-link`. If you want to make this effect global, use 
-`--g` or `--global` before or after `--reset-libs`: `--g --reset-link` or `--reset-link --g`. This will leave the runtime flags and compiler flags untouched.
+`--g` or `--global` before or after `--reset-link`: `--g --reset-link` or `--reset-link --g`. This will leave the runtime flags and compiler flags untouched.
+
+#### --reset-include: Reset the Current Executable's Include Paths to the Global
+To reset the current executable's library configuration to the global configuration, use `--reset-include`. If you want to make this effect global, use 
+`--g` or `--global` before or after `--reset-include`: `--g --reset-include` or `--reset-include --g`. This will leave the runtime flags and compiler flags untouched.
 
 #### --default: Reset the Current Executable's Configuration to the Default
 To reset the current executable's configuration to the default configuration, use `--default`. If you want to make this effect global, use 
@@ -798,6 +827,10 @@ To reset the current executable's compiler configuration to the default configur
 #### --default-link: Reset the Current Executable's Library Configuration to the Default
 To reset the current executable's library configuration to the default configuration, use `--default-link`. If you want to make this effect global, use 
 `--g` or `--global` before or after `--default-link`: `--g --default-link` or `--default-link --g`. This will leave the runtime flags and compiler flags untouched.
+
+#### --default-include: Reset the Current Executable's Library Configuration to the Default
+To reset the current executable's library configuration to the default configuration, use `--default-include`. If you want to make this effect global, use 
+`--g` or `--global` before or after `--default-include`: `--g --default-include` or `--default-include --g`. This will leave the runtime flags and compiler flags untouched.
 
 ## Testing
 

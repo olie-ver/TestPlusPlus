@@ -87,4 +87,25 @@ namespace testppCLI {
         gCxx.linkLibs = dCxx.linkLibs;
         gCxx.Serialize(run / "global_cxx.conf");
     }
+
+    void globalDefaultInclude() {
+        std::filesystem::path run{GetInstallRoot() / "run" / "testpp"};
+        std::filesystem::path var{GetInstallRoot() / "var"};
+
+        CXX dCxx = CXX::Deserialize(var / "default_cxx.conf");
+
+        for (const auto& iter : std::filesystem::directory_iterator(run)) {
+            if (std::filesystem::is_directory(iter.path())) {
+                std::filesystem::path cxxPath{iter.path() / "cxx.conf"};
+                CXX lCxx = CXX::Deserialize(cxxPath);
+                lCxx.include = dCxx.include;
+
+                lCxx.Serialize(cxxPath);
+            }
+        }
+
+        CXX gCxx = CXX::Deserialize(run / "global_cxx.conf");
+        gCxx.include = dCxx.include;
+        gCxx.Serialize(run / "global_cxx.conf");
+    }
 }
