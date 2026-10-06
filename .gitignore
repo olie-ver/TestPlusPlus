@@ -1,5 +1,6 @@
 Testing/*
 */build/*
 *.DS_Store
+.DS_Store
 */install
 */build

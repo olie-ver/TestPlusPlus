@@ -73,8 +73,7 @@ namespace testppCLI {
                 }
             }
         #endif
-        // filecontents.replace(includePos, includeReplace.length(), includePaths);
-        filecontents.replace(includePos, includeReplace.length(), "");
+        filecontents.replace(includePos, includeReplace.length(), includePaths);
 
         size_t installPos = filecontents.find(installReplace);
 
