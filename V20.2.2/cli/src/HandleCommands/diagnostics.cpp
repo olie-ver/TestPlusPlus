@@ -61,6 +61,7 @@ namespace testppCLI {
 
         std::cout << "\n\ncxx_flags: " << cxx.flags;
         std::cout << "\ncxx standard: " << "-std=c++" << std::to_string(cxx.standard);
-        std::cout << "\nlink libraries: " << cxx.linkLibs << std::endl;
+        std::cout << "\nlink libraries: " << cxx.linkLibs;
+        std::cout << "\ninclude paths: " << cxx.include << std::endl;
     }
 }
