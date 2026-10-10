@@ -6,16 +6,16 @@
 #include "internal/pch/impl_pch.hpp"
 
 #include "internal/fail.hpp"
-#include "internal/concepts.hpp"
+#include "internal/concepts/is_type.hpp"
 
-#define EXPECT_EQ(a, b) internal::Expects::expectEquals((a), (b), __FILE__, __LINE__)
-#define EXPECT_NE(a, b) internal::Expects::expectNotEquals((a), (b), __FILE__, __LINE__)
-#define EXPECT_LT(a, b) internal::Expects::expectLessThan((a), (b), __FILE__, __LINE__)
-#define EXPECT_LE(a, b) internal::Expects::expectLessThanEquals((a), (b), __FILE__, __LINE__)
-#define EXPECT_GT(a, b) internal::Expects::expectGreaterThan((a), (b), __FILE__, __LINE__)
-#define EXPECT_GE(a, b) internal::Expects::expectGreaterThanEquals((a), (b), __FILE__, __LINE__)
+#define EXPECT_EQ(a, b) testpp::internal::Expects::expectEquals((a), (b), __FILE__, __LINE__)
+#define EXPECT_NE(a, b) testpp::internal::Expects::expectNotEquals((a), (b), __FILE__, __LINE__)
+#define EXPECT_LT(a, b) testpp::internal::Expects::expectLessThan((a), (b), __FILE__, __LINE__)
+#define EXPECT_LE(a, b) testpp::internal::Expects::expectLessThanEquals((a), (b), __FILE__, __LINE__)
+#define EXPECT_GT(a, b) testpp::internal::Expects::expectGreaterThan((a), (b), __FILE__, __LINE__)
+#define EXPECT_GE(a, b) testpp::internal::Expects::expectGreaterThanEquals((a), (b), __FILE__, __LINE__)
 
-namespace internal {
+namespace testpp::internal {
     namespace Expects {
         /// @brief An Expects test for expecting two values to be equal
         /// @tparam A a generic type

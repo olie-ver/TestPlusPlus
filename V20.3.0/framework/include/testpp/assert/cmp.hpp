@@ -5,16 +5,16 @@
 
 #include "internal/pch/impl_pch.hpp"
 #include "internal/fail.hpp"
-#include "internal/concepts.hpp"
+#include "internal/concepts/operator.hpp"
 
-#define ASSERT_EQ(a, b) internal::Assert::assertEquals((a), (b), __FILE__, __LINE__)
-#define ASSERT_NE(a, b) internal::Assert::assertNotEquals((a), (b), __FILE__, __LINE__)
-#define ASSERT_LT(a, b) internal::Assert::assertLessThan((a), (b), __FILE__, __LINE__)
-#define ASSERT_LE(a, b) internal::Assert::assertLessThanEquals((a), (b), __FILE__, __LINE__)
-#define ASSERT_GT(a, b) internal::Assert::assertGreaterThan((a), (b), __FILE__, __LINE__)
-#define ASSERT_GE(a, b) internal::Assert::assertGreaterThanEquals((a), (b), __FILE__, __LINE__)
+#define ASSERT_EQ(a, b) testpp::internal::Assert::assertEquals((a), (b), __FILE__, __LINE__)
+#define ASSERT_NE(a, b) testpp::internal::Assert::assertNotEquals((a), (b), __FILE__, __LINE__)
+#define ASSERT_LT(a, b) testpp::internal::Assert::assertLessThan((a), (b), __FILE__, __LINE__)
+#define ASSERT_LE(a, b) testpp::internal::Assert::assertLessThanEquals((a), (b), __FILE__, __LINE__)
+#define ASSERT_GT(a, b) testpp::internal::Assert::assertGreaterThan((a), (b), __FILE__, __LINE__)
+#define ASSERT_GE(a, b) testpp::internal::Assert::assertGreaterThanEquals((a), (b), __FILE__, __LINE__)
 
-namespace internal {
+namespace testpp::internal {
     namespace Assert {
         /// @brief An Asserts test for asserting two values to be equal
         /// @tparam A a generic type

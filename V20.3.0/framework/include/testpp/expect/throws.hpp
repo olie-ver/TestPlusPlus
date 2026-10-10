@@ -8,8 +8,8 @@
 #include "internal/runner.hpp"
 #include "internal/helpers.hpp"
 
-#define EXPECT_THROWS_1_ARGS(func) internal::Expects::expectThrows([&]() {(func);}, #func, __FILE__, __LINE__)
-#define EXPECT_THROWS_2_ARGS(func, ex) internal::Expects::expectThrows<ex>([&]() {(func);}, #func, __FILE__, __LINE__)
+#define EXPECT_THROWS_1_ARGS(func) testpp::internal::Expects::expectThrows([&]() {(func);}, #func, __FILE__, __LINE__)
+#define EXPECT_THROWS_2_ARGS(func, ex) testpp::internal::Expects::expectThrows<ex>([&]() {(func);}, #func, __FILE__, __LINE__)
 
 #define GET_3RD_ARG(arg1, arg2, arg3, ...) arg3
 
@@ -18,11 +18,11 @@
 
 //The actual tests
 #define EXPECT_THROWS(...) EXPECT_THROWS_MACRO_CHOOSER(__VA_ARGS__)(__VA_ARGS__)
-#define EXPECT_DOES_NOT_THROW(func) internal::Expects::expectDoesNotThrow([&](){(func);}, #func, __FILE__, __LINE__)
+#define EXPECT_DOES_NOT_THROW(func) testpp::internal::Expects::expectDoesNotThrow([&](){(func);}, #func, __FILE__, __LINE__)
 #define EXPECT_THROWS_MSG(func, message) \
-    internal::Expects::expectThrowsWithMessage([&](){(func);}, #func, (message), __FILE__, __LINE__)
+    testpp::internal::Expects::expectThrowsWithMessage([&](){(func);}, #func, (message), __FILE__, __LINE__)
 
-namespace internal {
+namespace testpp::internal {
     namespace Expects {
         /// @brief Checks if the passed in function throws an error, or a specified error
         /// @tparam Expected the expected thing that should be throw 

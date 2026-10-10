@@ -3,8 +3,7 @@
 #ifndef OUTPUT_H
 #define OUPUT_H
 
-#include "../../core.hpp"
-#include "../../concepts.hpp"
+#include "../../core/core.hpp"
 #include "../../helpers.hpp"
 #include "../isolation_types.hpp"
 
@@ -12,7 +11,7 @@
     #include "../../runner.hpp"
 #endif
 
-namespace internal {
+namespace testpp::internal {
     namespace impl_iso {
         template<typename Func> 
         inline Core::ExecutionResult stdoutContains(Func&& func) {

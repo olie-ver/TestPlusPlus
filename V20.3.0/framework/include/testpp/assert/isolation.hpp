@@ -5,7 +5,7 @@
 
 #include "internal/pch/impl_pch.hpp"
 
-#include "internal/core.hpp"
+#include "internal/core/core.hpp"
 #include "internal/fail.hpp"
 #include "internal/helpers.hpp"
 #include "internal/implementation/isolation.hpp"
@@ -13,55 +13,55 @@
 #include <algorithm>
 
 //Fatal tests
-#define ASSERT_DEATH(func) internal::Assert::assertDeath((func), #func, __FILE__, __LINE__)
-#define ASSERT_SEGFAULT(func) internal::Assert::assertSegFault((func), #func, __FILE__, __LINE__)
-#define ASSERT_ABORT(func) internal::Assert::assertAbort((func), #func, __FILE__, __LINE__)
-#define ASSERT_FATAL(func) internal::Assert::assertFatal((func), #func, __FILE__, __LINE__)
-#define ASSERT_NONFATAL(func) internal::Assert::assertNonFatal((func), #func, __FILE__, __LINE__)
+#define ASSERT_DEATH(func) testpp::internal::Assert::assertDeath((func), #func, __FILE__, __LINE__)
+#define ASSERT_SEGFAULT(func) testpp::internal::Assert::assertSegFault((func), #func, __FILE__, __LINE__)
+#define ASSERT_ABORT(func) testpp::internal::Assert::assertAbort((func), #func, __FILE__, __LINE__)
+#define ASSERT_FATAL(func) testpp::internal::Assert::assertFatal((func), #func, __FILE__, __LINE__)
+#define ASSERT_NONFATAL(func) testpp::internal::Assert::assertNonFatal((func), #func, __FILE__, __LINE__)
 
 //Exit tests
-#define ASSERT_SUCCESS(func) internal::Assert::assertSuccess((func), #func, __FILE__, __LINE__)
-#define ASSERT_FAILURE(func) internal::Assert::assertFailure((func), #func, __FILE__, __LINE__)
-#define ASSERT_NONZERO_EXIT(func) internal::Assert::assertNonzeroExit((func), #func, __FILE__, __LINE__)
-#define ASSERT_EXITCODE(func, code) internal::Assert::assertExitCode((func), #func, code, __FILE__, __LINE__)
-#define ASSERT_COMPLETES(func) internal::Assert::assertCompletes((func), #func, __FILE__, __LINE__)
+#define ASSERT_SUCCESS(func) testpp::internal::Assert::assertSuccess((func), #func, __FILE__, __LINE__)
+#define ASSERT_FAILURE(func) testpp::internal::Assert::assertFailure((func), #func, __FILE__, __LINE__)
+#define ASSERT_NONZERO_EXIT(func) testpp::internal::Assert::assertNonzeroExit((func), #func, __FILE__, __LINE__)
+#define ASSERT_EXITCODE(func, code) testpp::internal::Assert::assertExitCode((func), #func, code, __FILE__, __LINE__)
+#define ASSERT_COMPLETES(func) testpp::internal::Assert::assertCompletes((func), #func, __FILE__, __LINE__)
 
 //Output tests
-#define ASSERT_STDOUT_CONTAINS(func, content) internal::Assert::assertStdoutContains((func), (content), __FILE__, __LINE__)
-#define ASSERT_STDERR_CONTAINS(func, content) internal::Assert::assertStderrContains((func), (content), __FILE__, __LINE__)
-#define ASSERT_NO_STDOUT(func) internal::Assert::assertNoStdout((func), __FILE__, __LINE__)
-#define ASSERT_NO_STDERR(func) internal::Assert::assertNoStderr((func), __FILE__, __LINE__)
-#define ASSERT_STDOUT_MATCHES(func, content) internal::Assert::assertStdoutMatches((func), (content) __FILE__, __LINE__)
-#define ASSERT_STDERR_MATCHES(func, content) internal::Assert::assertStderrMatches((func), (content) __FILE__, __LINE__)
+#define ASSERT_STDOUT_CONTAINS(func, content) testpp::internal::Assert::assertStdoutContains((func), (content), __FILE__, __LINE__)
+#define ASSERT_STDERR_CONTAINS(func, content) testpp::internal::Assert::assertStderrContains((func), (content), __FILE__, __LINE__)
+#define ASSERT_NO_STDOUT(func) testpp::internal::Assert::assertNoStdout((func), __FILE__, __LINE__)
+#define ASSERT_NO_STDERR(func) testpp::internal::Assert::assertNoStderr((func), __FILE__, __LINE__)
+#define ASSERT_STDOUT_MATCHES(func, content) testpp::internal::Assert::assertStdoutMatches((func), (content) __FILE__, __LINE__)
+#define ASSERT_STDERR_MATCHES(func, content) testpp::internal::Assert::assertStderrMatches((func), (content) __FILE__, __LINE__)
 
 //Sanitizer tests
-#define ASSERT_ASAN_FAILURE(func) internal::Assert::assertAsanFailure((func), __FILE__, __LINE__)
-#define ASSERT_NASAN_FAILURE(func) internal::Assert::assertNoAsanFailure((func), __FILE__, __LINE__)
-#define ASSERT_UBSAN_FAILURE(func) internal::Assert::assertUbsanFailure((func), __FILE__, __LINE__)
-#define ASSERT_NUBSAN_FAILURE(func) internal::Assert::assertNoUbsanFailure((func), __FILE__, __LINE__)
-#define ASSERT_TSAN_FAILURE(func) internal::Assert::assertTsanFailure((func), __FILE__, __LINE__)
-#define ASSERT_NTSAN_FAILURE(func) internal::Assert::assertNoTsanFailure((func), __FILE__, __LINE__)
-#define ASSERT_LSAN_FAILURE(func) internal::Assert::assertLsanFailure((func), __FILE__, __LINE__)
-#define ASSERT_NLSAN_FAILURE(func) internal::Assert::assertNoLsanFailure((func), __FILE__, __LINE__)
-#define ASSERT_SAN_FAILURE(func) internal::Assert::assertSanFailure((func), __FILE__, __LINE__)
-#define ASSERT_NSAN_FAILURE(func) internal::Assert::assertNoSanFailure((func), __FILE__, __LINE__)
+#define ASSERT_ASAN_FAILURE(func) testpp::internal::Assert::assertAsanFailure((func), __FILE__, __LINE__)
+#define ASSERT_NASAN_FAILURE(func) testpp::internal::Assert::assertNoAsanFailure((func), __FILE__, __LINE__)
+#define ASSERT_UBSAN_FAILURE(func) testpp::internal::Assert::assertUbsanFailure((func), __FILE__, __LINE__)
+#define ASSERT_NUBSAN_FAILURE(func) testpp::internal::Assert::assertNoUbsanFailure((func), __FILE__, __LINE__)
+#define ASSERT_TSAN_FAILURE(func) testpp::internal::Assert::assertTsanFailure((func), __FILE__, __LINE__)
+#define ASSERT_NTSAN_FAILURE(func) testpp::internal::Assert::assertNoTsanFailure((func), __FILE__, __LINE__)
+#define ASSERT_LSAN_FAILURE(func) testpp::internal::Assert::assertLsanFailure((func), __FILE__, __LINE__)
+#define ASSERT_NLSAN_FAILURE(func) testpp::internal::Assert::assertNoLsanFailure((func), __FILE__, __LINE__)
+#define ASSERT_SAN_FAILURE(func) testpp::internal::Assert::assertSanFailure((func), __FILE__, __LINE__)
+#define ASSERT_NSAN_FAILURE(func) testpp::internal::Assert::assertNoSanFailure((func), __FILE__, __LINE__)
 
 //Timing/Concurrency tests
-#define ASSERT_TIMEOUT(func, timeLimit) internal::Assert::assertTimeout((func), (timeLimit), __FILE__, __LINE__)
+#define ASSERT_TIMEOUT(func, timeLimit) testpp::internal::Assert::assertTimeout((func), (timeLimit), __FILE__, __LINE__)
 #define ASSERT_COMPLETES_WITHIN(func, timeLimit) \
-    internal::Assert::assertCompletesWithin((func), (timeLimit), __FILE__, __LINE__)
+    testpp::internal::Assert::assertCompletesWithin((func), (timeLimit), __FILE__, __LINE__)
 
 //Generic tests
 
-#define ASSERT_STATUS(func, status) internal::Assert::assertStatus((func), (status), __FILE__, __LINE__)
+#define ASSERT_STATUS(func, status) testpp::internal::Assert::assertStatus((func), (status), __FILE__, __LINE__)
 #define ASSERT_CRASH_TYPE(func, crash_type) \
-    internal::Assert::assertCrashType((func), (crash_type), __FILE__, __LINE__)
+    testpp::internal::Assert::assertCrashType((func), (crash_type), __FILE__, __LINE__)
 
 #define ASSERT_SIGNAL(func, signal) \
-    internal::Assert::assertTerminationSignal((func), (signal), __FILE__, __LINE__)
-#define ASSERT_KILLED(func) internal::Assert::assertKilled((func), __FILE__, __LINE__)
+    testpp::internal::Assert::assertTerminationSignal((func), (signal), __FILE__, __LINE__)
+#define ASSERT_KILLED(func) testpp::internal::Assert::assertKilled((func), __FILE__, __LINE__)
 
-namespace internal {
+namespace testpp::internal {
     namespace Assert {
         //Fatal Tests
 

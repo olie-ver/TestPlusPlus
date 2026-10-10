@@ -6,27 +6,27 @@
 #include "internal/pch/impl_pch.hpp"
 
 #include "internal/fail.hpp"
-#include "internal/concepts.hpp"
+#include "internal/concepts/has_quality.hpp"
 
 #define EXPECT_ORDERED_EQ(first, second) \
-    internal::Expects::expectOrderedEquals((first), (second), __FILE__, __LINE__)
+    testpp::internal::Expects::expectOrderedEquals((first), (second), __FILE__, __LINE__)
 #define EXPECT_UNORDERED_EQ(first, second) \
-    internal::Expects::expectUnorderedEquals((first), (second), __FILE__, __LINE__)
+    testpp::internal::Expects::expectUnorderedEquals((first), (second), __FILE__, __LINE__)
 
 #define EXPECT_ORDERED_NE(first, second) \
-    internal::Expects::expectOrderedUnequals((first), (second), __FILE__, __LINE__)
+    testpp::internal::Expects::expectOrderedUnequals((first), (second), __FILE__, __LINE__)
 
 #define EXPECT_UNORDERED_NE(first, second) \
-    internal::Expects::expectUnorderedUnequals((first), (second), __FILE__, __LINE__)
+    testpp::internal::Expects::expectUnorderedUnequals((first), (second), __FILE__, __LINE__)
 
-#define EXPECT_EMPTY(container) internal::Expects::expectEmpty((container), __FILE__, __LINE__)
-#define EXPECT_NEMPTY(container) internal::Expects::expectNotEmpty((container), __FILE__, __LINE__)
-#define EXPECT_SIZE(container, size) internal::Expects::expectSize((container), (size), __FILE__, __LINE__)
-#define EXPECT_CONTAINS(container, value) internal::Expects::expectContains((container), (value), __FILE__, __LINE__)
+#define EXPECT_EMPTY(container) testpp::internal::Expects::expectEmpty((container), __FILE__, __LINE__)
+#define EXPECT_NEMPTY(container) testpp::internal::Expects::expectNotEmpty((container), __FILE__, __LINE__)
+#define EXPECT_SIZE(container, size) testpp::internal::Expects::expectSize((container), (size), __FILE__, __LINE__)
+#define EXPECT_CONTAINS(container, value) testpp::internal::Expects::expectContains((container), (value), __FILE__, __LINE__)
 #define EXPECT_DOES_NOT_CONTAIN(container, value) \
-    internal::Expects::expectDoesNotContain((container), (value), __FILE__, __LINE__)
+    testpp::internal::Expects::expectDoesNotContain((container), (value), __FILE__, __LINE__)
 
-namespace internal {
+namespace testpp::internal {
     namespace Expects {
         template <typename A, typename B>
         requires Concepts::IterableAndComparable<A, B>

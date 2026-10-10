@@ -3,12 +3,12 @@
 #ifndef STR_H
 #define STR_H
 
-#include "../core.hpp"
+#include "../core/core.hpp"
 #include <optional>
 #include <string>
 #include <string_view>
 
-namespace internal {
+namespace testpp::internal {
     namespace impl_str {
         inline std::optional<const Core::FailureInfo> 
         stringEquals(const std::string_view& first, const std::string_view& second, 

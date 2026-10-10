@@ -3,12 +3,12 @@
 #ifndef NULL_H
 #define NULL_H
 
-#include "../core.hpp"
-#include "../concepts.hpp"
+#include "../core/core.hpp"
+#include "../concepts/has_quality.hpp"
 #include <optional>
 #include <string>
 
-namespace internal {
+namespace testpp::internal {
     namespace impl_null {
         template <typename T>
         requires Concepts::Nullable<T>

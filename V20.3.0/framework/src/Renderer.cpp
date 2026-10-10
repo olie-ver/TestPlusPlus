@@ -4,7 +4,7 @@
 #include <iostream>
 #include <mutex>
 
-namespace internal {
+namespace testpp::internal {
     namespace Renderer {
         void ConsoleRenderer::render(Core::TestRun& testRun) 
         {

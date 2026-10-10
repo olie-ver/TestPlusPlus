@@ -15,55 +15,55 @@
 #endif
 
 //Fatal tests
-#define EXPECT_DEATH(func) internal::Expects::expectDeath((func), #func, __FILE__, __LINE__)
-#define EXPECT_SEGFAULT(func) internal::Expects::expectSegFault((func), #func, __FILE__, __LINE__)
-#define EXPECT_ABORT(func) internal::Expects::expectAbort((func), #func, __FILE__, __LINE__)
-#define EXPECT_FATAL(func) internal::Expects::expectFatal((func), #func, __FILE__, __LINE__)
-#define EXPECT_NONFATAL(func) internal::Expects::expectNonFatal((func), #func, __FILE__, __LINE__)
+#define EXPECT_DEATH(func) testpp::internal::Expects::expectDeath((func), #func, __FILE__, __LINE__)
+#define EXPECT_SEGFAULT(func) testpp::internal::Expects::expectSegFault((func), #func, __FILE__, __LINE__)
+#define EXPECT_ABORT(func) testpp::internal::Expects::expectAbort((func), #func, __FILE__, __LINE__)
+#define EXPECT_FATAL(func) testpp::internal::Expects::expectFatal((func), #func, __FILE__, __LINE__)
+#define EXPECT_NONFATAL(func) testpp::internal::Expects::expectNonFatal((func), #func, __FILE__, __LINE__)
 
 //Exit tests
-#define EXPECT_SUCCESS(func) internal::Expects::expectSuccess((func), #func, __FILE__, __LINE__)
-#define EXPECT_FAILURE(func) internal::Expects::expectFailure((func), #func, __FILE__, __LINE__)
-#define EXPECT_NONZERO_EXIT(func) internal::Expects::expectNonzeroExit((func), #func, __FILE__, __LINE__)
-#define EXPECT_EXITCODE(func, code) internal::Expects::expectExitCode((func), #func, code, __FILE__, __LINE__)
-#define EXPECT_COMPLETES(func) internal::Expects::expectCompletes((func), #func, __FILE__, __LINE__)
+#define EXPECT_SUCCESS(func) testpp::internal::Expects::expectSuccess((func), #func, __FILE__, __LINE__)
+#define EXPECT_FAILURE(func) testpp::internal::Expects::expectFailure((func), #func, __FILE__, __LINE__)
+#define EXPECT_NONZERO_EXIT(func) testpp::internal::Expects::expectNonzeroExit((func), #func, __FILE__, __LINE__)
+#define EXPECT_EXITCODE(func, code) testpp::internal::Expects::expectExitCode((func), #func, code, __FILE__, __LINE__)
+#define EXPECT_COMPLETES(func) testpp::internal::Expects::expectCompletes((func), #func, __FILE__, __LINE__)
 
 //Output tests
-#define EXPECT_STDOUT_CONTAINS(func, content) internal::Expects::expectStdoutContains((func), (content), __FILE__, __LINE__)
-#define EXPECT_STDERR_CONTAINS(func, content) internal::Expects::expectStderrContains((func), (content), __FILE__, __LINE__)
-#define EXPECT_NO_STDOUT(func) internal::Expects::expectNoStdout((func), __FILE__, __LINE__)
-#define EXPECT_NO_STDERR(func) internal::Expects::expectNoStderr((func), __FILE__, __LINE__)
-#define EXPECT_STDOUT_MATCHES(func, content) internal::Expects::expectStdoutMatches((func), (content) __FILE__, __LINE__)
-#define EXPECT_STDERR_MATCHES(func, content) internal::Expects::expectStderrMatches((func), (content) __FILE__, __LINE__)
+#define EXPECT_STDOUT_CONTAINS(func, content) testpp::internal::Expects::expectStdoutContains((func), (content), __FILE__, __LINE__)
+#define EXPECT_STDERR_CONTAINS(func, content) testpp::internal::Expects::expectStderrContains((func), (content), __FILE__, __LINE__)
+#define EXPECT_NO_STDOUT(func) testpp::internal::Expects::expectNoStdout((func), __FILE__, __LINE__)
+#define EXPECT_NO_STDERR(func) testpp::internal::Expects::expectNoStderr((func), __FILE__, __LINE__)
+#define EXPECT_STDOUT_MATCHES(func, content) testpp::internal::Expects::expectStdoutMatches((func), (content) __FILE__, __LINE__)
+#define EXPECT_STDERR_MATCHES(func, content) testpp::internal::Expects::expectStderrMatches((func), (content) __FILE__, __LINE__)
 
 //Sanitizer tests
-#define EXPECT_ASAN_FAILURE(func) internal::Expects::expectAsanFailure((func), __FILE__, __LINE__)
-#define EXPECT_NASAN_FAILURE(func) internal::Expects::expectNoAsanFailure((func), __FILE__, __LINE__)
-#define EXPECT_UBSAN_FAILURE(func) internal::Expects::expectUbsanFailure((func), __FILE__, __LINE__)
-#define EXPECT_NUBSAN_FAILURE(func) internal::Expects::expectNoUbsanFailure((func), __FILE__, __LINE__)
-#define EXPECT_TSAN_FAILURE(func) internal::Expects::expectTsanFailure((func), __FILE__, __LINE__)
-#define EXPECT_NTSAN_FAILURE(func) internal::Expects::expectNoTsanFailure((func), __FILE__, __LINE__)
-#define EXPECT_LSAN_FAILURE(func) internal::Expects::expectLsanFailure((func), __FILE__, __LINE__)
-#define EXPECT_NLSAN_FAILURE(func) internal::Expects::expectNoLsanFailure((func), __FILE__, __LINE__)
-#define EXPECT_SAN_FAILURE(func) internal::Expects::expectSanFailure((func), __FILE__, __LINE__)
-#define EXPECT_NSAN_FAILURE(func) internal::Expects::expectNoSanFailure((func), __FILE__, __LINE__)
+#define EXPECT_ASAN_FAILURE(func) testpp::internal::Expects::expectAsanFailure((func), __FILE__, __LINE__)
+#define EXPECT_NASAN_FAILURE(func) testpp::internal::Expects::expectNoAsanFailure((func), __FILE__, __LINE__)
+#define EXPECT_UBSAN_FAILURE(func) testpp::internal::Expects::expectUbsanFailure((func), __FILE__, __LINE__)
+#define EXPECT_NUBSAN_FAILURE(func) testpp::internal::Expects::expectNoUbsanFailure((func), __FILE__, __LINE__)
+#define EXPECT_TSAN_FAILURE(func) testpp::internal::Expects::expectTsanFailure((func), __FILE__, __LINE__)
+#define EXPECT_NTSAN_FAILURE(func) testpp::internal::Expects::expectNoTsanFailure((func), __FILE__, __LINE__)
+#define EXPECT_LSAN_FAILURE(func) testpp::internal::Expects::expectLsanFailure((func), __FILE__, __LINE__)
+#define EXPECT_NLSAN_FAILURE(func) testpp::internal::Expects::expectNoLsanFailure((func), __FILE__, __LINE__)
+#define EXPECT_SAN_FAILURE(func) testpp::internal::Expects::expectSanFailure((func), __FILE__, __LINE__)
+#define EXPECT_NSAN_FAILURE(func) testpp::internal::Expects::expectNoSanFailure((func), __FILE__, __LINE__)
 
 //Timing/Concurrency tests
-#define EXPECT_TIMEOUT(func, timeLimit) internal::Expects::expectTimeout((func), (timeLimit), __FILE__, __LINE__)
+#define EXPECT_TIMEOUT(func, timeLimit) testpp::internal::Expects::expectTimeout((func), (timeLimit), __FILE__, __LINE__)
 #define EXPECT_COMPLETES_WITHIN(func, timeLimit) \
-    internal::Expects::expectCompletesWithin((func), (timeLimit), __FILE__, __LINE__)
+    testpp::internal::Expects::expectCompletesWithin((func), (timeLimit), __FILE__, __LINE__)
 
 //Generic tests
 
-#define EXPECT_STATUS(func, status) internal::Expects::expectStatus((func), (status), __FILE__, __LINE__)
+#define EXPECT_STATUS(func, status) testpp::internal::Expects::expectStatus((func), (status), __FILE__, __LINE__)
 #define EXPECT_CRASH_TYPE(func, crash_type) \
-    internal::Expects::expectCrashType((func), (crash_type), __FILE__, __LINE__)
+    testpp::internal::Expects::expectCrashType((func), (crash_type), __FILE__, __LINE__)
 
 #define EXPECT_SIGNAL(func, signal) \
-    internal::Expects::expectTerminationSignal((func), (signal), __FILE__, __LINE__)
-#define EXPECT_KILLED(func) internal::Expects::expectKilled((func), __FILE__, __LINE__)
+    testpp::internal::Expects::expectTerminationSignal((func), (signal), __FILE__, __LINE__)
+#define EXPECT_KILLED(func) testpp::internal::Expects::expectKilled((func), __FILE__, __LINE__)
 
-namespace internal {
+namespace testpp::internal {
     namespace Expects {
         //Fatal Tests
 

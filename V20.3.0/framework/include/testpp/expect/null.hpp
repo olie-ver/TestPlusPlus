@@ -5,12 +5,12 @@
 
 #include "internal/pch/impl_pch.hpp"
 
-#include "internal/concepts.hpp"
+#include "internal/concepts/has_quality.hpp"
 
-#define EXPECT_NULL(val) internal::Expects::expectNull((val), __FILE__, __LINE__)
-#define EXPECT_NOT_NULL(val) internal::Expects::expectNotNull((val), __FILE__, __LINE__)
+#define EXPECT_NULL(val) testpp::internal::Expects::expectNull((val), __FILE__, __LINE__)
+#define EXPECT_NOT_NULL(val) testpp::internal::Expects::expectNotNull((val), __FILE__, __LINE__)
 
-namespace internal {
+namespace testpp::internal {
     namespace Expects {
         /// @brief An Expects test to check if something is the nullptr
         /// @tparam T a type that can be compared to nullptr

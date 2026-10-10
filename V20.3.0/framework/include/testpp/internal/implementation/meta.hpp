@@ -3,13 +3,13 @@
 #ifndef META_H
 #define META_H
 
-#include "../core.hpp"
+#include "../core/core.hpp"
 #include "../runner.hpp"
 #include <functional>
 #include <optional>
 #include <string>
 
-namespace internal {
+namespace testpp::internal {
     namespace impl_meta {
         inline std::optional<Core::FailureInfo>
         passes(const std::function<void()>& test, const char* testName, 

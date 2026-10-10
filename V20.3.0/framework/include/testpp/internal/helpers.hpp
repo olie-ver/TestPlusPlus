@@ -15,7 +15,7 @@
     #include <cstdlib>
 #endif
 
-namespace internal {
+namespace testpp::internal {
     namespace Helpers {
 
         // -----------------------------

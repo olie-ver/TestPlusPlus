@@ -5,6 +5,8 @@
 #include <iostream>
 #include <thread>
 
+namespace Testpp = testpp::internal;
+
 int getNumThreads(const std::string &arg)
 {
     size_t pos{};
@@ -15,22 +17,22 @@ int getNumThreads(const std::string &arg)
     return std::max(std::min(std::stoi(arg, &pos), max_threads), 1);
 }
 
-internal::Renderer::Verbosity getVerbFlag(const std::string &arg)
+Testpp::Renderer::Verbosity getVerbFlag(const std::string &arg)
 {
     if (arg == "minimum") {
-        return internal::Renderer::Verbosity::Minimum;
+        return Testpp::Renderer::Verbosity::Minimum;
     } else if (arg == "passonly" || arg == "pass_only") {
-        return internal::Renderer::Verbosity::PassOnly;
+        return Testpp::Renderer::Verbosity::PassOnly;
     } else if (arg == "failonly" || arg == "fail_only"
         || arg == "failonlyall" || arg == "fail_only_all") 
     {
-        return internal::Renderer::Verbosity::FailOnlyAll;
+        return Testpp::Renderer::Verbosity::FailOnlyAll;
     } else if (arg == "failonlymin" || arg == "fail_only_min")
     {
-        return internal::Renderer::Verbosity::FailOnlyMin;
+        return Testpp::Renderer::Verbosity::FailOnlyMin;
     }
 
-    return internal::Renderer::Verbosity::Default;
+    return Testpp::Renderer::Verbosity::Default;
 }
 
 void getSkip(const std::string& arg, std::unordered_set<std::string>& suites)

@@ -7,12 +7,12 @@
 
 #include "internal/fail.hpp"
 
-#define ASSERT_PASSES(test) internal::Assert::assertPasses([&](){(test);}, #test, __FILE__, __LINE__)
-#define ASSERT_FAILS(test) internal::Assert::assertFails([&](){(test);}, #test, __FILE__, __LINE__)
+#define ASSERT_PASSES(test) testpp::internal::Assert::assertPasses([&](){(test);}, #test, __FILE__, __LINE__)
+#define ASSERT_FAILS(test) testpp::internal::Assert::assertFails([&](){(test);}, #test, __FILE__, __LINE__)
 #define ASSERT_FAILS_MSG(test, msg) \
-    internal::Assert::assertFailsWithMessage([&](){(test);}, #test, (msg), __FILE__, __LINE__)
+    testpp::internal::Assert::assertFailsWithMessage([&](){(test);}, #test, (msg), __FILE__, __LINE__)
 
-namespace internal {
+namespace testpp::internal {
     namespace Assert {
         inline void assertPasses(const std::function<void()>& test, const char* testName, 
             const char* file, const int line) 

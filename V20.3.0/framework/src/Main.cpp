@@ -29,10 +29,10 @@ int main(int argc, char** argv) {
     int num_threads = 1;
     int timeout = 0;
 
-    internal::Renderer::Verbosity verbFlag = internal::Renderer::Verbosity::Default;
-    internal::Core::TimeUnit unit = internal::Core::TimeUnit::Seconds;
-    auto& skipSuites = internal::Runner::getSkipSuites();
-    auto& testOnlySuites = internal::Runner::getTestOnly();
+    testpp::internal::Renderer::Verbosity verbFlag = testpp::internal::Renderer::Verbosity::Default;
+    testpp::internal::Core::TimeUnit unit = testpp::internal::Core::TimeUnit::Seconds;
+    auto& skipSuites = testpp::internal::Runner::getSkipSuites();
+    auto& testOnlySuites = testpp::internal::Runner::getTestOnly();
 
     std::string jsonFile = "";
     std::string jUnitFile = "";
@@ -174,11 +174,11 @@ int main(int argc, char** argv) {
         }
     }
 
-    internal::Core::TestRun& testRun = internal::Runner::getTestRun();
+    testpp::internal::Core::TestRun& testRun = testpp::internal::Runner::getTestRun();
 
-    internal::Runner::runAllRegisteredTests(testRun, num_threads, timeout, unit);
+    testpp::internal::Runner::runAllRegisteredTests(testRun, num_threads, timeout, unit);
 
-    internal::Renderer::ConsoleRenderer renderer(verbFlag, jsonFile, jUnitFile, stdoutSize, stderrSize);
+    testpp::internal::Renderer::ConsoleRenderer renderer(verbFlag, jsonFile, jUnitFile, stdoutSize, stderrSize);
 
     renderer.render(testRun);
     return EXIT_SUCCESS;

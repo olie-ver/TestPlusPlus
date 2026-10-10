@@ -3,10 +3,10 @@
 #ifndef FAIL_H
 #define FAIL_H
 
-#include "core.hpp"
+#include "core/core.hpp"
 #include "runner.hpp"
 
-namespace internal {
+namespace testpp::internal {
     namespace Fail {
         inline void e_fail(const Core::FailureInfo& result) {
             Runner::TEST_STACK.back().failures.push_back(result);

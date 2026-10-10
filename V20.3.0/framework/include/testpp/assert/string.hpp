@@ -7,16 +7,16 @@
 
 #include "internal/fail.hpp"
 
-#define ASSERT_STR_EQ(first, second) internal::Assert::assertStringEquals((first), (second), __FILE__, __LINE__)
-#define ASSERT_STR_NE(first, second) internal::Assert::assertStringNotEquals((first), (second), __FILE__, __LINE__)
-#define ASSERT_STR_EMT(first) internal::Assert::assertStringEmpty((first), __FILE__, __LINE__)
-#define ASSERT_STR_NEMT(first) internal::Assert::assertStringNotEmpty((first), __FILE__, __LINE__)
-#define ASSERT_STR_CONTAINS(first, substr) internal::Assert::expectStringContains((first), (substr), __FILE__, __LINE__)
-#define ASSERT_STR_STARTS_WITH(first, substr) internal::Assert::expectStringStartsWith((first), (substr), __FILE__, __LINE__)
-#define ASSERT_STR_ENDS_WITH(first, substr) internal::Assert::expectStringEndsWith((first), (substr), __FILE__, __LINE__)
+#define ASSERT_STR_EQ(first, second) testpp::internal::Assert::assertStringEquals((first), (second), __FILE__, __LINE__)
+#define ASSERT_STR_NE(first, second) testpp::internal::Assert::assertStringNotEquals((first), (second), __FILE__, __LINE__)
+#define ASSERT_STR_EMT(first) testpp::internal::Assert::assertStringEmpty((first), __FILE__, __LINE__)
+#define ASSERT_STR_NEMT(first) testpp::internal::Assert::assertStringNotEmpty((first), __FILE__, __LINE__)
+#define ASSERT_STR_CONTAINS(first, substr) testpp::internal::Assert::expectStringContains((first), (substr), __FILE__, __LINE__)
+#define ASSERT_STR_STARTS_WITH(first, substr) testpp::internal::Assert::expectStringStartsWith((first), (substr), __FILE__, __LINE__)
+#define ASSERT_STR_ENDS_WITH(first, substr) testpp::internal::Assert::expectStringEndsWith((first), (substr), __FILE__, __LINE__)
 
 
-namespace internal {
+namespace testpp::internal {
     namespace Assert {
         /// @brief An Assert test that asserts if two strings are equal
         /// @param first the first string

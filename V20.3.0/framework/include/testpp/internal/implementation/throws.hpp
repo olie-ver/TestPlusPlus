@@ -3,11 +3,11 @@
 #ifndef THROWS_H
 #define THROWS_H
 
-#include "../core.hpp"
+#include "../core/core.hpp"
 #include <optional>
 #include <string>
 
-namespace internal {
+namespace testpp::internal {
     namespace impl_throws {
         template <typename Func>
         inline std::optional<Core::FailureInfo> 

@@ -8,15 +8,15 @@
 #include "internal/fail.hpp"
 
 #define EXPECT_ALL(container, condition) \
-    internal::Expects::expectAllOf((container), (condition), __FILE__, __LINE__)
+    testpp::internal::Expects::expectAllOf((container), (condition), __FILE__, __LINE__)
 
 #define EXPECT_SOME(container, condition) \
-    internal::Expects::expectAnyOf((container), (condition), __FILE__, __LINE__)
+    testpp::internal::Expects::expectAnyOf((container), (condition), __FILE__, __LINE__)
 
 #define EXPECT_NONE(container, condition) \
-    internal::Expects::expectNoneOf((container), (condition), __FILE__, __LINE__)
+    testpp::internal::Expects::expectNoneOf((container), (condition), __FILE__, __LINE__)
 
-namespace internal {
+namespace testpp::internal {
     namespace Expects {
         template <typename T, typename Func>
         requires std::ranges::range<T>

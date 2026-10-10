@@ -7,7 +7,7 @@
 #include <chrono>
 #include <iostream>
 
-namespace internal {
+namespace testpp::internal {
     namespace Runner {
         std::atomic<size_t> next_index{0};
 

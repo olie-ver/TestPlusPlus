@@ -3,11 +3,12 @@
 #ifndef BOOL_H
 #define BOOL_H
 
-#include "../core.hpp"
+#include "../core/core.hpp"
+
 #include <optional>
 #include <string>
 
-namespace internal {
+namespace testpp::internal {
     namespace impl_bool {
         inline std::optional<const Core::FailureInfo> True(const bool cond, const char* expr,
             const char* file, const uint32_t line)

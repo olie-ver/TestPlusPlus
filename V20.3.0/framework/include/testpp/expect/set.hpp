@@ -7,13 +7,13 @@
 
 #include "internal/fail.hpp"
 
-#define EXPECT_SET_EQ(first, second) internal::Expects::expectSameSet((first), (second), __FILE__, __LINE__)
-#define EXPECT_SET_NE(first, second) internal::Expects::expectNotSameSet((first), (second), __FILE__, __LINE__)
-#define EXPECT_SUBSET(first, second) internal::Expects::expectSubset((first), (second), __FILE__, __LINE__)
-#define EXPECT_SUPERSET(first, second) internal::Expects::expectSuperset((first), (second), __FILE__, __LINE__)
-#define EXPECT_STRICT_SUBSET(first, second) internal::Expects::expectStrictSubset((first), (second), __FILE__, __LINE__)
+#define EXPECT_SET_EQ(first, second) testpp::internal::Expects::expectSameSet((first), (second), __FILE__, __LINE__)
+#define EXPECT_SET_NE(first, second) testpp::internal::Expects::expectNotSameSet((first), (second), __FILE__, __LINE__)
+#define EXPECT_SUBSET(first, second) testpp::internal::Expects::expectSubset((first), (second), __FILE__, __LINE__)
+#define EXPECT_SUPERSET(first, second) testpp::internal::Expects::expectSuperset((first), (second), __FILE__, __LINE__)
+#define EXPECT_STRICT_SUBSET(first, second) testpp::internal::Expects::expectStrictSubset((first), (second), __FILE__, __LINE__)
 
-namespace internal {
+namespace testpp::internal {
     namespace Expects {
         template <typename A, typename B>
         requires Concepts::IterableAndComparable<A, B>

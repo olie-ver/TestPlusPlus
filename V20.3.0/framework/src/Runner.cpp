@@ -1,13 +1,15 @@
 #include <testpp/internal/pch/pch.hpp>
 
+
 #include <testpp/internal/runner.hpp>
+
 #include <atomic>
 #include <chrono>
 #include <deque>
 #include <iostream>
 #include <thread>
 
-namespace internal {
+namespace testpp::internal {
     namespace Runner {
         thread_local std::deque<Core::TestResult> TEST_STACK;
 

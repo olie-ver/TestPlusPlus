@@ -6,13 +6,13 @@
 #include "internal/pch/impl_pch.hpp"
 
 #include "internal/fail.hpp"
-#include "internal/concepts.hpp"
+#include "internal/concepts/is_type.hpp"
 
 #define EXPECT_NEAR_3_ARGS(first, second, abs_tol) \
-    internal::Expects::absolutelyEqual((first), (second), (abs_tol), __FILE__, __LINE__)
+    testpp::internal::Expects::absolutelyEqual((first), (second), (abs_tol), __FILE__, __LINE__)
 
 #define EXPECT_NEAR_4_ARGS(first, second, abs_tol, rel_tol) \
-    internal::Expects::nearlyEqual((first), (second), (abs_tol), (rel_tol), __FILE__, __LINE__)
+    testpp::internal::Expects::nearlyEqual((first), (second), (abs_tol), (rel_tol), __FILE__, __LINE__)
 
 #define GET_5TH_ARG(arg1, arg2, arg3, arg4, arg5, ...) arg5
 
@@ -23,19 +23,19 @@
 #define EXPECT_NEAR(...) EXPECT_NEAR_MACRO_CHOOSER(__VA_ARGS__)(__VA_ARGS__)
 
 #define EXPECT_REL_NEAR(first, second, rel_tol) \
-    internal::Expects::relativelyEqual((first), (second), (rel_tol), __FILE__, __LINE__)
+    testpp::internal::Expects::relativelyEqual((first), (second), (rel_tol), __FILE__, __LINE__)
 
 #define EXPECT_ABS_NEAR(first, second, abs_tol) \
-    internal::Expects::absolutelyEqual((first), (second), (abs_tol), __FILE__, __LINE__)
+    testpp::internal::Expects::absolutelyEqual((first), (second), (abs_tol), __FILE__, __LINE__)
 
-#define EXPECT_NAN(number) internal::Expects::isNaN((number), __FILE__, __LINE__)
-#define EXPECT_NOT_NAN(number) internal::Expects::isNotNaN((number), __FILE__, __LINE__)
+#define EXPECT_NAN(number) testpp::internal::Expects::isNaN((number), __FILE__, __LINE__)
+#define EXPECT_NOT_NAN(number) testpp::internal::Expects::isNotNaN((number), __FILE__, __LINE__)
 
-#define EXPECT_INF(number) internal::Expects::isInf((number), __FILE__, __LINE__)
-#define EXPECT_POS_INF(number) internal::Expects::isPosInf((number), __FILE__, __LINE__)
-#define EXPECT_NEG_INF(number) internal::Expects::isNegInf((number), __FILE__, __LINE__)
+#define EXPECT_INF(number) testpp::internal::Expects::isInf((number), __FILE__, __LINE__)
+#define EXPECT_POS_INF(number) testpp::internal::Expects::isPosInf((number), __FILE__, __LINE__)
+#define EXPECT_NEG_INF(number) testpp::internal::Expects::isNegInf((number), __FILE__, __LINE__)
 
-namespace internal {
+namespace testpp::internal {
     namespace Expects {
         /// @brief Checks if two floating point values are "close enough" to each other
         /// @tparam A a generic floating point type

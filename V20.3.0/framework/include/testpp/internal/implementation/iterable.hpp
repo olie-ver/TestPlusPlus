@@ -3,11 +3,11 @@
 #ifndef ITER_H
 #define ITER_H
 
-#include "../core.hpp"
-#include "../concepts.hpp"
+#include "../core/core.hpp"
+#include "../concepts/has_quality.hpp"
 #include <optional>
 
-namespace internal {
+namespace testpp::internal {
     namespace impl_iter {
         template <typename A, typename B>
         requires Concepts::IterableAndComparable<A, B>

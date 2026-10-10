@@ -8,8 +8,8 @@
 #include "internal/runner.hpp"
 #include "internal/helpers.hpp"
 
-#define ASSERT_THROWS_1_ARGS(func) internal::Assert::assertThrows([&]() {(func);}, #func, __FILE__, __LINE__)
-#define ASSERT_THROWS_2_ARGS(func, ex) internal::Assert::assertThrows<ex>([&]() {(func);}, #func, __FILE__, __LINE__)
+#define ASSERT_THROWS_1_ARGS(func) testpp::internal::Assert::assertThrows([&]() {(func);}, #func, __FILE__, __LINE__)
+#define ASSERT_THROWS_2_ARGS(func, ex) testpp::internal::Assert::assertThrows<ex>([&]() {(func);}, #func, __FILE__, __LINE__)
 
 #define GET_3RD_ARG(arg1, arg2, arg3, ...) arg3
 
@@ -18,11 +18,11 @@
 
 //The actual tests
 #define ASSERT_THROWS(...) ASSERT_THROWS_MACRO_CHOOSER(__VA_ARGS__)(__VA_ARGS__)
-#define ASSERT_DOES_NOT_THROW(func) internal::Assert::assertDoesNotThrow([&](){(func);}, #func, __FILE__, __LINE__)
+#define ASSERT_DOES_NOT_THROW(func) testpp::internal::Assert::assertDoesNotThrow([&](){(func);}, #func, __FILE__, __LINE__)
 #define ASSERT_THROWS_MSG(func, message) \
-    internal::Assert::assertThrowsWithMessage([&](){(func);}, #func, (message), __FILE__, __LINE__)
+    testpp::internal::Assert::assertThrowsWithMessage([&](){(func);}, #func, (message), __FILE__, __LINE__)
 
-namespace internal {
+namespace testpp::internal {
     namespace Assert {
         /// @brief Checks if the passed in function throws an error, or a specified error
         /// @tparam Expected the expected thing that should be throw 

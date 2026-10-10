@@ -7,10 +7,10 @@
 
 #include "internal/fail.hpp"
 
-#define EXPECT_TRUE(cond) internal::Expects::expectTrue((cond), #cond, __FILE__, __LINE__)
-#define EXPECT_FALSE(cond) internal::Expects::expectFalse((cond), #cond, __FILE__, __LINE__)
+#define EXPECT_TRUE(cond) testpp::internal::Expects::expectTrue((cond), #cond, __FILE__, __LINE__)
+#define EXPECT_FALSE(cond) testpp::internal::Expects::expectFalse((cond), #cond, __FILE__, __LINE__)
 
-namespace internal {
+namespace testpp::internal {
     namespace Expects {
         /// @brief An Expects test for expecting a true value
         /// @param cond a condition

@@ -7,12 +7,12 @@
 
 #include "internal/fail.hpp"
 
-#define EXPECT_PASSES(test) internal::Expects::expectPasses([&](){(test);}, #test, __FILE__, __LINE__)
-#define EXPECT_FAILS(test) internal::Expects::expectFails([&](){(test);}, #test, __FILE__, __LINE__)
+#define EXPECT_PASSES(test) testpp::internal::Expects::expectPasses([&](){(test);}, #test, __FILE__, __LINE__)
+#define EXPECT_FAILS(test) testpp::internal::Expects::expectFails([&](){(test);}, #test, __FILE__, __LINE__)
 #define EXPECT_FAILS_MSG(test, msg) \
-    internal::Expects::expectFailsWithMessage([&](){(test);}, #test, (msg), __FILE__, __LINE__)
+    testpp::internal::Expects::expectFailsWithMessage([&](){(test);}, #test, (msg), __FILE__, __LINE__)
 
-namespace internal {
+namespace testpp::internal {
     namespace Expects {
         inline void expectPasses(const std::function<void()>& test, const char* testName, 
             const char* file, const int line) 

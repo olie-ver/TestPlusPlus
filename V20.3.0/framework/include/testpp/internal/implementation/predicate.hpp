@@ -3,11 +3,11 @@
 #ifndef PRED_H
 #define PRED_H
 
-#include "../core.hpp"
+#include "../core/core.hpp"
 #include <optional>
 #include <ranges>
 
-namespace internal {
+namespace testpp::internal {
     namespace impl_pred {
         template <typename T, typename Func>
         requires std::ranges::range<T>

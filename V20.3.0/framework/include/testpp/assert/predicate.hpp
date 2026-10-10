@@ -8,15 +8,15 @@
 #include "internal/fail.hpp"
 
 #define ASSERT_ALL(container, condition) \
-    internal::Assert::assertAllOf((container), (condition), __FILE__, __LINE__)
+    testpp::internal::Assert::assertAllOf((container), (condition), __FILE__, __LINE__)
 
 #define ASSERT_SOME(container, condition) \
-    internal::Assert::assertAnyOf((container), (condition), __FILE__, __LINE__)
+    testpp::internal::Assert::assertAnyOf((container), (condition), __FILE__, __LINE__)
 
 #define ASSERT_NONE(container, condition) \
-    internal::Assert::assertNoneOf((container), (condition), __FILE__, __LINE__)
+    testpp::internal::Assert::assertNoneOf((container), (condition), __FILE__, __LINE__)
 
-namespace internal {
+namespace testpp::internal {
     namespace Assert {
         template <typename T, typename Func>
         requires std::ranges::range<T>

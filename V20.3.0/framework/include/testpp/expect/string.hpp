@@ -7,15 +7,15 @@
 
 #include "internal/fail.hpp"
 
-#define EXPECT_STR_EQ(first, second) internal::Expects::expectStringEquals((first), (second), __FILE__, __LINE__)
-#define EXPECT_STR_NE(first, second) internal::Expects::expectStringNotEquals((first), (second), __FILE__, __LINE__)
-#define EXPECT_STR_EMT(first) internal::Expects::expectStringEmpty((first), __FILE__, __LINE__)
-#define EXPECT_STR_NEMT(first) internal::Expects::expectStringNotEmpty((first), __FILE__, __LINE__)
-#define EXPECT_STR_CONTAINS(first, substr) internal::Expects::expectStringContains((first), (substr), __FILE__, __LINE__)
-#define EXPECT_STR_STARTS_WITH(first, substr) internal::Expects::expectStringStartsWith((first), (substr), __FILE__, __LINE__)
-#define EXPECT_STR_ENDS_WITH(first, substr) internal::Expects::expectStringEndsWith((first), (substr), __FILE__, __LINE__)
+#define EXPECT_STR_EQ(first, second) testpp::internal::Expects::expectStringEquals((first), (second), __FILE__, __LINE__)
+#define EXPECT_STR_NE(first, second) testpp::internal::Expects::expectStringNotEquals((first), (second), __FILE__, __LINE__)
+#define EXPECT_STR_EMT(first) testpp::internal::Expects::expectStringEmpty((first), __FILE__, __LINE__)
+#define EXPECT_STR_NEMT(first) testpp::internal::Expects::expectStringNotEmpty((first), __FILE__, __LINE__)
+#define EXPECT_STR_CONTAINS(first, substr) testpp::internal::Expects::expectStringContains((first), (substr), __FILE__, __LINE__)
+#define EXPECT_STR_STARTS_WITH(first, substr) testpp::internal::Expects::expectStringStartsWith((first), (substr), __FILE__, __LINE__)
+#define EXPECT_STR_ENDS_WITH(first, substr) testpp::internal::Expects::expectStringEndsWith((first), (substr), __FILE__, __LINE__)
 
-namespace internal {
+namespace testpp::internal {
     namespace Expects {
         /// @brief An Expects test that checks if two strings are equal
         /// @param first the first string

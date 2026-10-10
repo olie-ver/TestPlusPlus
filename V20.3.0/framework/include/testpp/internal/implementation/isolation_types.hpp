@@ -3,13 +3,13 @@
 #ifndef ISO_TYPE_H
 #define ISO_TYPE_H
 
-#include "../core.hpp"
+#include "../core/core.hpp"
 
 #ifdef _WIN32
     #include "../runner.hpp"
 #endif
 
-namespace internal {
+namespace testpp::internal {
     namespace impl_iso {
         #ifdef _WIN32
 
@@ -17,13 +17,13 @@ namespace internal {
 
             inline Core::ExecutionResult isolateRun(size_t testIndex, size_t deathIndex, int timeLimit)
             {
-                return internal::impl_iso::runIsolatedImpl(testIndex, deathIndex, timeLimit);
+                return testpp::internal::impl_iso::runIsolatedImpl(testIndex, deathIndex, timeLimit);
             }
 
             template<typename Func>
             inline Core::ExecutionResult runDeathTest(Func&& func, const int timeLimit = 10000)
             {
-                auto& ctx = internal::Runner::getDeathContext();
+                auto& ctx = testpp::internal::Runner::getDeathContext();
 
                 const std::size_t deathIndex = ctx.currentDeath++;
 
@@ -55,7 +55,7 @@ namespace internal {
             template<typename Func>
             inline Core::ExecutionResult isolateRun(Func&& func, const int timeLimit = 10000)
             {
-                return internal::impl_iso::runIsolatedImpl(
+                return testpp::internal::impl_iso::runIsolatedImpl(
                     std::function<void()>(std::forward<Func>(func)),
                     timeLimit
                 );

@@ -4,13 +4,13 @@
 #define FLT_NAN_H
 
 #include "../../core.hpp"
-#include "../../concepts.hpp"
+#include "../../concepts/is_type.hpp"
 #include "../../helpers.hpp"
 #include <cmath>
 #include <optional>
 #include <string>
 
-namespace internal {
+namespace testpp::internal {
     namespace impl_flt {
         template <typename T>
         requires(std::is_floating_point<T>::value)

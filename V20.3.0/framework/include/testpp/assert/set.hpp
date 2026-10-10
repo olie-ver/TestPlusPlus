@@ -7,13 +7,13 @@
 
 #include "internal/fail.hpp"
 
-#define ASSERT_SET_EQ(first, second) internal::Assert::assertSameSet((first), (second), __FILE__, __LINE__)
-#define ASSERT_SET_NE(first, second) internal::Assert::assertNotSameSet((first), (second), __FILE__, __LINE__)
-#define ASSERT_SUBSET(first, second) internal::Assert::assertSubset((first), (second), __FILE__, __LINE__)
-#define ASSERT_SUPERSET(first, second) internal::Assert::assertSuperset((first), (second), __FILE__, __LINE__)
-#define ASSERT_STRICT_SUBSET(first, second) internal::Assert::assertStrictSubset((first), (second), __FILE__, __LINE__)
+#define ASSERT_SET_EQ(first, second) testpp::internal::Assert::assertSameSet((first), (second), __FILE__, __LINE__)
+#define ASSERT_SET_NE(first, second) testpp::internal::Assert::assertNotSameSet((first), (second), __FILE__, __LINE__)
+#define ASSERT_SUBSET(first, second) testpp::internal::Assert::assertSubset((first), (second), __FILE__, __LINE__)
+#define ASSERT_SUPERSET(first, second) testpp::internal::Assert::assertSuperset((first), (second), __FILE__, __LINE__)
+#define ASSERT_STRICT_SUBSET(first, second) testpp::internal::Assert::assertStrictSubset((first), (second), __FILE__, __LINE__)
 
-namespace internal {
+namespace testpp::internal {
     namespace Assert {
         template <typename A, typename B>
         requires Concepts::IterableAndComparable<A, B>

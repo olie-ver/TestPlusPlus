@@ -4,13 +4,13 @@
 #define A_FLT_H
 
 #include "internal/pch/impl_pch.hpp"
-#include "internal/concepts.hpp"
+#include "internal/concepts/is_type.hpp"
 
 #define ASSERT_NEAR_3_ARGS(first, second, abs_tol) \
-    internal::Assert::absolutelyEqual((first), (second), (abs_tol), __FILE__, __LINE__)
+    testpp::internal::Assert::absolutelyEqual((first), (second), (abs_tol), __FILE__, __LINE__)
 
 #define ASSERT_NEAR_4_ARGS(first, second, abs_tol, rel_tol) \
-    internal::Assert::nearlyEqual((first), (second), (abs_tol), (rel_tol), __FILE__, __LINE__)
+    testpp::internal::Assert::nearlyEqual((first), (second), (abs_tol), (rel_tol), __FILE__, __LINE__)
 
 #define GET_5TH_ARG(arg1, arg2, arg3, arg4, arg5, ...) arg5
 
@@ -21,19 +21,19 @@
 #define ASSERT_NEAR(...) ASSERT_NEAR_MACRO_CHOOSER(__VA_ARGS__)(__VA_ARGS__)
 
 #define ASSERT_REL_NEAR(first, second, rel_tol) \
-    internal::Assert::relativelyEqual((first), (second), (rel_tol), __FILE__, __LINE__)
+    testpp::internal::Assert::relativelyEqual((first), (second), (rel_tol), __FILE__, __LINE__)
 
 #define ASSERT_ABS_NEAR(first, second, abs_tol) \
-    internal::Assert::absolutelyEqual((first), (second), (abs_tol), __FILE__, __LINE__)
+    testpp::internal::Assert::absolutelyEqual((first), (second), (abs_tol), __FILE__, __LINE__)
 
-#define ASSERT_NAN(number) internal::Assert::isNaN((number), __FILE__, __LINE__)
-#define ASSERT_NOT_NAN(number) internal::Assert::isNotNaN((number), __FILE__, __LINE__)
+#define ASSERT_NAN(number) testpp::internal::Assert::isNaN((number), __FILE__, __LINE__)
+#define ASSERT_NOT_NAN(number) testpp::internal::Assert::isNotNaN((number), __FILE__, __LINE__)
 
-#define ASSERT_INF(number) internal::Assert::isInf((number), __FILE__, __LINE__)
-#define ASSERT_POS_INF(number) internal::Assert::isPosInf((number), __FILE__, __LINE__)
-#define ASSERT_NEG_INF(number) internal::Assert::isNegInf((number), __FILE__, __LINE__)
+#define ASSERT_INF(number) testpp::internal::Assert::isInf((number), __FILE__, __LINE__)
+#define ASSERT_POS_INF(number) testpp::internal::Assert::isPosInf((number), __FILE__, __LINE__)
+#define ASSERT_NEG_INF(number) testpp::internal::Assert::isNegInf((number), __FILE__, __LINE__)
 
-namespace internal {
+namespace testpp::internal {
     namespace Assert {
         /// @brief Checks if two floating point values are "close enough" to each other
         /// @tparam A a generic floating point type

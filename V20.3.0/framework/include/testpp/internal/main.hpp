@@ -3,7 +3,7 @@
 #include <testpp/internal/runner.hpp>
 
 //Gets the verbosity flag from an argument
-internal::Renderer::Verbosity getVerbFlag(const std::string& arg);
+testpp::internal::Renderer::Verbosity getVerbFlag(const std::string& arg);
 
 //Gets the number of threads from an argument
 int getNumThreads(const std::string& arg);

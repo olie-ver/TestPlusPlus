@@ -3,12 +3,12 @@
 #ifndef SET_H
 #define SET_H
 
-#include "../core.hpp"
-#include "../concepts.hpp"
+#include "../core/core.hpp"
+#include "../concepts/has_quality.hpp"
 #include <optional>
 #include <string>
 
-namespace internal {
+namespace testpp::internal {
     namespace impl_set {
         inline bool isPresent(auto&& a_itr, auto&& b_itr, auto&& b_end) {
             for (; b_itr != b_end; b_itr++) {

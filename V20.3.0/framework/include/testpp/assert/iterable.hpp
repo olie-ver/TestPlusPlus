@@ -6,27 +6,27 @@
 #include "internal/pch/impl_pch.hpp"
 
 #include "internal/fail.hpp"
-#include "internal/concepts.hpp"
+#include "internal/concepts/has_quality.hpp"
 
 #define ASSERT_ORDERED_EQ(first, second) \
-    internal::Assert::assertOrderedEquals((first), (second), __FILE__, __LINE__)
+    testpp::internal::Assert::assertOrderedEquals((first), (second), __FILE__, __LINE__)
 #define ASSERT_UNORDERED_EQ(first, second) \
-    internal::Assert::assertUnorderedEquals((first), (second), __FILE__, __LINE__)
+    testpp::internal::Assert::assertUnorderedEquals((first), (second), __FILE__, __LINE__)
 
 #define ASSERT_ORDERED_NE(first, second) \
-    internal::Assert::assertOrderedUnequals((first), (second), __FILE__, __LINE__)
+    testpp::internal::Assert::assertOrderedUnequals((first), (second), __FILE__, __LINE__)
 
 #define ASSERT_UNORDERED_NE(first, second) \
-    internal::Assert::assertUnorderedUnequals((first), (second), __FILE__, __LINE__)
+    testpp::internal::Assert::assertUnorderedUnequals((first), (second), __FILE__, __LINE__)
 
-#define ASSERT_EMPTY(container) internal::Assert::assertEmpty((container), __FILE__, __LINE__)
-#define ASSERT_NEMPTY(container) internal::Assert::assertNotEmpty((container), __FILE__, __LINE__)
-#define ASSERT_SIZE(container, size) internal::Assert::assertSize((container), (size), __FILE__, __LINE__)
-#define ASSERT_CONTAINS(container, value) internal::Assert::assertContains((container), (value), __FILE__, __LINE__)
+#define ASSERT_EMPTY(container) testpp::internal::Assert::assertEmpty((container), __FILE__, __LINE__)
+#define ASSERT_NEMPTY(container) testpp::internal::Assert::assertNotEmpty((container), __FILE__, __LINE__)
+#define ASSERT_SIZE(container, size) testpp::internal::Assert::assertSize((container), (size), __FILE__, __LINE__)
+#define ASSERT_CONTAINS(container, value) testpp::internal::Assert::assertContains((container), (value), __FILE__, __LINE__)
 #define ASSERT_DOES_NOT_CONTAIN(container, value) \
-    internal::Assert::assertDoesNotContain((container), (value), __FILE__, __LINE__)
+    testpp::internal::Assert::assertDoesNotContain((container), (value), __FILE__, __LINE__)
 
-namespace internal {
+namespace testpp::internal {
     namespace Assert {
         template <typename A, typename B>
         requires Concepts::IterableAndComparable<A, B>

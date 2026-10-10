@@ -3,13 +3,13 @@
 #ifndef ISO_H
 #define ISO_H
 
-#include "../core.hpp"
+#include "../core/core.hpp"
 #include "isolation_types.hpp"
 
 #include <optional>
 #include <string>
 
-namespace internal {
+namespace testpp::internal {
     namespace impl_iso {
         // ============================================================
         // Crash / Fatal Behavior Assertions

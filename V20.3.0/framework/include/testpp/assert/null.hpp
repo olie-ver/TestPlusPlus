@@ -5,13 +5,13 @@
 
 #include "internal/pch/impl_pch.hpp"
 
-#include "internal/concepts.hpp"
+#include "internal/concepts/has_quality.hpp"
 #include "internal/fail.hpp"
 
-#define ASSERT_NULL(val) internal::Assert::assertNull((val), __FILE__, __LINE__)
-#define ASSERT_NOT_NULL(val) internal::Assert::assertnotNull((val), __FILE__, __LINE__)
+#define ASSERT_NULL(val) testpp::internal::Assert::assertNull((val), __FILE__, __LINE__)
+#define ASSERT_NOT_NULL(val) testpp::internal::Assert::assertnotNull((val), __FILE__, __LINE__)
 
-namespace internal {
+namespace testpp::internal {
     namespace Assert {
         /// @brief An Assert test to assert if something is the nullptr
         /// @tparam T a type that can be compared to nullptr

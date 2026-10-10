@@ -3,13 +3,13 @@
 #ifndef CMP_H
 #define CMP_H
 
-#include "../core.hpp"
-#include "../concepts.hpp"
+#include "../core/core.hpp"
+#include "../concepts/operator.hpp"
 #include "../helpers.hpp"
 #include <optional>
 #include <string>
 
-namespace internal {
+namespace testpp::internal {
     namespace impl_cmp {
         template <typename A, typename B>
         requires Concepts::HasEQ<A, B>

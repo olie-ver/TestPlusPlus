@@ -31,10 +31,8 @@
     </testsuites>
 */
 
-namespace internal::Renderer {
-
-    namespace {
-
+namespace testpp::internal {
+    namespace Renderer {
         using TestList = std::vector<Core::TestResult>;
 
         struct SuiteStats {

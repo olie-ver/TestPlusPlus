@@ -6,10 +6,10 @@
 #include "internal/pch/impl_pch.hpp"
 #include "internal/fail.hpp"
 
-#define ASSERT_TRUE(cond) internal::Assert::assertTrue((cond), #cond, __FILE__, __LINE__)
-#define ASSERT_FALSE(cond) internal::Assert::assertFalse((cond), #cond, __FILE__, __LINE__)
+#define ASSERT_TRUE(cond) testpp::internal::Assert::assertTrue((cond), #cond, __FILE__, __LINE__)
+#define ASSERT_FALSE(cond) testpp::internal::Assert::assertFalse((cond), #cond, __FILE__, __LINE__)
 
-namespace internal {
+namespace testpp::internal {
     namespace Assert {
         /// @brief An Asserts test for asserting a true value
         /// @param cond a condition

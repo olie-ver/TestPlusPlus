@@ -3,7 +3,7 @@
 #ifndef RUNNER_H
 #define RUNNER_H
 
-#include "core.hpp"
+#include "core/core.hpp"
 
 #include <deque>
 #include <map>
@@ -31,7 +31,7 @@
     TEST(Default, test_name)
 
 /// @brief An internal namespace. Using anything from within is not advised
-namespace internal {
+namespace testpp::internal {
     /// @brief An internal Runner namespace that is used for running tests
     namespace Runner {
         /// @brief The result for the current test

@@ -7,7 +7,7 @@
 #include <string_view>
 
 /// @brief An internal namespace. Using anything from within is not advised
-namespace internal {
+namespace testpp::internal {
     /// @brief A rendering namespace to render the output from running tests
     namespace Renderer {
         /// @brief Flags for renderer verbosity
@@ -23,20 +23,14 @@ namespace internal {
 
         void streamMsg(const std::string_view& msg);
 
-        class ITestRenderer {
-            public:
-                virtual ~ITestRenderer() = default;
-                virtual void render(Core::TestRun& result) = 0;
-        };
-
-        class ConsoleRenderer : public ITestRenderer {
+        class ConsoleRenderer {
             public:
                 ConsoleRenderer(Verbosity verbosity = Verbosity::Default, const std::string jsonFile = "", 
                     const std::string junitFile = "", const int stdoutSize = 0, const int stderrSize = 0) 
                     : verb(verbosity), jsonFile(jsonFile), junitFile(junitFile), stdoutSize(stdoutSize),
                         stderrSize(stderrSize) {};
 
-                void render(Core::TestRun& result) override;
+                void render(Core::TestRun& result);
 
             private:
                 Verbosity verb;
