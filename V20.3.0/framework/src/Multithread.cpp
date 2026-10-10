@@ -13,7 +13,6 @@ namespace testpp::internal {
         std::atomic<size_t> next_index{0};
 
         void threadWorker(std::vector<Core::TestResult>& results, Core::Test& running) {
-            // std::vector<Core::Test>& REGISTRY = getRegistry();
             size_t size = registry.size();
     
             while (true) {

@@ -4,3 +4,4 @@ Testing/*
 */install
 */build
 .DS_Store
+build-debug

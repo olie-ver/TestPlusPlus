@@ -35,15 +35,15 @@ set(TESTPP_SOURCES
     src/runner.cpp
 )
 
-if(WIN32)
-    list(APPEND TESTPP_SOURCES
-        src/platform/windows/isolation_windows.cpp
-    )
-else()
-    list(APPEND TESTPP_SOURCES
-        src/platform/unix/isolation_unix.cpp
-    )
-endif()
+# if(WIN32)
+#     list(APPEND TESTPP_SOURCES
+#         src/platform/windows/isolation_windows.cpp
+#     )
+# else()
+#     list(APPEND TESTPP_SOURCES
+#         src/platform/unix/isolation_unix.cpp
+#     )
+# endif()
 
 add_library(testpp ${TESTPP_SOURCES})
 

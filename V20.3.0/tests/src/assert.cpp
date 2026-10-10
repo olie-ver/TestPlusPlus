@@ -1,5 +1,5 @@
 #include <testpp/testpp.hpp>
-#include <testpp/internal/core.hpp>
+#include <testpp/internal/core/core.hpp>
 #include <testpp/internal/runner.hpp>
 
 TEST(intentionally_fail_assert, short_circuit_check) {

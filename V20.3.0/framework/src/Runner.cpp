@@ -80,8 +80,6 @@ namespace testpp::internal {
 
         bool registerTest(Core::Test test)
         {
-            // auto& ALL_TESTS = getAllTests();
-
             // auto [it, inserted] = ALL_TESTS.insert(test);
             // if (!inserted) {
             //     std::cerr << "Test under suite: " << test.suite_name
@@ -95,8 +93,6 @@ namespace testpp::internal {
             // // test.index = REGISTRY.size();
             // // #endif
 
-            // REGISTRY.push_back(test);
-
             auto [it, inserted] = allTests.insert(test);
             if (!inserted) {
                 std::cerr << "Test under suite: " << test.suite_name << " has duplicate name: " << test.test_name << std::endl;
@@ -105,16 +101,11 @@ namespace testpp::internal {
 
             registry.push_back(test);
 
-
             return true;
         }
 
         bool registerSequentialGroup(std::vector<Core::TestReference> members) {
-            // auto& groups = getAllSequentialGroups();
-            // groups.push_back(members);
-
             sequentialGroups.push_back(members);
-
             return true;
         }
 
@@ -128,8 +119,6 @@ namespace testpp::internal {
 
             std::atomic<bool> finished{false};
             std::thread watchdog;
-
-            // std::vector<Core::Test>& REGISTRY = getRegistry();
 
             //create our thread pool:
             std::vector<std::thread> threads;

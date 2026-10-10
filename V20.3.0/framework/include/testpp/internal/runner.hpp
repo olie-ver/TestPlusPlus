@@ -47,35 +47,17 @@ namespace testpp::internal {
         /// @brief The result for the current test
         inline thread_local std::deque<Core::TestResult> TEST_STACK{};
 
-        inline static Core::TestRun testRun{};
+        inline Core::TestRun testRun{};
 
-        inline static std::vector<Core::Test> registry{};
+        inline std::vector<Core::Test> registry{};
 
-        inline static std::unordered_set<Core::Test, Core::TestHash> allTests{};
+        inline std::unordered_set<Core::Test, Core::TestHash> allTests{};
 
-        inline static std::vector<std::vector<Core::TestReference>> sequentialGroups{};
+        inline std::vector<std::vector<Core::TestReference>> sequentialGroups{};
 
-        inline static std::unordered_set<std::string_view> skipSuites{};
+        inline std::unordered_set<std::string_view> skipSuites{};
 
-        inline static std::unordered_set<std::string_view> testOnly{};
-
-        /// @brief gets the global TestRun struct
-        // Core::TestRun& getTestRun();
-
-        /// @brief The registry containing all the tests to be run
-        // std::vector<Core::Test>& getRegistry();
-
-        /// @brief A set ensuring no duplicate tests are registered
-        // std::unordered_set<Core::Test, Core::TestHash>& getAllTests();
-
-        /// @brief Gets all sequential groups
-        // std::vector<std::vector<Core::TestReference>>& getAllSequentialGroups();
-
-        /// @brief A set containing suites that should not be tested
-        // std::unordered_set<std::string>& getSkipSuites();
-
-        /// @brief A set containing suites that ONLY should be tested
-        // std::unordered_set<std::string>& getTestOnly();
+        inline std::unordered_set<std::string_view> testOnly{};
 
         // #ifdef _WIN32
 
