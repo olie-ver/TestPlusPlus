@@ -1,43 +1,42 @@
 #pragma once
 
-#ifndef A_NULL_H
-#define A_NULL_H
+#ifndef E_NULL_H
+#define E_NULL_H
 
-#include "../pch/impl_pch.hpp"
+#include "internal/pch/impl_pch.hpp"
 
-#include "../concepts.hpp"
-#include "../fail.hpp"
+#include "internal/concepts.hpp"
 
-#define ASSERT_NULL(val) internal::Assert::assertNull((val), __FILE__, __LINE__)
-#define ASSERT_NOT_NULL(val) internal::Assert::assertnotNull((val), __FILE__, __LINE__)
+#define EXPECT_NULL(val) internal::Expects::expectNull((val), __FILE__, __LINE__)
+#define EXPECT_NOT_NULL(val) internal::Expects::expectNotNull((val), __FILE__, __LINE__)
 
 namespace internal {
-    namespace Assert {
-        /// @brief An Assert test to assert if something is the nullptr
+    namespace Expects {
+        /// @brief An Expects test to check if something is the nullptr
         /// @tparam T a type that can be compared to nullptr
         /// @param val the value
         /// @param file the file the function was called in
         /// @param line the line the function was called on
         template <typename T>
         requires Concepts::Nullable<T>
-        inline void assertNull(const T& val, const char* file, const int line) {
+        inline void expectNull(const T& val, const char* file, const int line) {
             auto result = impl_null::Null(val, file, line);
             if (result) {
-                Fail::a_fail(*result);
+                Fail::e_fail(*result);
             }
         }
 
-        /// @brief An Assert test to assert if something is not the nullptr
+        /// @brief An Expects test to check if something is not the nullptr
         /// @tparam T a type that can be compared to nullptr
         /// @param val the value
         /// @param file the file the function was called in
         /// @param line the line the function was called on
         template <typename T>
         requires Concepts::Nullable<T>
-        inline void assertNotNull(const T& val, const char* file, const int line) {
+        inline void expectNotNull(const T& val, const char* file, const int line) {
             auto result = impl_null::NotNull(val, file, line);
             if (result) {
-                Fail::a_fail(*result);
+                Fail::e_fail(*result);
             }
         }
     }

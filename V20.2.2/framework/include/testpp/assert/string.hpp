@@ -3,9 +3,9 @@
 #ifndef A_STR_H
 #define A_STR_H
 
-#include "../pch/impl_pch.hpp"
+#include "internal/pch/impl_pch.hpp"
 
-#include "../fail.hpp"
+#include "internal/fail.hpp"
 
 #define ASSERT_STR_EQ(first, second) internal::Assert::assertStringEquals((first), (second), __FILE__, __LINE__)
 #define ASSERT_STR_NE(first, second) internal::Assert::assertStringNotEquals((first), (second), __FILE__, __LINE__)

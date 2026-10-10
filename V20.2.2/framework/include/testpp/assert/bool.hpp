@@ -1,38 +1,37 @@
 #pragma once
 
-#ifndef E_BOOL_H
-#define E_BOOL_H
+#ifndef A_BOOL_H
+#define A_BOOL_H
 
-#include "../pch/impl_pch.hpp"
+#include "internal/pch/impl_pch.hpp"
+#include "internal/fail.hpp"
 
-#include "../fail.hpp"
-
-#define EXPECT_TRUE(cond) internal::Expects::expectTrue((cond), #cond, __FILE__, __LINE__)
-#define EXPECT_FALSE(cond) internal::Expects::expectFalse((cond), #cond, __FILE__, __LINE__)
+#define ASSERT_TRUE(cond) internal::Assert::assertTrue((cond), #cond, __FILE__, __LINE__)
+#define ASSERT_FALSE(cond) internal::Assert::assertFalse((cond), #cond, __FILE__, __LINE__)
 
 namespace internal {
-    namespace Expects {
-        /// @brief An Expects test for expecting a true value
+    namespace Assert {
+        /// @brief An Asserts test for asserting a true value
         /// @param cond a condition
         /// @param expr the condition as an expression
         /// @param file the file the function was called from
         /// @param line the line the function was called on
-        inline void expectTrue(const bool cond, const char* expr, const char* file, const int line) {
+        inline void assertTrue(const bool cond, const char* expr, const char* file, const int line) {
             auto result = impl_bool::True(cond, expr, file, line);
             if (result) {
-                Fail::e_fail(*result);
+                Fail::a_fail(*result);
             }
         }
 
-        /// @brief An Expects test for expecting a false value
+        /// @brief An Asserts test for asserting a false value
         /// @param cond a condition
         /// @param expr the condition as an expression
         /// @param file the file the function was called from
         /// @param line the line the function was called on
-        inline void expectFalse(const bool cond, const char* expr, const char* file, const int line) {
+        inline void assertFalse(const bool cond, const char* expr, const char* file, const int line) {
             auto result = impl_bool::False(cond, expr, file, line);
             if (result) {
-                Fail::e_fail(*result);
+                Fail::a_fail(*result);
             }
         }
     }

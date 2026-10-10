@@ -3,9 +3,9 @@
 #ifndef E_STR_H
 #define E_STR_H
 
-#include "../pch/impl_pch.hpp"
+#include "internal/pch/impl_pch.hpp"
 
-#include "../fail.hpp"
+#include "internal/fail.hpp"
 
 #define EXPECT_STR_EQ(first, second) internal::Expects::expectStringEquals((first), (second), __FILE__, __LINE__)
 #define EXPECT_STR_NE(first, second) internal::Expects::expectStringNotEquals((first), (second), __FILE__, __LINE__)

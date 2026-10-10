@@ -3,9 +3,9 @@
 #ifndef A_PRED_H
 #define A_PRED_H
 
-#include "../pch/impl_pch.hpp"
+#include "internal/pch/impl_pch.hpp"
 
-#include "../fail.hpp"
+#include "internal/fail.hpp"
 
 #define ASSERT_ALL(container, condition) \
     internal::Assert::assertAllOf((container), (condition), __FILE__, __LINE__)
