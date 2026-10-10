@@ -18,50 +18,54 @@ namespace testpp::internal {
             while (true) {
                 size_t index = next_index.fetch_add(1);
 
-                if (index >= registry.size()) {
+                if (index >= runGroups.size()) {
                     break;
                 }
 
-                Core::Test& test = registry[index];
+                Core::TestGroup& group = runGroups[index];
 
-                //if the test's suite_name is marked to be skipped, skip it
-                if (shouldSkip(test.suite_name)) {
-                    Core::TestResult skip;
-                    skip.suiteName = test.suite_name;
-                    skip.testName = test.test_name;
-                    skip.test_status = Core::TestStatus::Skipped;
+                for (size_t i = 0; i < group.tests.size(); i++) {
+                    Core::Test& test = registry[group.tests[i]];
 
-                    skip.execution_ms = 0;
+                    //if the test's suite_name is marked to be skipped, skip it
+                    if (shouldSkip(test.suite_name)) {
+                        Core::TestResult skip;
+                        skip.suiteName = test.suite_name;
+                        skip.testName = test.test_name;
+                        skip.test_status = Core::TestStatus::Skipped;
 
-                    results[index] = skip;
+                        skip.execution_ms = 0;
 
-                    if (Renderer::shouldStream) {
-                        std::stringstream stream;
-                        stream  << '[' << std::to_string(index + 1) << '/' << std::to_string(size) << "][SKIPPED]: "
-                                << test.suite_name << " -> " << test.test_name << '\n';
+                        results[test.idx] = skip;
 
-                        Renderer::streamMsg(stream.str());
-                    }
-                } else {
-                    running = test;
+                        if (Renderer::shouldStream) {
+                            std::stringstream stream;
+                            stream  << '[' << std::to_string(test.idx + 1) << '/' << std::to_string(size) << "][SKIPPED]: "
+                                    << test.suite_name << " -> " << test.test_name << '\n';
 
-                    if (Renderer::shouldStream) {
-                        std::stringstream stream;
-                        stream  << '[' << std::to_string(index + 1) << '/' << std::to_string(size) << "][STARTED]: "
-                                << test.suite_name << " -> " << test.test_name << '\n';
+                            Renderer::streamMsg(stream.str());
+                        }
+                    } else {
+                        running = test;
 
-                        Renderer::streamMsg(stream.str());
-                    }
+                        if (Renderer::shouldStream) {
+                            std::stringstream stream;
+                            stream  << '[' << std::to_string(test.idx + 1) << '/' << std::to_string(size) << "][STARTED]: "
+                                    << test.suite_name << " -> " << test.test_name << '\n';
 
-                    //only allow non-skipped tests to be run
-                    results[index] = runTest(test);
+                            Renderer::streamMsg(stream.str());
+                        }
 
-                    if (Renderer::shouldStream) {
-                        std::stringstream stream;
-                        stream  << '[' << std::to_string(index + 1) << '/' << std::to_string(size) << "][ENDED]: "
-                                << test.suite_name << " -> " << test.test_name << '\n';
+                        //only allow non-skipped tests to be run
+                        results[test.idx] = runTest(test);
 
-                        Renderer::streamMsg(stream.str());
+                        if (Renderer::shouldStream) {
+                            std::stringstream stream;
+                            stream  << '[' << std::to_string(test.idx + 1) << '/' << std::to_string(size) << "][ENDED]: "
+                                    << test.suite_name << " -> " << test.test_name << '\n';
+
+                            Renderer::streamMsg(stream.str());
+                        }
                     }
                 }
             }

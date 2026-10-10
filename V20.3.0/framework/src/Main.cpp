@@ -44,8 +44,6 @@ int main(int argc, char** argv) {
     for (int i = 1; i < argc; i++) {
         std::string flag(argv[i]);
 
-        std::cout << argv[i] << std::endl;
-
         std::transform(flag.begin(), flag.end(), flag.begin(), 
             [](unsigned char c) { return std::tolower(c); });
 
@@ -59,11 +57,9 @@ int main(int argc, char** argv) {
             || flag.find("--t=") != std::string::npos)
         {
             std::string arg = flag.substr(flag.find('=') + 1);
-            std::cout << "arg: " << arg << std::endl;
 
             try {
                 num_threads = getNumThreads(arg);
-                std::cout << "got num threads: " << num_threads << std::endl;
             } catch (std::invalid_argument const& ex) {
                 std::cerr << "std::invalid_argument::what(): " << ex.what() << '\n';
                 return EXIT_FAILURE;
@@ -178,8 +174,6 @@ int main(int argc, char** argv) {
             return EXIT_FAILURE;
         }
     }
-
-    std::cout << "num threads: " << num_threads << std::endl;
 
     testpp::internal::Core::TestRun& testRun = testpp::internal::Runner::testRun;
 

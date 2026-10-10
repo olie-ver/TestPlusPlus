@@ -43,16 +43,19 @@ namespace testpp::internal {
 
         bool registerTest(Core::Test test)
         {
-
-            // // #ifdef _WIN32
-            // // test.index = REGISTRY.size();
-            // // #endif
-
+            test.idx = registry.size();
             auto [it, inserted] = allTests.insert(test);
+
             if (!inserted) {
                 std::cerr << "Test under suite: " << test.suite_name << " has duplicate name: " << test.test_name << std::endl;
                 abort();
             }
+
+            std::string name(test.suite_name);
+            name.push_back('_');
+            name += test.test_name;
+
+            testToRegistry[name] = test.idx;
 
             registry.push_back(test);
 
@@ -67,6 +70,42 @@ namespace testpp::internal {
         void runAllRegisteredTests(Core::TestRun& run, const int num_threads, 
             const int timeout, Core::TimeUnit unit)
         {   
+            std::unordered_set<size_t> inGroups;
+            inGroups.reserve(allTests.size());
+
+            for (size_t i  = 0; i < sequentialGroups.size(); i++) {
+                Core::TestGroup group;
+                for (size_t j = 0; j < sequentialGroups[i].size(); j++) {
+                    std::string name(sequentialGroups[i][j].suite_name);
+                    name.push_back('_');
+                    name += sequentialGroups[i][j].test_name;
+
+                    const auto& iter = testToRegistry.find(name);
+
+                    size_t testIdx = iter->second;
+
+                    const Core::Test& test = registry[testIdx];
+
+                    group.tests.push_back(test.idx);
+                    inGroups.insert(test.idx);
+                }
+
+                runGroups.push_back(std::move(group));
+            }
+
+            for (const auto& test : allTests) {
+                if (!inGroups.contains(test.idx)) {
+                    std::string name(test.suite_name);
+                    name.push_back('_');
+                    name += test.test_name;
+
+                    Core::TestGroup group;
+                    group.tests.push_back(test.idx);
+
+                    runGroups.push_back(std::move(group));
+                }
+            }
+
             using clock = std::chrono::steady_clock;
             using ms = std::chrono::milliseconds;
 
@@ -137,11 +176,7 @@ namespace testpp::internal {
             CURRENT_TEST.suiteName = test.suite_name;
             CURRENT_TEST.testName = test.test_name;
             CURRENT_TEST.test_status = Core::TestStatus::Passed;
-
-            // #ifdef _WIN32
-            //     getDeathContext().currentDeath = 0;
-            //     CURRENT_TEST.index = test.index;
-            // #endif
+            CURRENT_TEST.idx = test.idx;
 
             using clock = std::chrono::steady_clock;
             using ms = std::chrono::milliseconds;

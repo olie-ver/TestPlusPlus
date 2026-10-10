@@ -51,6 +51,10 @@ namespace testpp::internal {
 
         inline std::vector<Core::Test> registry{};
 
+        inline std::vector<Core::TestGroup> runGroups{};
+
+        inline std::unordered_map<std::string, size_t> testToRegistry{};
+
         inline std::unordered_set<Core::Test, Core::TestHash> allTests{};
 
         inline std::vector<std::vector<Core::TestReference>> sequentialGroups{};

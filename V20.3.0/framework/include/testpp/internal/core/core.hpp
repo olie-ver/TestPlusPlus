@@ -33,9 +33,10 @@ namespace testpp::internal {
 
         /// @brief A Test struct that contains information about a test
         struct Test {
-            std::string_view suite_name;
-            std::string_view test_name;
+            std::string suite_name;
+            std::string test_name;
             std::function<void()> test;
+            size_t idx;
 
             bool operator==(const Test& other) const {
                 return suite_name == other.suite_name
@@ -43,16 +44,20 @@ namespace testpp::internal {
             }
         };
 
+        struct TestGroup {
+            std::vector<size_t> tests;
+        };
+
         /// @brief A struct containing failure information
         /// Contains: message, file, line, expression, expected, actual
         struct FailureInfo
         {
-            std::string_view message;
-            std::string_view file;
+            std::string message;
+            std::string file;
             uint32_t line;
-            std::string_view expression;
-            std::string_view expected;
-            std::string_view actual;
+            std::string expression;
+            std::string expected;
+            std::string actual;
         };
 
         // struct ExecutionResult
@@ -65,6 +70,7 @@ namespace testpp::internal {
         {
             std::string_view suiteName;
             std::string_view testName;
+            size_t idx;
 
             TestStatus test_status;
             uint64_t execution_ms;
