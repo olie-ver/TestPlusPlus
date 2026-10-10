@@ -3,3 +3,4 @@ Testing/*
 *.DS_Store
 */install
 */build
+.DS_Store
