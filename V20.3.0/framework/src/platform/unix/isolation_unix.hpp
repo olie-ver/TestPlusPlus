@@ -12,7 +12,7 @@
 #include <chrono>
 #include <thread>
 
-namespace internal {
+namespace testpp::internal {
     namespace impl_iso {
     }
 }

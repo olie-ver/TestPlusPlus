@@ -38,6 +38,23 @@ namespace testpp::internal {
             }
         };
 
+        /// @brief A struct containing failure information
+        /// Contains: message, file, line, expression, expected, actual
+        struct FailureInfo
+        {
+            std::string message;
+            std::string file;
+            uint32_t line;
+            std::string expression;
+            std::string expected;
+            std::string actual;
+        };
+
+        // struct ExecutionResult
+        // {
+        //     std::string framework_message = "";
+        // };
+
         /// @brief The final struct for a test's execution results
         struct TestResult
         {
@@ -46,6 +63,8 @@ namespace testpp::internal {
 
             TestStatus test_status;
             uint64_t execution_ms;
+
+            std::vector<FailureInfo> failures;
         };
 
         /// @brief A TestRun struct that contains information about the tests being run
@@ -70,23 +89,6 @@ namespace testpp::internal {
             const char* what() const noexcept override {
                 return "Assertion failed";
             }
-        };
-
-        /// @brief A struct containing failure information
-        /// Contains: message, file, line, expression, expected, actual
-        struct FailureInfo
-        {
-            std::string message;
-            std::string file;
-            uint32_t line;
-            std::string expression;
-            std::string expected;
-            std::string actual;
-        };
-
-        struct ExecutionResult
-        {
-            std::string framework_message = "";
         };
     }
 }

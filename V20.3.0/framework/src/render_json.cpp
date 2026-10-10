@@ -201,88 +201,89 @@ namespace testpp::internal {
             stream << "\n\t]\n}";
         }
 
-    }
+    
 
-    void ConsoleRenderer::renderDefaultJson(Core::TestRun& testRun) {
-        std::fstream stream(jsonFile, std::fstream::out);
+        void ConsoleRenderer::renderDefaultJson(Core::TestRun& testRun) {
+            std::fstream stream(jsonFile, std::fstream::out);
 
-        renderJson(
-            stream,
-            testRun,
-            [](const std::string& suite, const TestList&) {
-                return !Runner::shouldSkip(suite);
-            },
-            [](const Core::TestResult&) {
-                return true;
-            },
-            true
-        );
-    }
+            renderJson(
+                stream,
+                testRun,
+                [](const std::string& suite, const TestList&) {
+                    return !Runner::shouldSkip(suite);
+                },
+                [](const Core::TestResult&) {
+                    return true;
+                },
+                true
+            );
+        }
 
-    void ConsoleRenderer::renderMinimumJson(Core::TestRun& testRun) {
-        std::fstream stream(jsonFile, std::fstream::out);
+        void ConsoleRenderer::renderMinimumJson(Core::TestRun& testRun) {
+            std::fstream stream(jsonFile, std::fstream::out);
 
-        renderJson(
-            stream,
-            testRun,
-            [](const std::string& suite, const TestList&) {
-                return !Runner::shouldSkip(suite);
-            },
-            [](const Core::TestResult&) {
-                return true;
-            },
-            false
-        );
-    }
+            renderJson(
+                stream,
+                testRun,
+                [](const std::string& suite, const TestList&) {
+                    return !Runner::shouldSkip(suite);
+                },
+                [](const Core::TestResult&) {
+                    return true;
+                },
+                false
+            );
+        }
 
-    void ConsoleRenderer::renderPassOnlyJson(Core::TestRun& testRun) {
-        std::fstream stream(jsonFile, std::fstream::out);
+        void ConsoleRenderer::renderPassOnlyJson(Core::TestRun& testRun) {
+            std::fstream stream(jsonFile, std::fstream::out);
 
-        renderJson(
-            stream,
-            testRun,
-            [](const std::string& suite, const TestList& tests) {
-                return !Runner::shouldSkip(suite)
-                    && hasStatus(tests, Core::TestStatus::Passed);
-            },
-            [](const Core::TestResult& test) {
-                return test.test_status == Core::TestStatus::Passed;
-            },
-            false
-        );
-    }
+            renderJson(
+                stream,
+                testRun,
+                [](const std::string& suite, const TestList& tests) {
+                    return !Runner::shouldSkip(suite)
+                        && hasStatus(tests, Core::TestStatus::Passed);
+                },
+                [](const Core::TestResult& test) {
+                    return test.test_status == Core::TestStatus::Passed;
+                },
+                false
+            );
+        }
 
-    void ConsoleRenderer::renderFailAllJson(Core::TestRun& testRun) {
-        std::fstream stream(jsonFile, std::fstream::out);
+        void ConsoleRenderer::renderFailAllJson(Core::TestRun& testRun) {
+            std::fstream stream(jsonFile, std::fstream::out);
 
-        renderJson(
-            stream,
-            testRun,
-            [](const std::string& suite, const TestList& tests) {
-                return !Runner::shouldSkip(suite)
-                    && hasStatus(tests, Core::TestStatus::Failed);
-            },
-            [](const Core::TestResult& test) {
-                return test.test_status == Core::TestStatus::Failed;
-            },
-            true
-        );
-    }
+            renderJson(
+                stream,
+                testRun,
+                [](const std::string& suite, const TestList& tests) {
+                    return !Runner::shouldSkip(suite)
+                        && hasStatus(tests, Core::TestStatus::Failed);
+                },
+                [](const Core::TestResult& test) {
+                    return test.test_status == Core::TestStatus::Failed;
+                },
+                true
+            );
+        }
 
-    void ConsoleRenderer::renderFailMinJson(Core::TestRun& testRun) {
-        std::fstream stream(jsonFile, std::fstream::out);
+        void ConsoleRenderer::renderFailMinJson(Core::TestRun& testRun) {
+            std::fstream stream(jsonFile, std::fstream::out);
 
-        renderJson(
-            stream,
-            testRun,
-            [](const std::string& suite, const TestList& tests) {
-                return !Runner::shouldSkip(suite)
-                    && hasStatus(tests, Core::TestStatus::Failed);
-            },
-            [](const Core::TestResult& test) {
-                return test.test_status == Core::TestStatus::Failed;
-            },
-            false
-        );
+            renderJson(
+                stream,
+                testRun,
+                [](const std::string& suite, const TestList& tests) {
+                    return !Runner::shouldSkip(suite)
+                        && hasStatus(tests, Core::TestStatus::Failed);
+                },
+                [](const Core::TestResult& test) {
+                    return test.test_status == Core::TestStatus::Failed;
+                },
+                false
+            );
+        }
     }
 }

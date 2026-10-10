@@ -26,13 +26,13 @@ endif()
 find_package(Threads REQUIRED)
 
 set(TESTPP_SOURCES
-    src/Multithread.cpp
-    src/ProcessArgs.cpp
-    src/RenderConsole.cpp
-    src/Renderer.cpp
-    src/RenderJson.cpp
-    src/RenderXml.cpp
-    src/Runner.cpp
+    src/multithread.cpp
+    src/process_args.cpp
+    src/render_console.cpp
+    src/render_json.cpp
+    src/render_xml.cpp
+    src/renderer.cpp
+    src/runner.cpp
 )
 
 if(WIN32)
@@ -52,10 +52,10 @@ set_target_properties(testpp PROPERTIES
 )
 
 target_precompile_headers(testpp PRIVATE
-    "${CMAKE_CURRENT_SOURCE_DIR}/include/testpp/internal/PCH/impl_pch.hpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/include/testpp/internal/PCH/core_pch.hpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/include/testpp/internal/PCH/src_pch.hpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/include/testpp/internal/PCH/pch.hpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/include/testpp/internal/pch/impl_pch.hpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/include/testpp/internal/pch/core_pch.hpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/include/testpp/internal/pch/src_pch.hpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/include/testpp/internal/pch/pch.hpp"
 )
 
 target_compile_features(testpp PUBLIC cxx_std_20)
@@ -69,7 +69,7 @@ target_include_directories(testpp
 target_link_libraries(testpp PUBLIC Threads::Threads)
 
 add_library(testpp_main STATIC
-    src/Main.cpp
+    src/main.cpp
 )
 
 target_compile_features(testpp_main PUBLIC cxx_std_20)

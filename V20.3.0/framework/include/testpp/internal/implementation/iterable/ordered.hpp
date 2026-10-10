@@ -4,14 +4,14 @@
 #define ITER_ORDER_H
 
 #include "../../core.hpp"
-#include "../../concepts.hpp"
+#include "../../concepts/has_quality.hpp"
 
 #include <algorithm>
 #include <optional>
 #include <ranges>
 #include <string>
 
-namespace internal {
+namespace testpp::internal {
     namespace impl_iter {
         template <typename A, typename B>
         requires Concepts::IterableAndComparable<A, B>

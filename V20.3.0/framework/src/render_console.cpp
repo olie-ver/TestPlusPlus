@@ -43,11 +43,11 @@ namespace testpp::internal {
                                 std::cout << std::endl;
                             }
 
-                            if (!result.execution_results.empty()) {
-                                for (size_t j = 0; j < result.execution_results.size(); j++) {
-                                    renderExecutionResult(result.execution_results[j], stdoutSize, stderrSize);
-                                }
-                            }
+                            // if (!result.execution_results.empty()) {
+                            //     for (size_t j = 0; j < result.execution_results.size(); j++) {
+                            //         renderExecutionResult(result.execution_results[j], stdoutSize, stderrSize);
+                            //     }
+                            // }
 
                             failed++;
                             break;
@@ -105,11 +105,11 @@ namespace testpp::internal {
                             std::cout << "[PASS] " << result.suiteName << " -> " << result.testName;
                             std::cout << " (" << result.execution_ms << " ms" << ')' << std::endl;
 
-                            if (!result.execution_results.empty()) {
-                                for (size_t j = 0; j < result.execution_results.size(); j++) {
-                                    renderExecutionResult(result.execution_results[j], stdoutSize, stderrSize);
-                                }
-                            }
+                            // if (!result.execution_results.empty()) {
+                            //     for (size_t j = 0; j < result.execution_results.size(); j++) {
+                            //         renderExecutionResult(result.execution_results[j], stdoutSize, stderrSize);
+                            //     }
+                            // }
 
                             passed++;
                             break;
@@ -147,11 +147,11 @@ namespace testpp::internal {
                                 std::cout << std::endl;
                             }
 
-                            if (!result.execution_results.empty()) {
-                                for (size_t j = 0; j < result.execution_results.size(); j++) {
-                                    renderExecutionResult(result.execution_results[j], stdoutSize, stderrSize);
-                                }
-                            }
+                            // if (!result.execution_results.empty()) {
+                            //     for (size_t j = 0; j < result.execution_results.size(); j++) {
+                            //         renderExecutionResult(result.execution_results[j], stdoutSize, stderrSize);
+                            //     }
+                            // }
 
                             failed++;
                             break;

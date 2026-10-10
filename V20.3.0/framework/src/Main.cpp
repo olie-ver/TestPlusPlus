@@ -84,7 +84,7 @@ int main(int argc, char** argv) {
             && flag.find('=') != std::string::npos)
         {
             if (flag.find("_ms=") != std::string::npos) {
-                unit = internal::Core::TimeUnit::Milliseconds;
+                unit = testpp::internal::Core::TimeUnit::Milliseconds;
             }
 
             std::string arg = flag.substr(flag.find('=') + 1);
@@ -167,7 +167,7 @@ int main(int argc, char** argv) {
             stdoutSize = 1024;
             stderrSize = 1024;
         } else if (flag == "--stream") {
-            internal::Renderer::shouldStream = true;
+            testpp::internal::Renderer::shouldStream = true;
         } else {
             renderUsage(argv[i]);
             return EXIT_FAILURE;
