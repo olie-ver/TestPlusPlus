@@ -1,4 +1,5 @@
-#include <testpp/internal/Core.hpp>
+#include <testpp/internal/core.hpp>
+
 #include <functional>
 #include <chrono>
 #include <thread>

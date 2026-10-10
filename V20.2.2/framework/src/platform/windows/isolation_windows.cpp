@@ -1,5 +1,5 @@
-#include <testpp/internal/Runner.hpp>
-#include <testpp/internal/Implementation/isolation_types.hpp>
+#include <testpp/internal/runner.hpp>
+#include <testpp/internal/implementation/isolation_types.hpp>
 
 #include "isolation_windows.hpp"
 

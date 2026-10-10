@@ -3,10 +3,10 @@
 #ifndef E_FLT_H
 #define E_FLT_H
 
-#include "../PCH/impl_pch.hpp"
+#include "../pch/impl_pch.hpp"
 
-#include "../Fail.hpp"
-#include "../Concepts.hpp"
+#include "../fail.hpp"
+#include "../concepts.hpp"
 
 #define EXPECT_NEAR_3_ARGS(first, second, abs_tol) \
     internal::Expects::absolutelyEqual((first), (second), (abs_tol), __FILE__, __LINE__)

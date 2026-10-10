@@ -3,8 +3,8 @@
 #ifndef META_H
 #define META_H
 
-#include "../Core.hpp"
-#include "../Runner.hpp"
+#include "../core.hpp"
+#include "../runner.hpp"
 #include <functional>
 #include <optional>
 #include <string>

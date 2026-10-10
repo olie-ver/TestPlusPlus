@@ -3,7 +3,8 @@
 #ifndef ISO_UNIX_H
 #define ISO_UNIX_H
 
-#include <testpp/internal/Core.hpp>
+#include <testpp/internal/core.hpp>
+
 #include <functional>
 #include <unistd.h>
 #include <sys/wait.h>

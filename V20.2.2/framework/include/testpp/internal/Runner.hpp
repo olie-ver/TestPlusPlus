@@ -3,7 +3,8 @@
 #ifndef RUNNER_H
 #define RUNNER_H
 
-#include "Core.hpp"
+#include "core.hpp"
+
 #include <deque>
 #include <map>
 #include <string>

@@ -3,10 +3,10 @@
 #ifndef E_ITER_H
 #define E_ITER_H
 
-#include "../PCH/impl_pch.hpp"
+#include "../pch/impl_pch.hpp"
 
-#include "../Fail.hpp"
-#include "../Concepts.hpp"
+#include "../fail.hpp"
+#include "../concepts.hpp"
 
 #define EXPECT_ORDERED_EQ(first, second) \
     internal::Expects::expectOrderedEquals((first), (second), __FILE__, __LINE__)

@@ -3,7 +3,7 @@
 #ifndef PRED_H
 #define PRED_H
 
-#include "../Core.hpp"
+#include "../core.hpp"
 #include <optional>
 #include <ranges>
 

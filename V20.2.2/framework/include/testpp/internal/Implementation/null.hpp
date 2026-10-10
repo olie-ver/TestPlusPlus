@@ -3,8 +3,8 @@
 #ifndef NULL_H
 #define NULL_H
 
-#include "../Core.hpp"
-#include "../Concepts.hpp"
+#include "../core.hpp"
+#include "../concepts.hpp"
 #include <optional>
 #include <string>
 

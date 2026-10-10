@@ -1,5 +1,5 @@
-#include <testpp/internal/Implementation/isolation.hpp>
-#include <testpp/internal/Implementation/isolation_types.hpp>
+#include <testpp/internal/implementation/isolation.hpp>
+#include <testpp/internal/implementation/isolation_types.hpp>
 #include "isolation_unix.hpp"
 
 #include <array>

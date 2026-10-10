@@ -3,7 +3,7 @@
 #ifndef STR_H
 #define STR_H
 
-#include "../Core.hpp"
+#include "../core.hpp"
 #include <optional>
 #include <string>
 #include <string_view>

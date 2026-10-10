@@ -1,8 +1,8 @@
-#include <testpp/internal/PCH/pch.hpp>
+#include <testpp/internal/pch/pch.hpp>
 
-#include <testpp/internal/Renderer.hpp>
-#include <testpp/internal/Escape.hpp>
-#include <testpp/internal/Runner.hpp>
+#include <testpp/internal/renderer.hpp>
+#include <testpp/internal/escape.hpp>
+#include <testpp/internal/runner.hpp>
 #include <fstream>
 
 /* Example xml

@@ -3,13 +3,13 @@
 #ifndef GENERIC_H
 #define GENERIC_H
 
-#include "../../Core.hpp"
-#include "../../Concepts.hpp"
-#include "../../Helpers.hpp"
+#include "../../core.hpp"
+#include "../../concepts.hpp"
+#include "../../helpers.hpp"
 #include "../isolation_types.hpp"
 
 #ifdef _WIN32
-    #include "../../Runner.hpp"
+    #include "../../runner.hpp"
 #endif
 
 namespace internal {

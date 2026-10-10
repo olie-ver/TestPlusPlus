@@ -3,10 +3,10 @@
 #ifndef E_ISO_H
 #define E_ISO_H
 
-#include "../Core.hpp"
-#include "../Fail.hpp"
-#include "../Helpers.hpp"
-#include "../Implementation/isolation.hpp"
+#include "../core.hpp"
+#include "../fail.hpp"
+#include "../helpers.hpp"
+#include "../implementation/isolation.hpp"
 
 #include <algorithm>
 

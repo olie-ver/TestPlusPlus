@@ -1,6 +1,6 @@
-#include <testpp/internal/PCH/pch.hpp>
+#include <testpp/internal/pch/pch.hpp>
 
-#include <testpp/internal/Runner.hpp>
+#include <testpp/internal/runner.hpp>
 #include <atomic>
 #include <chrono>
 #include <deque>

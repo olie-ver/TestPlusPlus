@@ -3,9 +3,9 @@
 #ifndef FLT_EQ_H
 #define FLT_EQ_H
 
-#include "../../Core.hpp"
-#include "../../Concepts.hpp"
-#include "../../Helpers.hpp"
+#include "../../core.hpp"
+#include "../../concepts.hpp"
+#include "../../helpers.hpp"
 #include <cmath>
 #include <optional>
 #include <string>

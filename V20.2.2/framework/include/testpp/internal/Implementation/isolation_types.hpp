@@ -3,10 +3,10 @@
 #ifndef ISO_TYPE_H
 #define ISO_TYPE_H
 
-#include "../Core.hpp"
+#include "../core.hpp"
 
 #ifdef _WIN32
-    #include "../Runner.hpp"
+    #include "../runner.hpp"
 #endif
 
 namespace internal {

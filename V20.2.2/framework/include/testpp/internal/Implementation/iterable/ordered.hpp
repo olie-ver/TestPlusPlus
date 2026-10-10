@@ -3,8 +3,9 @@
 #ifndef ITER_ORDER_H
 #define ITER_ORDER_H
 
-#include "../../Core.hpp"
-#include "../../Concepts.hpp"
+#include "../../core.hpp"
+#include "../../concepts.hpp"
+
 #include <algorithm>
 #include <optional>
 #include <ranges>

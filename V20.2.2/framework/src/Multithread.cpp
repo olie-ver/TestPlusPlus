@@ -1,7 +1,8 @@
-#include <testpp/internal/PCH/pch.hpp>
+#include <testpp/internal/pch/pch.hpp>
 
-#include <testpp/internal/Runner.hpp>
-#include <testpp/internal/Renderer.hpp>
+#include <testpp/internal/runner.hpp>
+#include <testpp/internal/renderer.hpp>
+
 #include <atomic>
 #include <chrono>
 #include <iostream>

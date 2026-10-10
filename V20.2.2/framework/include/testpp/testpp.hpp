@@ -3,8 +3,8 @@
 #ifndef TESTS_H
 #define TESTS_H
 
-#include "internal/Assert.hpp"
-#include "internal/Expect.hpp"
+#include "internal/assert.hpp"
+#include "internal/expect.hpp"
 
 #define NOTRUN internal::Core::ExecutionStatus::NotRun
 #define COMPLETED internal::Core::ExecutionStatus::Completed

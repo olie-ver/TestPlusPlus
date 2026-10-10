@@ -3,7 +3,7 @@
 #ifndef THROWS_H
 #define THROWS_H
 
-#include "../Core.hpp"
+#include "../core.hpp"
 #include <optional>
 #include <string>
 

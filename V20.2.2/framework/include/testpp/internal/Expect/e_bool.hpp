@@ -3,9 +3,9 @@
 #ifndef E_BOOL_H
 #define E_BOOL_H
 
-#include "../PCH/impl_pch.hpp"
+#include "../pch/impl_pch.hpp"
 
-#include "../Fail.hpp"
+#include "../fail.hpp"
 
 #define EXPECT_TRUE(cond) internal::Expects::expectTrue((cond), #cond, __FILE__, __LINE__)
 #define EXPECT_FALSE(cond) internal::Expects::expectFalse((cond), #cond, __FILE__, __LINE__)

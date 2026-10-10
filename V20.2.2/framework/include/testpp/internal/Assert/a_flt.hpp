@@ -3,9 +3,9 @@
 #ifndef A_FLT_H
 #define A_FLT_H
 
-#include "../PCH/impl_pch.hpp"
+#include "../pch/impl_pch.hpp"
 
-#include "../Concepts.hpp"
+#include "../concepts.hpp"
 
 #define ASSERT_NEAR_3_ARGS(first, second, abs_tol) \
     internal::Assert::absolutelyEqual((first), (second), (abs_tol), __FILE__, __LINE__)

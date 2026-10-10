@@ -3,7 +3,7 @@
 #ifndef BOOL_H
 #define BOOL_H
 
-#include "../Core.hpp"
+#include "../core.hpp"
 #include <optional>
 #include <string>
 

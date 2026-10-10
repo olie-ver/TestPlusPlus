@@ -3,7 +3,7 @@
 #ifndef ISO_H
 #define ISO_H
 
-#include "../Core.hpp"
+#include "../core.hpp"
 #include "isolation_types.hpp"
 
 #include <optional>

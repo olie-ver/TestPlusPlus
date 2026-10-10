@@ -3,7 +3,7 @@
 #ifndef RENDERER_H
 #define RENDERER_H
 
-#include "Core.hpp"
+#include "core.hpp"
 #include <string_view>
 
 /// @brief An internal namespace. Using anything from within is not advised

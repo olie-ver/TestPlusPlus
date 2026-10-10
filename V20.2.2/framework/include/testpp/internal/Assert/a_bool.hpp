@@ -3,9 +3,9 @@
 #ifndef A_BOOL_H
 #define A_BOOL_H
 
-#include "../PCH/impl_pch.hpp"
+#include "../pch/impl_pch.hpp"
 
-#include "../Fail.hpp"
+#include "../fail.hpp"
 
 #define ASSERT_TRUE(cond) internal::Assert::assertTrue((cond), #cond, __FILE__, __LINE__)
 #define ASSERT_FALSE(cond) internal::Assert::assertFalse((cond), #cond, __FILE__, __LINE__)

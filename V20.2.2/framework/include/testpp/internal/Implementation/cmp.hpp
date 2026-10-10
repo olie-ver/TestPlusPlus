@@ -3,9 +3,9 @@
 #ifndef CMP_H
 #define CMP_H
 
-#include "../Core.hpp"
-#include "../Concepts.hpp"
-#include "../Helpers.hpp"
+#include "../core.hpp"
+#include "../concepts.hpp"
+#include "../helpers.hpp"
 #include <optional>
 #include <string>
 

@@ -3,8 +3,8 @@
 #ifndef ITER_H
 #define ITER_H
 
-#include "../Core.hpp"
-#include "../Concepts.hpp"
+#include "../core.hpp"
+#include "../concepts.hpp"
 #include <optional>
 
 namespace internal {

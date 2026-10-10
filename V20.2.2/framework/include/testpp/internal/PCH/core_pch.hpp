@@ -3,12 +3,12 @@
 #ifndef CORE_PCH_H
 #define CORE_PCH_H
 
-#include "../Core.hpp"
-#include "../Concepts.hpp"
-#include "../Escape.hpp"
-#include "../Fail.hpp"
-#include "../Helpers.hpp"
-#include "../Renderer.hpp"
-#include "../Runner.hpp"
+#include "../core.hpp"
+#include "../concepts.hpp"
+#include "../escape.hpp"
+#include "../fail.hpp"
+#include "../helpers.hpp"
+#include "../renderer.hpp"
+#include "../runner.hpp"
 
 #endif

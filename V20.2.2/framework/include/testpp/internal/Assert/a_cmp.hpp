@@ -3,10 +3,10 @@
 #ifndef A_CMP_H
 #define A_CMP_H
 
-#include "../PCH/impl_pch.hpp"
+#include "../pch/impl_pch.hpp"
 
-#include "../Fail.hpp"
-#include "../Concepts.hpp"
+#include "../fail.hpp"
+#include "../concepts.hpp"
 
 #define ASSERT_EQ(a, b) internal::Assert::assertEquals((a), (b), __FILE__, __LINE__)
 #define ASSERT_NE(a, b) internal::Assert::assertNotEquals((a), (b), __FILE__, __LINE__)

@@ -3,9 +3,9 @@
 #ifndef E_PRED_H
 #define E_PRED_H
 
-#include "../PCH/impl_pch.hpp"
+#include "../pch/impl_pch.hpp"
 
-#include "../Fail.hpp"
+#include "../fail.hpp"
 
 #define EXPECT_ALL(container, condition) \
     internal::Expects::expectAllOf((container), (condition), __FILE__, __LINE__)

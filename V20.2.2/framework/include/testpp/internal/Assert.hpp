@@ -3,16 +3,16 @@
 #ifndef ASSERT_H
 #define ASSERT_H
 
-#include "Assert/a_bool.hpp"
-#include "Assert/a_cmp.hpp"
-#include "Assert/a_flt.hpp"
-#include "Assert/a_isolation.hpp"
-#include "Assert/a_iterable.hpp"
-#include "Assert/a_meta.hpp"
-#include "Assert/a_null.hpp"
-#include "Assert/a_predicate.hpp"
-#include "Assert/a_set.hpp"
-#include "Assert/a_string.hpp"
-#include "Assert/a_throws.hpp"
+#include "assert/a_bool.hpp"
+#include "assert/a_cmp.hpp"
+#include "assert/a_flt.hpp"
+#include "assert/a_isolation.hpp"
+#include "assert/a_iterable.hpp"
+#include "assert/a_meta.hpp"
+#include "assert/a_null.hpp"
+#include "assert/a_predicate.hpp"
+#include "assert/a_set.hpp"
+#include "assert/a_string.hpp"
+#include "assert/a_throws.hpp"
 
 #endif

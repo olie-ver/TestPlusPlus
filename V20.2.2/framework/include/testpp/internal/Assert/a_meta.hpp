@@ -3,9 +3,9 @@
 #ifndef A_META_H
 #define A_META_H
 
-#include "../PCH/impl_pch.hpp"
+#include "../pch/impl_pch.hpp"
 
-#include "../Fail.hpp"
+#include "../fail.hpp"
 
 #define ASSERT_PASSES(test) internal::Assert::assertPasses([&](){(test);}, #test, __FILE__, __LINE__)
 #define ASSERT_FAILS(test) internal::Assert::assertFails([&](){(test);}, #test, __FILE__, __LINE__)

@@ -3,8 +3,8 @@
 #ifndef FAIL_H
 #define FAIL_H
 
-#include "Core.hpp"
-#include "Runner.hpp"
+#include "core.hpp"
+#include "runner.hpp"
 
 namespace internal {
     namespace Fail {
