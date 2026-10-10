@@ -3,10 +3,10 @@
 #ifndef E_CMP_H
 #define E_CMP_H
 
-#include "internal/pch/impl_pch.hpp"
+#include "../internal/pch/impl_pch.hpp"
 
-#include "internal/fail.hpp"
-#include "internal/concepts/is_type.hpp"
+#include "../internal/fail.hpp"
+#include "../internal/concepts/is_type.hpp"
 
 #define EXPECT_EQ(a, b) testpp::internal::Expects::expectEquals((a), (b), __FILE__, __LINE__)
 #define EXPECT_NE(a, b) testpp::internal::Expects::expectNotEquals((a), (b), __FILE__, __LINE__)

@@ -5,9 +5,10 @@
 
 #include "../core/core.hpp"
 #include "../runner.hpp"
+
 #include <functional>
 #include <optional>
-#include <string>
+#include <sstream>
 
 namespace testpp::internal {
     namespace impl_meta {
@@ -31,11 +32,13 @@ namespace testpp::internal {
                 Core::FailureInfo prev = current.failures.back();
                 //Delete it
                 current.failures.pop_back();
+
+                std::stringstream stream;
+                stream << "Expected test: " << testName << " to pass, but it failed with message:\n" << prev.message;
+
                 //Return a new one
                 return Core::FailureInfo(
-                    std::string("Expected test: ") + testName 
-                    + " to pass, but it failed with message:\n"
-                    + prev.message,
+                    stream.str(),
                     file,
                     line
                 );
@@ -101,11 +104,12 @@ namespace testpp::internal {
                 current.failures.pop_back();
 
                 if (msg != last.message) { //failed with wrong message
+                    std::stringstream stream;
+                    stream  << "Expected test to fail with message: \n\t\" " << msg << "\"\n    but it failed with message: \n\t\"" 
+                            << last.message << '\"';
+                            
                     return Core::FailureInfo(
-                        "Expected test to fail with message: \n\t\"" 
-                        + msg
-                        + "\"\n    but it failed with message: \n\t\""
-                        + last.message + "\"",
+                        stream.str(),
                         file,
                         line
                     );

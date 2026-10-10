@@ -3,7 +3,7 @@
 #ifndef ITER_ATTR_H
 #define ITER_ATTR_H
 
-#include "../../core.hpp"
+#include "../../core/core.hpp"
 #include "../../concepts/has_quality.hpp"
 
 #include <algorithm>

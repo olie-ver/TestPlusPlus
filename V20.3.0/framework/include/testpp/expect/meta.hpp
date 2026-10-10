@@ -3,9 +3,9 @@
 #ifndef E_META_H
 #define E_META_H
 
-#include "internal/pch/impl_pch.hpp"
+#include "../internal/pch/impl_pch.hpp"
 
-#include "internal/fail.hpp"
+#include "../internal/fail.hpp"
 
 #define EXPECT_PASSES(test) testpp::internal::Expects::expectPasses([&](){(test);}, #test, __FILE__, __LINE__)
 #define EXPECT_FAILS(test) testpp::internal::Expects::expectFails([&](){(test);}, #test, __FILE__, __LINE__)

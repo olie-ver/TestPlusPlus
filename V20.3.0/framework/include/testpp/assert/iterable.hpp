@@ -3,10 +3,10 @@
 #ifndef A_ITER_H
 #define A_ITER_H
 
-#include "internal/pch/impl_pch.hpp"
+#include "../internal/pch/impl_pch.hpp"
 
-#include "internal/fail.hpp"
-#include "internal/concepts/has_quality.hpp"
+#include "../internal/fail.hpp"
+#include "../internal/concepts/has_quality.hpp"
 
 #define ASSERT_ORDERED_EQ(first, second) \
     testpp::internal::Assert::assertOrderedEquals((first), (second), __FILE__, __LINE__)

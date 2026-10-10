@@ -3,9 +3,9 @@
 #ifndef A_SET_H
 #define A_SET_H
 
-#include "internal/pch/impl_pch.hpp"
+#include "../internal/pch/impl_pch.hpp"
 
-#include "internal/fail.hpp"
+#include "../internal/fail.hpp"
 
 #define ASSERT_SET_EQ(first, second) testpp::internal::Assert::assertSameSet((first), (second), __FILE__, __LINE__)
 #define ASSERT_SET_NE(first, second) testpp::internal::Assert::assertNotSameSet((first), (second), __FILE__, __LINE__)

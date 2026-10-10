@@ -126,7 +126,7 @@ namespace testpp::internal {
 
         void renderTest(
             std::fstream& stream,
-            const std::string& suiteName,
+            const std::string_view& suiteName,
             const Core::TestResult& test,
             bool includeFailures
         ) {
@@ -209,7 +209,7 @@ namespace testpp::internal {
             renderJson(
                 stream,
                 testRun,
-                [](const std::string& suite, const TestList&) {
+                [](const std::string_view& suite, const TestList&) {
                     return !Runner::shouldSkip(suite);
                 },
                 [](const Core::TestResult&) {
@@ -225,7 +225,7 @@ namespace testpp::internal {
             renderJson(
                 stream,
                 testRun,
-                [](const std::string& suite, const TestList&) {
+                [](const std::string_view& suite, const TestList&) {
                     return !Runner::shouldSkip(suite);
                 },
                 [](const Core::TestResult&) {
@@ -241,7 +241,7 @@ namespace testpp::internal {
             renderJson(
                 stream,
                 testRun,
-                [](const std::string& suite, const TestList& tests) {
+                [](const std::string_view& suite, const TestList& tests) {
                     return !Runner::shouldSkip(suite)
                         && hasStatus(tests, Core::TestStatus::Passed);
                 },
@@ -258,7 +258,7 @@ namespace testpp::internal {
             renderJson(
                 stream,
                 testRun,
-                [](const std::string& suite, const TestList& tests) {
+                [](const std::string_view& suite, const TestList& tests) {
                     return !Runner::shouldSkip(suite)
                         && hasStatus(tests, Core::TestStatus::Failed);
                 },
@@ -275,7 +275,7 @@ namespace testpp::internal {
             renderJson(
                 stream,
                 testRun,
-                [](const std::string& suite, const TestList& tests) {
+                [](const std::string_view& suite, const TestList& tests) {
                     return !Runner::shouldSkip(suite)
                         && hasStatus(tests, Core::TestStatus::Failed);
                 },

@@ -3,7 +3,7 @@
 #ifndef FLT_INF_H
 #define FLT_INF_H
 
-#include "../../core.hpp"
+#include "../../core/core.hpp"
 #include "../../concepts/is_type.hpp"
 #include "../../helpers.hpp"
 

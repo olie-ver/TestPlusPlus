@@ -5,7 +5,7 @@
 
 #include <array>
 #include <functional>
-#include <string>
+#include <string_view>
 #include <vector>
 #include <map>
 
@@ -18,7 +18,7 @@ namespace testpp::internal {
         };
 
         /// @brief A simple mapping from TestStatus => string representation
-        constinit std::array<std::string, 3> StatusStrings{ "Passed", "Failed", "Skipped" };
+        constinit inline std::array<std::string_view, 3> StatusStrings{ "Passed", "Failed", "Skipped" };
 
         /// @brief The types of time units for timeout
         enum class TimeUnit {
@@ -26,10 +26,15 @@ namespace testpp::internal {
             Milliseconds
         };
 
+        struct TestReference {
+            std::string_view suite_name;
+            std::string_view test_name;
+        };
+
         /// @brief A Test struct that contains information about a test
         struct Test {
-            std::string suite_name;
-            std::string test_name;
+            std::string_view suite_name;
+            std::string_view test_name;
             std::function<void()> test;
 
             bool operator==(const Test& other) const {
@@ -42,12 +47,12 @@ namespace testpp::internal {
         /// Contains: message, file, line, expression, expected, actual
         struct FailureInfo
         {
-            std::string message;
-            std::string file;
+            std::string_view message;
+            std::string_view file;
             uint32_t line;
-            std::string expression;
-            std::string expected;
-            std::string actual;
+            std::string_view expression;
+            std::string_view expected;
+            std::string_view actual;
         };
 
         // struct ExecutionResult
@@ -58,8 +63,8 @@ namespace testpp::internal {
         /// @brief The final struct for a test's execution results
         struct TestResult
         {
-            std::string suiteName;
-            std::string testName;
+            std::string_view suiteName;
+            std::string_view testName;
 
             TestStatus test_status;
             uint64_t execution_ms;
@@ -69,7 +74,7 @@ namespace testpp::internal {
 
         /// @brief A TestRun struct that contains information about the tests being run
         struct TestRun {
-            std::map<std::string, std::vector<TestResult>> results;
+            std::map<std::string_view, std::vector<TestResult>> results;
 
             int total = 0;
             long long totalMs = 0;
@@ -78,8 +83,8 @@ namespace testpp::internal {
         /// @brief Hashes a Test struct
         struct TestHash {
             size_t operator()(const Test& p) const {
-                size_t h1 = std::hash<std::string>{}(p.suite_name);
-                size_t h2 = std::hash<std::string>{}(p.test_name);
+                size_t h1 = std::hash<std::string_view>{}(p.suite_name);
+                size_t h2 = std::hash<std::string_view>{}(p.test_name);
                 return h1 ^ (h2 << 1);
             }
         };

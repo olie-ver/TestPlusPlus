@@ -3,8 +3,8 @@
 #ifndef A_BOOL_H
 #define A_BOOL_H
 
-#include "internal/pch/impl_pch.hpp"
-#include "internal/fail.hpp"
+#include "../internal/pch/impl_pch.hpp"
+#include "../internal/fail.hpp"
 
 #define ASSERT_TRUE(cond) testpp::internal::Assert::assertTrue((cond), #cond, __FILE__, __LINE__)
 #define ASSERT_FALSE(cond) testpp::internal::Assert::assertFalse((cond), #cond, __FILE__, __LINE__)

@@ -3,10 +3,10 @@
 #ifndef E_THROWS_H
 #define E_THROWS_H
 
-#include "internal/pch/impl_pch.hpp"
+#include "../internal/pch/impl_pch.hpp"
 
-#include "internal/runner.hpp"
-#include "internal/helpers.hpp"
+#include "../internal/runner.hpp"
+#include "../internal/helpers.hpp"
 
 #define EXPECT_THROWS_1_ARGS(func) testpp::internal::Expects::expectThrows([&]() {(func);}, #func, __FILE__, __LINE__)
 #define EXPECT_THROWS_2_ARGS(func, ex) testpp::internal::Expects::expectThrows<ex>([&]() {(func);}, #func, __FILE__, __LINE__)

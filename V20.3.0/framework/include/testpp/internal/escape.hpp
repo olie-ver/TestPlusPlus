@@ -8,7 +8,7 @@
 namespace testpp::internal {
     namespace Renderer {
         namespace Helpers {
-            static inline constexpr std::string escapeJson(const std::string& input) {
+            static inline constexpr std::string escapeJson(const std::string_view input) {
                 std::string output;
                 output.reserve(input.size());
 
@@ -51,7 +51,7 @@ namespace testpp::internal {
                 return output;
             }
 
-            static inline constexpr std::string escapeXml(const std::string& input) {
+            static inline constexpr std::string escapeXml(const std::string_view input) {
                 std::string output;
                 output.reserve(input.size());
 

@@ -103,7 +103,7 @@ namespace testpp::internal {
             const Core::TestResult& test,
             bool includeFailures
         ) {
-            const std::string& status = Core::StatusStrings[(int)test.test_status];
+            const std::string_view status = Core::StatusStrings[(int)test.test_status];
 
             if (includeFailures && test.test_status == Core::TestStatus::Failed) {
 
@@ -185,7 +185,7 @@ namespace testpp::internal {
             renderXml(
                 stream,
                 testRun,
-                [](const std::string&, const TestList&, const SuiteStats&) {
+                [](const std::string_view&, const TestList&, const SuiteStats&) {
                     return true;
                 },
                 [](const Core::TestResult&) {
@@ -201,7 +201,7 @@ namespace testpp::internal {
             renderXml(
                 stream,
                 testRun,
-                [](const std::string&, const TestList&, const SuiteStats&) {
+                [](const std::string_view&, const TestList&, const SuiteStats&) {
                     return true;
                 },
                 [](const Core::TestResult&) {
@@ -217,7 +217,7 @@ namespace testpp::internal {
             renderXml(
                 stream,
                 testRun,
-                [](const std::string&, const TestList&, const SuiteStats& stats) {
+                [](const std::string_view&, const TestList&, const SuiteStats& stats) {
                     return stats.passed > 0;
                 },
                 [](const Core::TestResult& test) {
@@ -233,7 +233,7 @@ namespace testpp::internal {
             renderXml(
                 stream,
                 testRun,
-                [](const std::string&, const TestList&, const SuiteStats& stats) {
+                [](const std::string_view&, const TestList&, const SuiteStats& stats) {
                     return stats.failed > 0;
                 },
                 [](const Core::TestResult& test) {
@@ -249,7 +249,7 @@ namespace testpp::internal {
             renderXml(
                 stream,
                 testRun,
-                [](const std::string&, const TestList&, const SuiteStats& stats) {
+                [](const std::string_view&, const TestList&, const SuiteStats& stats) {
                     return stats.failed > 0;
                 },
                 [](const Core::TestResult& test) {

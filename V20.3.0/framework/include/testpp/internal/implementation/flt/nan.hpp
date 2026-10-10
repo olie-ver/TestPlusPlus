@@ -3,7 +3,7 @@
 #ifndef FLT_NAN_H
 #define FLT_NAN_H
 
-#include "../../core.hpp"
+#include "../../core/core.hpp"
 #include "../../concepts/is_type.hpp"
 #include "../../helpers.hpp"
 #include <cmath>

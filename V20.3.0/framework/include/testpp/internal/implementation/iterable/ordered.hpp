@@ -3,7 +3,7 @@
 #ifndef ITER_ORDER_H
 #define ITER_ORDER_H
 
-#include "../../core.hpp"
+#include "../../core/core.hpp"
 #include "../../concepts/has_quality.hpp"
 
 #include <algorithm>

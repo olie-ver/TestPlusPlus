@@ -3,10 +3,10 @@
 #ifndef A_NULL_H
 #define A_NULL_H
 
-#include "internal/pch/impl_pch.hpp"
+#include "../internal/pch/impl_pch.hpp"
 
-#include "internal/concepts/has_quality.hpp"
-#include "internal/fail.hpp"
+#include "../internal/concepts/has_quality.hpp"
+#include "../internal/fail.hpp"
 
 #define ASSERT_NULL(val) testpp::internal::Assert::assertNull((val), __FILE__, __LINE__)
 #define ASSERT_NOT_NULL(val) testpp::internal::Assert::assertnotNull((val), __FILE__, __LINE__)

@@ -3,7 +3,7 @@
 #ifndef FLT_EQ_H
 #define FLT_EQ_H
 
-#include "../../core.hpp"
+#include "../../core/core.hpp"
 #include "../../concepts/is_type.hpp"
 #include "../../helpers.hpp"
 #include <cmath>

@@ -1,6 +1,6 @@
 #include <testpp/internal/pch/pch.hpp>
 
-#include <testpp/internal/core.hpp>
+#include <testpp/internal/core/core.hpp>
 #include <testpp/internal/renderer.hpp>
 #include <testpp/internal/runner.hpp>
 #include <testpp/internal/main.hpp>
@@ -31,8 +31,8 @@ int main(int argc, char** argv) {
 
     testpp::internal::Renderer::Verbosity verbFlag = testpp::internal::Renderer::Verbosity::Default;
     testpp::internal::Core::TimeUnit unit = testpp::internal::Core::TimeUnit::Seconds;
-    auto& skipSuites = testpp::internal::Runner::getSkipSuites();
-    auto& testOnlySuites = testpp::internal::Runner::getTestOnly();
+    auto& skipSuites = testpp::internal::Runner::skipSuites;
+    auto& testOnlySuites = testpp::internal::Runner::testOnly;
 
     std::string jsonFile = "";
     std::string jUnitFile = "";
@@ -174,7 +174,7 @@ int main(int argc, char** argv) {
         }
     }
 
-    testpp::internal::Core::TestRun& testRun = testpp::internal::Runner::getTestRun();
+    testpp::internal::Core::TestRun& testRun = testpp::internal::Runner::testRun;
 
     testpp::internal::Runner::runAllRegisteredTests(testRun, num_threads, timeout, unit);
 

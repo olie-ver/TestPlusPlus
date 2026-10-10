@@ -51,6 +51,11 @@ set_target_properties(testpp PROPERTIES
     UNITY_BUILD ON
 )
 
+target_include_directories(testpp
+    PRIVATE
+        "${CMAKE_CURRENT_SOURCE_DIR}/include"
+)
+
 target_precompile_headers(testpp PRIVATE
     "${CMAKE_CURRENT_SOURCE_DIR}/include/testpp/internal/pch/impl_pch.hpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/testpp/internal/pch/core_pch.hpp"
@@ -73,6 +78,7 @@ add_library(testpp_main STATIC
 )
 
 target_compile_features(testpp_main PUBLIC cxx_std_20)
+
 target_precompile_headers(
     testpp_main
     REUSE_FROM testpp

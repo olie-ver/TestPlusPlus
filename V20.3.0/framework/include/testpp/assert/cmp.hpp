@@ -3,9 +3,9 @@
 #ifndef A_CMP_H
 #define A_CMP_H
 
-#include "internal/pch/impl_pch.hpp"
-#include "internal/fail.hpp"
-#include "internal/concepts/operator.hpp"
+#include "../internal/pch/impl_pch.hpp"
+#include "../internal/fail.hpp"
+#include "../internal/concepts/operator.hpp"
 
 #define ASSERT_EQ(a, b) testpp::internal::Assert::assertEquals((a), (b), __FILE__, __LINE__)
 #define ASSERT_NE(a, b) testpp::internal::Assert::assertNotEquals((a), (b), __FILE__, __LINE__)

@@ -3,8 +3,8 @@
 #ifndef A_FLT_H
 #define A_FLT_H
 
-#include "internal/pch/impl_pch.hpp"
-#include "internal/concepts/is_type.hpp"
+#include "../internal/pch/impl_pch.hpp"
+#include "../internal/concepts/is_type.hpp"
 
 #define ASSERT_NEAR_3_ARGS(first, second, abs_tol) \
     testpp::internal::Assert::absolutelyEqual((first), (second), (abs_tol), __FILE__, __LINE__)

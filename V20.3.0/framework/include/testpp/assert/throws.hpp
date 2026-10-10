@@ -3,10 +3,10 @@
 #ifndef A_THROWS_H
 #define A_THROWS_H
 
-#include "internal/pch/impl_pch.hpp"
+#include "../internal/pch/impl_pch.hpp"
 
-#include "internal/runner.hpp"
-#include "internal/helpers.hpp"
+#include "../internal/runner.hpp"
+#include "../internal/helpers.hpp"
 
 #define ASSERT_THROWS_1_ARGS(func) testpp::internal::Assert::assertThrows([&]() {(func);}, #func, __FILE__, __LINE__)
 #define ASSERT_THROWS_2_ARGS(func, ex) testpp::internal::Assert::assertThrows<ex>([&]() {(func);}, #func, __FILE__, __LINE__)

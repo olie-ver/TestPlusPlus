@@ -3,9 +3,9 @@
 #ifndef E_NULL_H
 #define E_NULL_H
 
-#include "internal/pch/impl_pch.hpp"
+#include "../internal/pch/impl_pch.hpp"
 
-#include "internal/concepts/has_quality.hpp"
+#include "../internal/concepts/has_quality.hpp"
 
 #define EXPECT_NULL(val) testpp::internal::Expects::expectNull((val), __FILE__, __LINE__)
 #define EXPECT_NOT_NULL(val) testpp::internal::Expects::expectNotNull((val), __FILE__, __LINE__)

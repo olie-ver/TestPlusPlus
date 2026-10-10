@@ -6,7 +6,7 @@
 #include "expect/bool.hpp"
 #include "expect/cmp.hpp"
 #include "expect/flt.hpp"
-#include "expect/isolation.hpp"
+// #include "expect/isolation.hpp"
 #include "expect/iterable.hpp"
 #include "expect/meta.hpp"
 #include "expect/null.hpp"

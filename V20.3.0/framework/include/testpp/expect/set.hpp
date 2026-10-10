@@ -3,9 +3,9 @@
 #ifndef E_SET_H
 #define E_SET_H
 
-#include "internal/pch/impl_pch.hpp"
+#include "../internal/pch/impl_pch.hpp"
 
-#include "internal/fail.hpp"
+#include "../internal/fail.hpp"
 
 #define EXPECT_SET_EQ(first, second) testpp::internal::Expects::expectSameSet((first), (second), __FILE__, __LINE__)
 #define EXPECT_SET_NE(first, second) testpp::internal::Expects::expectNotSameSet((first), (second), __FILE__, __LINE__)

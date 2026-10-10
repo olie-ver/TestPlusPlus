@@ -6,23 +6,24 @@
 #include <atomic>
 #include <chrono>
 #include <iostream>
+#include <sstream>
 
 namespace testpp::internal {
     namespace Runner {
         std::atomic<size_t> next_index{0};
 
         void threadWorker(std::vector<Core::TestResult>& results, Core::Test& running) {
-            std::vector<Core::Test>& REGISTRY = getRegistry();
-            size_t size = REGISTRY.size();
+            // std::vector<Core::Test>& REGISTRY = getRegistry();
+            size_t size = registry.size();
     
             while (true) {
                 size_t index = next_index.fetch_add(1);
 
-                if (index >= REGISTRY.size()) {
+                if (index >= registry.size()) {
                     break;
                 }
 
-                Core::Test& test = REGISTRY[index];
+                Core::Test& test = registry[index];
 
                 //if the test's suite_name is marked to be skipped, skip it
                 if (shouldSkip(test.suite_name)) {
@@ -36,38 +37,32 @@ namespace testpp::internal {
                     results[index] = skip;
 
                     if (Renderer::shouldStream) {
-                        Renderer::streamMsg(
-                            '[' + std::to_string(index + 1) + '/' +
-                            std::to_string(size) +
-                            "][SKIPPED]: " +
-                            test.suite_name + " -> " +
-                            test.test_name + '\n'
-                        );
+                        std::stringstream stream;
+                        stream  << '[' << std::to_string(index + 1) << '/' << std::to_string(size) << "][SKIPPED]: "
+                                << test.suite_name << " -> " << test.test_name << '\n';
+
+                        Renderer::streamMsg(stream.str());
                     }
                 } else {
                     running = test;
 
                     if (Renderer::shouldStream) {
-                        Renderer::streamMsg(
-                            '[' + std::to_string(index + 1) + '/' +
-                            std::to_string(size) +
-                            "][STARTED]: " +
-                            test.suite_name + " -> " +
-                            test.test_name + '\n'
-                        );
+                        std::stringstream stream;
+                        stream  << '[' << std::to_string(index + 1) << '/' << std::to_string(size) << "][STARTED]: "
+                                << test.suite_name << " -> " << test.test_name << '\n';
+
+                        Renderer::streamMsg(stream.str());
                     }
 
                     //only allow non-skipped tests to be run
                     results[index] = runTest(test);
 
                     if (Renderer::shouldStream) {
-                        Renderer::streamMsg(
-                            '[' + std::to_string(index + 1) + '/' +
-                            std::to_string(size) +
-                            "][ENDED]: " +
-                            test.suite_name + " -> " +
-                            test.test_name + '\n'
-                        );
+                        std::stringstream stream;
+                        stream  << '[' << std::to_string(index + 1) << '/' << std::to_string(size) << "][ENDED]: "
+                                << test.suite_name << " -> " << test.test_name << '\n';
+
+                        Renderer::streamMsg(stream.str());
                     }
                 }
             }

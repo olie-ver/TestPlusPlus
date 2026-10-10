@@ -13,6 +13,7 @@ int getNumThreads(const std::string &arg)
 
     //find out the max number of threads this hardware can support
     int max_threads = std::max(std::thread::hardware_concurrency(), 1u);
+    
     //clamp the number of threads in the argument between 1 and the max
     return std::max(std::min(std::stoi(arg, &pos), max_threads), 1);
 }
@@ -35,7 +36,7 @@ Testpp::Renderer::Verbosity getVerbFlag(const std::string &arg)
     return Testpp::Renderer::Verbosity::Default;
 }
 
-void getSkip(const std::string& arg, std::unordered_set<std::string>& suites)
+void getSkip(const std::string& arg, std::unordered_set<std::string_view>& suites)
 {
     std::string suite;
     std::stringstream args(arg);
@@ -46,7 +47,7 @@ void getSkip(const std::string& arg, std::unordered_set<std::string>& suites)
     }
 }
 
-void getTestOnly(const std::string &arg, std::unordered_set<std::string>& suites)
+void getTestOnly(const std::string &arg, std::unordered_set<std::string_view>& suites)
 {
     std::string suite;
     std::stringstream args(arg);
