@@ -7,7 +7,7 @@
 
 namespace Testpp = testpp::internal;
 
-int getNumThreads(const std::string &arg)
+int getNumThreads(const std::string& arg)
 {
     size_t pos{};
 
@@ -18,7 +18,7 @@ int getNumThreads(const std::string &arg)
     return std::max(std::min(std::stoi(arg, &pos), max_threads), 1);
 }
 
-Testpp::Renderer::Verbosity getVerbFlag(const std::string &arg)
+Testpp::Renderer::Verbosity getVerbFlag(const std::string& arg)
 {
     if (arg == "minimum") {
         return Testpp::Renderer::Verbosity::Minimum;
@@ -47,7 +47,7 @@ void getSkip(const std::string& arg, std::unordered_set<std::string_view>& suite
     }
 }
 
-void getTestOnly(const std::string &arg, std::unordered_set<std::string_view>& suites)
+void getTestOnly(const std::string& arg, std::unordered_set<std::string_view>& suites)
 {
     std::string suite;
     std::stringstream args(arg);

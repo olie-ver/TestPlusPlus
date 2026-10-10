@@ -293,9 +293,9 @@ int main(int argc, char** argv) {
         testppCLI::Config config = testppCLI::Config::Deserialize(last_exec_dir / "flags.conf");
         std::stringstream stream;
         #if defined(_WIN32) || defined(_WIN64)
-            stream << '\"' << (last_exec_dir / "bin" / "Release" / "testpp_generated.exe") << "\" " << argStr << config; //Needs the user's arguments in front of their config
+            stream << '\"' << (last_exec_dir / "bin" / "Release" / "testpp_generated.exe") << "\" " << config << argStr; //Needs the user's arguments in front of their config
         #else 
-            stream << '\"' << (last_exec_dir / "bin" / "testpp_generated") << "\" " << argStr << config; //Needs the user's arguments in front of their config
+            stream << '\"' << (last_exec_dir / "bin" / "testpp_generated") << "\" " << config << argStr; //Needs the user's arguments after their config
         #endif
 
         std::cout << "Run command: " << stream.str() << '\n';

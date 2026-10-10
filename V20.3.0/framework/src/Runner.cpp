@@ -11,28 +11,6 @@
 
 namespace testpp::internal {
     namespace Runner {
-        // thread_local std::deque<Core::TestResult> TEST_STACK;
-
-        // Core::TestRun& getTestRun() {
-        //     static Core::TestRun instance;
-        //     return instance;
-        // }
-
-        // std::vector<Core::Test>& getRegistry() {
-        //     static std::vector<Core::Test> instance;
-        //     return instance;
-        // }
-
-        // std::unordered_set<Core::Test, Core::TestHash>& getAllTests() {
-        //     static std::unordered_set<Core::Test, Core::TestHash> instance;
-        //     return instance;
-        // }
-
-        // std::vector<std::vector<Core::TestReference>>& getAllSequentialGroups() {
-        //     static std::vector<std::vector<Core::TestReference>> instance;
-        //     return instance;
-        // }
-
         // #ifdef _WIN32
 
         // DeathContext& getDeathContext()
@@ -59,35 +37,12 @@ namespace testpp::internal {
 
         // #endif
 
-        // std::unordered_set<std::string>& getSkipSuites() {
-        //     static std::unordered_set<std::string> instance;
-        //     return instance;
-        // }
-
-        // std::unordered_set<std::string>& getTestOnly()
-        // {
-        //     static std::unordered_set<std::string> instance;
-        //     return instance;
-        // }
-
         constexpr bool shouldSkip(const std::string_view& suite_name) {
-            // auto& skip = getSkipSuites();
-            // auto& specific = getTestOnly();
-            // return skip.contains(suite_name) || (specific.size() != 0 && !specific.contains(suite_name));
-
             return skipSuites.contains(suite_name) || (testOnly.size() != 0 && !testOnly.contains(suite_name));
         }
 
         bool registerTest(Core::Test test)
         {
-            // auto [it, inserted] = ALL_TESTS.insert(test);
-            // if (!inserted) {
-            //     std::cerr << "Test under suite: " << test.suite_name
-            //             << " has duplicate name: " << test.test_name << std::endl;
-            //     std::abort();
-            // }
-
-            // std::vector<Core::Test>& REGISTRY = getRegistry();
 
             // // #ifdef _WIN32
             // // test.index = REGISTRY.size();
