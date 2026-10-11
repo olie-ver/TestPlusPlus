@@ -17,6 +17,13 @@ TEST(Prototype, Third) {
     a++;
 }
 
+
+int main() {
+    for (int i = 0; i < 10; i++) {
+
+    }
+}
+
 S_TEST(
     SEQ(Prototype, Third),
     SEQ(Prototype, First),

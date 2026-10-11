@@ -4,6 +4,7 @@
 #define RUNNER_H
 
 #include "core/core.hpp"
+#include "core/failure.hpp"
 
 #include <deque>
 #include <map>
