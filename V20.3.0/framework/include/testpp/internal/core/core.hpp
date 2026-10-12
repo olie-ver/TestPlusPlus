@@ -97,6 +97,9 @@ namespace testpp::internal {
 
         //An assertion failure struct
         struct AssertionFailure : public std::exception {
+            bool stop;
+            FailureInfo info;
+
             const char* what() const noexcept override {
                 return "Assertion failed";
             }

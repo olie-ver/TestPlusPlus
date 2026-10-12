@@ -4,39 +4,34 @@
 #define MULTIPLE_H
 
 #include "../core/core.hpp"
-
-#define ASSERT_FOR(begin, end, update, body) testpp::internal::impl_multiple::runAssertFor((begin), (end), (update), (body))
+#include "../runner.hpp"
 
 namespace testpp::internal {
     namespace impl_multiple {
-        
-        template <typename Begin, typename End, typename Update, typename Body>
-        void runAssertFor(Begin begin, End end, Update update, Body body) {
-            FailureCollector collector;
-            FailureScope scope(collector);
+        std::deque<std::pair<Core::FailureInfo, size_t>> testFor(long long& idx, const long long& end, 
+            const std::function<void()>& update, const std::function<void()>& func)
+        {
+            Runner::NESTED_COLLECT = true;
+            std::deque<std::pair<Core::FailureInfo, size_t>> failures;
 
-            std::size_t iteration = 0;
-
-            for (auto i = begin; i != end; update(i)) {
-                collector.iteration = iteration++;
-
+            for (; idx != end; update()) {
+                size_t iteration = idx;
                 try {
-                    body(i);
-                } catch (const Core::AssertionFailure&) {
-                    break;
+                    func();
+                } catch (const Core::AssertionFailure& failure) {
+                    failures.push_back(std::pair<Core::FailureInfo, size_t>(failure.info, iteration));
+                    if (failure.stop) {
+                        break;
+                    }
                 }
             }
 
-            // Transfer collected failures to TEST_STACK here.
-            // If failures exist, propagate AssertionFailure after
-            // the collector has been finalized.
+            Runner::NESTED_COLLECT = false;
+
+            return failures;
         }
 
     }
 }
-
-// int main() {
-//     ASSERT_FOR(0, 5, ++, )
-// }
 
 #endif

@@ -9,6 +9,7 @@
 // #include "assert/isolation.hpp"
 #include "assert/iterable.hpp"
 #include "assert/meta.hpp"
+#include "assert/multiple.hpp"
 #include "assert/null.hpp"
 #include "assert/predicate.hpp"
 #include "assert/set.hpp"

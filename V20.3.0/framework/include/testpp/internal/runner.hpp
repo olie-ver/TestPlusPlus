@@ -48,6 +48,8 @@ namespace testpp::internal {
         /// @brief The result for the current test
         inline thread_local std::deque<Core::TestResult> TEST_STACK{};
 
+        inline thread_local bool NESTED_COLLECT = false;
+
         inline Core::TestRun testRun{};
 
         inline std::vector<Core::Test> registry{};
