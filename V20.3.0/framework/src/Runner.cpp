@@ -36,7 +36,7 @@ namespace testpp::internal {
 
         #endif
 
-        constexpr bool shouldSkip(const std::string_view& suite_name) {
+        bool shouldSkip(const std::string_view& suite_name) {
             return skipSuites.contains(suite_name) || (testOnly.size() != 0 && !testOnly.contains(suite_name));
         }
 

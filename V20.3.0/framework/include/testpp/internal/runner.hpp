@@ -4,6 +4,7 @@
 #define RUNNER_H
 
 #include "core/core.hpp"
+#include "core/isolated.hpp"
 
 #include <deque>
 #include <map>
@@ -73,7 +74,7 @@ namespace testpp::internal {
         /// @brief Checks if a suite should be skipped
         /// @param suite_name the suite name
         /// @return true if the suite should be skipped, false otherwise
-        constexpr bool shouldSkip(const std::string_view& suite_name);
+        bool shouldSkip(const std::string_view& suite_name);
 
         /// @brief Adds a test to the registry under a test suite
         /// @param suite_name The name of the test suite the test is a part of 

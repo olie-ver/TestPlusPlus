@@ -1,6 +1,7 @@
 #include <testpp/internal/pch/pch.hpp>
 
 #include <testpp/internal/core/core.hpp>
+#include <testpp/internal/core/isolated.hpp>
 #include <testpp/internal/renderer.hpp>
 #include <testpp/internal/runner.hpp>
 #include <testpp/internal/main.hpp>
@@ -14,13 +15,13 @@
 int main(int argc, char** argv) {
 #ifdef _WIN32
     if (argc == 4 && !strcmp("--isolation", argv[1])) {
-        auto& ctx = internal::Runner::getDeathContext();
+        auto& ctx = testpp::internal::Runner::getDeathContext();
 
         ctx.childMode = true;
         ctx.targetTest = std::stoull(argv[2]);
-        ctx.targetDeath = std::stoull(argv[3]);
+        ctx.targetIndex = std::stoull(argv[3]);
 
-        internal::Runner::runSingleTest(ctx.targetTest);
+        testpp::internal::Runner::runSingleTest(ctx.targetTest);
 
         return EXIT_SUCCESS;
     }
