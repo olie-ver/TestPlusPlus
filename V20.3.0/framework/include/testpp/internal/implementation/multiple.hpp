@@ -19,7 +19,7 @@ namespace testpp::internal {
             for (; idx != end; update()) {
                 size_t iteration = idx;
                 try {
-                    std::cout << std::to_string(idx) << std::endl;
+                    // std::cout << std::to_string(idx) << std::endl;
                     func();
                 } catch (const Core::AssertionFailure& failure) {
                     failures.push_back(std::pair<Core::FailureInfo, size_t>(failure.info, iteration));
@@ -50,7 +50,7 @@ namespace testpp::internal {
 
             for (const auto& val : container) {
                 try {
-                    std::cout << std::to_string(val) << std::endl;
+                    // std::cout << std::to_string(val) << std::endl;
                     func(val);
                 } catch (const Core::AssertionFailure& failure) {
                     failures.push_back(std::pair<Core::FailureInfo, a_val>(failure.info, val));
@@ -75,7 +75,7 @@ namespace testpp::internal {
             std::deque<std::pair<Core::FailureInfo, A>> failures;
             while (cond()) {
                 try {
-                    std::cout << "val = " << std::to_string(val) << std::endl;
+                    // std::cout << "val = " << std::to_string(val) << std::endl;
                     func();
                 } catch (const Core::AssertionFailure& failure) {
                     failures.push_back(std::pair<Core::FailureInfo, A>(failure.info, val));
