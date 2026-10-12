@@ -17,6 +17,12 @@ namespace testpp::internal {
             requires(T t) { t.get(); } || //has .get() like a smart pointer
             requires(T t) { { t.has_value() } -> std::convertible_to<bool>; }; //has .has_value() like an optional
 
+        template <typename A>
+        concept Iterable = requires()
+        {
+            requires std::ranges::range<A>;
+        };
+
         //A concept for types that are iterable and the types of what they contain are comparable by ==
         template <typename A, typename B>
         concept IterableAndComparable = requires()

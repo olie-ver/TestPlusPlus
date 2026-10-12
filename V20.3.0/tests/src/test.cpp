@@ -25,13 +25,21 @@
 //     SEQ(Prototype, Second)
 // );
 
-
 D_TEST (test) {
     std::vector<int> hi{1, 2, 3, 4};
 
-    ASSERT_FOR(i, 0, 3, i++, {
-        EXPECT_EQ(hi[i], i);
-    });
+    // int i = 2;
+    // ASSERT_EACH(val, hi, {
+    //     ASSERT_NE(i, val);
+    //     i++;
+    // });
 
-    ASSERT_FALSE(true);
+    // ASSERT_WHILE(a, 0, a < 10, {
+    //     ASSERT_EQ(a, a);
+    //     a++;
+    // });
+
+
+    // auto a = 5; testpp::internal::Assert::assert_while("/Users/oliverlie/Documents/GitHub/TestPlusPlus/V20.3.0/tests/src/test.cpp", 43, [&a](){ a < 10; }, [&]() { })
 }
+
