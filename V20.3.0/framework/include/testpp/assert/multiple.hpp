@@ -20,13 +20,7 @@ namespace testpp::internal {
             std::deque<std::pair<Core::FailureInfo, size_t>> failures = std::move(impl_multiple::testFor(idx, end, update, func));
 
             if (failures.size()) {
-                Core::FailureInfo fail;
-
-                fail.file = file;
-                fail.line = line;
-                fail.actual = "";
-                fail.expected = "";
-                fail.expression = "";
+                Core::FailureInfo fail("", file, line, "", "", "");
 
                 std::stringstream stream;
                 stream << "\nFailed " << std::to_string(failures.size()) << " times:";

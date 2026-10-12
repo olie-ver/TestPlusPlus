@@ -9,6 +9,7 @@
 // #include "expect/isolation.hpp"
 #include "expect/iterable.hpp"
 #include "expect/meta.hpp"
+#include "expect/multiple.hpp"
 #include "expect/null.hpp"
 #include "expect/predicate.hpp"
 #include "expect/set.hpp"

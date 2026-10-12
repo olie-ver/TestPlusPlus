@@ -29,7 +29,9 @@
 D_TEST (test) {
     std::vector<int> hi{1, 2, 3, 4};
 
-    ASSERT_FOR(i, 0, 2, i++, {
-        ASSERT_EQ(hi[i], i);
+    ASSERT_FOR(i, 0, 3, i++, {
+        EXPECT_EQ(hi[i], i);
     });
+
+    ASSERT_FALSE(true);
 }
