@@ -1,246 +1,241 @@
-// #include <testpp/internal/runner.hpp>
-// #include <testpp/internal/implementation/isolation_types.hpp>
+#ifdef _WIN32 
 
-// #include "isolation_windows.hpp"
+#include <testpp/internal/implementation/isolation_types.hpp>
+#include <windows.h>
 
-// //I'm not even gonna lie. This entire file was 100% ChatGPT edited after this comment.
-// //Adding isolation testing support for Windows is such a mess and I don't even know
-// //  if it's worth it at this point.
-// //If this doesn't work, you can complain all you want to me. I will not go back and fix it.
-// //This project is open source, so for all you Windows users who want this to work, you go fix it.
-// #include <windows.h>
-// #include <string>
-// #include <vector>
+#include <algorithm>
+#include <chrono>
+#include <string>
+#include <thread>
 
-// namespace testpp::internal {
-//     namespace impl_iso {
-//         static std::string readPipe(HANDLE pipe)
-//         {
-//             std::string result;
+namespace testpp::internal {
+    namespace impl_iso {
+        using Clock = std::chrono::steady_clock;
 
-//             char buffer[4096];
-//             DWORD bytesRead = 0;
+        struct Pipe {
+            HANDLE read = nullptr;
+            HANDLE write = nullptr;
 
-//             while (ReadFile(
-//                 pipe,
-//                 buffer,
-//                 sizeof(buffer),
-//                 &bytesRead,
-//                 nullptr) &&
-//                 bytesRead > 0)
-//             {
-//                 result.append(buffer, bytesRead);
-//             }
+            void closeRead() {
+                if (read) {
+                    CloseHandle(read);
+                    read = nullptr;
+                }
+            }
 
-//             return result;
-//         }
+            void closeWrite() {
+                if (write) {
+                    CloseHandle(write);
+                    write = nullptr;
+                }
+            }
 
-//         Core::ExecutionResult runIsolatedImpl(
-//             size_t testIndex,
-//             size_t deathIndex,
-//             int timeLimit)
-//         {
-//             Core::ExecutionResult run;
+            ~Pipe() {
+                closeRead();
+                closeWrite();
+            }
+        };
 
-//             SECURITY_ATTRIBUTES sa{};
-//             sa.nLength = sizeof(sa);
-//             sa.bInheritHandle = TRUE;
-//             sa.lpSecurityDescriptor = nullptr;
+        bool createPipe(Pipe& pipe) {
+            SECURITY_ATTRIBUTES attributes{};
+            attributes.nLength = sizeof(attributes);
+            attributes.bInheritHandle = TRUE;
 
-//             HANDLE stdoutRead = nullptr;
-//             HANDLE stdoutWrite = nullptr;
+            if (!CreatePipe(
+                    &pipe.read, &pipe.write, &attributes, 0)) {
+                return false;
+            }
 
-//             HANDLE stderrRead = nullptr;
-//             HANDLE stderrWrite = nullptr;
+            // The parent must not pass its read end to the child.
+            return SetHandleInformation(
+                pipe.read, HANDLE_FLAG_INHERIT, 0
+            ) != 0;
+        }
 
-//             if (!CreatePipe(
-//                     &stdoutRead,
-//                     &stdoutWrite,
-//                     &sa,
-//                     0))
-//             {
-//                 run.framework_message =
-//                     "Failed to create stdout pipe";
+        void readPipe(HANDLE handle, std::string& output) {
+            char buffer[4096];
+            DWORD bytesRead = 0;
 
-//                 return run;
-//             }
+            while (ReadFile(
+                    handle, buffer, sizeof(buffer),
+                    &bytesRead, nullptr) && bytesRead > 0) {
+                output.append(buffer, bytesRead);
+            }
+        }
 
-//             if (!CreatePipe(
-//                     &stderrRead,
-//                     &stderrWrite,
-//                     &sa,
-//                     0))
-//             {
-//                 CloseHandle(stdoutRead);
-//                 CloseHandle(stdoutWrite);
+        Core::CrashType classifyExitCode(DWORD code) {
+            switch (code) {
+                case 0xC0000005:
+                    return Core::CrashType::AccessViolation;
+                case 0xC0000094:
+                    return Core::CrashType::DivideByZero;
+                case 0xC000001D:
+                    return Core::CrashType::IllegalInstruction;
+                case 0xC0000096:
+                    return Core::CrashType::PrivilegedInstruction;
+                case 0xC0000409:
+                    return Core::CrashType::Abort;
+                default:
+                    return Core::CrashType::Unknown;
+            }
+        }
 
-//                 run.framework_message =
-//                     "Failed to create stderr pipe";
+        Core::ExecutionResult runIsolatedImpl(std::size_t testIndex, std::size_t isolationIndex, int timeLimitMs) {
+            Core::ExecutionResult run{};
+            const auto start = Clock::now();
 
-//                 return run;
-//             }
+            if (timeLimitMs < 0) {
+                run.execution_status = Core::ExecutionStatus::InternalFrameworkError;
+                run.framework_message = "Isolation timeout cannot be negative";
+                return run;
+            }
 
-//             SetHandleInformation(
-//                 stdoutRead,
-//                 HANDLE_FLAG_INHERIT,
-//                 0);
+            Pipe stdoutPipe;
+            Pipe stderrPipe;
 
-//             SetHandleInformation(
-//                 stderrRead,
-//                 HANDLE_FLAG_INHERIT,
-//                 0);
+            if (!createPipe(stdoutPipe)) {
+                run.execution_status =
+                    Core::ExecutionStatus::CommunicationFailure;
+                run.framework_message = "Failed to create stdout pipe";
+                return run;
+            }
 
-//             char exePath[MAX_PATH];
+            if (!createPipe(stderrPipe)) {
+                run.execution_status =
+                    Core::ExecutionStatus::CommunicationFailure;
+                run.framework_message = "Failed to create stderr pipe";
+                return run;
+            }
 
-//             DWORD pathLength =
-//                 GetModuleFileNameA(
-//                     nullptr,
-//                     exePath,
-//                     MAX_PATH);
+            char exePath[MAX_PATH]{};
+            const DWORD pathLength =
+                GetModuleFileNameA(nullptr, exePath, MAX_PATH);
 
-//             if (pathLength == 0)
-//             {
-//                 CloseHandle(stdoutRead);
-//                 CloseHandle(stdoutWrite);
+            if (pathLength == 0 || pathLength >= MAX_PATH) {
+                run.execution_status = Core::ExecutionStatus::LaunchFailed;
+                run.framework_message = "Failed to locate executable";
+                return run;
+            }
 
-//                 CloseHandle(stderrRead);
-//                 CloseHandle(stderrWrite);
+            // The child runner parses these arguments, selects the test,
+            // and dispatches the matching RUN_ISO call.
+            std::string command =
+                "\"" + std::string(exePath) + "\" --isolation " +
+                std::to_string(testIndex) + " " +
+                std::to_string(isolationIndex);
 
-//                 run.framework_message =
-//                     "Failed to locate executable";
+            STARTUPINFOA startup{};
+            startup.cb = sizeof(startup);
+            startup.dwFlags = STARTF_USESTDHANDLES;
+            startup.hStdOutput = stdoutPipe.write;
+            startup.hStdError = stderrPipe.write;
+            startup.hStdInput = GetStdHandle(STD_INPUT_HANDLE);
 
-//                 return run;
-//             }
+            PROCESS_INFORMATION process{};
 
-//             std::string command =
-//                 "\"" +
-//                 std::string(exePath) +
-//                 "\" --isolation " +
-//                 std::to_string(testIndex) +
-//                 " " +
-//                 std::to_string(deathIndex);
+            const BOOL launched = CreateProcessA(
+                exePath,
+                command.data(),
+                nullptr,
+                nullptr,
+                TRUE,
+                0,
+                nullptr,
+                nullptr,
+                &startup,
+                &process
+            );
 
-//             STARTUPINFOA si{};
-//             si.cb = sizeof(si);
+            // The parent must close its write ends so readers receive EOF.
+            stdoutPipe.closeWrite();
+            stderrPipe.closeWrite();
 
-//             si.dwFlags = STARTF_USESTDHANDLES;
+            if (!launched) {
+                run.execution_status = Core::ExecutionStatus::LaunchFailed;
+                run.framework_message = "CreateProcess failed (error " +
+                    std::to_string(GetLastError()) + ")";
+                return run;
+            }
 
-//             si.hStdOutput = stdoutWrite;
-//             si.hStdError = stderrWrite;
-//             si.hStdInput = GetStdHandle(STD_INPUT_HANDLE);
+            run.process.process_id =
+                static_cast<decltype(run.process.process_id)>(
+                    process.dwProcessId);
 
-//             PROCESS_INFORMATION pi{};
+            std::thread stdoutReader(
+                readPipe, stdoutPipe.read,
+                std::ref(run.output.stdout_text));
 
-//             BOOL success =
-//                 CreateProcessA(
-//                     nullptr,
-//                     command.data(),
-//                     nullptr,
-//                     nullptr,
-//                     TRUE,
-//                     0,
-//                     nullptr,
-//                     nullptr,
-//                     &si,
-//                     &pi);
+            std::thread stderrReader(
+                readPipe, stderrPipe.read,
+                std::ref(run.output.stderr_text));
 
-//             CloseHandle(stdoutWrite);
-//             CloseHandle(stderrWrite);
+            const DWORD waitResult = WaitForSingleObject(
+                process.hProcess,
+                static_cast<DWORD>(timeLimitMs));
 
-//             if (!success)
-//             {
-//                 CloseHandle(stdoutRead);
-//                 CloseHandle(stderrRead);
+            if (waitResult == WAIT_TIMEOUT) {
+                run.execution_status = Core::ExecutionStatus::TimedOut;
+                run.crash_type = Core::CrashType::Killed;
 
-//                 run.framework_message =
-//                     "CreateProcess failed";
+                if (!TerminateProcess(process.hProcess, 1)) {
+                    run.framework_message =
+                        "Timed out, but TerminateProcess failed (error " +
+                        std::to_string(GetLastError()) + ")";
+                }
 
-//                 return run;
-//             }
+                // Ensure the child has actually terminated before collecting
+                // its output and releasing process resources.
+                WaitForSingleObject(process.hProcess, INFINITE);
+            }
+            else if (waitResult == WAIT_FAILED) {
+                run.execution_status =
+                    Core::ExecutionStatus::InternalFrameworkError;
+                run.framework_message =
+                    "WaitForSingleObject failed (error " +
+                    std::to_string(GetLastError()) + ")";
 
-//             DWORD waitResult =
-//                 WaitForSingleObject(
-//                     pi.hProcess,
-//                     static_cast<DWORD>(timeLimit));
+                // Avoid blocking forever on readers if the wait itself failed.
+                TerminateProcess(process.hProcess, 1);
+                WaitForSingleObject(process.hProcess, INFINITE);
+            }
 
-//             if (waitResult == WAIT_TIMEOUT)
-//             {
-//                 TerminateProcess(
-//                     pi.hProcess,
-//                     1);
+            DWORD exitCode = 0;
+            if (!GetExitCodeProcess(process.hProcess, &exitCode)) {
+                run.execution_status =
+                    Core::ExecutionStatus::InternalFrameworkError;
+                run.framework_message = "GetExitCodeProcess failed";
+            }
+            else {
+                run.process.native_exit_code = static_cast<int>(exitCode);
 
-//                 run.execution_status =
-//                     Core::ExecutionStatus::TimedOut;
+                if (waitResult == WAIT_OBJECT_0) {
+                    if (exitCode == 0) {
+                        run.execution_status = Core::ExecutionStatus::Completed;
+                    }
+                    else {
+                        run.execution_status = Core::ExecutionStatus::Crashed;
+                        run.crash_type = classifyExitCode(exitCode);
+                    }
+                }
+            }
 
-//                 run.crash_type =
-//                     Core::CrashType::Killed;
-//             }
-//             else if (waitResult == WAIT_FAILED)
-//             {
-//                 run.framework_message =
-//                     "WaitForSingleObject failed";
-//             }
+            stdoutReader.join();
+            stderrReader.join();
 
-//             DWORD exitCode = 0;
+            stdoutPipe.closeRead();
+            stderrPipe.closeRead();
 
-//             GetExitCodeProcess(
-//                 pi.hProcess,
-//                 &exitCode);
+            CloseHandle(process.hThread);
+            CloseHandle(process.hProcess);
 
-//             run.process.process_id =
-//                 static_cast<int>(pi.dwProcessId);
+            run.execution_ms =
+                static_cast<decltype(run.execution_ms)>(
+                    std::chrono::duration_cast<std::chrono::milliseconds>(
+                        Clock::now() - start).count());
 
-//             run.process.native_exit_code =
-//                 static_cast<int>(exitCode);
+            return run;
+        }
+    }
+}
 
-//             run.output.stdout_text =
-//                 readPipe(stdoutRead);
-
-//             run.output.stderr_text =
-//                 readPipe(stderrRead);
-
-//             if (waitResult == WAIT_OBJECT_0)
-//             {
-//                 if (exitCode == 0)
-//                 {
-//                     run.execution_status =
-//                         Core::ExecutionStatus::Completed;
-//                 }
-//                 else
-//                 {
-//                     run.execution_status =
-//                         Core::ExecutionStatus::Crashed;
-
-//                     switch (exitCode)
-//                     {
-//                         case 0xC0000005:
-//                             run.crash_type =
-//                                 Core::CrashType::SegmentationFault;
-//                             break;
-
-//                         case 0xC0000094:
-//                             run.crash_type =
-//                                 Core::CrashType::FloatingPointException;
-//                             break;
-
-//                         case 0xC0000409:
-//                             run.crash_type =
-//                                 Core::CrashType::Abort;
-//                             break;
-
-//                         default:
-//                             break;
-//                     }
-//                 }
-//             }
-
-//             CloseHandle(stdoutRead);
-//             CloseHandle(stderrRead);
-
-//             CloseHandle(pi.hThread);
-//             CloseHandle(pi.hProcess);
-
-//             return run;
-//         }
-//     }
-// }    
+#endif

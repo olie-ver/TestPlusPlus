@@ -1,153 +1,441 @@
-// #pragma once
+#pragma once
 
-// #ifndef ISO_H
-// #define ISO_H
+#ifndef ISO_H
+#define ISO_H
 
-// #include "../core/core.hpp"
-// #include "isolation_types.hpp"
+#include "isolation_types.hpp"
 
-// #include <optional>
-// #include <string>
+#define RUN_ISO(...) testpp::internal::impl_iso::runIsolated(__VA_ARGS__)
 
-// namespace testpp::internal {
-//     namespace impl_iso {
-//         // ============================================================
-//         // Crash / Fatal Behavior Assertions
-//         // ============================================================
+#pragma once
 
-//         //fails if Execution Status != Completed
-//         template<typename Func> 
-//         Core::ExecutionResult death(Func&& func);
+#include "../core/core.hpp"
+#include "../helpers.hpp"
 
-//         //passes if Crash Type == SegmentationFault
-//         template<typename Func> 
-//         Core::ExecutionResult segfault(Func&& func);
+#include <algorithm>
+#include <cstdint>
+#include <cstdlib>
+#include <optional>
+#include <string>
 
-//         //Passes if Crash Type == Abort
-//         template<typename Func> 
-//         Core::ExecutionResult abort(Func&& func);
+namespace testpp::internal::impl_iso {
 
-//         //"Bad thing tests"
-//         //Passes if something fatal happens
-//         template<typename Func> 
-//         Core::ExecutionResult fatal(Func&& func);
+    using Result = Core::ExecutionResult;
+    using Failure = Core::FailureInfo;
+    using Status = Core::ExecutionStatus;
+    using Crash = Core::CrashType;
 
-//         //Passes if nothing fatal happens
-//         template<typename Func> 
-//         Core::ExecutionResult nonFatal(Func&& func);
+    inline std::optional<Failure> failUnless(
+        bool passed,
+        std::string message,
+        const char* file,
+        uint32_t line)
+    {
+        if (passed) {
+            return std::nullopt;
+        }
 
-//         // ============================================================
-//         // Process Exit Assertions
-//         // ============================================================
+        return Failure{std::move(message), file, line};
+    }
 
-//         //Passes if exit code == EXIT_SUCCESS
-//         template<typename Func> 
-//         Core::ExecutionResult success(Func&& func);
+    inline std::string statusName(Status status) {
+        return Core::ExecutionStrings[static_cast<int>(status)];
+    }
 
-//         //Passes if exit code == EXIT_FAILURE
-//         template<typename Func> 
-//         Core::ExecutionResult failure(Func&& func);
+    inline std::string crashName(Crash crash) {
+        return Core::CrashStrings[static_cast<int>(crash)];
+    }
 
-//         //Passes if exit code != 0
-//         template<typename Func> 
-//         Core::ExecutionResult nonzeroExit(Func&& func);
+    inline std::string exitMessage(
+        const char* expr,
+        int expected,
+        int actual)
+    {
+        return std::string("Expected ") + expr
+            + " to exit with code " + Helpers::toString(expected)
+            + ", but it exited with code " + Helpers::toString(actual);
+    }
 
-//         //Passes if exit code == (param) exit code
-//         template<typename Func> 
-//         Core::ExecutionResult exitCode(Func&& func);
+    inline std::string excerpt(const std::string& text) {
+        constexpr size_t maxSize = 1024;
+        return text.substr(0, std::min(maxSize, text.size()));
+    }
 
-//         //Passes if Execution Status == Completed
-//         template<typename Func> 
-//         Core::ExecutionResult completes(Func&& func);
+    // --------------------------------------------------------
+    // Termination / completion
+    // --------------------------------------------------------
 
-//         // ============================================================
-//         // Output Assertions
-//         // ============================================================
+    inline std::optional<Failure> death(
+        const Result& r, const char* expr, const char* file, uint32_t line)
+    {
+        const bool died =
+            r.execution_status != Status::Completed
+            || r.crash_type != Crash::None;
 
-//         //Passes if stdout output contains (param) string
-//         template<typename Func> 
-//         Core::ExecutionResult stdoutContains(Func&& func);
+        return failUnless(
+            died,
+            std::string("Expected ") + expr + " to terminate abnormally",
+            file, line);
+    }
 
-//         //Passes if stderr output contains (param) string
-//         template<typename Func> 
-//         Core::ExecutionResult stderrContains(Func&& func);
+    inline std::optional<Failure> segfault(
+        const Result& r, const char* expr, const char* file, uint32_t line)
+    {
+        return failUnless(
+            r.crash_type == Crash::SegmentationFault,
+            std::string("Expected ") + expr + " to seg fault, but crash type was "
+                + crashName(r.crash_type),
+            file, line);
+    }
 
-//         //Passes if there is no stderr output
-//         template<typename Func> 
-//         Core::ExecutionResult noStdout(Func&& func);
+    inline std::optional<Failure> abort(
+        const Result& r, const char* expr, const char* file, uint32_t line)
+    {
+        return failUnless(
+            r.crash_type == Crash::Abort,
+            std::string("Expected ") + expr + " to abort, but crash type was "
+                + crashName(r.crash_type),
+            file, line);
+    }
 
-//         //Passes if there is no stdout output
-//         template<typename Func> 
-//         Core::ExecutionResult noStderr(Func&& func);
+    inline std::optional<Failure> fatal(
+        const Result& r, const char* expr, const char* file, uint32_t line)
+    {
+        const bool failed =
+            r.execution_status != Status::Completed
+            || r.crash_type != Crash::None;
 
-//         //Passes if output == (param) output
-//         template<typename Func> 
-//         Core::ExecutionResult stdoutMatches(Func&& func);
+        return failUnless(
+            failed,
+            std::string("Expected ") + expr + " to fail or crash, but it completed",
+            file, line);
+    }
 
-//         //Passes if output == (param) output
-//         template<typename Func> 
-//         Core::ExecutionResult stderrMatches(Func&& func);
+    inline std::optional<Failure> nonFatal(
+        const Result& r, const char* expr, const char* file, uint32_t line)
+    {
+        const bool passed =
+            r.execution_status == Status::Completed
+            && r.crash_type == Crash::None;
 
-//         // ============================================================
-//         // Sanitizer Assertions
-//         // ============================================================
+        return failUnless(
+            passed,
+            std::string("Expected ") + expr
+                + " to complete without failure; status: "
+                + statusName(r.execution_status)
+                + ", crash type: " + crashName(r.crash_type),
+            file, line);
+    }
 
-//         template<typename Func> 
-//         Core::ExecutionResult asanFailure(Func&& func);
+    inline std::optional<Failure> completes(
+        const Result& r, const char* expr, const char* file, uint32_t line)
+    {
+        return failUnless(
+            r.execution_status == Status::Completed,
+            std::string("Expected ") + expr + " to complete; status: "
+                + statusName(r.execution_status),
+            file, line);
+    }
 
-//         template<typename Func> 
-//         Core::ExecutionResult ubsanFailure(Func&& func);
+    // --------------------------------------------------------
+    // Exit codes
+    // --------------------------------------------------------
 
-//         template<typename Func> 
-//         Core::ExecutionResult tsanFailure(Func&& func);
+    inline std::optional<Failure> success(
+        const Result& r, const char* expr, const char* file, uint32_t line)
+    {
+        return failUnless(
+            r.execution_status == Status::Completed
+                && r.process.native_exit_code == EXIT_SUCCESS,
+            exitMessage(expr, EXIT_SUCCESS, r.process.native_exit_code),
+            file, line);
+    }
 
-//         template<typename Func> 
-//         Core::ExecutionResult lsanFailure(Func&& func);
+    inline std::optional<Failure> failure(
+        const Result& r, const char* expr, const char* file, uint32_t line)
+    {
+        return failUnless(
+            r.execution_status == Status::Completed
+                && r.process.native_exit_code == EXIT_FAILURE,
+            exitMessage(expr, EXIT_FAILURE, r.process.native_exit_code),
+            file, line);
+    }
 
-//         template<typename Func> 
-//         Core::ExecutionResult sanFailure(Func&& func);
+    inline std::optional<Failure> nonzeroExit(
+        const Result& r, const char* expr, const char* file, uint32_t line)
+    {
+        return failUnless(
+            r.execution_status == Status::Completed
+                && r.process.native_exit_code != 0,
+            std::string("Expected ") + expr
+                + " to exit with a nonzero code; actual code: "
+                + Helpers::toString(r.process.native_exit_code),
+            file, line);
+    }
 
-//         // ============================================================
-//         // Timing / Concurrency Assertions
-//         // ============================================================
+    inline std::optional<Failure> exitCode(
+        const Result& r, const char* expr, int expected,
+        const char* file, uint32_t line)
+    {
+        return failUnless(
+            r.execution_status == Status::Completed
+                && r.process.native_exit_code == expected,
+            exitMessage(expr, expected, r.process.native_exit_code),
+            file, line);
+    }
 
-//         //Passes if it runs longer than the passed in timeout
-//         template<typename Func> 
-//         Core::ExecutionResult timeout(Func&& func, int timeLimitMs);
+    // --------------------------------------------------------
+    // Captured output
+    // --------------------------------------------------------
 
-//         //Passes if it runs shorter than the passed in timeout
-//         template<typename Func> 
-//         Core::ExecutionResult completesWithin(Func&& func, int timeLimitMs);
+    inline std::optional<Failure> stdoutContains(
+        const Result& r, const char* expr, const std::string& content,
+        const char* file, uint32_t line)
+    {
+        return failUnless(
+            r.output.stdout_text.find(content) != std::string::npos,
+            std::string("Expected stdout from ") + expr + " to contain \""
+                + content + "\".\nstdout: " + excerpt(r.output.stdout_text),
+            file, line);
+    }
 
-//         // ============================================================
-//         // Generic / Advanced Assertions
-//         // ============================================================
+    inline std::optional<Failure> stderrContains(
+        const Result& r, const char* expr, const std::string& content,
+        const char* file, uint32_t line)
+    {
+        return failUnless(
+            r.output.stderr_text.find(content) != std::string::npos,
+            std::string("Expected stderr from ") + expr + " to contain \""
+                + content + "\".\nstderr: " + excerpt(r.output.stderr_text),
+            file, line);
+    }
 
-//         //Passes if the process result == (param) result
-//         template<typename Func> 
-//         Core::ExecutionResult executionStatus(Func&& func);
+    inline std::optional<Failure> noStdout(
+        const Result& r, const char* expr, const char* file, uint32_t line)
+    {
+        return failUnless(
+            r.output.stdout_text.empty(),
+            std::string("Expected no stdout from ") + expr
+                + ".\nstdout: " + excerpt(r.output.stdout_text),
+            file, line);
+    }
 
-//         template<typename Func> 
-//         Core::ExecutionResult crashType(Func&& func);
+    inline std::optional<Failure> noStderr(
+        const Result& r, const char* expr, const char* file, uint32_t line)
+    {
+        return failUnless(
+            r.output.stderr_text.empty(),
+            std::string("Expected no stderr from ") + expr
+                + ".\nstderr: " + excerpt(r.output.stderr_text),
+            file, line);
+    }
 
-//         template<typename Func> 
-//         Core::ExecutionResult terminationSignal(Func&& func);
+    inline std::optional<Failure> stdoutMatches(
+        const Result& r, const char* expr, const std::string& expected,
+        const char* file, uint32_t line)
+    {
+        return failUnless(
+            r.output.stdout_text == expected,
+            std::string("Expected stdout from ") + expr
+                + " to match the expected text.\nstdout: "
+                + excerpt(r.output.stdout_text),
+            file, line);
+    }
 
-//         //Passes if the process was killed
-//         template<typename Func> 
-//         Core::ExecutionResult processKilled(Func&& func);
+    inline std::optional<Failure> stderrMatches(
+        const Result& r, const char* expr, const std::string& expected,
+        const char* file, uint32_t line)
+    {
+        return failUnless(
+            r.output.stderr_text == expected,
+            std::string("Expected stderr from ") + expr
+                + " to match the expected text.\nstderr: "
+                + excerpt(r.output.stderr_text),
+            file, line);
+    }
 
-//         //Passes if the core was dumped
-//         template<typename Func> 
-//         Core::ExecutionResult coreDumped(Func&& func);
-//     }
-// }
+    // --------------------------------------------------------
+    // Sanitizers
+    // --------------------------------------------------------
 
-// #include "isolation/exit.hpp"
-// #include "isolation/fatal.hpp"
-// #include "isolation/generic.hpp"
-// #include "isolation/output.hpp"
-// #include "isolation/sanitizer.hpp"
-// #include "isolation/timing.hpp"
+    inline std::optional<Failure> asanFailure(
+        const Result& r, const char*, const char* file, uint32_t line)
+    {
+        return failUnless(
+            r.sanitizers.asan_detected,
+            "Expected AddressSanitizer to report a failure",
+            file, line);
+    }
 
-// #endif
+    inline std::optional<Failure> noAsanFailure(
+        const Result& r, const char*, const char* file, uint32_t line)
+    {
+        return failUnless(
+            !r.sanitizers.asan_detected,
+            "Unexpected AddressSanitizer failure: " + r.sanitizers.asan_msg,
+            file, line);
+    }
+
+    inline std::optional<Failure> ubsanFailure(
+        const Result& r, const char*, const char* file, uint32_t line)
+    {
+        return failUnless(
+            r.sanitizers.ubsan_detected,
+            "Expected UndefinedBehaviorSanitizer to report a failure",
+            file, line);
+    }
+
+    inline std::optional<Failure> noUbsanFailure(
+        const Result& r, const char*, const char* file, uint32_t line)
+    {
+        return failUnless(
+            !r.sanitizers.ubsan_detected,
+            "Unexpected UBSan failure: " + r.sanitizers.ubsan_msg,
+            file, line);
+    }
+
+    inline std::optional<Failure> tsanFailure(
+        const Result& r, const char*, const char* file, uint32_t line)
+    {
+        return failUnless(
+            r.sanitizers.tsan_detected,
+            "Expected ThreadSanitizer to report a failure",
+            file, line);
+    }
+
+    inline std::optional<Failure> noTsanFailure(
+        const Result& r, const char*, const char* file, uint32_t line)
+    {
+        return failUnless(
+            !r.sanitizers.tsan_detected,
+            "Unexpected TSan failure: " + r.sanitizers.tsan_msg,
+            file, line);
+    }
+
+    inline std::optional<Failure> lsanFailure(
+        const Result& r, const char*, const char* file, uint32_t line)
+    {
+        return failUnless(
+            r.sanitizers.lsan_detected,
+            "Expected LeakSanitizer to report a failure",
+            file, line);
+    }
+
+    inline std::optional<Failure> noLsanFailure(
+        const Result& r, const char*, const char* file, uint32_t line)
+    {
+        return failUnless(
+            !r.sanitizers.lsan_detected,
+            "Unexpected LSan failure: " + r.sanitizers.lsan_msg,
+            file, line);
+    }
+
+    inline std::optional<Failure> sanFailure(
+        const Result& r, const char*, const char* file, uint32_t line)
+    {
+        const bool detected =
+            r.sanitizers.asan_detected
+            || r.sanitizers.ubsan_detected
+            || r.sanitizers.tsan_detected
+            || r.sanitizers.lsan_detected;
+
+        return failUnless(
+            detected,
+            "Expected a sanitizer to report a failure",
+            file, line);
+    }
+
+    inline std::optional<Failure> noSanFailure(
+        const Result& r, const char*, const char* file, uint32_t line)
+    {
+        const bool detected =
+            r.sanitizers.asan_detected
+            || r.sanitizers.ubsan_detected
+            || r.sanitizers.tsan_detected
+            || r.sanitizers.lsan_detected;
+
+        return failUnless(
+            !detected,
+            "Unexpected sanitizer failure",
+            file, line);
+    }
+
+    // --------------------------------------------------------
+    // Timing and general metadata
+    // --------------------------------------------------------
+
+    inline std::optional<Failure> timeout(
+        const Result& r, const char* expr, int,
+        const char* file, uint32_t line)
+    {
+        return failUnless(
+            r.execution_status == Status::TimedOut,
+            std::string("Expected ") + expr + " to time out; status: "
+                + statusName(r.execution_status),
+            file, line);
+    }
+
+    inline std::optional<Failure> completesWithin(
+        const Result& r, const char* expr, int timeLimitMs,
+        const char* file, uint32_t line)
+    {
+        const bool completed =
+            r.execution_status == Status::Completed
+            && r.execution_ms <= static_cast<uint64_t>(timeLimitMs);
+
+        return failUnless(
+            completed,
+            std::string("Expected ") + expr + " to complete within "
+                + Helpers::toString(timeLimitMs) + "ms; measured "
+                + Helpers::toString(r.execution_ms) + "ms, status: "
+                + statusName(r.execution_status),
+            file, line);
+    }
+
+    inline std::optional<Failure> executionStatus(
+        const Result& r, const char*, Status expected,
+        const char* file, uint32_t line)
+    {
+        return failUnless(
+            r.execution_status == expected,
+            std::string("Expected execution status ")
+                + statusName(expected) + ", got "
+                + statusName(r.execution_status),
+            file, line);
+    }
+
+    inline std::optional<Failure> crashType(
+        const Result& r, const char*, Crash expected,
+        const char* file, uint32_t line)
+    {
+        return failUnless(
+            r.crash_type == expected,
+            std::string("Expected crash type ")
+                + crashName(expected) + ", got " + crashName(r.crash_type),
+            file, line);
+    }
+
+    inline std::optional<Failure> terminationSignal(
+        const Result& r, const char*, int expected,
+        const char* file, uint32_t line)
+    {
+        return failUnless(
+            r.process.native_signal == expected,
+            std::string("Expected termination signal ")
+                + Helpers::toString(expected) + ", got "
+                + Helpers::toString(r.process.native_signal),
+            file, line);
+    }
+
+    inline std::optional<Failure> killed(
+        const Result& r, const char*, const char* file, uint32_t line)
+    {
+        return failUnless(
+            r.crash_type == Crash::Killed,
+            "Expected the isolated process to be killed",
+            file, line);
+    }
+
+}
+
+#endif

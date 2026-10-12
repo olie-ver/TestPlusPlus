@@ -1,67 +1,66 @@
-// #pragma once
+#pragma once
 
-// #ifndef ISO_TYPE_H
-// #define ISO_TYPE_H
+#ifndef ISO_TYPE_H
+#define ISO_TYPE_H
 
-// #include "../core/core.hpp"
 
-// #ifdef _WIN32
-//     #include "../runner.hpp"
-// #endif
+#pragma once
 
-// namespace testpp::internal {
-//     namespace impl_iso {
-//         #ifdef _WIN32
+#include "../core/core.hpp"
+#include "../core/isolated.hpp"
 
-//             Core::ExecutionResult runIsolatedImpl(size_t testIndex, size_t deathIndex, const int timeLimit);
+#include <functional>
+#include <utility>
 
-//             inline Core::ExecutionResult isolateRun(size_t testIndex, size_t deathIndex, int timeLimit)
-//             {
-//                 return testpp::internal::impl_iso::runIsolatedImpl(testIndex, deathIndex, timeLimit);
-//             }
+namespace testpp::internal {
+    namespace impl_iso {
 
-//             template<typename Func>
-//             inline Core::ExecutionResult runDeathTest(Func&& func, const int timeLimit = 10000)
-//             {
-//                 auto& ctx = testpp::internal::Runner::getDeathContext();
+    inline constexpr int DEFAULT_ISOLATION_TIMEOUT_MS = 10000;
 
-//                 const std::size_t deathIndex = ctx.currentDeath++;
+    #ifdef _WIN32
 
-//                 if (ctx.childMode)
-//                 {
-//                     if (Runner::TEST_STACK.back().index == ctx.targetTest && deathIndex == ctx.targetDeath)
-//                     {
-//                         func();
-//                     }
+        // Implemented by the Windows process launcher.
+        Core::ExecutionResult runIsolatedImpl(
+            std::size_t testIndex,
+            std::size_t isolationIndex,
+            int timeLimitMs
+        );
 
-//                     return {};
-//                 }
+        template<typename Func>
+        inline Core::ExecutionResult runIsolated(Func&& func, int timeLimitMs = DEFAULT_ISOLATION_TIMEOUT_MS) {
+            auto& ctx = Runner::getIsolationContext();
+            const std::size_t isolationIndex = ctx.currentIsolation++;
 
-//                 return isolateRun(
-//                     Runner::TEST_STACK.back().index,
-//                     deathIndex,
-//                     timeLimit
-//                 );
-//             }
-//         #else
-//             //The definition UNIX platforms must implement to 
-//             //  be able to run tests in isolation
-//             Core::ExecutionResult runIsolatedImpl(const std::function<void()>& func, const int timeLimit);
+            if (ctx.childMode) {
+                if (Runner::TEST_STACK.back().index == ctx.targetTest &&
+                    isolationIndex == ctx.targetIsolation) {
+                    std::forward<Func>(func)();
+                }
 
-//             /// @brief The core behind running an isolated test
-//             /// @tparam Func a function to runs
-//             /// @param func the function to run
-//             /// @return a TestExecutionResult
-//             template<typename Func>
-//             inline Core::ExecutionResult isolateRun(Func&& func, const int timeLimit = 10000)
-//             {
-//                 return testpp::internal::impl_iso::runIsolatedImpl(
-//                     std::function<void()>(std::forward<Func>(func)),
-//                     timeLimit
-//                 );
-//             }
-//         #endif
-//     }
-// }
+                return {};
+            }
 
-// #endif
+            return runIsolatedImpl(
+                Runner::TEST_STACK.back().index,
+                isolationIndex,
+                timeLimitMs
+            );
+        }
+
+    #else
+
+        Core::ExecutionResult runIsolatedImpl(const std::function<void()>& func,int timeLimitMs);
+
+        template<typename Func>
+        inline Core::ExecutionResult runIsolated(Func&& func, int timeLimitMs = DEFAULT_ISOLATION_TIMEOUT_MS) {
+            return runIsolatedImpl(
+                std::function<void()>(std::forward<Func>(func)),
+                timeLimitMs
+            );
+        }
+
+    #endif
+    }
+}
+
+#endif

@@ -2,6 +2,7 @@
 
 
 #include <testpp/internal/runner.hpp>
+#include <testpp/internal/core/isolated.hpp>
 
 #include <atomic>
 #include <chrono>
@@ -11,31 +12,29 @@
 
 namespace testpp::internal {
     namespace Runner {
-        // #ifdef _WIN32
+        #ifdef _WIN32
 
-        // DeathContext& getDeathContext()
-        // {
-        //     static DeathContext ctx;
-        //     return ctx;
-        // }
+        Core::DeathContext& getDeathContext()
+        {
+            static Core::DeathContext ctx;
+            return ctx;
+        }
 
-        // void runSingleTest(size_t testIndex)
-        // {
-        //     auto& registry = getRegistry();
+        void runSingleTest(size_t testIndex)
+        {
+            for (auto& test : registry)
+            {
+                if (test.idx == testIndex)
+                {
+                    runTest(test);
+                    return;
+                }
+            }
 
-        //     for (auto& test : registry)
-        //     {
-        //         if (test.index == testIndex)
-        //         {
-        //             runTest(test);
-        //             return;
-        //         }
-        //     }
+            abort();
+        }
 
-        //     std::abort();
-        // }
-
-        // #endif
+        #endif
 
         constexpr bool shouldSkip(const std::string_view& suite_name) {
             return skipSuites.contains(suite_name) || (testOnly.size() != 0 && !testOnly.contains(suite_name));

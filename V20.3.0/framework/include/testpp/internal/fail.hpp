@@ -4,7 +4,6 @@
 #define FAIL_H
 
 #include "core/core.hpp"
-#include "core/failure.hpp"
 #include "runner.hpp"
 
 namespace testpp::internal {

@@ -4,7 +4,6 @@
 #define RUNNER_H
 
 #include "core/core.hpp"
-#include "core/failure.hpp"
 
 #include <deque>
 #include <map>
@@ -41,11 +40,8 @@
 #define S_TEST(...) \
     S_TEST_IMPL(__LINE__, __VA_ARGS__)
 
-/// @brief An internal namespace. Using anything from within is not advised
 namespace testpp::internal {
-    /// @brief An internal Runner namespace that is used for running tests
     namespace Runner {
-        /// @brief The result for the current test
         inline thread_local std::deque<Core::TestResult> TEST_STACK{};
 
         inline thread_local bool NESTED_COLLECT = false;
@@ -66,22 +62,13 @@ namespace testpp::internal {
 
         inline std::unordered_set<std::string_view> testOnly{};
 
-        // #ifdef _WIN32
+        #ifdef _WIN32
 
-        // struct DeathContext
-        // {
-        //     bool childMode = false;
+        Core::DeathContext& getDeathContext();
 
-        //     std::size_t targetTest = std::numeric_limits<std::size_t>::max();
-        //     std::size_t targetDeath = std::numeric_limits<std::size_t>::max();
-        //     std::size_t currentDeath = 0;
-        // };
+        void runSingleTest(size_t testIndex);
 
-        // DeathContext& getDeathContext();
-
-        // void runSingleTest(size_t testIndex);
-
-        // #endif
+        #endif
 
         /// @brief Checks if a suite should be skipped
         /// @param suite_name the suite name
