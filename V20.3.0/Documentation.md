@@ -1,4 +1,22 @@
-# C++ Unit Tester V20.3.0
+---
+title: "Test++ Documentation (Latest)"
+
+webtitle: "(Latest) Documentation"
+
+parent: "Test++"
+
+desc: "Test++ documentation. Reference and learn how to use the Test++ library and testpp CLI tool."
+
+keywords: "testpp documentation, test++ documentation, testpp docs, test++ docs, testpp cli, test++ cli, testpp library, test++ library,
+            c++ unit tester, open source c++ unit tester"
+
+version: "20.3.0"
+
+lastUpdated: 2026-10-13
+dateAdded: 2026-10-13
+---
+
+# Test++ V20.3.0
 Documentation guide for Test++ V20.3.0. Even as a more or less stable release, I still make no 
 guarantees that future versions will work the same, and implementations could change.
 
@@ -41,6 +59,8 @@ This update to Test++ was focused on upgrading the framework. Changes are below.
     and on what values made it fail.
 4. Fixed a bug where your CLI configuration took precedence over your manual configuration when it should 
     have been the other way around.
+5. You can now add CMake's `include()` to include .cmake files so that if you want to test a library without 
+    installing it onto your system, you can give it the path to the .cmake file and link against it
 
 See the chapter on [cli usage](#cli-usage) for more information
 
@@ -73,14 +93,17 @@ See the chapter on [cli usage](#cli-usage) for more information
         11. [Configure the Current Executable's Runtime Flags](#--config-flags-configure-the-current-executables-runtime-flags)
         12. [Configure the Current Executable's Compiler Flags](#--cxx-flags-configure-the-current-executables-compiler-flags)
         13. [Configure the Current Executable's Linked Libraries](#--link-libs-configure-the-current-executables-linked-libraries)
+        14. [Configure the Current Executable's Includes](#--include-paths-configure-the-current-executables-include-paths)
         14. [Reset the Current Executable's Configuration to the Global](#--reset-reset-the-current-executables-configuration-to-the-global)
         15. [Reset the Current Executable's Runtime Configuration to the Global](#--reset-flags-reset-the-current-executables-runtime-configuration-to-the-global)
         16. [Reset the Current Executable's Compiler Configuration to the Global](#--reset-cxx-reset-the-current-executables-compiler-configuration-to-the-global)
         17. [Reset the Current Executable's Library Configuration to the Global](#--reset-link-reset-the-current-executables-library-configuration-to-the-global)
+        18. [Reset the Current Executable's Includes Configuration to the Global](#--reset-include-reset-the-current-executables-include-paths-to-the-global)
         18. [Reset the Current Executable's Configuration to the Default](#--default-reset-the-current-executables-configuration-to-the-default)
         19. [Reset the Current Executable's Runtime Configuration to the Default](#--default-flags-reset-the-current-executables-runtime-configuration-to-the-default)
         20. [Reset the Current Executable's Compiler Configuration to the Default](#--default-cxx-reset-the-current-executables-compiler-configuration-to-the-default)
         21. [Reset the Current Executable's Library Configuration to the Default](#--default-link-reset-the-current-executables-library-configuration-to-the-default)
+        22. [Reset the Current Executable's Includes Configuration to the Default](#--default-include-reset-the-current-executables-library-configuration-to-the-default)
 2. [Testing](#testing)
     1. [Registering Tests](#registering-tests)
     2. [Different Types Of Tests](#different-types-of-tests)
