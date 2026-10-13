@@ -30,6 +30,7 @@ namespace testppCLI {
 
         if (buildResult != 0) {
             std::cerr << "Failed to build test executable: " << stream.str() << '\n';
+            abort();
         }
     }
 }

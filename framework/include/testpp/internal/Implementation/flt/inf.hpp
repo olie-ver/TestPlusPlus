@@ -3,14 +3,15 @@
 #ifndef FLT_INF_H
 #define FLT_INF_H
 
-#include "../../Core.hpp"
-#include "../../Concepts.hpp"
-#include "../../Helpers.hpp"
+#include "../../core/core.hpp"
+#include "../../concepts/is_type.hpp"
+#include "../../helpers.hpp"
+
 #include <cmath>
 #include <optional>
 #include <string>
 
-namespace internal {
+namespace testpp::internal {
     namespace impl_flt {
         template <typename T>
         requires(std::is_floating_point<T>::value)

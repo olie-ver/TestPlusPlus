@@ -3,10 +3,12 @@
 #ifndef RUNNER_H
 #define RUNNER_H
 
-#include "Core.hpp"
+#include "core/core.hpp"
+#include "core/isolated.hpp"
+
 #include <deque>
 #include <map>
-#include <string>
+#include <string_view>
 #include <thread>
 #include <unordered_set>
 #include <vector>
@@ -19,7 +21,7 @@
 #define TEST_IMPL(suite_name, test_name, line) \
     void suite_name##_##test_name(); \
     static bool MAKE_UNIQUE(register, line) = \
-        internal::Runner::registerTest( \
+        testpp::internal::Runner::registerTest( \
             {STR(suite_name), STR(test_name), suite_name##_##test_name}); \
     void suite_name##_##test_name()
 
@@ -29,54 +31,60 @@
 #define D_TEST(test_name) \
     TEST(Default, test_name)
 
-/// @brief An internal namespace. Using anything from within is not advised
-namespace internal {
-    /// @brief An internal Runner namespace that is used for running tests
+#define SEQ(suite_name, test_name) \
+    testpp::internal::Core::TestReference{STR(suite_name), STR(test_name)}
+
+#define S_TEST_IMPL(line, ...) \
+    static bool MAKE_UNIQUE(register_sequential_group, line) = \
+        testpp::internal::Runner::registerSequentialGroup({__VA_ARGS__})
+
+#define S_TEST(...) \
+    S_TEST_IMPL(__LINE__, __VA_ARGS__)
+
+namespace testpp::internal {
     namespace Runner {
-        /// @brief The result for the current test
-        extern thread_local std::deque<Core::TestResult> TEST_STACK;
+        inline thread_local std::deque<Core::TestResult> TEST_STACK{};
 
-        /// @brief gets the global TestRun struct
-        Core::TestRun& getTestRun();
+        inline thread_local bool NESTED_COLLECT = false;
 
-        /// @brief The registry containing all the tests to be run
-        std::vector<Core::Test>& getRegistry();
+        inline Core::TestRun testRun{};
 
-        /// @brief A set ensuring no duplicate tests are registered
-        std::unordered_set<Core::Test, Core::TestHash>& getAllTests();
+        inline std::vector<Core::Test> registry{};
+
+        inline std::vector<Core::TestGroup> runGroups{};
+
+        inline std::unordered_map<std::string, size_t> testToRegistry{};
+
+        inline std::unordered_set<Core::Test, Core::TestHash> allTests{};
+
+        inline std::vector<std::vector<Core::TestReference>> sequentialGroups{};
+
+        inline std::unordered_set<std::string_view> skipSuites{};
+
+        inline std::unordered_set<std::string_view> testOnly{};
 
         #ifdef _WIN32
 
-        struct DeathContext
-        {
-            bool childMode = false;
-
-            std::size_t targetTest = std::numeric_limits<std::size_t>::max();
-            std::size_t targetDeath = std::numeric_limits<std::size_t>::max();
-            std::size_t currentDeath = 0;
-        };
-
-        DeathContext& getDeathContext();
+        Core::DeathContext& getDeathContext();
 
         void runSingleTest(size_t testIndex);
 
         #endif
 
-        /// @brief A set containing suites that should not be tested
-        std::unordered_set<std::string>& getSkipSuites();
-
-        /// @brief A set containing suites that ONLY should be tested
-        std::unordered_set<std::string>& getTestOnly();
-
         /// @brief Checks if a suite should be skipped
         /// @param suite_name the suite name
         /// @return true if the suite should be skipped, false otherwise
-        bool shouldSkip(const std::string& suite_name);
+        bool shouldSkip(const std::string_view& suite_name);
 
         /// @brief Adds a test to the registry under a test suite
         /// @param suite_name The name of the test suite the test is a part of 
         /// @param test The test
         bool registerTest(Core::Test test);
+
+        /// @brief Registers a group of tests to be run sequentially
+        /// @param members the tests that should be run in order
+        /// @return a bool, disregard
+        bool registerSequentialGroup(std::vector<Core::TestReference> members);
 
         /// @brief Runs all tests added to REGISTRY
         /// @param run The TestRun to put the results in

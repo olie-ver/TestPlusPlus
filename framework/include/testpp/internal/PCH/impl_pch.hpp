@@ -5,15 +5,15 @@
 
 #include "src_pch.hpp"
 
-#include "../Implementation/bool.hpp"
-#include "../Implementation/cmp.hpp"
-#include "../Implementation/flt.hpp"
-#include "../Implementation/iterable.hpp"
-#include "../Implementation/meta.hpp"
-#include "../Implementation/null.hpp"
-#include "../Implementation/predicate.hpp"
-#include "../Implementation/set.hpp"
-#include "../Implementation/string.hpp"
-#include "../Implementation/throws.hpp"
+#include "../implementation/bool.hpp"
+#include "../implementation/cmp.hpp"
+#include "../implementation/flt.hpp"
+#include "../implementation/iterable.hpp"
+#include "../implementation/meta.hpp"
+#include "../implementation/null.hpp"
+#include "../implementation/predicate.hpp"
+#include "../implementation/set.hpp"
+#include "../implementation/string.hpp"
+#include "../implementation/throws.hpp"
 
 #endif

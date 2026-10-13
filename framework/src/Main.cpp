@@ -1,9 +1,10 @@
-#include <testpp/internal/PCH/pch.hpp>
+#include <testpp/internal/pch/pch.hpp>
 
-#include <testpp/internal/Core.hpp>
-#include <testpp/internal/Renderer.hpp>
-#include <testpp/internal/Runner.hpp>
-#include <testpp/internal/Main.hpp>
+#include <testpp/internal/core/core.hpp>
+#include <testpp/internal/core/isolated.hpp>
+#include <testpp/internal/renderer.hpp>
+#include <testpp/internal/runner.hpp>
+#include <testpp/internal/main.hpp>
 #include <iostream>
 #include <string>
 
@@ -14,13 +15,13 @@
 int main(int argc, char** argv) {
 #ifdef _WIN32
     if (argc == 4 && !strcmp("--isolation", argv[1])) {
-        auto& ctx = internal::Runner::getDeathContext();
+        auto& ctx = testpp::internal::Runner::getDeathContext();
 
         ctx.childMode = true;
         ctx.targetTest = std::stoull(argv[2]);
-        ctx.targetDeath = std::stoull(argv[3]);
+        ctx.targetIndex = std::stoull(argv[3]);
 
-        internal::Runner::runSingleTest(ctx.targetTest);
+        testpp::internal::Runner::runSingleTest(ctx.targetTest);
 
         return EXIT_SUCCESS;
     }
@@ -29,10 +30,10 @@ int main(int argc, char** argv) {
     int num_threads = 1;
     int timeout = 0;
 
-    internal::Renderer::Verbosity verbFlag = internal::Renderer::Verbosity::Default;
-    internal::Core::TimeUnit unit = internal::Core::TimeUnit::Seconds;
-    auto& skipSuites = internal::Runner::getSkipSuites();
-    auto& testOnlySuites = internal::Runner::getTestOnly();
+    testpp::internal::Renderer::Verbosity verbFlag = testpp::internal::Renderer::Verbosity::Default;
+    testpp::internal::Core::TimeUnit unit = testpp::internal::Core::TimeUnit::Seconds;
+    auto& skipSuites = testpp::internal::Runner::skipSuites;
+    auto& testOnlySuites = testpp::internal::Runner::testOnly;
 
     std::string jsonFile = "";
     std::string jUnitFile = "";
@@ -43,6 +44,7 @@ int main(int argc, char** argv) {
     // process the arguments
     for (int i = 1; i < argc; i++) {
         std::string flag(argv[i]);
+
         std::transform(flag.begin(), flag.end(), flag.begin(), 
             [](unsigned char c) { return std::tolower(c); });
 
@@ -84,7 +86,7 @@ int main(int argc, char** argv) {
             && flag.find('=') != std::string::npos)
         {
             if (flag.find("_ms=") != std::string::npos) {
-                unit = internal::Core::TimeUnit::Milliseconds;
+                unit = testpp::internal::Core::TimeUnit::Milliseconds;
             }
 
             std::string arg = flag.substr(flag.find('=') + 1);
@@ -167,18 +169,18 @@ int main(int argc, char** argv) {
             stdoutSize = 1024;
             stderrSize = 1024;
         } else if (flag == "--stream") {
-            internal::Renderer::shouldStream = true;
+            testpp::internal::Renderer::shouldStream = true;
         } else {
             renderUsage(argv[i]);
             return EXIT_FAILURE;
         }
     }
 
-    internal::Core::TestRun& testRun = internal::Runner::getTestRun();
+    testpp::internal::Core::TestRun& testRun = testpp::internal::Runner::testRun;
 
-    internal::Runner::runAllRegisteredTests(testRun, num_threads, timeout, unit);
+    testpp::internal::Runner::runAllRegisteredTests(testRun, num_threads, timeout, unit);
 
-    internal::Renderer::ConsoleRenderer renderer(verbFlag, jsonFile, jUnitFile, stdoutSize, stderrSize);
+    testpp::internal::Renderer::ConsoleRenderer renderer(verbFlag, jsonFile, jUnitFile, stdoutSize, stderrSize);
 
     renderer.render(testRun);
     return EXIT_SUCCESS;

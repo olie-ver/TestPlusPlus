@@ -31,7 +31,7 @@ else()
         -Wextra
         -Wpedantic
         # -Werror
-        -O3
+        # -O3
     )
 endif()
 

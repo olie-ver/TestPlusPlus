@@ -1,98 +1,110 @@
-#include <testpp/internal/PCH/pch.hpp>
+#include <testpp/internal/pch/pch.hpp>
 
-#include <testpp/internal/Runner.hpp>
+
+#include <testpp/internal/runner.hpp>
+#include <testpp/internal/core/isolated.hpp>
+
 #include <atomic>
 #include <chrono>
 #include <deque>
 #include <iostream>
 #include <thread>
 
-namespace internal {
+namespace testpp::internal {
     namespace Runner {
-        thread_local std::deque<Core::TestResult> TEST_STACK;
-
-        Core::TestRun& getTestRun() {
-            static Core::TestRun instance;
-            return instance;
-        }
-
-        std::vector<Core::Test>& getRegistry() {
-            static std::vector<Core::Test> instance;
-            return instance;
-        }
-
-        std::unordered_set<Core::Test, Core::TestHash>& getAllTests() {
-            static std::unordered_set<Core::Test, Core::TestHash> instance;
-            return instance;
-        }
-
         #ifdef _WIN32
 
-        DeathContext& getDeathContext()
+        Core::DeathContext& getDeathContext()
         {
-            static DeathContext ctx;
+            static Core::DeathContext ctx;
             return ctx;
         }
 
         void runSingleTest(size_t testIndex)
         {
-            auto& registry = getRegistry();
-
             for (auto& test : registry)
             {
-                if (test.index == testIndex)
+                if (test.idx == testIndex)
                 {
                     runTest(test);
                     return;
                 }
             }
 
-            std::abort();
+            abort();
         }
 
         #endif
 
-        std::unordered_set<std::string>& getSkipSuites() {
-            static std::unordered_set<std::string> instance;
-            return instance;
-        }
-
-        std::unordered_set<std::string>& getTestOnly()
-        {
-            static std::unordered_set<std::string> instance;
-            return instance;
-        }
-
-        bool shouldSkip(const std::string& suite_name) {
-            auto& skip = getSkipSuites();
-            auto& specific = getTestOnly();
-            return skip.contains(suite_name) || (specific.size() != 0 && !specific.contains(suite_name));
+        bool shouldSkip(const std::string_view& suite_name) {
+            return skipSuites.contains(suite_name) || (testOnly.size() != 0 && !testOnly.contains(suite_name));
         }
 
         bool registerTest(Core::Test test)
         {
-            auto& ALL_TESTS = getAllTests();
+            test.idx = registry.size();
+            auto [it, inserted] = allTests.insert(test);
 
-            auto [it, inserted] = ALL_TESTS.insert(test);
             if (!inserted) {
-                std::cerr << "Test under suite: " << test.suite_name
-                        << " has duplicate name: " << test.test_name << std::endl;
-                std::abort();
+                std::cerr << "Test under suite: " << test.suite_name << " has duplicate name: " << test.test_name << std::endl;
+                abort();
             }
 
-            std::vector<Core::Test>& REGISTRY = getRegistry();
+            std::string name(test.suite_name);
+            name.push_back('_');
+            name += test.test_name;
 
-            #ifdef _WIN32
-            test.index = REGISTRY.size();
-            #endif
+            testToRegistry[name] = test.idx;
 
-            REGISTRY.push_back(test);
+            registry.push_back(test);
+
+            return true;
+        }
+
+        bool registerSequentialGroup(std::vector<Core::TestReference> members) {
+            sequentialGroups.push_back(members);
             return true;
         }
 
         void runAllRegisteredTests(Core::TestRun& run, const int num_threads, 
             const int timeout, Core::TimeUnit unit)
         {   
+            std::unordered_set<size_t> inGroups;
+            inGroups.reserve(allTests.size());
+
+            for (size_t i  = 0; i < sequentialGroups.size(); i++) {
+                Core::TestGroup group;
+                for (size_t j = 0; j < sequentialGroups[i].size(); j++) {
+                    std::string name(sequentialGroups[i][j].suite_name);
+                    name.push_back('_');
+                    name += sequentialGroups[i][j].test_name;
+
+                    const auto& iter = testToRegistry.find(name);
+
+                    size_t testIdx = iter->second;
+
+                    const Core::Test& test = registry[testIdx];
+
+                    group.tests.push_back(test.idx);
+                    inGroups.insert(test.idx);
+                }
+
+                runGroups.push_back(std::move(group));
+            }
+
+            for (const auto& test : allTests) {
+                if (!inGroups.contains(test.idx)) {
+                    std::string name(test.suite_name);
+                    name.push_back('_');
+                    name += test.test_name;
+
+                    Core::TestGroup group;
+                    group.tests.push_back(test.idx);
+
+                    runGroups.push_back(std::move(group));
+                }
+            }
+
             using clock = std::chrono::steady_clock;
             using ms = std::chrono::milliseconds;
 
@@ -100,8 +112,6 @@ namespace internal {
 
             std::atomic<bool> finished{false};
             std::thread watchdog;
-
-            std::vector<Core::Test>& REGISTRY = getRegistry();
 
             //create our thread pool:
             std::vector<std::thread> threads;
@@ -111,7 +121,7 @@ namespace internal {
             running.resize(num_threads);
 
             std::vector<Core::TestResult> results;
-            results.resize(REGISTRY.size());
+            results.resize(registry.size());
 
             //threads start
             for (int i = 0; i < num_threads; i++) {
@@ -151,7 +161,7 @@ namespace internal {
             //aggregate results
             for (size_t i = 0; i < results.size(); i++) {
                 Core::TestResult& result = results[i];
-                std::string& suite_name = result.suiteName;
+                std::string_view& suite_name = result.suiteName;
                 run.results[suite_name].push_back(result);
                 run.total++;
             }
@@ -165,11 +175,7 @@ namespace internal {
             CURRENT_TEST.suiteName = test.suite_name;
             CURRENT_TEST.testName = test.test_name;
             CURRENT_TEST.test_status = Core::TestStatus::Passed;
-
-            #ifdef _WIN32
-                getDeathContext().currentDeath = 0;
-                CURRENT_TEST.index = test.index;
-            #endif
+            CURRENT_TEST.idx = test.idx;
 
             using clock = std::chrono::steady_clock;
             using ms = std::chrono::milliseconds;

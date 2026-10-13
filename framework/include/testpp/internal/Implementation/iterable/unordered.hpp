@@ -3,8 +3,9 @@
 #ifndef ITER_UNORDER_H
 #define ITER_UNORDER_H
 
-#include "../../Core.hpp"
-#include "../../Concepts.hpp"
+#include "../../core/core.hpp"
+#include "../../concepts/has_quality.hpp"
+
 #include <algorithm>
 #include <optional>
 #include <ranges>
@@ -12,7 +13,7 @@
 #include <unordered_map>
 #include <vector>
 
-namespace internal {
+namespace testpp::internal {
     namespace impl_iter {
         template <typename A, typename B>
         requires Concepts::IterableAndComparable<A, B>

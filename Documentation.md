@@ -1,5 +1,5 @@
-# C++ Unit Tester V20.2.2
-Documentation guide for Test++ V20.2.2. Even as a more or less stable release, I still make no 
+# C++ Unit Tester V20.3.0
+Documentation guide for Test++ V20.3.0. Even as a more or less stable release, I still make no 
 guarantees that future versions will work the same, and implementations could change.
 
 ### License/Conditions of Usage
@@ -29,14 +29,18 @@ SOFTWARE.
 
 ## Changes
 
-This update to Test++ brings was focused on upgrading the CLI. You are now able to:
-1. Set up libraries to link against your test executable
-2. Create multiple testing executables in case you want multiple.
-    If you never use this feature, then Test++ remains nearly the same as V20.1.4
-3. Globally configure the runtime flags, the compiler flags, and linked libraries
-4. Customize each executable's runtime flags, compiler flags, and linked libraries
-5. Updated diagnostics and a new inspect command
-6. Reset your configurations to the default using the default family of commands
+This update to Test++ was focused on upgrading the framework. Changes are below.
+1. You can run tests in sequence, even on multithreaded configurations. In other words, you can
+    specify the order in which tests to run. This is good for grouping specific tests together,
+    but making a small number of large groups will remove any benefit of multithreading.
+2. Isolated tests are more stable than they were before. The way they work is that you call 
+    a macro to run something in an isolated process to get back a result. You then run tests to 
+    check the state of that result.
+3. X_FOR, X_EACH, and X_WHILE tests are part of the framework. Use them to test over ranges and loops 
+    to understand how your code behaves in a loop. Get information about how many times a loop failed 
+    and on what values made it fail.
+4. Fixed a bug where your CLI configuration took precedence over your manual configuration when it should 
+    have been the other way around.
 
 See the chapter on [cli usage](#cli-usage) for more information
 
@@ -80,6 +84,7 @@ See the chapter on [cli usage](#cli-usage) for more information
 2. [Testing](#testing)
     1. [Registering Tests](#registering-tests)
     2. [Different Types Of Tests](#different-types-of-tests)
+    3. [Sequential Tests](#sequential-tests)
 3. [Boolean Tests](#boolean-tests)
     1. [Assert True](#assert_true)
     2. [Assert False](#assert_false)
@@ -184,7 +189,14 @@ See the chapter on [cli usage](#cli-usage) for more information
     4. [Expect Throws](#expect_throws)
     5. [Expect Does Not Throw](#expect_does_not_throw)
     6. [Expect Throws With Message](#expect_throws_msg)
-13. [Isolation Tests](#isolation-tests)
+13. [Multiple Tests](#multiple-tests)
+    1. [Assert Multiple](#assert-multiple)
+    2. [Assert Each](#assert-each)
+    3. [Assert While](#assert-while)
+    4. [Expect Multiple](#expect-multiple)
+    5. [Expect Each](#expect-each)
+    6. [Expect While](#expect-while)
+14. [Isolation Tests](#isolation-tests)
     1. [Types of Execution Statuses](#types-of-execution-statuses)
     2. [Types of Crash Types](#types-of-crash-types)
     3. [Assert Death](#assert_death)
@@ -928,6 +940,60 @@ TEST(assert_example, another_test) {
     ASSERT_ANOTHER(); 
     ...
 }
+```
+
+### Sequential Tests
+Test++ V20.3.0 now supports the notion of running tests in sequence. Here's how it works: You start off as normal creating tests via 
+TEST(suite, test) and D_TEST(test). Then, after you have defined them, you put their suite and test names inside an S_TEST() macro. 
+This macro tells the framework to run those tests in the sequence you have put them inside the macro. An example below:
+
+```
+TEST(suite1, runSecond) {
+    ...
+}
+
+TEST(suite1, runFirst) {
+    ...
+}
+
+D_TEST(runThird) {
+    ...
+}
+
+S_TEST(
+    SEQ(suite1, runFirst),
+    SEQ(suite1, runSecond),
+    SEQ(Default, runThird) //The suite of D_TEST() is "Default"
+)
+```
+
+Now when the framework runs, the tests will run in the order of runFirst => runSecond => runThird, even when you run the framework on 
+multiple threads. However, if you have many tests and the order does not matter, do not put them in an S_TEST because only one thread can 
+execute an S_TEST at a time. Ie, if you have 1000 tests and put them all in one S_TEST, you can run Test++ on 1000 threads and only one would 
+actually do any work. 
+
+Another thing to note is that registering the same tests under multiple S_TEST() groups is undefined behavior. There is no guarantee of 
+S_TEST() execution ordering when there are multiple S_TEST() groups defined. 
+
+```
+D_TEST(1) { ... }
+
+D_TEST(2) { ... }
+
+D_TEST(3) { ... }
+
+D_TEST(4) { ... }
+
+S_TEST(
+    SEQ(Default, 1),
+    SEQ(Default, 4),
+    SEQ(Default, 3)
+)
+
+S_TEST(
+    SEQ(Default, 2),
+    SEQ(Default, 1) //Undefined behavior, may not work
+)
 ```
 
 ## Boolean Tests
@@ -3455,10 +3521,198 @@ D_TEST(expect_throws_with_message) {
 }
 ```
 
+## Multiple Tests
+Multiple Tests are tests that are meant to be run in loops, such as for loops, for each loops, and while loops. These tests give you information about what indices/
+values made a loops fail, if a test fails inside of them. These tests do NOT find infinite loops and do NOT have a maximum number of loops that can be set. If you 
+believe your program is in an infinite loop, it probably is.
+
+These tests respect the ASSERT/EXPECT failure semantics. Eg, if you put an ASSERT test that fails inside a loop, it will cause the loop to stop running, then depending
+on whether or not the loop test was an ASSERT test or an EXPECT test, it will terminate the testing function's execution.
+
+```
+// This example is meant for illustrative purposes only
+
+TEST(suite, test) {
+    EXPECT_LOOP(0, 10, {
+        EXPECT_TRUE(false) //loop continues
+        ASSERT_TRUE(false) //loop stops
+    }); //Won't terminate execution of TEST
+
+    ASSERT_LOOP(0, 10, {
+        EXPECT_TRUE(false) //loop continues 
+        ASSERT_TRUE(false) //loop stops
+    }); //Terminates execution of TEST
+}
+```
+
+### ASSERT_FOR()
+`ASSERT_FOR(idx, begin, end, update, func)` takes in 5 arguments: an index variable, an initial value, an ending value, an updating function, and a loop function.
+If a test inside this loop fails, it will terminate the outer test's execution.
+
+```
+TEST(assert, for) {
+    std::vector<int> v{1, 2, 3, 4, 5};
+    ASSERT_FOR(i, 0, 4, i++, {
+        ASSERT_EQ(i + 1, v[i]);
+    });
+
+    ASSERT_FOR(i, 0, 4, i++, {
+        ASSERT_NE(i, v[i]);
+    });
+}
+```
+
+Some things to note:
+1. It has access to local variables
+2. You don't need to declare `i` as a variable (but it could be any name)
+3. The updating function is not in `{}`
+4. The testing function is in `{}`
+5. You can reuse the index variable name across multiple ASSERT_FOR calls.
+
+### ASSERT_EACH()
+`ASSERT_EACH(value, container, func)` takes in 3 arguments: a variable name, an iterable container, and a loop function. If a test inside this function fails,
+it will terminate the execution of the outer testing function.
+
+```
+// I don't use for each loops very often so I don't have much imagination of what to put in it
+TEST(assert, each) {
+    std::vector<int> v{1, 2, 3, 4, 5};
+    std::unordered_set<int> s{1, 2, 3, 4, 5};
+
+    ASSERT_EACH(val, v, {
+        ASSERT_CONTAINS(s, val);
+    });
+
+    ASSERT_EACH(val, v, {
+        ASSERT_DOES_NOT_CONTAIN(s, val);
+    });
+}
+```
+
+Some things to note:
+1. It has access to local variables
+2. You don't need to declare `val` as a variable (but it could be any name)
+3. The testing function is in `{}`
+4. You can reuse the index variable name across multiple ASSERT_EACH calls.
+5. You have access to the index variable name inside the function
+
+### ASSERT_WHILE()
+`ASSERT_WHILE(value, initial, condition, func)` takes in 4 arguments: a value name, its initial value, some condition, and a loop function.
+If a test inside this function fails, it will terminate the execution of the outer testing function.
+
+```
+TEST(assert, each) {
+    std::vector<int> v{1, 2, 3, 4, 5};
+    std::unordered_set<int> s{1, 2, 3, 4, 5};
+
+    ASSERT_WHILE(i, 0, i < v.size() {
+        ASSERT_EQ(i + 1, v[i]);
+        i++;
+    });
+
+    ASSERT_WHILE(i, 0, i < v.size() {
+        ASSERT_CONTAINS(s, v[i]);
+        i++;
+    });
+}
+```
+
+Some things to note:
+1. It has access to local variables
+2. You don't need to declare `i` as a variable (but it could be any name)
+3. The testing function is in `{}`
+4. You can reuse the index variable name across multiple ASSERT_WHILE calls.
+5. You have access to the index variable name inside the function
+
+### EXPECT_FOR()
+`EXPECT_FOR(idx, begin, end, update, func)` takes in 5 arguments: an index variable, an initial value, an ending value, an updating function, and a loop function.
+
+```
+TEST(expect, for) {
+    std::vector<int> v{1, 2, 3, 4, 5};
+    EXPECT_FOR(i, 0, 4, i++, {
+        EXPECT_EQ(i + 1, v[i]);
+    });
+
+    EXPECT_FOR(i, 0, 4, i++, {
+        EXPECT_NE(i, v[i]);
+    });
+}
+```
+
+Some things to note:
+1. It has access to local variables
+2. You don't need to declare `i` as a variable (but it could be any name)
+3. The updating function is not in `{}`
+4. The testing function is in `{}`
+5. You can reuse the index variable name across multiple EXPECT_FOR calls.
+
+### EXPECT_EACH()
+`EXPECT_EACH(value, container, func)` takes in 3 arguments: a variable name, an iterable container, and a loop function.
+
+```
+// I don't use for each loops very often so I don't have much imagination of what to put in it
+TEST(expect, each) {
+    std::vector<int> v{1, 2, 3, 4, 5};
+    std::unordered_set<int> s{1, 2, 3, 4, 5};
+
+    EXPECT_EACH(val, v, {
+        EXPECT_CONTAINS(s, val);
+    });
+
+    EXPECT_EACH(val, v, {
+        EXPECT_DOES_NOT_CONTAIN(s, val);
+    });
+}
+```
+
+Some things to note:
+1. It has access to local variables
+2. You don't need to declare `val` as a variable (but it could be any name)
+3. The testing function is in `{}`
+4. You can reuse the index variable name across multiple EXPECT_EACH calls.
+5. You have access to the index variable name inside the function
+
+### EXPECT_WHILE()
+`EXPECT_WHILE(value, initial, condition, func)` takes in 4 arguments: a value name, its initial value, some condition, and a loop function.
+
+```
+TEST(expect, each) {
+    std::vector<int> v{1, 2, 3, 4, 5};
+    std::unordered_set<int> s{1, 2, 3, 4, 5};
+
+    EXPECT_WHILE(i, 0, i < v.size() {
+        EXPECT_EQ(i + 1, v[i]);
+        i++;
+    });
+
+    EXPECT_WHILE(i, 0, i < v.size() {
+        EXPECT_CONTAINS(s, v[i]);
+        i++;
+    });
+}
+```
+
+Some things to note:
+1. It has access to local variables
+2. You don't need to declare `i` as a variable (but it could be any name)
+3. The testing function is in `{}`
+4. You can reuse the index variable name across multiple EXPECT_WHILE calls.
+5. You have access to the index variable name inside the function
+
 ## Isolation Tests
 Isolation tests are tests that are to be run in isolation. As of now, only UNIX systems are supported for this type of testing (sorry Windows users, but I don't even have anything to compile or test it with. But since this IS open-source, I'll leave implementing Windows process isolation to the user). They are good for checking code beyond typical pass/fail behavior, namely how they run. It is also advised to run potentially dangerous code inside an isolation test. Because these tests run in a separate, they have a safeguard built in to be able to run for a maximum of 10 seconds (10000ms).
 
 WARNING: These tests are VERY low level in execution, and their ability to perform depends on things such as compilation, content detection etc. These tests, ESPECIALLY the sanitizer tests should be operated with a grain of salt and accuracy/usefulness is not guaranteed. However, I am still pushing to main.
+
+DOUBLE WARNING: The usage of these have changed, and it's meant to be more stable than it was before, but I still can't guarantee that it is stable
+
+### How to Use These Tests
+
+Initially, calling these testing macros would `fork()` a new process (or a whole lot of nonsense on Windows to get close enough behavior), but now they don't.
+Instead you call a new macro `RUN_ISO(func, timeout_ms)` which takes 2 arguments: an anonymous function and a timeout in milliseconds. By default, timeout_ms 
+is set to run for 10 seconds (10000ms). This will return an ExecutionResult (testpp::internal::Core::ExecutionResult if you don't want to use "auto") that you
+pass into these tests below.
 
 1. [Types of Execution Statuses](#types-of-execution-statuses)
 2. [Types of Crash Types](#types-of-crash-types)
@@ -3553,193 +3807,193 @@ KILLED - The test was killed
 UNKNOWN - The test crashed for an unknown reason
 
 ### ASSERT_DEATH()
-`ASSERT_DEATH(func)` takes in one parameter: a function. It passes if the subprocess exits with a status of `COMPLETED` and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+`ASSERT_DEATH(result)` takes in one parameter: an ExecutionResult. It passes if the ExecutionResult contains a status of `COMPLETED` and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
 
 ### ASSERT_SEGFAULT()
-`ASSERT_SEGFAULT(func)` takes in one parameter: a function. It passes if the subprocess exits with a crash type of `SEGFAULT` and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+`ASSERT_SEGFAULT(result)` takes in one parameter: an ExecutionResult. It passes if the ExecutionResult contains a crash type of `SEGFAULT` and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
 
 ### ASSERT_ABORT()
-`ASSERT_ABORT(func)` takes in one parameter: a function. It passes if the subprocess exits with a crash type of `ABORT` and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+`ASSERT_ABORT(result)` takes in one parameter: an ExecutionResult. It passes if the ExecutionResult contains a crash type of `ABORT` and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
 
 ### ASSERT_FATAL()
-`ASSERT_FATAL(func)` takes in one parameter: a function. It passes if the subprocess exits with a status of `COMPLETED` and a crash type of `NONE` and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+`ASSERT_FATAL(result)` takes in one parameter: an ExecutionResult. It passes if the ExecutionResult contains a status of `COMPLETED` and a crash type of `NONE` and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
 
 ### ASSERT_NONFATAL()
-`ASSERT_NONFATAL(func)` takes in one parameter: a function. It passes if the subprocess exits with a status that isn't `COMPLETED` or a crash type that isn't none `NONE` and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+`ASSERT_NONFATAL(result)` takes in one parameter: an ExecutionResult. It passes if the ExecutionResult contains a status that isn't `COMPLETED` or a crash type that isn't none `NONE` and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
 
 ### ASSERT_SUCCESS()
-`ASSERT_SUCCESS(func)` takes in one parameter: a function. It passes if the subprocess exits with exit code `EXIT_SUCCESS` and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+`ASSERT_SUCCESS(result)` takes in one parameter: an ExecutionResult. It passes if the subprocess exits with exit code `EXIT_SUCCESS` and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
 
 ### ASSERT_FAILURE()
-`ASSERT_FAILURE(func)` takes in one parameter: a function. It passes if the subprocess exits with exit code `EXIT_FAILURE` and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+`ASSERT_FAILURE(result)` takes in one parameter: an ExecutionResult. It passes if the subprocess exits with exit code `EXIT_FAILURE` and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
 
 ### ASSERT_NONZERO_EXIT()
-`ASSERT_NONZERO_EXIT(func)` takes in one parameter: a function. It passes if the subprocess exits with a nonzero exit code and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+`ASSERT_NONZERO_EXIT(result)` takes in one parameter: an ExecutionResult. It passes if the ExecutionResult contains a nonzero exit code and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
 
 ### ASSERT_EXITCODE()
-`ASSERT_NONZERO_EXIT(func, code)` takes in two parameters: a function, and an integer exit code. It passes if the subprocess exits with an exit code equal to `code` and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+`ASSERT_NONZERO_EXIT(result, code)` takes in two parameters: an ExecutionResult, and an integer exit code. It passes if the subprocess exits with an exit code equal to `code` and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
 
 ### ASSERT_COMPLETES()
-`ASSERT_COMPLETES(func)` takes in one parameter: a function. It passes if the subprocess exits with a status of `COMPLETED` and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+`ASSERT_COMPLETES(result)` takes in one parameter: an ExecutionResult. It passes if the ExecutionResult contains a status of `COMPLETED` and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
 
 ### ASSERT_STDOUT_CONTAINS()
-`ASSERT_STDOUT_CONTAINS(func, content)` takes in two parameters: a function, and a string of content. It passes if the subprocess's `stdout` output contains `content` and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+`ASSERT_STDOUT_CONTAINS(result, content)` takes in two parameters: an ExecutionResult, and a string of content. It passes if the subprocess's `stdout` output contains `content` and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
 
 ### ASSERT_STDERR_CONTAINS()
-`ASSERT_STDERR_CONTAINS(func, content)` takes in two parameters: a function, and a string of content. It passes if the subprocess's `stderr` output contains `content` and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+`ASSERT_STDERR_CONTAINS(result, content)` takes in two parameters: an ExecutionResult, and a string of content. It passes if the subprocess's `stderr` output contains `content` and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
 
 ### ASSERT_NO_STDOUT()
-`ASSERT_NO_STDOUT(func)` takes in one parameter: a function. It passes if the subprocess's `stdout` output is empty and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+`ASSERT_NO_STDOUT(result)` takes in one parameter: an ExecutionResult. It passes if the subprocess's `stdout` output is empty and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
 
 ### ASSERT_NO_STDERR()
-`ASSERT_NO_STDERR(func)` takes in one parameter: a function. It passes if the subprocess's `stderr` output is empty and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+`ASSERT_NO_STDERR(result)` takes in one parameter: an ExecutionResult. It passes if the subprocess's `stderr` output is empty and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
 
 ### ASSERT_STDOUT_MATCHES()
-`ASSERT_STDOUT_MATCHES(func, content)` takes in two parameters: a function, and a string of content. It passes if the subprocess's `stderr` output matches `content` exactly and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+`ASSERT_STDOUT_MATCHES(result, content)` takes in two parameters: an ExecutionResult, and a string of content. It passes if the subprocess's `stderr` output matches `content` exactly and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
 
 ### ASSERT_STDERR_MATCHES()
-`ASSERT_STDERR_CONTAINS(func, content)` takes in two parameters: a function, and a string of content. It passes if the subprocess's `stderr` output matches `content` exactly and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+`ASSERT_STDERR_CONTAINS(result, content)` takes in two parameters: an ExecutionResult, and a string of content. It passes if the subprocess's `stderr` output matches `content` exactly and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
 
 ### ASSERT_ASAN_FAILURE()
-`ASSERT_ASAN_FAILURE(func)` takes in one parameter: a function. It passes if the Address Sanitizer reports an error and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+`ASSERT_ASAN_FAILURE(result)` takes in one parameter: an ExecutionResult. It passes if the Address Sanitizer reports an error and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
 
 ### ASSERT_NASAN_FAILURE()
-`ASSERT_NASAN_FAILURE(func)` takes in one parameter: a function. It passes if the Address Sanitizer does not report an error and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+`ASSERT_NASAN_FAILURE(result)` takes in one parameter: an ExecutionResult. It passes if the Address Sanitizer does not report an error and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
 
 ### ASSERT_UBSAN_FAILURE()
-`ASSERT_UBSAN_FAILURE(func)` takes in one parameter: a function. It passes if the Undefined-Behavior Sanitizer reports an error and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+`ASSERT_UBSAN_FAILURE(result)` takes in one parameter: an ExecutionResult. It passes if the Undefined-Behavior Sanitizer reports an error and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
 
 ### ASSERT_NUBSAN_FAILURE()
-`ASSERT_NUBSAN_FAILURE(func)` takes in one parameter: a function. It passes if the Undefined-Behavior Sanitizer does not report an error and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+`ASSERT_NUBSAN_FAILURE(result)` takes in one parameter: an ExecutionResult. It passes if the Undefined-Behavior Sanitizer does not report an error and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
 
 ### ASSERT_TSAN_FAILURE()
-`ASSERT_TSAN_FAILURE(func)` takes in one parameter: a function. It passes if the Thread Sanitizer reports an error and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+`ASSERT_TSAN_FAILURE(result)` takes in one parameter: an ExecutionResult. It passes if the Thread Sanitizer reports an error and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
 
 ### ASSERT_NTSAN_FAILURE()
-`ASSERT_NTSAN_FAILURE(func)` takes in one parameter: a function. It passes if the Thread Sanitizer does not report an error and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+`ASSERT_NTSAN_FAILURE(result)` takes in one parameter: an ExecutionResult. It passes if the Thread Sanitizer does not report an error and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
 
 ### ASSERT_LSAN_FAILURE()
-`ASSERT_LSAN_FAILURE(func)` takes in one parameter: a function. It passes if the Leak Sanitizer reports an error and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+`ASSERT_LSAN_FAILURE(result)` takes in one parameter: an ExecutionResult. It passes if the Leak Sanitizer reports an error and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
 
 ### ASSERT_NLSAN_FAILURE()
-`ASSERT_NLSAN_FAILURE(func)` takes in one parameter: a function. It passes if the Leak Sanitizer does not report an error and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+`ASSERT_NLSAN_FAILURE(result)` takes in one parameter: an ExecutionResult. It passes if the Leak Sanitizer does not report an error and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
 
 ### ASSERT_SAN_FAILURE()
-`ASSERT_SAN_FAILURE(func)` takes in one parameter: a function. It passes if the any Sanitizer reports an error and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+`ASSERT_SAN_FAILURE(result)` takes in one parameter: an ExecutionResult. It passes if the any Sanitizer reports an error and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
 
 ### ASSERT_NSAN_FAILURE()
-`ASSERT_NSAN_FAILURE(func)` takes in one parameter: a function. It passes if the no Sanitizer does not report an error and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+`ASSERT_NSAN_FAILURE(result)` takes in one parameter: an ExecutionResult. It passes if the no Sanitizer does not report an error and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
 
 ### ASSERT_TIMEOUT()
-`ASSERT_TIMEOUT(func, timeoutMs)` takes in two parameters: a function, and an amount of time in milliseconds. It passes if the subprocess takes longer to complete than `timeoutMs` and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+`ASSERT_TIMEOUT(result, timeoutMs)` takes in two parameters: an ExecutionResult, and an amount of time in milliseconds. It passes if the subprocess takes longer to complete than `timeoutMs` and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
 
 ### ASSERT_COMPLETES_WITHIN()
-`ASSERT_COMPLETES_WITHIN(func, timeoutMs)` takes in two parameters: a function, and an amount of time in milliseconds. It passes if the subprocess finishes in less time than `timeoutMs` and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+`ASSERT_COMPLETES_WITHIN(result, timeoutMs)` takes in two parameters: an ExecutionResult, and an amount of time in milliseconds. It passes if the subprocess finishes in less time than `timeoutMs` and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
 
 ### ASSERT_STATUS()
-`ASSERT_STATUS(func, status)` takes in two parameters: a function, and an [Execution Status](#types-of-execution-statuses). It passes if the subprocess finishes with an Execution Status that matches `status` and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+`ASSERT_STATUS(result, status)` takes in two parameters: an ExecutionResult, and an [Execution Status](#types-of-execution-statuses). It passes if the subprocess finishes with an Execution Status that matches `status` and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
 
 ### ASSERT_CRASH_TYPE()
-`ASSERT_CRASH_TYPE(func, type)` takes in two parameters: a function, and a [Crash Type](#types-of-crash-types). It passes if the subprocess finishes with a Crash Type that matches `type` and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+`ASSERT_CRASH_TYPE(result, type)` takes in two parameters: an ExecutionResult, and a [Crash Type](#types-of-crash-types). It passes if the subprocess finishes with a Crash Type that matches `type` and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
 
 ### ASSERT_SIGNAL()
-`ASSERT_SIGNAL(func, signal)` takes in two parameters: a function, and an exit signal. It passes if the subprocess finishes with a NATIVE (for if Windows process isolation is ever added) execution signal that matches `signal` and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+`ASSERT_SIGNAL(result, signal)` takes in two parameters: an ExecutionResult, and an exit signal. It passes if the subprocess finishes with a NATIVE (for if Windows process isolation is ever added) execution signal that matches `signal` and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
 
 ### ASSERT_KILLED()
-`ASSERT_KILLED(func)` takes in one parameter: a function. It passes if the subprocess finishes with Crash Type `KILLED` and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
+`ASSERT_KILLED(result)` takes in one parameter: an ExecutionResult. It passes if the subprocess finishes with Crash Type `KILLED` and fails otherwise. Upon failure it will terminate testing for the test suite it was called in.
 
 ### EXPECT_DEATH()
-`EXPECT_DEATH(func)` takes in one parameter: a function. It passes if the subprocess exits with a status of `COMPLETED` and fails otherwise.
+`EXPECT_DEATH(result)` takes in one parameter: an ExecutionResult. It passes if the ExecutionResult contains a status of `COMPLETED` and fails otherwise.
 
 ### EXPECT_SEGFAULT()
-`EXPECT_SEGFAULT(func)` takes in one parameter: a function. It passes if the subprocess exits with a crash type of `SEGFAULT` and fails otherwise.
+`EXPECT_SEGFAULT(result)` takes in one parameter: an ExecutionResult. It passes if the ExecutionResult contains a crash type of `SEGFAULT` and fails otherwise.
 
 ### EXPECT_ABORT()
-`EXPECT_ABORT(func)` takes in one parameter: a function. It passes if the subprocess exits with a crash type of `ABORT` and fails otherwise.
+`EXPECT_ABORT(result)` takes in one parameter: an ExecutionResult. It passes if the ExecutionResult contains a crash type of `ABORT` and fails otherwise.
 
 ### EXPECT_FATAL()
-`EXPECT_FATAL(func)` takes in one parameter: a function. It passes if the subprocess exits with a status of `COMPLETED` and a crash type of `NONE` and fails otherwise.
+`EXPECT_FATAL(result)` takes in one parameter: an ExecutionResult. It passes if the ExecutionResult contains a status of `COMPLETED` and a crash type of `NONE` and fails otherwise.
 
 ### EXPECT_NONFATAL()
-`EXPECT_NONFATAL(func)` takes in one parameter: a function. It passes if the subprocess exits with a status that isn't `COMPLETED` or a crash type that isn't none `NONE` and fails otherwise.
+`EXPECT_NONFATAL(result)` takes in one parameter: an ExecutionResult. It passes if the ExecutionResult contains a status that isn't `COMPLETED` or a crash type that isn't none `NONE` and fails otherwise.
 
 ### EXPECT_SUCCESS()
-`EXPECT_SUCCESS(func)` takes in one parameter: a function. It passes if the subprocess exits with exit code `EXIT_SUCCESS` and fails otherwise.
+`EXPECT_SUCCESS(result)` takes in one parameter: an ExecutionResult. It passes if the subprocess exits with exit code `EXIT_SUCCESS` and fails otherwise.
 
 ### EXPECT_FAILURE()
-`EXPECT_FAILURE(func)` takes in one parameter: a function. It passes if the subprocess exits with exit code `EXIT_FAILURE` and fails otherwise.
+`EXPECT_FAILURE(result)` takes in one parameter: an ExecutionResult. It passes if the subprocess exits with exit code `EXIT_FAILURE` and fails otherwise.
 
 ### EXPECT_NONZERO_EXIT()
-`EXPECT_NONZERO_EXIT(func)` takes in one parameter: a function. It passes if the subprocess exits with a nonzero exit code and fails otherwise.
+`EXPECT_NONZERO_EXIT(result)` takes in one parameter: an ExecutionResult. It passes if the ExecutionResult contains a nonzero exit code and fails otherwise.
 
 ### EXPECT_EXITCODE()
-`EXPECT_NONZERO_EXIT(func, code)` takes in two parameters: a function, and an integer exit code. It passes if the subprocess exits with an exit code equal to `code` and fails otherwise.
+`EXPECT_NONZERO_EXIT(result, code)` takes in two parameters: an ExecutionResult, and an integer exit code. It passes if the subprocess exits with an exit code equal to `code` and fails otherwise.
 
 ### EXPECT_COMPLETES()
-`EXPECT_COMPLETES(func)` takes in one parameter: a function. It passes if the subprocess exits with a status of `COMPLETED` and fails otherwise.
+`EXPECT_COMPLETES(result)` takes in one parameter: an ExecutionResult. It passes if the ExecutionResult contains a status of `COMPLETED` and fails otherwise.
 
 ### EXPECT_STDOUT_CONTAINS()
-`EXPECT_STDOUT_CONTAINS(func, content)` takes in two parameters: a function, and a string of content. It passes if the subprocess's `stdout` output contains `content` and fails otherwise.
+`EXPECT_STDOUT_CONTAINS(result, content)` takes in two parameters: an ExecutionResult, and a string of content. It passes if the subprocess's `stdout` output contains `content` and fails otherwise.
 
 ### EXPECT_STDERR_CONTAINS()
-`EXPECT_STDERR_CONTAINS(func, content)` takes in two parameters: a function, and a string of content. It passes if the subprocess's `stderr` output contains `content` and fails otherwise.
+`EXPECT_STDERR_CONTAINS(result, content)` takes in two parameters: an ExecutionResult, and a string of content. It passes if the subprocess's `stderr` output contains `content` and fails otherwise.
 
 ### EXPECT_NO_STDOUT()
-`EXPECT_NO_STDOUT(func)` takes in one parameter: a function. It passes if the subprocess's `stdout` output is empty and fails otherwise.
+`EXPECT_NO_STDOUT(result)` takes in one parameter: an ExecutionResult. It passes if the subprocess's `stdout` output is empty and fails otherwise.
 
 ### EXPECT_NO_STDERR()
-`EXPECT_NO_STDERR(func)` takes in one parameter: a function. It passes if the subprocess's `stderr` output is empty and fails otherwise.
+`EXPECT_NO_STDERR(result)` takes in one parameter: an ExecutionResult. It passes if the subprocess's `stderr` output is empty and fails otherwise.
 
 ### EXPECT_STDOUT_MATCHES()
-`EXPECT_STDOUT_MATCHES(func, content)` takes in two parameters: a function, and a string of content. It passes if the subprocess's `stderr` output matches `content` exactly and fails otherwise.
+`EXPECT_STDOUT_MATCHES(result, content)` takes in two parameters: an ExecutionResult, and a string of content. It passes if the subprocess's `stderr` output matches `content` exactly and fails otherwise.
 
 ### EXPECT_STDERR_MATCHES()
-`EXPECT_STDERR_CONTAINS(func, content)` takes in two parameters: a function, and a string of content. It passes if the subprocess's `stderr` output matches `content` exactly and fails otherwise.
+`EXPECT_STDERR_CONTAINS(result, content)` takes in two parameters: an ExecutionResult, and a string of content. It passes if the subprocess's `stderr` output matches `content` exactly and fails otherwise.
 
 ### EXPECT_ASAN_FAILURE()
-`EXPECT_ASAN_FAILURE(func)` takes in one parameter: a function. It passes if the Address Sanitizer reports an error and fails otherwise.
+`EXPECT_ASAN_FAILURE(result)` takes in one parameter: an ExecutionResult. It passes if the Address Sanitizer reports an error and fails otherwise.
 
 ### EXPECT_NASAN_FAILURE()
-`EXPECT_NASAN_FAILURE(func)` takes in one parameter: a function. It passes if the Address Sanitizer does not report an error and fails otherwise.
+`EXPECT_NASAN_FAILURE(result)` takes in one parameter: an ExecutionResult. It passes if the Address Sanitizer does not report an error and fails otherwise.
 
 ### EXPECT_UBSAN_FAILURE()
-`EXPECT_UBSAN_FAILURE(func)` takes in one parameter: a function. It passes if the Undefined-Behavior Sanitizer reports an error and fails otherwise.
+`EXPECT_UBSAN_FAILURE(result)` takes in one parameter: an ExecutionResult. It passes if the Undefined-Behavior Sanitizer reports an error and fails otherwise.
 
 ### EXPECT_NUBSAN_FAILURE()
-`EXPECT_NUBSAN_FAILURE(func)` takes in one parameter: a function. It passes if the Undefined-Behavior Sanitizer does not report an error and fails otherwise.
+`EXPECT_NUBSAN_FAILURE(result)` takes in one parameter: an ExecutionResult. It passes if the Undefined-Behavior Sanitizer does not report an error and fails otherwise.
 
 ### EXPECT_TSAN_FAILURE()
-`EXPECT_TSAN_FAILURE(func)` takes in one parameter: a function. It passes if the Thread Sanitizer reports an error and fails otherwise.
+`EXPECT_TSAN_FAILURE(result)` takes in one parameter: an ExecutionResult. It passes if the Thread Sanitizer reports an error and fails otherwise.
 
 ### EXPECT_NTSAN_FAILURE()
-`EXPECT_NTSAN_FAILURE(func)` takes in one parameter: a function. It passes if the Thread Sanitizer does not report an error and fails otherwise.
+`EXPECT_NTSAN_FAILURE(result)` takes in one parameter: an ExecutionResult. It passes if the Thread Sanitizer does not report an error and fails otherwise.
 
 ### EXPECT_LSAN_FAILURE()
-`EXPECT_LSAN_FAILURE(func)` takes in one parameter: a function. It passes if the Leak Sanitizer reports an error and fails otherwise.
+`EXPECT_LSAN_FAILURE(result)` takes in one parameter: an ExecutionResult. It passes if the Leak Sanitizer reports an error and fails otherwise.
 
 ### EXPECT_NLSAN_FAILURE()
-`EXPECT_NLSAN_FAILURE(func)` takes in one parameter: a function. It passes if the Leak Sanitizer does not report an error and fails otherwise.
+`EXPECT_NLSAN_FAILURE(result)` takes in one parameter: an ExecutionResult. It passes if the Leak Sanitizer does not report an error and fails otherwise.
 
 ### EXPECT_SAN_FAILURE()
-`EXPECT_SAN_FAILURE(func)` takes in one parameter: a function. It passes if the any Sanitizer reports an error and fails otherwise.
+`EXPECT_SAN_FAILURE(result)` takes in one parameter: an ExecutionResult. It passes if the any Sanitizer reports an error and fails otherwise.
 
 ### EXPECT_NSAN_FAILURE()
-`EXPECT_NSAN_FAILURE(func)` takes in one parameter: a function. It passes if the no Sanitizer does not report an error and fails otherwise.
+`EXPECT_NSAN_FAILURE(result)` takes in one parameter: an ExecutionResult. It passes if the no Sanitizer does not report an error and fails otherwise.
 
 ### EXPECT_TIMEOUT()
-`EXPECT_TIMEOUT(func, timeoutMs)` takes in two parameters: a function, and an amount of time in milliseconds. It passes if the subprocess takes longer to complete than `timeoutMs` and fails otherwise.
+`EXPECT_TIMEOUT(result, timeoutMs)` takes in two parameters: an ExecutionResult, and an amount of time in milliseconds. It passes if the subprocess takes longer to complete than `timeoutMs` and fails otherwise.
 
 ### EXPECT_COMPLETES_WITHIN()
-`EXPECT_COMPLETES_WITHIN(func, timeoutMs)` takes in two parameters: a function, and an amount of time in milliseconds. It passes if the subprocess finishes in less time than `timeoutMs` and fails otherwise.
+`EXPECT_COMPLETES_WITHIN(result, timeoutMs)` takes in two parameters: an ExecutionResult, and an amount of time in milliseconds. It passes if the subprocess finishes in less time than `timeoutMs` and fails otherwise.
 
 ### EXPECT_STATUS()
-`EXPECT_STATUS(func, status)` takes in two parameters: a function, and an [Execution Status](#types-of-execution-statuses). It passes if the subprocess finishes with an Execution Status that matches `status` and fails otherwise.
+`EXPECT_STATUS(result, status)` takes in two parameters: an ExecutionResult, and an [Execution Status](#types-of-execution-statuses). It passes if the subprocess finishes with an Execution Status that matches `status` and fails otherwise.
 
 ### EXPECT_CRASH_TYPE()
-`EXPECT_CRASH_TYPE(func, type)` takes in two parameters: a function, and a [Crash Type](#types-of-crash-types). It passes if the subprocess finishes with a Crash Type that matches `type` and fails otherwise.
+`EXPECT_CRASH_TYPE(result, type)` takes in two parameters: an ExecutionResult, and a [Crash Type](#types-of-crash-types). It passes if the subprocess finishes with a Crash Type that matches `type` and fails otherwise.
 
 ### EXPECT_SIGNAL()
-`EXPECT_SIGNAL(func, signal)` takes in two parameters: a function, and an exit signal. It passes if the subprocess finishes with a NATIVE (for if Windows process isolation is ever added) execution signal that matches `signal` and fails otherwise.
+`EXPECT_SIGNAL(result, signal)` takes in two parameters: an ExecutionResult, and an exit signal. It passes if the subprocess finishes with a NATIVE (for if Windows process isolation is ever added) execution signal that matches `signal` and fails otherwise.
 
 ### EXPECT_KILLED()
-`EXPECT_KILLED(func)` takes in one parameter: a function. It passes if the subprocess finishes with Crash Type `KILLED` and fails otherwise.
+`EXPECT_KILLED(result)` takes in one parameter: an ExecutionResult. It passes if the subprocess finishes with Crash Type `KILLED` and fails otherwise.

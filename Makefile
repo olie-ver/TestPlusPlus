@@ -1,6 +1,7 @@
 clean:
 	rm -rf build
 	rm -rf install
+	rm -rf build-debug
 	clear
 
 install:
@@ -16,6 +17,11 @@ print:
 	install/bin/testpp --diagnostics
 	install/bin/testpp --version
 	install/bin/testpp --list
+
+debug:
+	cmake -S . -B build-debug -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=install
+	cmake --build build-debug
+	cmake --install build-debug
 
 test:
 	install/bin/testpp /Users/oliverlie/Documents/GitHub/TestPlusPlus/V20.2.0/tests/src/assert.cpp
