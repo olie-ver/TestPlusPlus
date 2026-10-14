@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.20)
 
 project (
     testpp
-    VERSION 20.2.1
+    VERSION 20.3.0
     LANGUAGES CXX
 )
 
@@ -30,8 +30,8 @@ else()
         -Wall
         -Wextra
         -Wpedantic
-        # -Werror
-        # -O3
+        -Werror
+        -O3
     )
 endif()
 

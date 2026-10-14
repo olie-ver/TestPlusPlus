@@ -2,6 +2,6 @@ Testing/*
 */build/*
 *.DS_Store
 */install
-*/build
+build
 .DS_Store
 build-debug
