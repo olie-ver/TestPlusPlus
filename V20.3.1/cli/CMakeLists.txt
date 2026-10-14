@@ -3,36 +3,36 @@
 cmake_minimum_required(VERSION 3.20)
 
 add_executable(testpp_cli
-    src/Main.cpp
+    src/main.cpp
 
-    src/Config/ConfigureSettings.cpp
-    src/Config/GlobalConfigure.cpp
-    src/Config/Metadata.cpp
-    src/Config/Serialize.cpp
-    src/Config/Stream.cpp
+    src/config/configure_settings.cpp
+    src/config/global_configure.cpp
+    src/config/metadata.cpp
+    src/config/serialize.cpp
+    src/config/stream.cpp
 
-    src/Filesystem/Exec.cpp
-    src/FileSystem/FileSystem.cpp
+    src/file_system/exec.cpp
+    src/file_system/file_system.cpp
 
-    src/HandleCommands/diagnostics.cpp
-    src/HandleCommands/help.cpp
-    src/HandleCommands/inspect.cpp
-    src/HandleCommands/listExecs.cpp
-    src/HandleCommands/usage.cpp
-    src/HandleCommands/version.cpp
+    src/handle_commands/diagnostics.cpp
+    src/handle_commands/help.cpp
+    src/handle_commands/inspect.cpp
+    src/handle_commands/list_execs.cpp
+    src/handle_commands/usage.cpp
+    src/handle_commands/version.cpp
 
-    src/Helpers/buildCMake.cpp
-    src/Helpers/buildExec.cpp
-    src/Helpers/configConf.cpp
-    src/Helpers/getFilesAndArgs.cpp
-    src/Helpers/rename.cpp
-    src/Helpers/replace.cpp
-    src/Helpers/split.cpp
+    src/helpers/build_cmake.cpp
+    src/helpers/build_exec.cpp
+    src/helpers/config_conf.cpp
+    src/helpers/get_files_and_args.cpp
+    src/helpers/rename.cpp
+    src/helpers/replace.cpp
+    src/helpers/split.cpp
 
-    src/ResetCommands/Default.cpp
-    src/ResetCommands/GlobalDefault.cpp
-    src/ResetCommands/GlobalReset.cpp
-    src/ResetCommands/Reset.cpp
+    src/reset_commands/default.cpp
+    src/reset_commands/global_default.cpp
+    src/reset_commands/global_reset.cpp
+    src/reset_commands/reset.cpp
 )
 
 target_compile_features(testpp_cli PRIVATE cxx_std_20)

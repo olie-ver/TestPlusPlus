@@ -3,7 +3,7 @@
 #ifndef TESTPP_METADATA_H
 #define TESTPP_METADATA_H
 
-#include "Configure.hpp"
+#include "configure.hpp"
 
 namespace testppCLI {
     struct Metadata {

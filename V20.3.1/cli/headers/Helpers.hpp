@@ -3,7 +3,7 @@
 #ifndef TESTPP_CLI_HELPERS_H
 #define TESTPP_CLI_HELPERS_H
 
-#include "Configure.hpp"
+#include "configure.hpp"
 
 #include <string>
 #include <vector>

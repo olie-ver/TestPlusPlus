@@ -1,6 +1,6 @@
-#include "../../headers/Helpers.hpp"
+#include "../../headers/helpers.hpp"
 
-#include "../../headers/FileSystem.hpp"
+#include "../../headers/file_system.hpp"
 
 #include <fstream>
 #include <sstream>

@@ -1,7 +1,7 @@
-#include "../../headers/ResetCommands.hpp"
+#include "../../headers/reset_commands.hpp"
 
-#include "../../headers/Configure.hpp"
-#include "../../headers/FileSystem.hpp"
+#include "../../headers/configure.hpp"
+#include "../../headers/file_system.hpp"
 #include <filesystem>
 
 //When configuring cxx stuff, need to set the metadata's compile flag to true

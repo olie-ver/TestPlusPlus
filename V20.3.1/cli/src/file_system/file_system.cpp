@@ -1,6 +1,6 @@
-#include "../../headers/Metadata.hpp"
+#include "../../headers/metadata.hpp"
 
-#include "../../headers/FileSystem.hpp"
+#include "../../headers/file_system.hpp"
 
 #ifdef __APPLE__
     #include <mach-o/dyld.h>

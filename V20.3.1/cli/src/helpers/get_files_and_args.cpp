@@ -1,4 +1,4 @@
-#include "../../headers/Helpers.hpp"
+#include "../../headers/helpers.hpp"
 
 namespace testppCLI {
     void getFilesAndArgs(int start, int argc, char** argv, std::vector<std::filesystem::path>& files, std::vector<std::string>& args) {

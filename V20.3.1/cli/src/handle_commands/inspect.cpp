@@ -1,7 +1,7 @@
-#include "../../headers/PrintCommands.hpp"
+#include "../../headers/print_commands.hpp"
 
-#include "../../headers/Configure.hpp"
-#include "../../headers/FileSystem.hpp"
+#include "../../headers/configure.hpp"
+#include "../../headers/file_system.hpp"
 
 #include <iostream>
 

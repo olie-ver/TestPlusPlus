@@ -3,7 +3,7 @@
 #ifndef TESTPP_FILE_SYSTEM_H
 #define TESTPP_FILE_SYSTEM_H
 
-#include "Metadata.hpp"
+#include "metadata.hpp"
 
 #include <array>
 #include <filesystem>

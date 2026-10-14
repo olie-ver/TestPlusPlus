@@ -1,4 +1,4 @@
-#include "../../headers/PrintCommands.hpp"
+#include "../../headers/print_commands.hpp"
 
 #include <iostream>
 

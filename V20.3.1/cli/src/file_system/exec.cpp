@@ -1,5 +1,5 @@
-#include "../../headers/Configure.hpp"
-#include "../../headers/FileSystem.hpp"
+#include "../../headers/configure.hpp"
+#include "../../headers/file_system.hpp"
 
 #include <fstream>
 #include <iostream>

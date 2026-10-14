@@ -1,10 +1,10 @@
-#include "../headers/Configure.hpp"
+#include "../headers/configure.hpp"
 
-#include "../headers/Helpers.hpp"
-#include "../headers/FileSystem.hpp"
-#include "../headers/Metadata.hpp"
-#include "../headers/PrintCommands.hpp"
-#include "../headers/ResetCommands.hpp"
+#include "../headers/helpers.hpp"
+#include "../headers/file_system.hpp"
+#include "../headers/metadata.hpp"
+#include "../headers/print_commands.hpp"
+#include "../headers/reset_commands.hpp"
 
 #include <iostream>
 #include <sstream>
