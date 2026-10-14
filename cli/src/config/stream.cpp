@@ -1,5 +1,5 @@
-#include "../../headers/Configure.hpp"
-#include "../../headers/Helpers.hpp"
+#include "../../headers/configure.hpp"
+#include "../../headers/helpers.hpp"
 
 #include <iostream>
 
