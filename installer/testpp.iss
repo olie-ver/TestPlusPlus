@@ -1,4 +1,4 @@
-#define AppVersion "20.3.0"
+#define AppVersion "20.3.1"
 
 #ifndef Arch
   #define Arch "x64"
