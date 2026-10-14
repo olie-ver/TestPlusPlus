@@ -1,0 +1,25 @@
+#pragma once
+
+#ifndef TESTPP_MAIN_H
+#define TESTPP_MAIN_H
+
+#include <testpp/internal/core/core.hpp>
+#include <testpp/internal/renderer.hpp>
+#include <testpp/internal/runner.hpp>
+
+//Gets the verbosity flag from an argument
+testpp::internal::Renderer::Verbosity getVerbFlag(const std::string& arg);
+
+//Gets the number of threads from an argument
+int getNumThreads(const std::string& arg);
+
+//Gets the SUITES to skip testing for
+void getSkip(const std::string& arg, std::unordered_set<std::string_view>& suites);
+
+//Gets the SUITES to ONLY test
+void getTestOnly(const std::string& arg, std::unordered_set<std::string_view>& suites);
+
+//Renders how to use the application
+void renderUsage(char* bad_flag);
+
+#endif
