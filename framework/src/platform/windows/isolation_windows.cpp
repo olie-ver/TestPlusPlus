@@ -71,8 +71,8 @@ namespace testpp::internal {
                     return Core::CrashType::DivideByZero;
                 case 0xC000001D:
                     return Core::CrashType::IllegalInstruction;
-                case 0xC0000096:
-                    return Core::CrashType::PrivilegedInstruction;
+                // case 0xC0000096:
+                //     return Core::CrashType::PrivilegedInstruction;
                 case 0xC0000409:
                     return Core::CrashType::Abort;
                 default:
