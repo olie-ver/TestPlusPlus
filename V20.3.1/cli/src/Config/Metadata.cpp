@@ -1,5 +1,5 @@
-#include "../../headers/Metadata.hpp"
-#include "../../headers/Helpers.hpp"
+#include "../../headers/metadata.hpp"
+#include "../../headers/helpers.hpp"
 
 #include <fstream>
 

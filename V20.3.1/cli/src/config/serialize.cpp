@@ -1,4 +1,4 @@
-#include "../../headers/Configure.hpp"
+#include "../../headers/configure.hpp"
 
 #include <fstream>
 
