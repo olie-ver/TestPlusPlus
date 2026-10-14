@@ -28,12 +28,12 @@ namespace testpp::internal {
 
         template<typename Func>
         inline Core::ExecutionResult runIsolated(Func&& func, int timeLimitMs = DEFAULT_ISOLATION_TIMEOUT_MS) {
-            auto& ctx = Runner::getIsolationContext();
+            auto& ctx = Runner::getDeathContext();
             const std::size_t isolationIndex = ctx.currentIsolation++;
 
             if (ctx.childMode) {
-                if (Runner::TEST_STACK.back().index == ctx.targetTest &&
-                    isolationIndex == ctx.targetIsolation) {
+                if (Runner::TEST_STACK.back().idx == ctx.targetTest &&
+                    isolationIndex == ctx.targetIndex) {
                     std::forward<Func>(func)();
                 }
 
@@ -41,7 +41,7 @@ namespace testpp::internal {
             }
 
             return runIsolatedImpl(
-                Runner::TEST_STACK.back().index,
+                Runner::TEST_STACK.back().idx,
                 isolationIndex,
                 timeLimitMs
             );

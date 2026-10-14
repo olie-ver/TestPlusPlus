@@ -143,6 +143,7 @@ namespace testpp::internal {
             bool childMode;
             uint64_t targetTest;
             uint64_t targetIndex;
+            uint64_t currentIsolation;
         };
     }
 }
