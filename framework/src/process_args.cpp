@@ -1,0 +1,79 @@
+#include <testpp/internal/pch/pch.hpp>
+
+#include <testpp/internal/main.hpp>
+#include <algorithm>
+#include <iostream>
+#include <thread>
+
+namespace Testpp = testpp::internal;
+
+int getNumThreads(const std::string& arg)
+{
+    size_t pos{};
+
+    //find out the max number of threads this hardware can support
+    int max_threads = std::max(std::thread::hardware_concurrency(), 1u);
+    
+    //clamp the number of threads in the argument between 1 and the max
+    return std::max(std::min(std::stoi(arg, &pos), max_threads), 1);
+}
+
+Testpp::Renderer::Verbosity getVerbFlag(const std::string& arg)
+{
+    if (arg == "minimum") {
+        return Testpp::Renderer::Verbosity::Minimum;
+    } else if (arg == "passonly" || arg == "pass_only") {
+        return Testpp::Renderer::Verbosity::PassOnly;
+    } else if (arg == "failonly" || arg == "fail_only"
+        || arg == "failonlyall" || arg == "fail_only_all") 
+    {
+        return Testpp::Renderer::Verbosity::FailOnlyAll;
+    } else if (arg == "failonlymin" || arg == "fail_only_min")
+    {
+        return Testpp::Renderer::Verbosity::FailOnlyMin;
+    }
+
+    return Testpp::Renderer::Verbosity::Default;
+}
+
+void getSkip(const std::string& arg, std::unordered_set<std::string_view>& suites)
+{
+    std::string suite;
+    std::stringstream args(arg);
+
+    while(std::getline(args, suite, ','))
+    {
+        suites.insert(suite);
+    }
+}
+
+void getTestOnly(const std::string& arg, std::unordered_set<std::string_view>& suites)
+{
+    std::string suite;
+    std::stringstream args(arg);
+
+    while(std::getline(args, suite, ','))
+    {
+        suites.insert(suite);
+    }
+}
+
+void renderUsage(char* bad_flag) {
+    std::cerr << "Unknown flag: " << bad_flag << std::endl;
+    std::cerr << "Usage: ./pathToExecutable --flags\n" << std::endl;
+    std::cerr << "Supported flags:" << std::endl;
+    std::cerr << "\tVerbosity: --v= or --verbosity=" << std::endl;
+    std::cerr << "\tThreads: --t= or --numthreads= or --threads=" << std::endl;
+    std::cerr << "\tTimeout: --timeout= or --timeout_sec= or --timeout_ms=" << std::endl;
+    std::cerr << "\tSkip Suites: --s= or --skip=" << std::endl;
+    std::cerr << "\tTest Only Suites: --testonly= or --test_only= or --to= or t_o=\n" << std::endl;
+    std::cerr << "\tJSON Output: --json PATH_TO_FILE" << std::endl;
+    std::cerr << "\tXML Output: --junit PATH_TO_FILE or --xml PATH_TO_FILE" << std::endl;
+    std::cerr << "\tstdout output length: --stdoutsize= or --stdout=" << std::endl;
+    std::cerr << "\tstderr output length: --stderrsize= or --stderr=" << std::endl;
+    std::cerr << "\tstdout and stderr output length (1024 chars): --truncate" << std::endl;
+    std::cerr << "\tStream Progress: --stream" << std::endl;
+    std::cerr << "Supported verbosity flags: ";
+    std::cerr << "default, minimum, passonly, failonly, failonlymin" << std::endl;
+    std::cerr << "Suites being skipped must be separated by ',' with NO space in between" << std::endl;
+}
